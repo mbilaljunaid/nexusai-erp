@@ -36,9 +36,9 @@ export default function LogEntry({ log }: LogEntryProps) {
 
     return (
         <div className="px-4 py-3 hover:bg-gray-50">
-            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+            <div role="button" tabIndex={0}
                 className={`flex items-start gap-3 ${hasMetadata ? 'cursor-pointer' : ''}`}
-                onClick={() => hasMetadata && setExpanded(!expanded)}
+                onClick={() => hasMetadata && setExpanded(!expanded)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >
                 {/* Expand Icon */}
                 {hasMetadata && (

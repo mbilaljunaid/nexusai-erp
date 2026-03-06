@@ -91,7 +91,7 @@ export default function ECOManagement() {
             {/* Status strip */}
             <div className="flex gap-2 mb-3.5">
                 {statusTotals.map(s => (
-                    <Card key={s.status} onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)} className={`flex-1 rounded-xl py-2 px-2.5 cursor-pointer border-t-[3px] shadow-sm ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setStatusFilter(statusFilter === s.status ? '' : s.status); } }}>
+                    <Card key={s.status} onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)} className={`flex-1 rounded-xl py-2 px-2.5 cursor-pointer border-t-[3px] shadow-sm ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <div className={`text-lg font-extrabold font-mono ${STATUS_TEXT_CLR[s.status]}`}>{s.count}</div>
                         <div className="text-[9px] text-gray-400 font-semibold">{s.status.replace(/_/g, ' ')}</div>
                     </Card>

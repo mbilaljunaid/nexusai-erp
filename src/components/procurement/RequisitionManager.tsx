@@ -70,7 +70,7 @@ export function RequisitionManager() {
                             <p className="text-muted-foreground col-span-2">No items in catalog.</p>
                         ) : (
                             items.map((item: any) => (
-                                <Card key={item.id} className="cursor-pointer hover:border-primary" onClick={() => addToCart(item)}>
+                                <Card key={item.id} className="cursor-pointer hover:border-primary" onClick={() => addToCart(item)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <CardContent className="p-4">
                                         <h4 className="font-semibold">{item.itemNumber}</h4>
                                         <p className="text-sm text-muted-foreground">{item.description}</p>

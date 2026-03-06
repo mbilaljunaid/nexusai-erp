@@ -11,6 +11,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { useAuditLogs } from '@/hooks/admin/useAdminData';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 const actionTypes = [
     { value: 'all', label: 'All Actions' },
@@ -160,31 +161,26 @@ export default function AuditLogs() {
 
                         {/* Pagination */}
                         {!isLoading && meta.totalPages > 1 && (
-                            <div className="flex items-center justify-between mt-6 pt-6 border-t">
-                                <div className="text-sm text-muted-foreground">
-                                    Page {page} of {meta.totalPages} ({meta.total} logs)
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        disabled={page <= 1}
-                                        onClick={() => setPage(p => p - 1)}
-                                    >
-                                        <ChevronLeft className="w-4 h-4 mr-1" />
-                                        Previous
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        disabled={page >= meta.totalPages}
-                                        onClick={() => setPage(p => p + 1)}
-                                    >
-                                        Next
-                                        <ChevronRight className="w-4 h-4 ml-1" />
-                                    </Button>
-                                </div>
-                            </div>
+                            
+                            <Pagination className="mt-4">
+                              <PaginationContent>
+                                <PaginationItem>
+                                  <PaginationPrevious 
+                                    onClick={() => setPage(p => Math.max(1, p - 1))} 
+                                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                                  />
+                                </PaginationItem>
+                                <PaginationItem>
+                                  <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                                </PaginationItem>
+                                <PaginationItem>
+                                  <PaginationNext 
+                                    onClick={() => setPage(p => p + 1)} 
+                                    className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                  />
+                                </PaginationItem>
+                              </PaginationContent>
+                            </Pagination>
                         )}
                     </CardContent>
                 </Card>

@@ -54,7 +54,7 @@ export default function MyPayslips() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {isLoading && <p>Loading payslips...</p>}
                 {payslips?.map((payslip: any) => (
-                    <Card key={payslip.id} className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => setSelectedRunId(payslip.id)}>
+                    <Card key={payslip.id} className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => setSelectedRunId(payslip.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 {payslip.periodName}

@@ -89,7 +89,7 @@ export default function RegulatoryCalendar() {
             {/* Summary cards by regulation */}
             <div className="summary-grid">
                 {regSummary.map((r, i) => (
-                    <div key={r.regulation} onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)} className={`summary-card summary-card-color reg-color-${i % REG_COLORS.length} ${regFilter && regFilter !== r.regulation ? 'summary-card-dim' : 'summary-card-active'}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRegFilter(regFilter === r.regulation ? '' : r.regulation); } }}>
+                    <div key={r.regulation} onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)} className={`summary-card summary-card-color reg-color-${i % REG_COLORS.length} ${regFilter && regFilter !== r.regulation ? 'summary-card-dim' : 'summary-card-active'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <div className={`summary-card-title summary-card-title-color reg-color-${i % REG_COLORS.length}`}>{r.regulation ?? 'Other'}</div>
                         <div className="summary-card-count">{r.total} events</div>
                         {Number(r.overdue) > 0 && <div className="summary-card-overdue">⚑ {r.overdue} overdue</div>}

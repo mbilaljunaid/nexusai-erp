@@ -16,18 +16,21 @@ export default function PartnerDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    // Mock Partner Context (In real app, this comes from Auth)
-    const [partner, setPartner] = useState<any>(null);
+    // Initialize Mock Partner
     const [isRegisterOpen, setIsRegisterOpen] = useState(false);
     const [newItem, setNewItem] = useState({ dealName: "", customerName: "", amount: "", notes: "" });
 
-    // Initialize Mock Partner
-    useEffect(() => {
-        fetch("/api/crm/partner/ensure", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: "Acme Resellers", email: "sales@acmeresellers.com" })
-        }).then(r => r.json()).then(setPartner);
-    }, []);
+    const { data: partner } = useQuery({
+        queryKey: ["crm-partner-session"],
+        queryFn: async () => {
+            const res = await fetch("/api/crm/partner/ensure", {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: "Acme Resellers", email: "sales@acmeresellers.com" })
+            });
+            if (!res.ok) throw new Error("Failed");
+            return res.json();
+        }
+    });
 
     const { data: deals = [] } = useQuery<any>({
         queryKey: ["/api/crm/partner/deals", partner?.id],

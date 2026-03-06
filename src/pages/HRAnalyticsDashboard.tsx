@@ -141,7 +141,7 @@ export default function HRAnalyticsDashboard() {
             <Card
               key={code}
               className={`transition-colors ${isClickable ? 'cursor-pointer hover:bg-zinc-800/50' : ''}`}
-              onClick={() => isClickable && setSelectedKpi(code)}
+              onClick={() => isClickable && setSelectedKpi(code)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between mb-2">

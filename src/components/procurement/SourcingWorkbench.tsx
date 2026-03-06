@@ -131,7 +131,7 @@ export default function SourcingWorkbench() {
                         </TableHeader>
                         <TableBody>
                             {rfqs?.map((rfq: any) => (
-                                <TableRow key={rfq.id} className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => setSelectedRFQ(rfq)}>
+                                <TableRow key={rfq.id} className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => setSelectedRFQ(rfq)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <TableCell className="font-mono text-xs font-medium text-primary">{rfq.rfqNumber}</TableCell>
                                     <TableCell className="text-xs font-semibold">{rfq.title}</TableCell>
                                     <TableCell>

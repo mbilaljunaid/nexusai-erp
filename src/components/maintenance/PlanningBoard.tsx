@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import { addDays, format, startOfWeek, endOfWeek } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 export default function PlanningBoard() {
@@ -92,11 +93,10 @@ export default function PlanningBoard() {
                     </div>
                     <Button variant="outline" size="sm" onClick={() => setCurrentDate(addDays(currentDate, 7))}><ChevronRight className="h-4 w-4" /></Button>
                     <div className="flex items-center space-x-2 ml-4">
-                        <input
-                            type="checkbox"
+                        <Checkbox
                             id="showForecast"
                             checked={showForecast}
-                            onChange={(e) => setShowForecast(e.target.checked)}
+                            onCheckedChange={(checked: boolean) => setShowForecast(checked)}
                             className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                         />
                         <label htmlFor="showForecast" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">

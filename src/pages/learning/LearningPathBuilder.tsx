@@ -150,7 +150,7 @@ export default function LearningPathBuilder() {
                                         ? "border-primary ring-2 ring-primary"
                                         : "hover:border-primary/50"
                                     }`}
-                                onClick={() => setSelectedPathId(path.id)}
+                                onClick={() => setSelectedPathId(path.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>
                                     <CardTitle className="text-lg">{path.title}</CardTitle>

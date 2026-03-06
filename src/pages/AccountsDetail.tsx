@@ -336,7 +336,7 @@ export default function AccountsDetail() {
                             <Card
                                 key={a.id}
                                 className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
-                                onClick={() => setLocation(`/crm/accounts/${a.id}`)}
+                                onClick={() => setLocation(`/crm/accounts/${a.id}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardContent className="p-6">
                                     <div className="flex items-start justify-between mb-4">

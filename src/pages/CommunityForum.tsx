@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatDate } from "@/lib/dateUtils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -355,7 +356,7 @@ export default function CommunityForum() {
                     <div className="flex-1">
                       <p className="whitespace-pre-wrap">{comment.content}</p>
                       <div className="flex items-center justify-between mt-2">
-                        <p className="text-sm text-muted-foreground">{formatDate(comment.createdAt)}</p>
+                        <span className="text-xs text-muted-foreground">{formatDate(postDetail.createdAt)}</span>
                         <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-destructive" onClick={() => setFlagTarget({ type: "comment", id: comment.id })} data-testid={`button-flag-comment-${comment.id}`}><Flag className="w-3 h-3 mr-1" />Report</Button>
                       </div>
                     </div>
@@ -442,7 +443,7 @@ export default function CommunityForum() {
         <CardHeader className="py-3"><CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Trending Today</CardTitle></CardHeader>
         <CardContent className="pt-0 space-y-3">
           {trendingPosts.map((post, i) => (
-            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={post.id} className="cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setSelectedPost(post.id)} data-testid={`trending-post-${i}`}>
+            <div role="button" tabIndex={0} key={post.id} className="cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setSelectedPost(post.id)} data-testid={`trending-post-${i}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
               <p className="text-sm font-medium line-clamp-2">{post.title}</p>
               <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {post.viewCount || 0}</span>
@@ -461,7 +462,7 @@ export default function CommunityForum() {
             const displayName = user.userName || (user.userFirstName && user.userLastName ? `${user.userFirstName} ${user.userLastName}` : null) || user.userId?.slice(0, 12);
             const initials = displayName ? displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?';
             return (
-              <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={user.id} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setProfileUserId(user.userId)} data-testid={`leaderboard-user-${index}`}>
+              <div role="button" tabIndex={0} key={user.id} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setProfileUserId(user.userId)} data-testid={`leaderboard-user-${index}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                 <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">{index + 1}</div>
                 <Avatar className="w-7 h-7">
                   {user.profileImageUrl && <AvatarImage src={user.profileImageUrl} alt={displayName} />}
@@ -612,7 +613,7 @@ export default function CommunityForum() {
               <>
                 <div className="space-y-3">
                   {filteredPosts.slice(0, visibleCount).map((post) => (
-                    <Card key={post.id} className="cursor-pointer hover-elevate" onClick={() => setSelectedPost(post.id)} data-testid={`card-post-${post.id}`}>
+                    <Card key={post.id} className="cursor-pointer hover-elevate" onClick={() => setSelectedPost(post.id)} data-testid={`card-post-${post.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                       <CardContent className="py-4">
                         <div className="flex gap-3">
                           <div className="flex flex-col items-center gap-0.5 text-center min-w-[50px]">

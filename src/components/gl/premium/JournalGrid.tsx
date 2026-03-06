@@ -58,7 +58,7 @@ export function JournalGrid({ data, onRowClick, loading }: JournalGridProps) {
                             <TableRow
                                 key={journal.id}
                                 className="cursor-pointer hover:bg-muted/50 transition-colors"
-                                onClick={() => onRowClick(journal)}
+                                onClick={() => onRowClick(journal)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <TableCell className="font-medium">{journal.journalNumber}</TableCell>
                                 <TableCell>{journal.category}</TableCell>

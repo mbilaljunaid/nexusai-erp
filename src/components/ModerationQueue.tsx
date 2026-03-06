@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatDate } from "@/lib/dateUtils";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -156,7 +157,8 @@ export function ModerationQueue() {
     },
   });
 
-  const formatDate = (date: Date | string | null) => {
+  // Renamed local formatDate to formatRelativeDate to avoid conflict with imported formatDate
+  const formatRelativeDate = (date: Date | string | null) => {
     if (!date) return "";
     const d = new Date(date);
     const now = new Date();
@@ -166,7 +168,7 @@ export function ModerationQueue() {
     if (hours < 24) return `${hours}h ago`;
     const days = Math.floor(hours / 24);
     if (days < 7) return `${days}d ago`;
-    return d.toLocaleDateString();
+    return formatDate(d); // Use the imported formatDate for absolute date
   };
 
   const getStatusBadge = (status: string) => {
@@ -352,7 +354,7 @@ export function ModerationQueue() {
                           </div>
                           <p className="font-medium">{flag.reason}</p>
                           <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
-                            <span>Reported {formatDate(flag.createdAt)}</span>
+                            <span>Reported {formatRelativeDate(flag.createdAt)}</span>
                             <span>Reporter: {flag.reporterId.slice(0, 8)}...</span>
                           </div>
                           {existingRec && (
@@ -486,7 +488,7 @@ export function ModerationQueue() {
                           {anomaly.targetId && (
                             <p>Target: {anomaly.targetType} - {anomaly.targetId.slice(0, 8)}...</p>
                           )}
-                          <p>Detected {formatDate(anomaly.createdAt)}</p>
+                          <p>Detected {formatRelativeDate(anomaly.createdAt)}</p>
                         </div>
                       </div>
                       <Button
@@ -527,7 +529,7 @@ export function ModerationQueue() {
                         )}
                       </div>
                       <div className="text-right text-sm text-muted-foreground">
-                        <p>{formatDate(action.createdAt)}</p>
+                        <p>{formatRelativeDate(action.createdAt)}</p>
                         <p>by {action.moderatorId.slice(0, 8)}...</p>
                       </div>
                     </div>
@@ -564,7 +566,7 @@ export function ModerationQueue() {
                 </div>
                 <p className="font-medium">{selectedFlag.reason}</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Reported {formatDate(selectedFlag.createdAt)}
+                  Reported {formatRelativeDate(selectedFlag.createdAt)}
                 </p>
               </div>
 

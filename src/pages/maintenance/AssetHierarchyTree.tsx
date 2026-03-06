@@ -21,10 +21,10 @@ const TreeNode = ({ node, level = 0 }: { node: AssetNode, level?: number }) => {
 
     return (
         <div className="select-none">
-            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+            <div role="button" tabIndex={0}
                 className={`flex items-center gap-2 py-2 px-2 hover:bg-muted/50 rounded cursor-pointer ${level === 0 ? 'font-medium' : 'text-sm'}`}
                 style={{ paddingLeft: `${level * 16 + 8}px` }} // eslint-disable-line react-dom/no-unsafe-inline-style
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsOpen(!isOpen)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >
                 {hasChildren ? (
                     isOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />

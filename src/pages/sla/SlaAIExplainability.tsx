@@ -157,7 +157,7 @@ export default function SlaAIExplainability() {
                                                 <TableRow
                                                     key={trace.id}
                                                     className="cursor-pointer hover:bg-purple-50/30 transition-colors group"
-                                                    onClick={() => handleViewTrace({ entityId: trace.entityId, entityTable: trace.entityTable })}
+                                                    onClick={() => handleViewTrace({ entityId: trace.entityId, entityTable: trace.entityTable })} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                 >
                                                     <TableCell className="font-mono text-sm font-medium">{trace.entityId}</TableCell>
                                                     <TableCell><Badge variant="outline" className="text-[10px]">{trace.entityTable}</Badge></TableCell>

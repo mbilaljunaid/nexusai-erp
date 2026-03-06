@@ -192,7 +192,7 @@ export default function BurdenRuleBuilder() {
                                         <TableRow
                                             key={rule.id}
                                             className={selectedRuleId === rule.id ? "bg-blue-50 border-l-4 border-l-blue-600" : "cursor-pointer"}
-                                            onClick={() => setSelectedRuleId(rule.id)}
+                                            onClick={() => setSelectedRuleId(rule.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <TableCell className="font-medium p-4 py-3">
                                                 <div className="flex justify-between items-center w-full">

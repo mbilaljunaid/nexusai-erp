@@ -86,9 +86,9 @@ export default function LeaseModificationWizard({ leaseId }: { leaseId: string }
                     <CardContent>
                         {step === 1 && (
                             <div className="grid grid-cols-1 gap-4">
-                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                <div role="button" tabIndex={0}
                                     className="p-4 border rounded-lg hover:border-primary cursor-pointer transition-colors flex items-center gap-4"
-                                    onClick={() => setStep(2)}
+                                    onClick={() => setStep(2)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded">
                                         <Clock className="h-5 w-5 text-blue-600" />
@@ -98,9 +98,9 @@ export default function LeaseModificationWizard({ leaseId }: { leaseId: string }
                                         <p className="text-sm text-muted-foreground">Change in lease duration or option exercise</p>
                                     </div>
                                 </div>
-                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                <div role="button" tabIndex={0}
                                     className="p-4 border rounded-lg hover:border-primary cursor-pointer transition-colors flex items-center gap-4"
-                                    onClick={() => setStep(2)}
+                                    onClick={() => setStep(2)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="p-2 bg-green-100 dark:bg-green-900 rounded">
                                         <Calculator className="h-5 w-5 text-green-600" />

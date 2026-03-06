@@ -360,7 +360,7 @@ function EquipmentCard({ equipment, isSelected, onClick }: EquipmentCardProps) {
                 "hover:shadow-lg transition-all cursor-pointer",
                 isSelected && "ring-2 ring-blue-500"
             )}
-            onClick={onClick}
+            onClick={onClick} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
         >
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">

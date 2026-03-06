@@ -194,7 +194,7 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
                             }))
                           );
                         }}
-                        data-testid={`card-template-${t.name}`}
+                        data-testid={`card-template-${t.name}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                       >
                         <p className="font-medium text-sm">{t.name}</p>
                       </Card>

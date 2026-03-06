@@ -183,7 +183,7 @@ export default function AssessmentBuilder() {
                                         ? "border-primary ring-2 ring-primary"
                                         : "hover:border-primary/50"
                                     }`}
-                                onClick={() => setSelectedAssessmentId(assessment.id)}
+                                onClick={() => setSelectedAssessmentId(assessment.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>
                                     <CardTitle className="text-lg">{assessment.title}</CardTitle>

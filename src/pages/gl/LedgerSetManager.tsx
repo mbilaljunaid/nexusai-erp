@@ -283,7 +283,7 @@ export default function LedgerSetManager() {
                                         <TableRow
                                             key={set.id}
                                             className={selectedSetId === set.id ? "bg-blue-50" : "cursor-pointer hover:bg-muted/50"}
-                                            onClick={() => setSelectedSetId(set.id)}
+                                            onClick={() => setSelectedSetId(set.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <TableCell className="font-medium">
                                                 {set.name}

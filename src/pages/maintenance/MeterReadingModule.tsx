@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { meterService, type Meter as MeterType, type MeterReading as MeterReadingType } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -259,7 +260,7 @@ export function MeterReadingModule() {
                                         "border-2 cursor-pointer transition-all hover:border-primary",
                                         selectedMeter?.id === meter.id && "border-primary bg-primary/5"
                                     )}
-                                    onClick={() => setSelectedMeter(meter)}
+                                    onClick={() => setSelectedMeter(meter)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <CardContent className="pt-6">
                                         <div className="space-y-4">
@@ -371,12 +372,11 @@ export function MeterReadingModule() {
                                     <FormField control={form.control} name="captureLocation" render={({ field }) => (
                                         <FormItem className="flex flex-row items-center gap-2 space-y-0">
                                             <FormControl>
-                                                <input
-                                                    type="checkbox"
+                                                <Checkbox
                                                     id="location"
                                                     title="Capture GPS location"
                                                     checked={field.value}
-                                                    onChange={field.onChange}
+                                                    onCheckedChange={field.onChange}
                                                     className="h-4 w-4"
                                                 />
                                             </FormControl>

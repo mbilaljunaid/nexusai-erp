@@ -252,8 +252,8 @@ export default function DebtCovenantMonitor() {
 
                     {/* Review Modal */}
                     {selectedResult && (
-                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className="modal-backdrop" onClick={() => setSelectedResult(null)}>
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className="review-modal" onClick={e => e.stopPropagation()}>
+                        <div role="button" tabIndex={0} className="modal-backdrop" onClick={() => setSelectedResult(null)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                            <div role="button" tabIndex={0} className="review-modal" onClick={e => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <h3 className="rm-title">Review Match</h3>
                                 <div className="rm-entity">{selectedResult.entity_name}</div>
                                 {selectedResult.matched_name && <div className="rm-match">Matched against: <strong>{selectedResult.matched_name}</strong></div>}

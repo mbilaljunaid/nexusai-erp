@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { GitBranch, Plus, Copy, ArrowUpCircle, TrendingUp, TrendingDown } from "lucide-react";
@@ -256,10 +257,9 @@ export default function ScenarioComparison() {
                                 {scenarios.map((scenario) => (
                                     <TableRow key={scenario.id}>
                                         <TableCell>
-                                            <input
-                                                type="checkbox"
+                                            <Checkbox
                                                 checked={selectedScenarios.includes(scenario.id)}
-                                                onChange={() => toggleScenarioSelection(scenario.id)}
+                                                onCheckedChange={() => toggleScenarioSelection(scenario.id)}
                                                 className="h-4 w-4"
                                                 aria-label={`Select ${scenario.name}`}
                                             />

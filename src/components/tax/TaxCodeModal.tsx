@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Eye, Edit, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePicker } from '@/components/ui/DatePicker';
 
@@ -233,11 +234,10 @@ export function TaxCodeModal({ isOpen, onClose, taxCode, mode }: TaxCodeModalPro
 
                         {!isViewMode && mode === 'edit' && (
                             <div className="flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
+                                <Checkbox
                                     id="isActive"
                                     checked={formData.isActive}
-                                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                                    onCheckedChange={(checked: boolean) => setFormData({ ...formData, isActive: checked })}
                                     className="h-4 w-4"
                                     aria-label="Mark tax code as active"
                                 />

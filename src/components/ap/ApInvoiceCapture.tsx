@@ -223,9 +223,9 @@ export function ApInvoiceCapture({ open, onOpenChange }: ApInvoiceCaptureProps) 
                         </TabsList>
 
                         <TabsContent value="upload" className="mt-6">
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                            <div role="button" tabIndex={0}
                                 className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-10 flex flex-col items-center justify-center gap-3 bg-primary/[0.02] hover:bg-primary/[0.04] transition-colors cursor-pointer relative"
-                                onClick={() => document.getElementById("file-upload")?.click()}
+                                onClick={() => document.getElementById("file-upload")?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <input
                                     id="file-upload"

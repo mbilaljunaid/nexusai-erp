@@ -40,17 +40,22 @@ interface ProjectRisk {
 export default function ConstructionExecutiveDashboard() {
     const { open, sendMessage } = useNexusAI();
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-    const [projects, setProjects] = useState<any[]>([]);
 
     // Fetch PPM Projects to populate context
+    const { data: projects = [] } = useQuery<any[]>({
+        queryKey: ["ppm-projects"],
+        queryFn: async () => {
+            const res = await fetch("/api/ppm/projects");
+            if (!res.ok) throw new Error("Failed");
+            return res.json();
+        }
+    });
+
     useEffect(() => {
-        fetch("/api/ppm/projects")
-            .then(res => res.json())
-            .then(data => {
-                setProjects(data);
-                if (data.length > 0) setSelectedProjectId(data[0].id);
-            });
-    }, []);
+        if (projects.length > 0 && !selectedProjectId) {
+            setSelectedProjectId(projects[0].id);
+        }
+    }, [projects, selectedProjectId]);
 
     const { data: riskData = [], isLoading } = useQuery<ProjectRisk[]>({
         queryKey: ["construction-project-risk", selectedProjectId],

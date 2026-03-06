@@ -93,11 +93,11 @@ export default function LeaseApprovalsWorkbench() {
                             ) : (
                                 <div className="space-y-3">
                                     {pendingLeases.map((lease) => (
-                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        <div role="button" tabIndex={0}
                                             key={lease.id}
                                             className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${selectedLeaseId === lease.id ? "border-primary bg-primary/5 ring-1 ring-primary" : ""
                                                 }`}
-                                            onClick={() => setSelectedLeaseId(lease.id)}
+                                            onClick={() => setSelectedLeaseId(lease.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start">
                                                 <div>

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface PaginationData {
     total: number;
@@ -55,64 +56,25 @@ export default function LeadList() {
     };
 
     return (
-        <StandardPage
-            title="Leads"
-            description="Manage and track your sales leads"
-            className="space-y-4"
-        >
-            <div className="flex justify-between items-center">
-                <div className="relative w-72">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search leads..."
-                        className="pl-8"
-                        value={search}
-                        onChange={(e) => {
-                            setSearch(e.target.value);
-                            setPage(1); // Reset to page 1 on search
-                        }}
-                    />
-                </div>
-            </div>
-
-            {isLoading ? (
-                <div className="flex justify-center p-8">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-            ) : (
-                <>
-                    <LeadTable
-                        leads={leads}
-                        onSelectLead={handleSelectLead}
-                    />
-
-                    {/* Pagination Controls */}
-                    <div className="flex items-center justify-between border-t pt-4">
-                        <p className="text-sm text-muted-foreground">
-                            Showing {Math.min((page - 1) * pagination.limit + 1, pagination.total)} to {Math.min(page * pagination.limit, pagination.total)} of {pagination.total} entries
-                        </p>
-                        <div className="space-x-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                disabled={page === 1}
-                            >
-                                Previous
-                            </Button>
-                            <span className="text-sm font-medium">Page {page} of {pagination.totalPages}</span>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-                                disabled={page === pagination.totalPages}
-                            >
-                                Next
-                            </Button>
-                        </div>
-                    </div>
-                </>
-            )}
-        </StandardPage>
+        
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => setPage(p => Math.max(1, p - 1))} 
+                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => setPage(p => p + 1)} 
+                className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
     );
 }

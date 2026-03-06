@@ -142,7 +142,7 @@ export default function ESGPlanning() {
                                     const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
 
                                     return (
-                                        <Card key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 shadow-sm ${selectedGoal?.id === g.id ? 'border-y-emerald-600 border-r-emerald-600' : ''} ${bdrClr}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); } }}>
+                                        <Card key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 shadow-sm ${selectedGoal?.id === g.id ? 'border-y-emerald-600 border-r-emerald-600' : ''} ${bdrClr}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                             <div className="flex justify-between mb-1">
                                                 <div className="font-bold text-[13px]">{g.goal_name}</div>
                                                 <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`}>{g.status}</span>

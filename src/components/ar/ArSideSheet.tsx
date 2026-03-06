@@ -190,13 +190,13 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                             </div>
                         ) : (
                             accounts?.map((acc: any) => (
-                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                <div role="button" tabIndex={0}
                                     key={acc.id}
                                     onClick={() => setSelectedAccountId(selectedAccountId === acc.id ? null : acc.id)}
                                     className={`p-4 rounded-xl border transition-all cursor-pointer ${selectedAccountId === acc.id
                                         ? "border-emerald-500 bg-emerald-50/30 ring-1 ring-emerald-200 shadow-sm"
                                         : "hover:border-emerald-200 hover:bg-muted/50 border-muted-foreground/10"
-                                        }`}
+                                        }`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="flex justify-between items-start mb-2">
                                         <div className="flex items-center gap-2">

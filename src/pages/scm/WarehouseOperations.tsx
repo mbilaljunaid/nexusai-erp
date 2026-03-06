@@ -5,6 +5,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Package, Truck, ClipboardList, RefreshCw, Layers, ArrowRight, CheckCircle2, QrCode } from "lucide-react";
@@ -77,13 +78,12 @@ export default function WarehouseOperations() {
             width: "50px",
             cell: (row: any) => (
                 <div className="flex justify-center items-center h-full w-full">
-                    <input
-                        type="checkbox"
+                    <Checkbox
                         title={`Select order ${row.orderNumber}`}
                         aria-label={`Select order ${row.orderNumber}`}
                         checked={selectedOrders.includes(row.id)}
-                        onChange={(e) => {
-                            if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
+                        onCheckedChange={(checked: boolean) => {
+                            if (checked) setSelectedOrders([...selectedOrders, row.id]);
                             else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
                         }}
                         className="rounded border-slate-700 bg-slate-900"

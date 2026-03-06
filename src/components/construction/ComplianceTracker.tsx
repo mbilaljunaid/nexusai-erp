@@ -591,8 +591,8 @@ export function ComplianceTracker({ projectId }: ComplianceTrackerProps) {
                                         <div>{format(new Date(selectedRecord.expiryDate), "MMMM d, yyyy")}</div>
                                         <div className="text-xs mt-1">
                                             {getExpiryStatus(selectedRecord.expiryDate) && (
-                                                <span role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className={getExpiryStatus(selectedRecord.expiryDate)!.color}
-                                                    onClick={() => trackComplianceExpiry("viewed", Math.floor((new Date(selectedRecord.expiryDate!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))}
+                                                <span role="button" tabIndex={0} className={getExpiryStatus(selectedRecord.expiryDate)!.color}
+                                                    onClick={() => trackComplianceExpiry("viewed", Math.floor((new Date(selectedRecord.expiryDate!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                 >
                                                     {getExpiryStatus(selectedRecord.expiryDate)!.text}
                                                 </span>

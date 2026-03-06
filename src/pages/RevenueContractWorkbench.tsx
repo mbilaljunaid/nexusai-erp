@@ -40,6 +40,8 @@ interface RevenueContract {
 import { useToast } from "@/hooks/use-toast";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+
 export default function RevenueContractWorkbench() {
     const [page, setPage] = useState(1);
     const LIMIT = 10;
@@ -244,41 +246,26 @@ export default function RevenueContractWorkbench() {
                 </Card>
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Contract List</CardTitle>
-                    <CardDescription>Manage performance obligations and revenue schedules.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <InteractiveSpreadsheet
-                        data={contracts || []}
-                        columns={columns}
-                     onChange={() => {}} containerHeight="600px" />
-                    <div className="flex items-center justify-between space-x-2 py-4">
-                        <div className="text-sm text-muted-foreground">
-                            Page {page} of {meta?.totalPages || 1}
-                        </div>
-                        <div className="space-x-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                disabled={page === 1}
-                            >
-                                Previous
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => p + 1)}
-                                disabled={page >= (meta?.totalPages || 1)}
-                            >
-                                Next
-                            </Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+            
+            <Pagination className="mt-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => setPage(p => Math.max(1, p - 1))} 
+                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => setPage(p => p + 1)} 
+                    className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
         </StandardPage>
     );
 }

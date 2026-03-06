@@ -203,7 +203,7 @@ export default function DraftInvoiceWorkbench() {
                                             <TableRow
                                                 key={invoice.id}
                                                 className={selectedInvoiceId === invoice.id ? "bg-blue-50 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
-                                                onClick={() => setSelectedInvoiceId(invoice.id)}
+                                                onClick={() => setSelectedInvoiceId(invoice.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <TableCell className="font-mono font-medium">{invoice.invoiceNumber}</TableCell>
                                                 <TableCell className="text-xs text-muted-foreground">

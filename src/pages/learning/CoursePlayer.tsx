@@ -121,13 +121,13 @@ export default function CoursePlayer() {
                 <div className="w-80 border-r overflow-y-auto p-4 space-y-2">
                     <h3 className="font-semibold mb-3">Course Modules</h3>
                     {modules.map((module, idx) => (
-                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                        <div role="button" tabIndex={0}
                             key={module.id}
                             className={`p-3 border rounded-lg cursor-pointer transition-colors ${idx === currentModuleIndex
                                 ? "bg-primary text-primary-foreground"
                                 : "hover:bg-accent"
                                 }`}
-                            onClick={() => setCurrentModuleIndex(idx)}
+                            onClick={() => setCurrentModuleIndex(idx)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <div className="flex items-start justify-between gap-2">
                                 <div className="flex-1">

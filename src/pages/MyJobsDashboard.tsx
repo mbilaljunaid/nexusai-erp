@@ -208,11 +208,11 @@ export default function MyJobsDashboard() {
             ) : (
               <div className="space-y-3">
                 {myJobs.map(job => (
-                  <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                  <div role="button" tabIndex={0}
                     key={job.id}
                     className={`p-4 border rounded-lg cursor-pointer hover-elevate ${selectedJob?.id === job.id ? 'border-primary bg-muted/50' : ''}`}
                     onClick={() => setSelectedJob(job)}
-                    data-testid={`job-item-${job.id}`}
+                    data-testid={`job-item-${job.id}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">

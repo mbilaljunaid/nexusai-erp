@@ -139,7 +139,7 @@ export default function CampaignsDetail() {
               <Card
                 key={campaign.id}
                 className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
-                onClick={() => setSelectedCampaign(campaign)}
+                onClick={() => setSelectedCampaign(campaign)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
               >
                 <div className={`h-1.5 w-full ${campaign.status === 'In Progress' ? 'bg-gradient-to-r from-purple-500 to-pink-600' : 'bg-muted'}`} />
                 <CardContent className="p-5 flex flex-col flex-1">

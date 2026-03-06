@@ -14,7 +14,7 @@ import { Plus, Search, FileText, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function ContractWorkbench() {
   const [search, setSearch] = useState("");
@@ -165,29 +165,26 @@ export default function ContractWorkbench() {
         </Table>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between px-4 py-4 border-t">
-          <div className="text-sm text-muted-foreground">
-            Page {page} of {totalPages || 1}
-          </div>
-          <div className="space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page === 1}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(p => p + 1)}
-              disabled={page >= totalPages}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
+        
+              <Pagination className="mt-4">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setPage(p => Math.max(1, p - 1))} 
+                      className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                    />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setPage(p => p + 1)} 
+                      className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
       </Card>
     </StandardPage>
   );

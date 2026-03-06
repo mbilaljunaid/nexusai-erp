@@ -13,6 +13,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { InterviewScheduler } from "@/components/recruitment/InterviewScheduler";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function RecruitmentManagement() {
   const { toast } = useToast();
@@ -101,60 +102,26 @@ export default function RecruitmentManagement() {
         <Card className="p-3"><CardContent className="pt-0"><p className="text-xs text-muted-foreground">Offers Made</p><p className="text-2xl font-bold text-green-600">2</p></CardContent></Card>
       </div>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base">Active Openings</CardTitle>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>Previous</Button>
-            <Button variant="outline" size="sm" onClick={() => setPage(p => p + 1)} disabled={jobs.length < pageSize}>Next</Button>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {isLoading ? <TableSkeleton rows={4} /> : jobs.length === 0 ? <p className="text-muted-foreground text-center py-4">No open positions</p> : jobs.map((job: any) => (
-            <div key={job.id} className="p-3 border rounded-lg hover-elevate flex items-start justify-between" data-testid={`job-${job.id}`}>
-              <div>
-                <Link href={`/hr/recruitment/requisitions/${job.id}`}>
-                  <h3 className="font-semibold cursor-pointer hover:underline text-primary">{job.title}</h3>
-                </Link>
-                <p className="text-sm text-muted-foreground">Dept: {job.department || job.dept} • Applicants: {job.applicants || 0}</p>
-                <div className="mt-2 flex gap-2">
-                  <Button size="sm" onClick={() => {
-                    setSchedulerModal({
-                      isOpen: true,
-                      applicationId: `mock-app-${job.id}`,
-                      candidateName: "Mock Candidate",
-                      jobTitle: job.title
-                    });
-                  }}>
-                    <Calendar className="w-3 h-3 mr-1" />
-                    Schedule Interview
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => {
-                    // Demo Apply Action
-                    fetch("/api/recruitment/applications", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        requisitionId: job.id,
-                        candidateId: "mock-candidate-id",
-                        status: "APPLIED"
-                      })
-                    }).then(() => toast({ title: "Applied successfully (Mock Candidate)" }));
-                  }}>
-                    Mock Apply
-                  </Button>
-                </div>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant="outline">{job.stage}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${job.id}`}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      
+          <Pagination className="mt-4">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => setPage(p => Math.max(1, p - 1))} 
+                  className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <span className="text-sm font-medium mx-4">Page {page} of {1}</span>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => setPage(p => p + 1)} 
+                  className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
 
       {/* Interview Scheduler Modal */}
       <InterviewScheduler

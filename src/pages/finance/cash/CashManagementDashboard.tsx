@@ -1,15 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-    DollarSign,
-    TrendingUp,
-    AlertCircle,
-    RefreshCw,
-    Upload,
-    PlayCircle,
-    BarChart3
-} from "lucide-react";
+import { Download, Filter, RefreshCcw, TrendingUp, TrendingDown, DollarSign, Activity, AlertTriangle, ArrowRight, ArrowUpRight, ArrowDownRight, Briefcase, Landmark, CreditCard, Building2, Calendar as CalendarIcon, FileText, Upload, PlayCircle, AlertCircle, RefreshCw, BarChart3 } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils";
 import { Link } from "wouter";
 import {
     LineChart,
@@ -81,11 +74,8 @@ export default function CashManagementDashboard() {
         }).format(amount);
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric"
-        });
+    const formatShortDate = (dateString: string) => {
+        return formatDate(dateString);
     };
 
     const navigationCards = [
@@ -263,8 +253,8 @@ export default function CashManagementDashboard() {
                                 <Card className="cursor-pointer hover:shadow-md transition-shadow group h-full">
                                     <CardHeader>
                                         <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`}>
-                                                <card.icon className={`h-6 w-6 ${card.color}`} />
+                                            <div className={`p - 2 rounded - lg bg - opacity - 10 group - hover: bg - opacity - 20 transition - colors ${card.color.replace('text-', 'bg-')} `}>
+                                                <card.icon className={`h - 6 w - 6 ${card.color} `} />
                                             </div>
                                             <CardTitle className="text-base">{card.title}</CardTitle>
                                         </div>
@@ -303,16 +293,16 @@ export default function CashManagementDashboard() {
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis
                                         dataKey="date"
-                                        tickFormatter={formatDate}
+                                        tickFormatter={(v: string) => formatDate(v)}
                                         fontSize={12}
                                     />
                                     <YAxis
-                                        tickFormatter={(value) => formatCurrency(value, cashPosition?.currency)}
+                                        tickFormatter={(value: number) => formatCurrency(value, cashPosition?.currency)}
                                         fontSize={12}
                                     />
                                     <Tooltip
                                         formatter={(value: number) => formatCurrency(value, cashPosition?.currency)}
-                                        labelFormatter={formatDate}
+                                        labelFormatter={(label: string) => formatDate(label)}
                                     />
                                     <Legend />
                                     <Line

@@ -155,7 +155,7 @@ export default function TerritoryManager() {
                         <Card
                             key={t.id}
                             className={`cursor-pointer transition-colors hover:bg-accent/50 ${selectedTerritory?.id === t.id ? 'border-primary bg-accent' : ''}`}
-                            onClick={() => setSelectedTerritory(t)}
+                            onClick={() => setSelectedTerritory(t)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <CardHeader className="p-4">
                                 <CardTitle className="text-lg flex justify-between">

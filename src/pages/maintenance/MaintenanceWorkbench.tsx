@@ -83,7 +83,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
 
                     <TabsContent value="overview" className="flex-1 overflow-auto">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("dispatch")}>
+                            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("dispatch")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                     <CardTitle className="text-sm font-medium">Work Execution</CardTitle>
                                     <Users className="h-4 w-4 text-muted-foreground" />
@@ -93,7 +93,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                                     <p className="text-xs text-muted-foreground">Unassigned Work Orders</p>
                                 </CardContent>
                             </Card>
-                            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("planning")}>
+                            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("planning")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                     <CardTitle className="text-sm font-medium">Schedule Adherence</CardTitle>
                                     <Calendar className="h-4 w-4 text-muted-foreground" />

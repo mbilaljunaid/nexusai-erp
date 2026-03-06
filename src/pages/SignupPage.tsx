@@ -20,6 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const signupSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -278,13 +279,12 @@ export default function SignupPage() {
                       render={({ field }) => (
                         <FormItem className="flex items-start gap-2 pt-2 space-y-0">
                           <FormControl>
-                            <input
+                            <Checkbox
                               aria-label="Accept Terms"
                               id="terms"
-                              type="checkbox"
                               className="mt-1 rounded bg-white/10 border-white/20"
                               checked={field.value}
-                              onChange={field.onChange}
+                              onCheckedChange={field.onChange}
                             />
                           </FormControl>
                           <div className="leading-none">

@@ -392,7 +392,7 @@ export function AssetHealthDashboard() {
                                         "cursor-pointer hover:border-primary transition-all",
                                         selectedAsset?.id === asset.id && "border-2 border-primary"
                                     )}
-                                    onClick={() => setSelectedAsset(asset)}
+                                    onClick={() => setSelectedAsset(asset)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <CardContent className="pt-4">
                                         <div className="flex items-start justify-between mb-3">

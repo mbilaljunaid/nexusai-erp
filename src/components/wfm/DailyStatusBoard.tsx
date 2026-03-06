@@ -7,6 +7,7 @@ import { Users, UserCheck, UserX, Clock, Briefcase } from "lucide-react";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface DailyStatusBoardProps {
     tenantId: string;
@@ -72,11 +73,10 @@ export function DailyStatusBoard({ tenantId }: DailyStatusBoardProps) {
                         aria-label="Select date for attendance view"
                     />
                     <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
+                        <Checkbox
                             id="autoRefresh"
                             checked={autoRefresh}
-                            onChange={(e) => setAutoRefresh(e.target.checked)}
+                            onCheckedChange={(checked: boolean) => setAutoRefresh(checked)}
                             className="h-4 w-4"
                             aria-label="Enable auto-refresh every 5 minutes"
                         />

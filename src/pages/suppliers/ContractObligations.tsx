@@ -144,7 +144,7 @@ export default function ContractObligations() {
                     const cfg = OB_STATUS[ob.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                     const sel = selected?.id === ob.id;
                     return (
-                        <Card key={ob.id} onClick={() => setSelected(sel ? null : ob)} className={`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`} style={{ borderLeftColor: cfg.color }}>
+                        <Card key={ob.id} onClick={() => setSelected(sel ? null : ob)} className={`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`} style={{ borderLeftColor: cfg.color }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                             <div className="flex justify-between items-start mb-0.5">
                                 <div>
                                     <span className="text-[13px] font-bold text-gray-900">{ob.title}</span>

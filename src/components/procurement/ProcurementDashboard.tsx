@@ -41,15 +41,15 @@ export function ProcurementDashboard({ onViewChange }: Props) {
     return (
         <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => onViewChange('pos')}>
+                <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => onViewChange('pos')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                     <CardHeader className="p-4"><CardTitle className="text-sm font-medium text-muted-foreground">Open Orders</CardTitle></CardHeader>
                     <CardContent><div className="text-2xl font-bold">{openPos}</div></CardContent>
                 </Card>
-                <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => onViewChange('receiving')}>
+                <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => onViewChange('receiving')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                     <CardHeader className="p-4"><CardTitle className="text-sm font-medium text-muted-foreground">Pending Receipts</CardTitle></CardHeader>
                     <CardContent><div className="text-2xl font-bold">{pendingReceipts}</div></CardContent>
                 </Card>
-                <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => onViewChange('invoices')}>
+                <Card className="hover-elevate transform transition-all hover:scale-[1.01] cursor-pointer" onClick={() => onViewChange('invoices')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                     <CardHeader className="p-4"><CardTitle className="text-sm font-medium text-muted-foreground">Draft Invoices</CardTitle></CardHeader>
                     <CardContent><div className="text-2xl font-bold">{draftInvoices}</div></CardContent>
                 </Card>

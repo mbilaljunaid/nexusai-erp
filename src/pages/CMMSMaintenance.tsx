@@ -124,7 +124,7 @@ export default function CMMSMaintenance() {
         <CardHeader><CardTitle className="text-base">Maintenance Work Orders</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {isLoading ? <TableSkeleton rows={4} /> : workOrders.length === 0 ? <p className="text-muted-foreground text-center py-4">No MWOs</p> : workOrders.map((w: any) => (
-            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between cursor-pointer" data-testid={`mwo-${w.id}`} onClick={() => setSelectedWorkOrderId(w.id)}>
+            <div role="button" tabIndex={0} key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between cursor-pointer" data-testid={`mwo-${w.id}`} onClick={() => setSelectedWorkOrderId(w.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
 
               <div className="flex-1">
                 <p className="font-semibold">{w.assetId}</p>

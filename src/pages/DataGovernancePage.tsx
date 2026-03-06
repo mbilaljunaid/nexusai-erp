@@ -4,32 +4,26 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Database, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 
 export default function DataGovernancePage() {
   const { toast } = useToast();
   const [location, setLocation] = useLocation();
-  const [stats, setStats] = useState({
+  const { data: stats = {
     recordsManaged: 0,
     dataQualityScore: 0,
     policies: 0,
     openDuplicateSets: 0
+  }, isLoading: loading, refetch: fetchStats } = useQuery({
+    queryKey: ['mdmStats'],
+    queryFn: async () => {
+      const res = await fetch('/api/mdm/stats');
+      if (!res.ok) throw new Error('Failed to fetch stats');
+      return res.json();
+    }
   });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/mdm/stats')
-      .then(res => res.json())
-      .then(data => {
-        setStats(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
 
   const runBatch = async () => {
     try {
@@ -45,9 +39,7 @@ export default function DataGovernancePage() {
         description: `Found ${data.candidatesFound} potential duplicates.`
       });
       // Refresh stats
-      const statsRes = await fetch('/api/mdm/stats');
-      const statsData = await statsRes.json();
-      setStats(statsData);
+      await fetchStats();
 
     } catch (e) {
       toast({
@@ -85,7 +77,7 @@ export default function DataGovernancePage() {
             <p className="text-2xl font-bold text-green-600">{loading ? "..." : stats.dataQualityScore}%</p>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:bg-slate-50" onClick={() => setLocation("/mdm/duplicates")}>
+        <Card className="cursor-pointer hover:bg-slate-50" onClick={() => setLocation("/mdm/duplicates")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
           <CardContent className="pt-6">
             <p className="text-muted-foreground text-sm">Open Duplicate Sets</p>
             <p className="text-2xl font-bold text-orange-600">{loading ? "..." : stats.openDuplicateSets}</p>

@@ -71,9 +71,9 @@ export default function OnboardingWorkbench() {
 
                         {hires.map((hire: any) => (
                             <div key={hire.id} className="border rounded-lg overflow-hidden">
-                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                <div role="button" tabIndex={0}
                                     className="flex items-center justify-between p-4 bg-card hover:bg-muted/50 cursor-pointer transition-colors"
-                                    onClick={() => toggleRow(hire.id)}
+                                    onClick={() => toggleRow(hire.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">

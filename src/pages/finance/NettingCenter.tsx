@@ -103,7 +103,7 @@ export default function NettingCenter() {
                                 {sessions.map(s => {
                                     const style = STATUS_STYLES[s.status] ?? STATUS_STYLES['Draft'];
                                     return (
-                                        <Card key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={`p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid shadow-sm mb-2 ${selectedSession?.id === s.id ? 'border-l-blue-700' : 'border-l-gray-200'} ${style.border}`} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSession(selectedSession?.id === s.id ? null : s); } }}>
+                                        <Card key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={`p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid shadow-sm mb-2 ${selectedSession?.id === s.id ? 'border-l-blue-700' : 'border-l-gray-200'} ${style.border}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                             <div className="flex justify-between mb-[3px]">
                                                 <div className="font-bold text-[13px]">{s.session_name}</div>
                                                 <span className={`px-[6px] py-[2px] rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`}>{s.status}</span>

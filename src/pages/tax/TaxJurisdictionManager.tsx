@@ -95,10 +95,10 @@ export default function TaxJurisdictionManager() {
                         </CardHeader>
                         <CardContent className="space-y-2 max-h-[500px] overflow-y-auto">
                             {jurisdictions?.map((jurisdiction: any) => (
-                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                <div role="button" tabIndex={0}
                                     key={jurisdiction.id}
                                     className="border rounded-lg p-4 cursor-pointer hover:bg-accent"
-                                    onClick={() => setSelectedJurisdiction(jurisdiction)}
+                                    onClick={() => setSelectedJurisdiction(jurisdiction)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="flex justify-between items-start">
                                         <div>

@@ -338,7 +338,7 @@ export function PMScheduler() {
                                     "border-2 cursor-pointer transition-all",
                                     isSelected && "border-primary bg-primary/5"
                                 )}
-                                onClick={() => toggleSelection(def.id)}
+                                onClick={() => toggleSelection(def.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardContent className="pt-6">
                                     <div className="flex items-start justify-between">

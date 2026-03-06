@@ -197,7 +197,7 @@ export function RiskDashboard({ projectId }: RiskDashboardProps) {
                         <Card
                             key={risk.category}
                             className="hover:shadow-lg transition-shadow cursor-pointer"
-                            onClick={() => setSelectedCategory(selectedCategory === risk.category ? null : risk.category)}
+                            onClick={() => setSelectedCategory(selectedCategory === risk.category ? null : risk.category)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <CardHeader className="pb-3">
                                 <div className="flex items-center justify-between">

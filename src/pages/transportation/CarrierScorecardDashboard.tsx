@@ -336,10 +336,10 @@ export default function CarrierScorecardDashboard() {
                             ) : (
                                 <div className="space-y-3">
                                     {topPerformers.map((carrier, index) => (
-                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        <div role="button" tabIndex={0}
                                             key={carrier.id}
                                             className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer"
-                                            onClick={() => setSelectedCarrier(carrier.id)}
+                                            onClick={() => setSelectedCarrier(carrier.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-2">
                                                 <div className="flex items-center gap-2">
@@ -383,10 +383,10 @@ export default function CarrierScorecardDashboard() {
                             ) : (
                                 <div className="space-y-3">
                                     {underPerformers.map((carrier) => (
-                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        <div role="button" tabIndex={0}
                                             key={carrier.id}
                                             className="p-3 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition-colors cursor-pointer"
-                                            onClick={() => setSelectedCarrier(carrier.id)}
+                                            onClick={() => setSelectedCarrier(carrier.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-2">
                                                 <span className="font-semibold text-rose-900">{carrier.name}</span>

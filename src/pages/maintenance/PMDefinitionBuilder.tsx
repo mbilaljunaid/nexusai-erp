@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Calendar, Repeat, Search, Save, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
@@ -80,7 +81,7 @@ export default function PMDefinitionBuilder() {
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
                 <div>
-                    
+
                     <p className="text-muted-foreground">Define recurring maintenance logic for assets.</p>
                 </div>
             </div>
@@ -198,12 +199,11 @@ export default function PMDefinitionBuilder() {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
+                                        <Checkbox
                                             id="float"
                                             aria-label="Floating Schedule"
                                             checked={formData.isFloating}
-                                            onChange={e => setFormData({ ...formData, isFloating: e.target.checked })}
+                                            onCheckedChange={(checked: boolean) => setFormData({ ...formData, isFloating: checked })}
                                         />
                                         <Label htmlFor="float">Floating (Next Due calculated from Last Completion, not scheduled date)</Label>
                                     </div>

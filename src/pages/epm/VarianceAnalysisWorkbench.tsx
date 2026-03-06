@@ -209,7 +209,7 @@ export default function VarianceAnalysisWorkbench() {
                                             <TableRow
                                                 key={item.account}
                                                 className="cursor-pointer hover:bg-muted/50"
-                                                onClick={() => setSelectedAccount(item.account)}
+                                                onClick={() => setSelectedAccount(item.account)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <TableCell className="font-medium">{item.account}</TableCell>
                                                 <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>

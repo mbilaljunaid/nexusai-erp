@@ -192,7 +192,7 @@ export default function APDashboard() {
                             <Card
                                 key={card.href}
                                 className="cursor-pointer hover:shadow-md transition-shadow"
-                                onClick={() => setLocation(card.href)}
+                                onClick={() => setLocation(card.href)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>
                                     <div className="flex items-center gap-3">
@@ -215,10 +215,10 @@ export default function APDashboard() {
                     <CardContent>
                         <div className="space-y-3">
                             {recentInvoices?.data?.slice(0, 10).map((invoice: any) => (
-                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                <div role="button" tabIndex={0}
                                     key={invoice.id}
                                     className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent cursor-pointer"
-                                    onClick={() => setLocation(`/finance/ap/invoices/${invoice.id}`)}
+                                    onClick={() => setLocation(`/finance/ap/invoices/${invoice.id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="flex items-center gap-4">
                                         <FileText className="h-4 w-4 text-muted-foreground" />

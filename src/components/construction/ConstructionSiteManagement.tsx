@@ -227,7 +227,7 @@ export default function ConstructionSiteManagement() {
                                 onClick={() => {
                                     setSelectedLogId(log.id);
                                     setIsDetailOpen(true);
-                                }}
+                                }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader className="pb-2">
                                     <div className="flex justify-between items-start">

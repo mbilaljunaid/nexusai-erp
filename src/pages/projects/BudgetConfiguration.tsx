@@ -248,7 +248,7 @@ export default function BudgetConfiguration() {
                                             <TableRow
                                                 key={version.id}
                                                 className={selectedVersionId === version.id ? "bg-blue-50 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
-                                                onClick={() => setSelectedVersionId(version.id)}
+                                                onClick={() => setSelectedVersionId(version.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <TableCell className="font-medium">{version.versionName}</TableCell>
                                                 <TableCell><Badge variant="outline">{version.versionType}</Badge></TableCell>

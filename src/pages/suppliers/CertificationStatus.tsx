@@ -128,7 +128,7 @@ export default function CertificationStatus() {
                             const Icon = cfg.icon;
                             const sel = selected?.id === c.id;
                             return (
-                                <Card key={c.id} onClick={() => setSelected(sel ? null : c)} className={`p-3.5 cursor-pointer shadow-sm border-2 ${sel ? 'border-blue-700' : 'border-gray-200'}`}>
+                                <Card key={c.id} onClick={() => setSelected(sel ? null : c)} className={`p-3.5 cursor-pointer shadow-sm border-2 ${sel ? 'border-blue-700' : 'border-gray-200'}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="flex justify-between mb-2">
                                         <div className="flex items-center gap-1.5">
                                             <Icon size={14} color={cfg.color} />

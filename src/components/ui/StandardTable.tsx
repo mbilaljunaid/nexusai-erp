@@ -127,14 +127,14 @@ export function StandardTable<T>({
         if (!item) return null;
 
         return (
-            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+            <div role="button" tabIndex={0}
                 style={style}
                 {...ariaAttributes}
                 className={cn(
                     "flex border-b border-border bg-background transition-colors hover:bg-muted/30",
                     onRowClick && "cursor-pointer"
                 )}
-                onClick={() => onRowClick && onRowClick(item)}
+                onClick={() => onRowClick && onRowClick(item)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >
                 {columns.map((col: Column<T>, colIdx: number) => {
                     const width = col.width || `${100 / columns.length}%`;

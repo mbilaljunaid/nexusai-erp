@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { PlayCircle, RefreshCw, CheckCircle2 } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils"; // Added this import
 import { StandardPage } from '@/components/layout/StandardPage';
 
 interface RevaluationRun {
@@ -69,16 +71,11 @@ export default function CurrencyRevaluationView() {
         }).format(amount);
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-    };
+    // Removed the old formatDate function definition
 
+    const formatShortDate = (dateString: string) => {
+        return formatDate(new Date(dateString), "MMM d");
+    };
 
 
     return (

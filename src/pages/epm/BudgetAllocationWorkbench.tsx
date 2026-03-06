@@ -277,7 +277,7 @@ export default function BudgetAllocationWorkbench() {
                                         <TableRow
                                             key={rule.id}
                                             className="cursor-pointer hover:bg-muted/50"
-                                            onClick={() => setSelectedRule(rule)}
+                                            onClick={() => setSelectedRule(rule)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <TableCell className="font-medium">{rule.name}</TableCell>
                                             <TableCell><code className="text-xs">{rule.sourceAccount}</code></TableCell>

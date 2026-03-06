@@ -106,7 +106,7 @@ export default function SupplierSourcing() {
 
             <div className="grid grid-cols-1 gap-4">
                 {rfqs?.map((rfq: any) => (
-                    <Card key={rfq.id} className="hover:border-primary/50 transition-all group cursor-pointer" onClick={() => setSelectedRFQ(rfq)}>
+                    <Card key={rfq.id} className="hover:border-primary/50 transition-all group cursor-pointer" onClick={() => setSelectedRFQ(rfq)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <CardContent className="p-0">
                             <div className="flex items-center p-4">
                                 <div className="flex-1">

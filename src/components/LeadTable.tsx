@@ -187,7 +187,7 @@ export function LeadTable({ leads, onSelectLead, onBulkAction }: LeadTableProps)
                   key={lead.id}
                   className="cursor-pointer"
                   onClick={() => onSelectLead?.(lead)}
-                  data-testid={`row-lead-${lead.id}`}
+                  data-testid={`row-lead-${lead.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 >
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <Checkbox 

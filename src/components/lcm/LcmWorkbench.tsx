@@ -29,7 +29,7 @@ import ChargeVarianceSheet from "./ChargeVarianceSheet";
 import CostComponentManager from "./CostComponentManager";
 import LcmAuditLogSideSheet from "./LcmAuditLogSideSheet";
 import { History } from "lucide-react";
-
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function LcmWorkbench() {
     const { toast } = useToast();
@@ -301,15 +301,26 @@ export default function LcmWorkbench() {
                         </Table>
 
                         {/* Pagination Controls */}
-                        <div className="flex items-center justify-end space-x-2 p-4">
-                            <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-                                <ChevronLeft className="mr-2 h-4 w-4" /> Previous
-                            </Button>
-                            <div className="text-sm font-medium">Page {page} of {totalPages}</div>
-                            <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
-                                Next <ChevronRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        </div>
+                        
+                        <Pagination className="mt-4">
+                          <PaginationContent>
+                            <PaginationItem>
+                              <PaginationPrevious 
+                                onClick={() => setPage(p => Math.max(1, p - 1))} 
+                                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                              />
+                            </PaginationItem>
+                            <PaginationItem>
+                              <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                            </PaginationItem>
+                            <PaginationItem>
+                              <PaginationNext 
+                                onClick={() => setPage(p => p + 1)} 
+                                className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                              />
+                            </PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
                     </div>
 
                 </TabsContent>

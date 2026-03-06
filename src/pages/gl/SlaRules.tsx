@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,17 +17,22 @@ interface EventClass {
 
 export default function SlaRules() {
     const [, setLocation] = useLocation();
-    const [eventClasses, setEventClasses] = useState<EventClass[]>([]);
     const [selectedClassId, setSelectedClassId] = useState<string>("");
 
+    const { data: eventClasses = [] } = useQuery<EventClass[]>({
+        queryKey: ["sla-event-classes"],
+        queryFn: async () => {
+            const res = await fetch("/api/sla/event-classes");
+            if (!res.ok) throw new Error("Failed");
+            return res.json();
+        }
+    });
+
     useEffect(() => {
-        fetch("/api/sla/event-classes")
-            .then(res => res.json())
-            .then(data => {
-                setEventClasses(data);
-                if (data.length > 0) setSelectedClassId(data[0].id);
-            });
-    }, []);
+        if (eventClasses.length > 0 && !selectedClassId) {
+            setSelectedClassId(eventClasses[0].id);
+        }
+    }, [eventClasses, selectedClassId]);
 
     const selectedClass = eventClasses.find(c => c.id === selectedClassId);
 
@@ -39,7 +45,7 @@ export default function SlaRules() {
             <div className="flex flex-col gap-8">
                 {/* Header Configuration Links */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/finance/sla/mapping-sets")}>
+                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/finance/sla/mapping-sets")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                                 <Database className="h-4 w-4" /> Mapping Sets
@@ -52,7 +58,7 @@ export default function SlaRules() {
                         </CardContent>
                     </Card>
 
-                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/gl/config/sla/adr")}>
+                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/gl/config/sla/adr")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                                 <GitBranch className="h-4 w-4" /> Derivation Rules

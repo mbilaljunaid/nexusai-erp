@@ -55,8 +55,6 @@ interface PayAppLine {
 export default function ConstructionBillingWorkbench() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const [projects, setProjects] = useState<any[]>([]);
-    const [contracts, setContracts] = useState<any[]>([]);
     const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
     const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
     const [selectedPayAppId, setSelectedPayAppId] = useState<string | null>(null);
@@ -67,25 +65,39 @@ export default function ConstructionBillingWorkbench() {
     const [isWizardOpen, setIsWizardOpen] = useState(false);
 
     // Fetch Projects
+    const { data: projects = [] } = useQuery<any[]>({
+        queryKey: ["ppm-projects"],
+        queryFn: async () => {
+            const res = await fetch("/api/ppm/projects");
+            if (!res.ok) throw new Error("Failed");
+            return res.json();
+        }
+    });
+
     useEffect(() => {
-        fetch("/api/ppm/projects")
-            .then(res => res.json())
-            .then(data => {
-                setProjects(data);
-                if (data.length > 0) setSelectedProjectId(data[0].id);
-            });
-    }, []);
+        if (projects.length > 0 && !selectedProjectId) {
+            setSelectedProjectId(projects[0].id);
+        }
+    }, [projects, selectedProjectId]);
 
     // Fetch Contracts when Project Selected
+    const { data: contracts = [] } = useQuery<any[]>({
+        queryKey: ["construction-contracts", selectedProjectId],
+        enabled: !!selectedProjectId,
+        queryFn: async () => {
+            const res = await fetch(`/api/construction/projects/${selectedProjectId}/contracts`);
+            if (!res.ok) throw new Error("Failed");
+            return res.json();
+        }
+    });
+
     useEffect(() => {
-        if (!selectedProjectId) return;
-        fetch(`/api/construction/projects/${selectedProjectId}/contracts`)
-            .then(res => res.json())
-            .then(data => {
-                setContracts(data);
-                if (data.length > 0) setSelectedContractId(data[0].id);
-            });
-    }, [selectedProjectId]);
+        if (contracts.length > 0 && !selectedContractId) {
+            setSelectedContractId(contracts[0].id);
+        } else if (contracts.length === 0) {
+            setSelectedContractId(null);
+        }
+    }, [contracts, selectedContractId]);
 
     const { data: payApps = [], isLoading: isLoadingApps } = useQuery<PayApp[]>({
         queryKey: ["construction-pay-apps", selectedContractId],
@@ -268,11 +280,11 @@ export default function ConstructionBillingWorkbench() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Period Start</Label>
-                                        <DatePicker onChange={() => {}} />
+                                        <DatePicker onChange={() => { }} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Period End</Label>
-                                        <DatePicker onChange={() => {}} />
+                                        <DatePicker onChange={() => { }} />
                                     </div>
                                     <SheetFooter className="pt-4">
                                         <Button type="submit" className="w-full">Create</Button>
@@ -283,10 +295,10 @@ export default function ConstructionBillingWorkbench() {
                     </CardHeader>
                     <CardContent className="p-0">
                         {payApps.map(app => (
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                            <div role="button" tabIndex={0}
                                 key={app.id}
                                 className={`p-4 border-b cursor-pointer hover:bg-muted/50 ${selectedPayAppId === app.id ? "bg-muted" : ""}`}
-                                onClick={() => setSelectedPayAppId(app.id)}
+                                onClick={() => setSelectedPayAppId(app.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="font-semibold">App #{app.applicationNumber}</span>

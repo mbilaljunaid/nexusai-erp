@@ -47,7 +47,7 @@ export function RelationshipViewer({ partyId }: RelationshipViewerProps) {
                     <Card key={rel.id} className="cursor-pointer hover:border-blue-300 transition-colors" onClick={() => {
                         const otherId = rel.subjectId === partyId ? rel.objectId : rel.subjectId;
                         setLocation(`/mdm/parties/${otherId}`);
-                    }}>
+                    }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <CardContent className="p-4 flex items-center gap-4">
                             {/* Icon for the RELATED party */}
                             <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border shrink-0">

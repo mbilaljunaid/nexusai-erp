@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ArrowRightLeft } from 'lucide-react';
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function WmsSlottingWorkbench() {
     const warehouseId = "SLOTTING-TEST-ORG";
@@ -63,10 +64,26 @@ export default function WmsSlottingWorkbench() {
                         </TableBody>
                     </Table>
                 </div>
-                <div className="mt-4 flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Previous</Button>
-                    <Button variant="outline" onClick={() => setPage(p => p + 1)}>Next</Button>
-                </div>
+                
+                <Pagination className="mt-4">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setPage(p => Math.max(1, p - 1))} 
+                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                      />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <span className="text-sm font-medium mx-4">Page {page} of {1}</span>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setPage(p => p + 1)} 
+                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
             </CardContent>
         </Card>
     );

@@ -158,7 +158,7 @@ export default function APWithholdingTax() {
                                     <TableRow
                                         key={g.id}
                                         className={`cursor-pointer ${selectedGroupId === g.id ? 'bg-muted' : ''}`}
-                                        onClick={() => setSelectedGroupId(g.id)}
+                                        onClick={() => setSelectedGroupId(g.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <TableCell className="font-medium">{g.groupName}</TableCell>
                                         <TableCell>

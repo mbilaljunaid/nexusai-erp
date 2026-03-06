@@ -194,7 +194,7 @@ export default function BudgetBalanceDrillDown() {
                                             <TableRow
                                                 key={balance.ccid}
                                                 className="cursor-pointer hover:bg-muted/50"
-                                                onClick={() => setSelectedAccount(balance.ccid)}
+                                                onClick={() => setSelectedAccount(balance.ccid)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <TableCell>
                                                     {balance.hasChildren && (

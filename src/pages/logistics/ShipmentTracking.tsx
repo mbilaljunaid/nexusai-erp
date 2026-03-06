@@ -172,7 +172,7 @@ export default function ShipmentTracking() {
                         {shipments.map(s => {
                             const cfg = STATUS_CFG[s.current_status] ?? 'bg-gray-100 text-gray-500';
                             return (
-                                <div key={s.id} className={`ship-card ${selected?.id === s.id ? 'selected' : ''}`} onClick={() => setSelected(s)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(s); } }}>
+                                <div key={s.id} className={`ship-card ${selected?.id === s.id ? 'selected' : ''}`} onClick={() => setSelected(s)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="sc-top">
                                         <span className="sc-pro">{s.pro_number || s.tracking_number || s.id.slice(0, 8)}</span>
                                         <span className={`sc-status ${cfg}`}>{s.current_status}</span>

@@ -93,7 +93,7 @@ export default function LifeEvents() {
                                 <Card
                                     key={event.id}
                                     className="cursor-pointer border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/50 hover:shadow-md transition-all group"
-                                    onClick={() => setSelectedEvent(event.id)}
+                                    onClick={() => setSelectedEvent(event.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <CardContent className="p-6 text-center space-y-4">
                                         <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${event.bg} group-hover:scale-110 transition-transform`}>

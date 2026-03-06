@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileWarning, CheckSquare, Plus, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // --- Permits Section ---
 export function PermitsSection({ workOrderId }: { workOrderId: string }) {
@@ -180,10 +181,16 @@ export function InspectionsSection({ workOrderId }: { workOrderId: string }) {
                             <div key={q.id} className="space-y-2 pb-2 border-b">
                                 <label className="text-sm font-medium">{q.text}</label>
                                 {q.type === "YES_NO" && (
-                                    <div className="flex gap-4">
-                                        <label className="flex items-center gap-2 text-sm"><input type="radio" name={q.id} /> Yes</label>
-                                        <label className="flex items-center gap-2 text-sm"><input type="radio" name={q.id} /> No</label>
-                                    </div>
+                                    <RadioGroup className="flex gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <RadioGroupItem value="yes" id={`${q.id}-yes`} />
+                                            <label htmlFor={`${q.id}-yes`} className="text-sm">Yes</label>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <RadioGroupItem value="no" id={`${q.id}-no`} />
+                                            <label htmlFor={`${q.id}-no`} className="text-sm">No</label>
+                                        </div>
+                                    </RadioGroup>
                                 )}
                                 {q.type === "NUMBER" && <Input type="number" placeholder="Reading..." className="h-8" />}
                             </div>

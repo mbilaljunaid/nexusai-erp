@@ -184,7 +184,7 @@ export function WorkLibrary() {
                                 <Card
                                     key={definition.id}
                                     className="cursor-pointer hover:border-primary transition-all"
-                                    onClick={() => loadDefinitionDetail(definition)}
+                                    onClick={() => loadDefinitionDetail(definition)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <CardContent className="pt-6">
                                         <div className="flex items-start justify-between mb-3">

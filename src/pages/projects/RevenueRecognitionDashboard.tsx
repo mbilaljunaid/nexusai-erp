@@ -217,7 +217,7 @@ export default function RevenueRecognitionDashboard() {
                                             key={contract.id}
                                             className={`cursor-pointer transition-colors ${selectedContractId === contract.id ? "bg-blue-50 border-blue-200" : "hover:bg-muted/50"
                                                 }`}
-                                            onClick={() => setSelectedContractId(contract.id)}
+                                            onClick={() => setSelectedContractId(contract.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <CardContent className="pt-4 pb-4">
                                                 <div className="flex justify-between items-start mb-2">

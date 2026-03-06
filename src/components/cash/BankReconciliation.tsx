@@ -125,10 +125,10 @@ export default function BankReconciliation() {
                         ) : (
                             <div className="divide-y divide-border/50">
                                 {unreconciledLines.map((line: any) => (
-                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                    <div role="button" tabIndex={0}
                                         key={line.id}
                                         onClick={() => setSelectedStatementLine(line.id)}
-                                        className={`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${selectedStatementLine === line.id ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''}`}
+                                        className={`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${selectedStatementLine === line.id ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div className="flex justify-between items-start mb-1">
                                             <span className="font-semibold">{line.description}</span>

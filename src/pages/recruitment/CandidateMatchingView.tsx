@@ -80,10 +80,10 @@ export default function CandidateMatchingView() {
                     </CardHeader>
                     <CardContent className="p-0">
                         {matches.map((c: any) => (
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                            <div role="button" tabIndex={0}
                                 key={c.id}
                                 onClick={() => setSelectedCandidate(c.id)}
-                                className={`p-4 border-b cursor-pointer transition-colors hover:bg-slate-50 ${selectedCandidate === c.id ? "bg-indigo-50 border-l-4 border-l-indigo-600" : ""}`}
+                                className={`p-4 border-b cursor-pointer transition-colors hover:bg-slate-50 ${selectedCandidate === c.id ? "bg-indigo-50 border-l-4 border-l-indigo-600" : ""}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="space-y-0.5">

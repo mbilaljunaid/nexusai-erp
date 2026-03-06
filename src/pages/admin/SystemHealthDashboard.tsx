@@ -1,5 +1,6 @@
 import { formatDateTime } from "@/lib/dateUtils";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Activity, AlertCircle, CheckCircle, XCircle, Database, Zap, Server, Clock } from 'lucide-react';
 import MetricCard from '../../components/admin/MetricCard';
 import AlertBanner from '../../components/admin/AlertBanner';
@@ -26,51 +27,29 @@ interface Alert {
 }
 
 export default function SystemHealthDashboard() {
-    const [health, setHealth] = useState<HealthStatus | null>(null);
-    const [alerts, setAlerts] = useState<Alert[]>([]);
-    const [loading, setLoading] = useState(true);
     const [autoRefresh, setAutoRefresh] = useState(true);
 
-    const fetchHealth = async () => {
-        try {
+    const { data: health, isLoading: loadingHealth, refetch: refetchHealth } = useQuery<HealthStatus>({
+        queryKey: ['systemHealth'],
+        queryFn: async () => {
             const response = await fetch('/api/production/health');
-            const data = await response.json();
-            setHealth(data);
-        } catch (error) {
-            console.error('Failed to fetch health status:', error);
-            setHealth({
-                status: 'unhealthy',
-                components: [],
-                timestamp: new Date().toISOString(),
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        },
+        refetchInterval: autoRefresh ? 30000 : false,
+    });
 
-    const fetchAlerts = async () => {
-        try {
+    const { data: alerts = [], isLoading: loadingAlerts, refetch: refetchAlerts } = useQuery<Alert[]>({
+        queryKey: ['systemAlerts'],
+        queryFn: async () => {
             const response = await fetch('/api/production/alerts');
-            const data = await response.json();
-            setAlerts(data);
-        } catch (error) {
-            console.error('Failed to fetch alerts:', error);
-        }
-    };
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        },
+        refetchInterval: autoRefresh ? 30000 : false,
+    });
 
-    useEffect(() => {
-        fetchHealth();
-        fetchAlerts();
-
-        if (autoRefresh) {
-            const interval = setInterval(() => {
-                fetchHealth();
-                fetchAlerts();
-            }, 30000); // Refresh every 30 seconds
-
-            return () => clearInterval(interval);
-        }
-    }, [autoRefresh]);
+    const loading = loadingHealth || loadingAlerts;
 
     const getStatusIcon = (status: string) => {
         switch (status) {
@@ -123,8 +102,8 @@ export default function SystemHealthDashboard() {
                     </button>
                     <button
                         onClick={() => {
-                            fetchHealth();
-                            fetchAlerts();
+                            refetchHealth();
+                            refetchAlerts();
                         }}
                         className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
                     >

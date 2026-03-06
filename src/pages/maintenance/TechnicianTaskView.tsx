@@ -196,7 +196,7 @@ export default function TechnicianTaskView() {
 
             <div className="p-4 space-y-4">
                 {isLoading ? <Skeleton className="h-24 w-full" /> : myTasks?.map((wo: any) => (
-                    <Card key={wo.id} onClick={() => setSelectedTask(wo)} className="cursor-pointer active:scale-95 transition-transform">
+                    <Card key={wo.id} onClick={() => setSelectedTask(wo)} className="cursor-pointer active:scale-95 transition-transform" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         <CardContent className="p-4">
                             <div className="flex justify-between items-start mb-2">
                                 <span className="font-bold">{wo.workOrderNumber}</span>

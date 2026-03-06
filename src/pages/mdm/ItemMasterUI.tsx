@@ -196,7 +196,7 @@ export default function ItemMasterUI() {
                         <Card
                             key={item.id}
                             className="cursor-pointer hover:shadow-lg transition-shadow"
-                            onClick={() => setSelectedItem(item)}
+                            onClick={() => setSelectedItem(item)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <CardHeader className="pb-3">
                                 <div className="flex items-start justify-between">

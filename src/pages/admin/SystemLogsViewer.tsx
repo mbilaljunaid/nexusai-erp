@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Download, Search, Filter, X } from 'lucide-react';
@@ -18,8 +19,6 @@ interface Log {
 }
 
 export default function SystemLogsViewer() {
-    const [logs, setLogs] = useState<Log[]>([]);
-    const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
         level: '',
         user: '',
@@ -28,9 +27,9 @@ export default function SystemLogsViewer() {
     });
     const [count, setCount] = useState(100);
 
-    const fetchLogs = async () => {
-        setLoading(true);
-        try {
+    const { data: logs = [], isLoading: loading, refetch: fetchLogs } = useQuery<Log[]>({
+        queryKey: ['systemLogs', filters.level, filters.user, filters.endpoint, count, filters.search],
+        queryFn: async () => {
             const params = new URLSearchParams();
             if (filters.level) params.append('level', filters.level);
             if (filters.user) params.append('user', filters.user);
@@ -38,6 +37,7 @@ export default function SystemLogsViewer() {
             params.append('count', count.toString());
 
             const response = await fetch(`/api/production/logs?${params.toString()}`);
+            if (!response.ok) throw new Error('Network response was not ok');
             const data = await response.json();
 
             // Filter by search term on client side
@@ -48,18 +48,9 @@ export default function SystemLogsViewer() {
                 );
             }
 
-            setLogs(filteredLogs);
-        } catch (error) {
-            console.error('Failed to fetch logs:', error);
-            setLogs([]);
-        } finally {
-            setLoading(false);
+            return filteredLogs;
         }
-    };
-
-    useEffect(() => {
-        fetchLogs();
-    }, [filters.level, filters.user, filters.endpoint, count]);
+    });
 
     const exportData = logs.map(log => ({
         "Timestamp": log.timestamp,
@@ -106,7 +97,7 @@ export default function SystemLogsViewer() {
                         filename={`system-logs-${new Date().toISOString()}`}
                     />
                     <button
-                        onClick={fetchLogs}
+                        onClick={() => fetchLogs()}
                         className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
                     >
                         Refresh

@@ -342,7 +342,7 @@ export default function ContactsDetail() {
                             <Card
                                 key={c.id}
                                 className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
-                                onClick={() => setSelectedContact(c)}
+                                onClick={() => setSelectedContact(c)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardContent className="p-6">
                                     <div className="flex items-start justify-between mb-4">

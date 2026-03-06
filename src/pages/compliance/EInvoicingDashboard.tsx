@@ -155,7 +155,7 @@ export default function EInvoicingDashboard() {
                         const total = Object.values(pivot[std] ?? {}).reduce((a, b) => a + b, 0);
                         const pct = total > 0 ? Math.round(accepted / total * 100) : 0;
                         return (
-                            <div key={std} className="std-card" onClick={() => setStandardFilter(std)} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setStandardFilter(std); } }}>
+                            <div key={std} className="std-card" onClick={() => setStandardFilter(std)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <div className="std-name">{std}</div>
                                 <style>{`
                                     .std-color-${Math.round(pct)} { color: ${pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626'}; }

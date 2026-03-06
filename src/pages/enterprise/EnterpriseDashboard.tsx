@@ -68,7 +68,7 @@ export default function EnterpriseDashboard() {
                             <Card
                                 key={card.href}
                                 className="cursor-pointer hover:shadow-md transition-shadow"
-                                onClick={() => setLocation(card.href)}
+                                onClick={() => setLocation(card.href)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <div className="flex items-center gap-3">

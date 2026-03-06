@@ -5,16 +5,15 @@ import { Header, Footer } from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/dateUtils";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 
-import {
-  Search, Briefcase, Clock, DollarSign, ChevronLeft, ChevronRight,
-  AlertCircle, Users, Calendar, ArrowUpDown, Filter
-} from "lucide-react";
+import { Building2, MapPin, Currency, Clock, Bookmark, Share2, Briefcase, GraduationCap, ChevronLeft, Calendar, DollarSign, CheckCircle2, ChevronDown, CheckSquare, Search, Filter, ArrowUpDown, AlertCircle, Users, ChevronRight } from "lucide-react";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface JobPosting {
   id: string;
@@ -87,9 +86,8 @@ export default function MarketplaceJobs() {
     return `${formatter.format(Number(min))} - ${formatter.format(Number(max))}`;
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const formatDateStr = (dateString: string) => {
+    return formatDate(dateString);
   };
 
   const getUrgencyBadge = (urgency: string) => {
@@ -301,7 +299,7 @@ export default function MarketplaceJobs() {
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Calendar className="w-4 h-4" />
-                                  Posted {formatDate(job.created_at)}
+                                  Posted {formatDateStr(job.created_at)}
                                 </span>
                               </div>
                             </div>
@@ -332,31 +330,26 @@ export default function MarketplaceJobs() {
               )}
 
               {filteredJobs.length > 0 && (
-                <div className="flex items-center justify-center gap-2 mt-8">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    data-testid="button-prev-page"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Previous
-                  </Button>
-                  <span className="px-4 text-sm text-muted-foreground">
-                    Page {currentPage}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(p => p + 1)}
-                    disabled={filteredJobs.length < ITEMS_PER_PAGE}
-                    data-testid="button-next-page"
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
+                
+                              <Pagination className="mt-4">
+                                <PaginationContent>
+                                  <PaginationItem>
+                                    <PaginationPrevious 
+                                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
+                                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                                    />
+                                  </PaginationItem>
+                                  <PaginationItem>
+                                    <span className="text-sm font-medium mx-4">Page {currentPage} of {1}</span>
+                                  </PaginationItem>
+                                  <PaginationItem>
+                                    <PaginationNext 
+                                      onClick={() => setCurrentPage(p => p + 1)} 
+                                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                    />
+                                  </PaginationItem>
+                                </PaginationContent>
+                              </Pagination>
               )}
             </div>
           </div>

@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -213,10 +214,9 @@ export default function EnvironmentManagement() {
             </div>
             <div className="flex flex-col gap-2">
               <label className="flex items-center gap-2 text-sm pt-8">
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={isSecret}
-                  onChange={(e) => setIsSecret(e.target.checked)}
+                  onCheckedChange={(checked: boolean) => setIsSecret(checked)}
                   data-testid="checkbox-is-secret"
                 />
                 <span>Secret/Sensitive</span>

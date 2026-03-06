@@ -152,12 +152,12 @@ export default function AssignmentHistory() {
 
                                             {/* Card payload */}
                                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)]">
-                                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                                <div role="button" tabIndex={0}
                                                     onClick={() => toggleExpand(record.id)}
                                                     className={cn(
                                                         "p-4 rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow cursor-pointer",
                                                         current && "border-primary/50 shadow-primary/5"
-                                                    )}
+                                                    )} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                 >
                                                     <div className="flex justify-between items-start mb-2">
                                                         <div>

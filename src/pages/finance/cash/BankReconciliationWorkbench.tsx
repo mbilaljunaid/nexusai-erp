@@ -16,15 +16,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileUploadZone } from "@/components/shared/FileUploadZone";
 import { PDFExportButton } from "@/components/shared/PDFExportButton";
 import { useToast } from "@/hooks/use-toast";
-import {
-    CheckCircle2,
-    XCircle,
-    AlertCircle,
-    Search,
-    PlayCircle,
-    Download,
-    Filter
-} from "lucide-react";
+import { CheckCircle2, AlertCircle, RefreshCcw, FileText, Filter, Download, Plus, Link as LinkIcon, AlertTriangle, Clock, Target, CalendarDays, Search, PlayCircle } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 interface BankAccount {
@@ -218,12 +211,8 @@ export default function BankReconciliationWorkbench() {
         }).format(amount);
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric"
-        });
+    const formatShortDate = (dateString: string) => {
+        return formatDate(new Date(dateString), "MMM d");
     };
 
 

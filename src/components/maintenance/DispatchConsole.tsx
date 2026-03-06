@@ -23,6 +23,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function DispatchConsole() {
     const queryClient = useQueryClient();
@@ -146,17 +147,26 @@ export default function DispatchConsole() {
                             </ScrollArea>
 
                             {/* Pagination Controls */}
-                            <div className="p-4 border-t flex justify-between items-center bg-muted/10">
-                                <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-                                    Previous
-                                </Button>
-                                <span className="text-sm text-muted-foreground">
-                                    Page {page} of {totalPages || 1}
-                                </span>
-                                <Button variant="outline" size="sm" onClick={() => setPage(p => p + 1)} disabled={page >= totalPages}>
-                                    Next
-                                </Button>
-                            </div>
+                            
+                            <Pagination className="mt-4">
+                              <PaginationContent>
+                                <PaginationItem>
+                                  <PaginationPrevious 
+                                    onClick={() => setPage(p => Math.max(1, p - 1))} 
+                                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                                  />
+                                </PaginationItem>
+                                <PaginationItem>
+                                  <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                                </PaginationItem>
+                                <PaginationItem>
+                                  <PaginationNext 
+                                    onClick={() => setPage(p => p + 1)} 
+                                    className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                  />
+                                </PaginationItem>
+                              </PaginationContent>
+                            </Pagination>
                         </CardContent>
                     </Card>
                 </div>

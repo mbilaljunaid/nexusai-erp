@@ -20,6 +20,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface WorkOrder {
     id: string;
@@ -226,29 +227,26 @@ export default function ShopFloorTerminal() {
                 )}
             </div>
 
-            <div className="flex justify-between items-center mt-6">
-                <div className="text-sm text-muted-foreground">
-                    Showing {activeOrders.length} orders
-                </div>
-                <div className="flex gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage(p => Math.max(0, p - 1))}
-                        disabled={page === 0}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage(p => p + 1)}
-                        disabled={activeOrders.length < limit}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
+            
+            <Pagination className="mt-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => setPage(p => Math.max(1, p - 1))} 
+                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <span className="text-sm font-medium mx-4">Page {page} of {1}</span>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => setPage(p => p + 1)} 
+                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
 
             <Dialog open={isTrxDialogOpen} onOpenChange={(open) => { setIsTrxDialogOpen(open); if (!open) trxForm.reset(); }}>
                 <DialogContent>

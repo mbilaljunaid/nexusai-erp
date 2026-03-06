@@ -102,7 +102,7 @@ export default function AccountsReceivable() {
                             <Card
                                 key={card.href}
                                 className="cursor-pointer hover:shadow-md transition-shadow group"
-                                onClick={() => setLocation(card.href)}
+                                onClick={() => setLocation(card.href)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>
                                     <div className="flex items-center gap-3">

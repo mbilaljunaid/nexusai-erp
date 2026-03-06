@@ -103,7 +103,7 @@ export default function MobileWarehouse() {
                         <Card
                             key={task.id}
                             className="bg-slate-900 border-slate-800 active:scale-95 transition-transform"
-                            onClick={() => setActiveTask(task)}
+                            onClick={() => setActiveTask(task)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <CardContent className="p-4 flex justify-between items-center">
                                 <div>

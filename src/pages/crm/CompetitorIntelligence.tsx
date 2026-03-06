@@ -185,7 +185,7 @@ export default function CompetitorIntelligence() {
                                 <Card
                                     key={competitor.id}
                                     className="cursor-pointer hover:shadow-lg transition-shadow"
-                                    onClick={() => setSelectedCompetitor(competitor)}
+                                    onClick={() => setSelectedCompetitor(competitor)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <CardHeader>
                                         <div className="flex items-start justify-between">

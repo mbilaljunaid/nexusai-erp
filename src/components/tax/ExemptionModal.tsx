@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Eye, Edit, ShieldOff, Upload, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { DatePicker } from '@/components/ui/DatePicker';
 
@@ -303,11 +304,10 @@ export function ExemptionModal({ isOpen, onClose, exemption, mode }: ExemptionMo
                         {/* Active Toggle */}
                         {!isViewMode && mode === 'edit' && (
                             <div className="flex items-center space-x-2 border-t pt-4">
-                                <input
-                                    type="checkbox"
+                                <Checkbox
                                     id="isActive"
                                     checked={formData.isActive}
-                                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                                    onCheckedChange={(checked: boolean) => setFormData({ ...formData, isActive: checked })}
                                     className="h-4 w-4"
                                     aria-label="Mark exemption as active"
                                 />

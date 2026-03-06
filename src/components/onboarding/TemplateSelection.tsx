@@ -138,7 +138,7 @@ export function TemplateSelection({
                                 key={template.id}
                                 className={`cursor-pointer transition-all ${isSelected ? 'ring-2 ring-primary' : 'hover:shadow-md'
                                     }`}
-                                onClick={() => toggleTemplate(template.id)}
+                                onClick={() => toggleTemplate(template.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader>
                                     <div className="flex items-start justify-between">

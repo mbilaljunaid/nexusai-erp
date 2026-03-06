@@ -140,7 +140,7 @@ export default function QuotesDetail() {
                             <Card
                                 key={quote.id}
                                 className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
-                                onClick={() => setSelectedQuote(quote)}
+                                onClick={() => setSelectedQuote(quote)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className={`h-1.5 w-full ${quote.status === 'Accepted' ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-muted'}`} />
                                 <CardContent className="p-5 flex flex-col flex-1">

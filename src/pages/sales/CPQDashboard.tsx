@@ -105,7 +105,7 @@ export default function CPQDashboard() {
                                 const statusClass = STATUS_CLR[q.status] ?? 'bg-gray-100 text-gray-400 border-l-gray-400';
                                 const acts = ACTIONS[q.status] ?? [];
                                 return (
-                                    <Card key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 mb-1.5 shadow-sm ${selected?.id === q.id ? 'border-y-blue-700 border-r-blue-700' : ''} ${statusClass.split(' ').find(c => c.startsWith('border-l-'))}`}>
+                                    <Card key={q.id} onClick={() => setSelected(selected?.id === q.id ? null : q)} className={`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 mb-1.5 shadow-sm ${selected?.id === q.id ? 'border-y-blue-700 border-r-blue-700' : ''} ${statusClass.split(' ').find(c => c.startsWith('border-l-'))}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                         <div className="flex justify-between mb-1">
                                             <div className="font-bold text-[13px]">{q.quote_number} — {q.customer_id}</div>
                                             <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${statusClass.replace(/border-l-\S+/, '')}`}>{q.status}</span>

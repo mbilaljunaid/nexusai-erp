@@ -5,6 +5,8 @@ import { Calendar, Zap, Send, BarChart2, Users } from 'lucide-react';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { format } from "date-fns";
 import { DatePicker } from '@/components/ui/DatePicker';
 
 interface Shift {
@@ -128,7 +130,7 @@ export default function PredictiveScheduler() {
                     {weekDates.map(date => {
                         const dayShifts = shiftsByDate[date] ?? [];
                         const d = new Date(date);
-                        const label = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                        const label = format(d, 'EEE, MMM d');
                         return (
                             <div key={date} className="day-col">
                                 <div className="day-header">{label}</div>

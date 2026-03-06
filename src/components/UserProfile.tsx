@@ -5,10 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Trophy, Star, Shield, Users, Award, MessageSquare, 
-  ThumbsUp, CheckCircle, Clock, TrendingUp
-} from "lucide-react";
+import { Trophy, Star, Shield, Users, Award, MessageSquare, ThumbsUp, CheckCircle, Clock, TrendingUp, Calendar as CalendarIcon, MapPin, Briefcase, Mail, Phone, Link as LinkIcon, Edit2, Heart } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils";
 
 interface UserProfileProps {
   userId: string;
@@ -80,17 +78,8 @@ export function UserProfile({ userId }: UserProfileProps) {
     return levels[level] || levels[0];
   };
 
-  const formatDate = (date: Date | string | null) => {
-    if (!date) return "";
-    const d = new Date(date);
-    const now = new Date();
-    const diff = now.getTime() - d.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    if (hours < 1) return "just now";
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    if (days < 7) return `${days}d ago`;
-    return d.toLocaleDateString();
+  const formatDateStr = (dateStr: string) => {
+    return formatDate(dateStr);
   };
 
   const getBadgeIcon = (icon: string) => {
@@ -285,8 +274,8 @@ export function UserProfile({ userId }: UserProfileProps) {
           ) : (
             <div className="space-y-2 max-h-[300px] overflow-y-auto">
               {reputationHistory.map((event) => (
-                <div 
-                  key={event.id} 
+                <div
+                  key={event.id}
                   className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
                   data-testid={`rep-event-${event.id}`}
                 >

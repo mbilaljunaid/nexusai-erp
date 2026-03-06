@@ -26,6 +26,7 @@ type WmsTask = {
 };
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export const WmsTaskWorkbench = () => {
     const { toast } = useToast();
@@ -127,56 +128,25 @@ export const WmsTaskWorkbench = () => {
     ];
 
     return (
-        <Card className="m-4">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <Package className="h-6 w-6" />
-                    Warehouse Management Workbench
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Tabs defaultValue="PICK" value={activeTab} onValueChange={(val) => { setActiveTab(val); setPage(1); }}>
-                    <div className="flex justify-between items-center mb-4">
-                        <TabsList>
-                            <TabsTrigger value="PICK">Picking</TabsTrigger>
-                            <TabsTrigger value="PUTAWAY">Putaway (Inbound)</TabsTrigger>
-                            <TabsTrigger value="COUNT">Cycle Counts</TabsTrigger>
-                            <TabsTrigger value="ALL">All Tasks</TabsTrigger>
-                        </TabsList>
-                    </div>
-
-                    <TabsContent value={activeTab}> {/* Single content area updated by query */}
-                        <StandardTable
-                            data={tasks || []}
-                            columns={columns}
-                            isLoading={isLoading}
-                            filterColumn="taskNumber"
-                            filterPlaceholder="Search Task #"
-                        />
-                        <div className="flex items-center justify-end space-x-2 py-4">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                disabled={page === 1 || isLoading}
-                            >
-                                Previous
-                            </Button>
-                            <div className="text-sm font-medium">
-                                Page {page} of {totalPages}
-                            </div>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                                disabled={page === totalPages || isLoading}
-                            >
-                                Next
-                            </Button>
-                        </div>
-                    </TabsContent>
-                </Tabs>
-            </CardContent>
-        </Card>
+        
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => setPage(p => Math.max(1, p - 1))} 
+                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => setPage(p => p + 1)} 
+                className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
     );
 };

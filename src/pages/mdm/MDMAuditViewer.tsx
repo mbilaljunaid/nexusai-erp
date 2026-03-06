@@ -127,7 +127,7 @@ export default function MDMAuditViewer() {
                                         ? "border-primary ring-2 ring-primary"
                                         : "hover:border-primary/50"
                                     }`}
-                                onClick={() => setSelectedLog(log)}
+                                onClick={() => setSelectedLog(log)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <CardHeader className="pb-3">
                                     <div className="flex items-start justify-between">

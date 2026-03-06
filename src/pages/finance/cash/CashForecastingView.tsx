@@ -20,9 +20,11 @@ import {
     ResponsiveContainer,
     Legend,
     LineChart,
-    Line
+    Line,
+    ComposedChart
 } from "recharts";
-import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
+import { Download, Filter, RefreshCcw, TrendingUp, TrendingDown, DollarSign, LineChart as LineChartIcon, Settings, Calendar, Briefcase, ChevronRight, Activity } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 interface ForecastData {
@@ -65,11 +67,8 @@ export default function CashForecastingView() {
         }).format(amount);
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric"
-        });
+    const formatShortDate = (dateString: string | number | Date) => {
+        return formatDate(new Date(dateString));
     };
 
     // Calculate summary metrics
@@ -181,19 +180,46 @@ export default function CashForecastingView() {
                                     <div className="h-80 bg-muted animate-pulse rounded" />
                                 ) : (
                                     <ResponsiveContainer width="100%" height={350}>
-                                        <BarChart data={currentScenario?.data || []}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="date" tickFormatter={formatDate} fontSize={12} />
-                                            <YAxis tickFormatter={formatCurrency} fontSize={12} />
-                                            <Tooltip
-                                                formatter={(value: number) => formatCurrency(value)}
-                                                labelFormatter={formatDate}
-                                            />
+                                        <ComposedChart data={currentScenario?.data || []}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                            <XAxis dataKey="date" tickFormatter={(v: string) => formatShortDate(v)} />
+                                            <YAxis yAxisId="left" tickFormatter={(value: number) => `$${value / 1000}k`} />
+                                            <YAxis yAxisId="right" orientation="right" tickFormatter={(value: number) => `$${value / 1000}k`} />
+                                            <Tooltip formatter={(value: number) => [formatCurrency(value), "Amount"]} labelFormatter={(label: string) => formatShortDate(label)} />
                                             <Legend />
-                                            <Bar dataKey="receipts" fill="#10b981" name="Receipts" />
-                                            <Bar dataKey="payments" fill="#ef4444" name="Payments" />
-                                        </BarChart>
+                                            <Bar yAxisId="left" dataKey="inflow" fill="#22c55e" name="Inflow" stackId="a" />
+                                            <Bar yAxisId="left" dataKey="outflow" fill="#ef4444" name="Outflow" stackId="a" />
+                                            <Line yAxisId="right" type="monotone" dataKey="endingBalance" stroke="#3b82f6" strokeWidth={2} name="Ending Balance" dot={false} />
+                                        </ComposedChart>
                                     </ResponsiveContainer>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Breakdown Chart */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Flow Breakdown</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {isLoading ? (
+                                    <div className="h-[400px] flex items-center justify-center">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                                    </div>
+                                ) : (
+                                    <div className="h-[250px]">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart data={currentScenario?.data || []} layout="vertical">
+                                                <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                                <XAxis type="number" tickFormatter={(value: number) => `$${value / 1000}k`} />
+                                                <YAxis dataKey="date" type="category" tickFormatter={(v: string) => formatShortDate(v)} width={60} />
+                                                <Tooltip formatter={(value: number) => [formatCurrency(value), "Amount"]} labelFormatter={(label: string) => formatShortDate(label)} />
+                                                <Legend />
+                                                <Bar dataKey="receipts" fill="#10b981" name="Receipts" />
+                                                <Bar dataKey="payments" fill="#ef4444" name="Payments" />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
                                 )}
                             </CardContent>
                         </Card>
@@ -210,11 +236,11 @@ export default function CashForecastingView() {
                                     <ResponsiveContainer width="100%" height={250}>
                                         <LineChart data={currentScenario?.data || []}>
                                             <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="date" tickFormatter={formatDate} fontSize={12} />
-                                            <YAxis tickFormatter={formatCurrency} fontSize={12} />
+                                            <XAxis dataKey="date" tickFormatter={(v: string) => formatShortDate(v)} fontSize={12} />
+                                            <YAxis tickFormatter={(value: number) => formatCurrency(value)} fontSize={12} />
                                             <Tooltip
                                                 formatter={(value: number) => formatCurrency(value)}
-                                                labelFormatter={formatDate}
+                                                labelFormatter={(label: string) => formatShortDate(label)}
                                             />
                                             <Line
                                                 type="monotone"

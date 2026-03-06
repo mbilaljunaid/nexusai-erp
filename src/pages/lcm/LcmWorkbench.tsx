@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function LcmWorkbench() {
     const { toast } = useToast();
@@ -214,7 +215,7 @@ export default function LcmWorkbench() {
                                         </TableRow>
                                     ) : (
                                         tradeOperations.map((op: any) => (
-                                            <TableRow key={op.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setLocation(`/scm/lcm/operations/${op.id}`)}>
+                                            <TableRow key={op.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setLocation(`/scm/lcm/operations/${op.id}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                                 <TableCell className="font-mono font-medium text-primary">
                                                     {op.operationNumber}
                                                 </TableCell>
@@ -267,25 +268,26 @@ export default function LcmWorkbench() {
                             </Table>
                         </div>
                         {pagination.totalPages > 1 && (
-                            <div className="flex items-center justify-end space-x-2 py-4">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                                    disabled={page === 1}
-                                >
-                                    Previous
-                                </Button>
-                                <div className="text-sm font-medium">Page {page} of {pagination.totalPages}</div>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-                                    disabled={page === pagination.totalPages}
-                                >
-                                    Next
-                                </Button>
-                            </div>
+                            
+                            <Pagination className="mt-4">
+                              <PaginationContent>
+                                <PaginationItem>
+                                  <PaginationPrevious 
+                                    onClick={() => setPage(p => Math.max(1, p - 1))} 
+                                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                                  />
+                                </PaginationItem>
+                                <PaginationItem>
+                                  <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                                </PaginationItem>
+                                <PaginationItem>
+                                  <PaginationNext 
+                                    onClick={() => setPage(p => p + 1)} 
+                                    className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                  />
+                                </PaginationItem>
+                              </PaginationContent>
+                            </Pagination>
                         )}
                     </CardContent>
                 </Card>

@@ -126,7 +126,7 @@ export default function AutoInvoiceValidation() {
                         {runs.map(r => {
                             const cfgClass = STATUS_CFG[r.status] ?? 'bg-gray-100 text-gray-500';
                             return (
-                                <div key={r.id} className={`run-card ${activeRun?.id === r.id ? 'selected' : ''}`} role="button" tabIndex={0} onClick={() => setActiveRun(r)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveRun(r); } }}>
+                                <div key={r.id} className={`run-card ${activeRun?.id === r.id ? 'selected' : ''}`} role="button" tabIndex={0} onClick={() => setActiveRun(r)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="rc-top">
                                         <span className="rc-ref mono">{r.source_ref || r.source_type}</span>
                                         <span className={`rc-status ${cfgClass}`}>{r.status}</span>

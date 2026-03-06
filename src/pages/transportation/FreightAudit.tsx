@@ -88,13 +88,13 @@ export default function FreightAudit() {
                     </CardHeader>
                     <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
                         {invoices?.map((invoice: any) => (
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                            <div role="button" tabIndex={0}
                                 key={invoice.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedInvoice?.id === invoice.id
                                     ? "border-primary bg-primary/5"
                                     : "border-border hover:bg-accent"
                                     }`}
-                                onClick={() => setSelectedInvoice(invoice)}
+                                onClick={() => setSelectedInvoice(invoice)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start">
                                     <div>

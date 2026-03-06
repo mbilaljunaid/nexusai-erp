@@ -13,11 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import {
-  ArrowLeft, Briefcase, Clock, DollarSign, Calendar, Users,
-  MessageSquare, CheckCircle, XCircle, AlertCircle, User, Star,
-  MapPin, Globe, Award, Shield
-} from "lucide-react";
+import { Building2, MapPin, Currency, Clock, Bookmark, Share2, Briefcase, GraduationCap, ChevronLeft, Calendar as CalendarIcon, DollarSign, CheckCircle2, ChevronDown, CheckSquare, Search, Filter, ArrowLeft, Users, MessageSquare, AlertCircle, User } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils";
 
 interface JobProposal {
   id: string;
@@ -104,19 +101,12 @@ export default function MarketplaceJobDetail() {
     return `${formatter.format(Number(min))} - ${formatter.format(Number(max))}`;
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    });
+  const formatDateStr = (dateString: string) => {
+    return formatDate(dateString);
   };
 
-  const formatShortDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const formatTimeAgo = (dateString: string) => {
+    return formatDate(dateString);
   };
 
   const getUrgencyBadge = (urgency: string) => {
@@ -197,8 +187,8 @@ export default function MarketplaceJobDetail() {
                 </span>
                 <span className="hidden md:inline text-border">|</span>
                 <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Posted {formatShortDate(job.created_at)}
+                  <CalendarIcon className="w-4 h-4" />
+                  Posted {formatTimeAgo(job.created_at)}
                 </span>
               </div>
             </div>
@@ -283,7 +273,7 @@ export default function MarketplaceJobDetail() {
                                 </h4>
                               </Link>
                               <p className="text-xs text-muted-foreground">
-                                Submitted {formatShortDate(proposalItem.created_at)}
+                                Submitted {formatTimeAgo(proposalItem.created_at)}
                               </p>
                             </div>
                           </div>
@@ -340,11 +330,11 @@ export default function MarketplaceJobDetail() {
 
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <Calendar className="w-5 h-5 text-blue-500" />
+                    <CalendarIcon className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Deadline</p>
-                    <p className="font-semibold">{formatDate(job.deadline)}</p>
+                    <p className="font-semibold">{formatDateStr(job.deadline)}</p>
                   </div>
                 </div>
 
@@ -368,7 +358,7 @@ export default function MarketplaceJobDetail() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Posted</p>
-                    <p className="font-semibold">{formatDate(job.created_at)}</p>
+                    <p className="font-semibold">{formatDateStr(job.created_at)}</p>
                   </div>
                 </div>
               </CardContent>

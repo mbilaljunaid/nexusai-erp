@@ -209,10 +209,10 @@ export function NettingAgreementWizard({ isOpen, onClose, onSuccess }: Agreement
                                     </div>
                                     <div className="space-y-2 max-h-64 overflow-y-auto">
                                         {orgs.map((org: any) => (
-                                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                            <div role="button" tabIndex={0}
                                                 key={org.id}
                                                 className="flex items-center space-x-2 p-3 border rounded hover:bg-muted/50 cursor-pointer"
-                                                onClick={() => toggleEntity(org.id)}
+                                                onClick={() => toggleEntity(org.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <Checkbox
                                                     checked={selectedEntities.includes(org.id)}

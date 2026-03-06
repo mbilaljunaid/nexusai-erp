@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatDate } from "@/lib/dateUtils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -88,7 +89,7 @@ function formatTimestamp(dateStr: string): string {
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMs / 3600000);
   const diffDays = Math.floor(diffMs / 86400000);
-  
+
   if (diffMins < 60) return `${diffMins}m ago`;
   if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays < 7) return `${diffDays}d ago`;
@@ -233,9 +234,8 @@ export function NotificationCenter() {
         {items.map((notif) => (
           <div
             key={notif.id}
-            className={`flex items-start gap-3 p-3 rounded-lg transition-all ${
-              notif.read ? "bg-muted/50" : "bg-primary/5 border border-primary/10"
-            }`}
+            className={`flex items-start gap-3 p-3 rounded-lg transition-all ${notif.read ? "bg-muted/50" : "bg-primary/5 border border-primary/10"
+              }`}
             data-testid={`notification-item-${notif.id}`}
           >
             <div className="shrink-0 mt-0.5">
@@ -243,7 +243,7 @@ export function NotificationCenter() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h4 
+                <h4
                   className={`font-medium text-sm ${notif.read ? "text-muted-foreground" : ""}`}
                   data-testid={`text-notification-title-${notif.id}`}
                 >
@@ -296,11 +296,11 @@ export function NotificationCenter() {
 
   return (
     <div className="relative">
-      <Button 
-        size="icon" 
-        variant="ghost" 
-        onClick={() => setOpen(!open)} 
-        data-testid="button-notifications" 
+      <Button
+        size="icon"
+        variant="ghost"
+        onClick={() => setOpen(!open)}
+        data-testid="button-notifications"
         className="relative"
       >
         <Bell className="h-4 w-4" />
@@ -313,13 +313,13 @@ export function NotificationCenter() {
 
       {open && (
         <>
-          <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} 
-            className="fixed inset-0 z-40" 
+          <div role="button" tabIndex={0}
+            className="fixed inset-0 z-40"
             onClick={() => setOpen(false)}
-            data-testid="overlay-notifications-backdrop"
+            data-testid="overlay-notifications-backdrop" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
           />
-          <Card 
-            className="absolute right-0 mt-2 w-96 animate-in slide-in-from-top-2 shadow-xl z-50" 
+          <Card
+            className="absolute right-0 mt-2 w-96 animate-in slide-in-from-top-2 shadow-xl z-50"
             data-testid="panel-notifications"
           >
             <CardHeader className="pb-2">
@@ -359,7 +359,7 @@ export function NotificationCenter() {
                 </div>
               </div>
             </CardHeader>
-            
+
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <div className="px-4">
                 <TabsList className="w-full grid grid-cols-4 h-8">

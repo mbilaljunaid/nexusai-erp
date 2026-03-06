@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,19 +23,24 @@ interface JLT {
 import { FormulaBuilder } from "./FormulaBuilder";
 
 export function JournalLineRuleTable({ eventClassId }: { eventClassId: string }) {
-    const [jlts, setJlts] = useState<JLT[]>([]);
-    const [loading, setLoading] = useState(false);
     const { toast } = useToast();
+    const [jlts, setJlts] = useState<JLT[]>([]);
+    const { data: fetchedJlts, isLoading: loading } = useQuery({
+        queryKey: ["sla-jlts", eventClassId],
+        queryFn: async () => {
+            const res = await fetch(`/api/sla/event-classes/${eventClassId}/jlts`);
+            if (!res.ok) throw new Error("Failed");
+            const data = await res.json();
+            return data.sort((a: any, b: any) => (a.priority || 0) - (b.priority || 0));
+        }
+    });
 
-    // Fetch JLTs when class changes
+    // Sync fetched data into local state array for editing
     useEffect(() => {
-        setLoading(true);
-        fetch(`/api/sla/event-classes/${eventClassId}/jlts`)
-            .then(res => res.json())
-            .then(data => setJlts(data.sort((a: any, b: any) => (a.priority || 0) - (b.priority || 0))))
-            .catch(err => console.error(err))
-            .finally(() => setLoading(false));
-    }, [eventClassId]);
+        if (fetchedJlts) {
+            setJlts(fetchedJlts);
+        }
+    }, [fetchedJlts]);
 
     const handleUpdate = async (jlt: JLT) => {
         try {

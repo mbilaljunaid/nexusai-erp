@@ -80,7 +80,7 @@ export function BankAccountList() {
                     <Card
                         key={account.id}
                         className="relative overflow-hidden group hover:shadow-lg transition-all border-l-4 border-l-primary/50 cursor-pointer"
-                        onClick={() => setSelectedDrilldown({ id: account.id, name: account.name })}
+                        onClick={() => setSelectedDrilldown({ id: account.id, name: account.name })} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                     >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <div className="flex flex-col">

@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Settings, Calendar, Lock, Unlock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { APTolerances } from "./config/APTolerances";
@@ -195,11 +196,10 @@ export default function APSystemConfig() {
                                 <div className="space-y-2">
                                     <Label htmlFor="autoValidation">Auto-Validation</Label>
                                     <div className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
+                                        <Checkbox
                                             id="autoValidation"
                                             checked={params.autoValidation}
-                                            onChange={(e) => setParams({ ...params, autoValidation: e.target.checked })}
+                                            onCheckedChange={(checked: boolean) => setParams({ ...params, autoValidation: checked })}
                                             className="h-4 w-4"
                                             title="Auto-validation setting"
                                         />
@@ -209,11 +209,10 @@ export default function APSystemConfig() {
                                 <div className="space-y-2">
                                     <Label htmlFor="requirePOMatch">Require PO Match</Label>
                                     <div className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
+                                        <Checkbox
                                             id="requirePOMatch"
                                             checked={params.requirePOMatch}
-                                            onChange={(e) => setParams({ ...params, requirePOMatch: e.target.checked })}
+                                            onCheckedChange={(checked: boolean) => setParams({ ...params, requirePOMatch: checked })}
                                             className="h-4 w-4"
                                             title="Require PO match setting"
                                         />
@@ -223,11 +222,10 @@ export default function APSystemConfig() {
                                 <div className="space-y-2">
                                     <Label htmlFor="allowPrepayments">Allow Prepayments</Label>
                                     <div className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
+                                        <Checkbox
                                             id="allowPrepayments"
                                             checked={params.allowPrepayments}
-                                            onChange={(e) => setParams({ ...params, allowPrepayments: e.target.checked })}
+                                            onCheckedChange={(checked: boolean) => setParams({ ...params, allowPrepayments: checked })}
                                             className="h-4 w-4"
                                             title="Allow prepayments setting"
                                         />

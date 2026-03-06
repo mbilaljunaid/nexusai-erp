@@ -124,7 +124,7 @@ export default function PermitToWork() {
                         const tclr = TYPE_CLR[p.permit_type] ?? '#6b7280';
                         const hrs = hoursLeft(p);
                         return (
-                            <Card key={p.id} onClick={() => setSelected(selected?.id === p.id ? null : p)} className="px-3.5 py-2.5 mb-1.5 cursor-pointer shadow-sm relative overflow-hidden" style={{ border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}` }}>
+                            <Card key={p.id} onClick={() => setSelected(selected?.id === p.id ? null : p)} className="px-3.5 py-2.5 mb-1.5 cursor-pointer shadow-sm relative overflow-hidden" style={{ border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}` }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: tclr }}></div>
                                 <div className="flex justify-between mb-0.5">
                                     <div className="flex gap-1.5 items-center">

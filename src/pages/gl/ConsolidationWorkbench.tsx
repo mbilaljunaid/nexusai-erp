@@ -194,7 +194,7 @@ export default function ConsolidationWorkbench() {
                                             <Card
                                                 key={set.id}
                                                 className={`cursor-pointer transition-all ${selectedLedgerSet === set.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-muted'}`}
-                                                onClick={() => setSelectedLedgerSet(set.id)}
+                                                onClick={() => setSelectedLedgerSet(set.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <CardContent className="pt-4 pb-4">
                                                     <div className="flex justify-between items-start">

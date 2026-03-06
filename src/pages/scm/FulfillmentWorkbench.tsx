@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Package, Truck, CheckCircle, ClipboardList, RefreshCw } from "lucide-react";
@@ -76,12 +77,11 @@ export default function FulfillmentWorkbench() {
             header: "",
             width: "50px",
             cell: (row: any) => (
-                <input
-                    type="checkbox"
+                <Checkbox
                     aria-label={`Select order ${row.orderNumber}`}
                     checked={selectedOrders.includes(row.id)}
-                    onChange={(e) => {
-                        if (e.target.checked) setSelectedOrders([...selectedOrders, row.id]);
+                    onCheckedChange={(checked: boolean) => {
+                        if (checked) setSelectedOrders([...selectedOrders, row.id]);
                         else setSelectedOrders(selectedOrders.filter(id => id !== row.id));
                     }}
                 />

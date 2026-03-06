@@ -41,11 +41,11 @@ export default function LearningCommunities() {
 
         return (
             <StandardPage title="Learning Communities">
-                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                <div role="button" tabIndex={0}
                     className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${selected ? "bg-primary text-primary-foreground" : "hover:bg-accent"
                         }`}
                     style={{ paddingLeft: `${depth * 1.5 + 0.75}rem` }}
-                    onClick={() => setSelectedCommunityId(community.id)}
+                    onClick={() => setSelectedCommunityId(community.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 >
                     {community.children && community.children.length > 0 && (
                         <ChevronRight className="w-4 h-4" />

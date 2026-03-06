@@ -153,14 +153,14 @@ export default function PlaybookBuilder() {
                     <CardContent>
                         <div className="space-y-2">
                             {playbooks.map((playbook) => (
-                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                <div role="button" tabIndex={0}
                                     key={playbook.id}
                                     className={`p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-50 border-blue-500' : ''
                                         }`}
                                     onClick={() => {
                                         setSelectedPlaybook(playbook);
                                         setIsCreating(false);
-                                    }}
+                                    }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">

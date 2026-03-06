@@ -397,7 +397,7 @@ export default function OpportunitiesDetail() {
                       >
                         <Card
                           className={`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`}
-                          onClick={() => setSelectedOpp(opp)}
+                          onClick={() => setSelectedOpp(opp)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                           <CardContent className="p-4">
                             <div className="mb-4">

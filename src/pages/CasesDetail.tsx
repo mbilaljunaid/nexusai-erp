@@ -182,7 +182,7 @@ export default function CasesDetail() {
                         <div className="col-span-2">Created</div>
                     </div>
                     {filteredCases.map(c => (
-                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} key={c.id} className="grid grid-cols-12 p-3 border-t text-sm items-center hover:bg-muted/50 cursor-pointer" onClick={() => openEditCase(c)}>
+                        <div role="button" tabIndex={0} key={c.id} className="grid grid-cols-12 p-3 border-t text-sm items-center hover:bg-muted/50 cursor-pointer" onClick={() => openEditCase(c)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                             <div className="col-span-4 font-medium flex items-center gap-2">
                                 <FileText className="h-4 w-4 text-muted-foreground" />
                                 {c.subject}
@@ -204,7 +204,7 @@ export default function CasesDetail() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredCases.map(c => (
-                        <Card key={c.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => openEditCase(c)}>
+                        <Card key={c.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => openEditCase(c)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                             <CardHeader className="pb-2">
                                 <div className="flex justify-between items-start">
                                     <StatusBadge status={c.status ?? ''} />

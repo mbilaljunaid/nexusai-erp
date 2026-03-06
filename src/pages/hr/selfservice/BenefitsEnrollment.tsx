@@ -140,7 +140,7 @@ export default function BenefitsEnrollment() {
                         {loadingPrograms ? (
                             <p>Loading programs...</p>
                         ) : openPrograms?.map((prog: any) => (
-                            <Card key={prog.id} className="relative overflow-hidden group hover:border-teal-500/50 transition-all cursor-pointer border-zinc-200/50 dark:border-zinc-800/50 shadow-sm" onClick={() => { setSelectedProgramId(prog.id); setStep(1); }}>
+                            <Card key={prog.id} className="relative overflow-hidden group hover:border-teal-500/50 transition-all cursor-pointer border-zinc-200/50 dark:border-zinc-800/50 shadow-sm" onClick={() => { setSelectedProgramId(prog.id); setStep(1); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                     <ShieldCheck className="h-24 w-24" />
                                 </div>
@@ -185,10 +185,10 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        <div role="button" tabIndex={0}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`}
+                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-4">
                                                 <p className="font-semibold">{opt.optionName}</p>
@@ -230,10 +230,10 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        <div role="button" tabIndex={0}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`}
+                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-4">
                                                 <p className="font-semibold">{opt.optionName}</p>
@@ -275,10 +275,10 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                        <div role="button" tabIndex={0}
                                             key={opt.planOptionId}
                                             onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`}
+                                            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-4">
                                                 <p className="font-semibold">{opt.optionName}</p>

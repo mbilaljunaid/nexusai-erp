@@ -310,7 +310,7 @@ export default function LeadsDetail() {
       header: "Actions",
       width: "15%",
       cell: (lead: any) => (
-        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className="p-2" onClick={(e) => e.stopPropagation()}>
+        <div role="button" tabIndex={0} className="p-2" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
           <LeadConvertModal
             lead={lead}
             onSuccess={() => {

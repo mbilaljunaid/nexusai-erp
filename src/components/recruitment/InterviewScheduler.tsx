@@ -288,13 +288,13 @@ export function InterviewScheduler({
                             <Label>Interviewers *</Label>
                             <div className="border rounded-lg p-3 space-y-2 max-h-48 overflow-y-auto">
                                 {availableInterviewers.map((interviewer) => (
-                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                    <div role="button" tabIndex={0}
                                         key={interviewer.id}
                                         className={`p-2 rounded cursor-pointer border transition-colors ${formData.interviewerIds.includes(interviewer.id)
                                                 ? 'border-primary bg-primary/10'
                                                 : 'border-transparent hover:bg-muted'
                                             }`}
-                                        onClick={() => toggleInterviewer(interviewer.id)}
+                                        onClick={() => toggleInterviewer(interviewer.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >
                                         <div className="flex items-center justify-between">
                                             <div>

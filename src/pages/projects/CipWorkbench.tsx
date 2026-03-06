@@ -293,7 +293,7 @@ export default function CipWorkbench() {
                                             <TableRow
                                                 key={asset.id}
                                                 className={selectedAssetId === asset.id ? "bg-blue-50" : "cursor-pointer hover:bg-muted/50"}
-                                                onClick={() => setSelectedAssetId(asset.id)}
+                                                onClick={() => setSelectedAssetId(asset.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <TableCell className="font-medium">{asset.assetName}</TableCell>
                                                 <TableCell><Badge variant="outline">{asset.assetType}</Badge></TableCell>

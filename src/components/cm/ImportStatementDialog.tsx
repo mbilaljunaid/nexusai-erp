@@ -119,10 +119,10 @@ export default function ImportStatementDialog({ open, onClose, accountId }: Prop
 
                     <div className="space-y-2">
                         <Label>Statement File</Label>
-                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                        <div role="button" tabIndex={0}
                             className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors
                                 ${file ? 'border-blue-500 bg-blue-50' : 'border-slate-300 hover:border-slate-400'}`}
-                            onClick={() => fileInputRef.current?.click()}
+                            onClick={() => fileInputRef.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <input
                                 type="file"

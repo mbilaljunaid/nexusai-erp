@@ -82,7 +82,7 @@ export function KanbanBoard<T extends { id: string }>({
                                         {columnItems.map((item, index) => (
                                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                                 {(provided, snapshot) => (
-                                                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                                    <div role="button" tabIndex={0}
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
@@ -91,7 +91,7 @@ export function KanbanBoard<T extends { id: string }>({
                                                         style={{
                                                             ...provided.draggableProps.style,
                                                         }}
-                                                        onClick={() => onCardClick?.(item)}
+                                                        onClick={() => onCardClick?.(item)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                     >
                                                         {renderCard(item)}
                                                     </div>

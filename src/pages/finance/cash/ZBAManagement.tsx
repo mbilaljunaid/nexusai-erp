@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { PlayCircle, Settings, History, TrendingDown } from "lucide-react";
+import { Download, Filter, RefreshCcw, Activity, ArrowRightLeft, Building2, Landmark, Settings2, Plus, ArrowUpRight, ArrowDownRight, ShieldCheck, AlertTriangle, PlayCircle, Settings, TrendingDown, History } from "lucide-react";
+import { formatDate } from "@/lib/dateUtils";
 import { StandardPage } from '@/components/layout/StandardPage';
 
 interface ZBAPool {
@@ -85,14 +86,8 @@ export default function ZBAManagement() {
         }).format(amount);
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        });
+    const formatShortDate = (dateString: string) => {
+        return formatDate(new Date(dateString), "MMM d, yyyy h:mm a");
     };
 
     return (

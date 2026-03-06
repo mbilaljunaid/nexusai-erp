@@ -147,11 +147,11 @@ export default function AdvancedMatchWorkbench() {
                     </CardHeader>
                     <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
                         {matchCandidates?.map((match: MatchCandidate) => (
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                            <div role="button" tabIndex={0}
                                 key={match.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedMatch?.id === match.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
                                     }`}
-                                onClick={() => setSelectedMatch(match)}
+                                onClick={() => setSelectedMatch(match)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="font-medium">Match #{match.id}</div>
@@ -210,12 +210,12 @@ export default function AdvancedMatchWorkbench() {
                                                 <div key={i} className="border rounded-lg p-4">
                                                     <div className="font-medium mb-2">{conflict.field}</div>
                                                     <div className="grid grid-cols-2 gap-4">
-                                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                                        <div role="button" tabIndex={0}
                                                             className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'KEEP_MASTER'
                                                                 ? "border-primary bg-primary/5"
                                                                 : "border-border"
                                                                 }`}
-                                                            onClick={() => resolveConflict(conflict.field, 'KEEP_MASTER')}
+                                                            onClick={() => resolveConflict(conflict.field, 'KEEP_MASTER')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                         >
                                                             <div className="text-xs text-muted-foreground mb-1">Master Value</div>
                                                             <div className="font-medium">{conflict.masterValue || '(empty)'}</div>
@@ -223,12 +223,12 @@ export default function AdvancedMatchWorkbench() {
                                                                 <Check className="h-4 w-4 text-primary mt-2" />
                                                             )}
                                                         </div>
-                                                        <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                                        <div role="button" tabIndex={0}
                                                             className={`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'USE_CANDIDATE'
                                                                 ? "border-primary bg-primary/5"
                                                                 : "border-border"
                                                                 }`}
-                                                            onClick={() => resolveConflict(conflict.field, 'USE_CANDIDATE')}
+                                                            onClick={() => resolveConflict(conflict.field, 'USE_CANDIDATE')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                         >
                                                             <div className="text-xs text-muted-foreground mb-1">Candidate Value</div>
                                                             <div className="font-medium">{conflict.candidateValue || '(empty)'}</div>

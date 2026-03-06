@@ -20,6 +20,7 @@ import {
     buildScopeHeaders
 } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function LeasePortfolioWorkbench() {
     const [search, setSearch] = useState("");
@@ -176,30 +177,26 @@ export default function LeasePortfolioWorkbench() {
                     </Table>
                 </Card>
 
-                <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground">
-                        Showing {leases.length} of {pagination.total} leases
-                    </p>
-                    <div className="space-x-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setPage(p => Math.max(1, p - 1))}
-                            disabled={page === 1}
-                        >
-                            Previous
-                        </Button>
-                        <span className="text-sm font-medium">Page {page} of {pagination.totalPages}</span>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-                            disabled={page === pagination.totalPages}
-                        >
-                            Next
-                        </Button>
-                    </div>
-                </div>
+                
+                <Pagination className="mt-4">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setPage(p => Math.max(1, p - 1))} 
+                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                      />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setPage(p => p + 1)} 
+                        className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
             </div>
         </StandardPage>
     );

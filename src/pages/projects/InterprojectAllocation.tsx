@@ -277,7 +277,7 @@ export default function InterprojectAllocation() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {rules?.map((rule: AllocationRule) => (
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                            <div role="button" tabIndex={0}
                                 key={rule.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
                                     }`}
@@ -290,7 +290,7 @@ export default function InterprojectAllocation() {
                                     setAllocationBasis(rule.allocationBasis);
                                     setSchedule(rule.schedule);
                                     setIsActive(rule.isActive);
-                                }}
+                                }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="font-medium">{rule.name}</div>
                                 <div className="text-xs text-muted-foreground mt-1">

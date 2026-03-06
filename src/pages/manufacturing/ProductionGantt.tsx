@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Factory, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, Pause, AlertCircle, Maximize2, Minimize2, ZoomIn, ZoomOut, Save, ChevronLeft, ChevronRight, Factory } from "lucide-react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 
 interface WorkOrder {
@@ -29,7 +30,7 @@ export default function ProductionGantt() {
     const { data: woData, isLoading: woLoading } = useQuery<{ items: WorkOrder[] }>({
         queryKey: ["/api/manufacturing/work-orders", startDate, endDate],
         queryFn: async () => {
-            const res = await fetch(`/api/manufacturing/work-orders?startDate=${startDate}&endDate=${endDate}&limit=500`);
+            const res = await fetch(`/ api / manufacturing / work - orders ? startDate = ${startDate}& endDate=${endDate}& limit=500`);
             return res.json();
         }
     });
@@ -51,7 +52,7 @@ export default function ProductionGantt() {
         workOrders.forEach(wo => {
             if (!wo.workCenterId || !wo.scheduledDate) return;
             const dateStr = new Date(wo.scheduledDate).toDateString();
-            const key = `${wo.workCenterId}|${dateStr}`;
+            const key = `${wo.workCenterId}| ${dateStr} `;
             if (!map.has(key)) map.set(key, []);
             map.get(key)!.push(wo);
         });
@@ -59,7 +60,7 @@ export default function ProductionGantt() {
     }, [workOrders]);
 
     const getOrdersForWCOnDay = (wcId: string, date: Date) => {
-        const key = `${wcId}|${date.toDateString()}`;
+        const key = `${wcId}| ${date.toDateString()} `;
         return ordersMap.get(key) || [];
     };
 
@@ -86,8 +87,8 @@ export default function ProductionGantt() {
                             <div className="flex-1 flex">
                                 {days.map((day, idx) => (
                                     <div key={idx} className="flex-1 p-2 border-r text-center text-xs">
-                                        <div className="text-muted-foreground uppercase">{day.toLocaleDateString('en-US', { weekday: 'short' })}</div>
-                                        <div className="font-bold">{day.getDate()} {day.toLocaleDateString('en-US', { month: 'short' })}</div>
+                                        <div className="text-muted-foreground uppercase">{format(day, 'EEE')}</div>
+                                        <div className="font-bold">{day.getDate()} {format(day, 'MMM')}</div>
                                     </div>
                                 ))}
                             </div>
@@ -109,8 +110,8 @@ export default function ProductionGantt() {
                                                     {dayOrders.map(wo => (
                                                         <div
                                                             key={wo.id}
-                                                            className={`text-[10px] p-1.5 rounded-md shadow-sm border truncate cursor-pointer hover:scale-[1.02] transition-transform
-                                                                ${wo.status === 'in_progress' ? 'bg-blue-100 border-blue-200 text-blue-800' : 'bg-green-100 border-green-200 text-green-800'}`}
+                                                            className={`text - [10px] p - 1.5 rounded - md shadow - sm border truncate cursor - pointer hover: scale - [1.02] transition - transform
+                                                                ${wo.status === 'in_progress' ? 'bg-blue-100 border-blue-200 text-blue-800' : 'bg-green-100 border-green-200 text-green-800'} `}
                                                         >
                                                             <div className="font-bold">{wo.orderNumber}</div>
                                                             <div className="opacity-70">{wo.quantity} Units</div>

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { ValidationEngine } from "@/lib/validationEngine";
 import { ConditionalLogicEngine } from "@/lib/conditionalLogicEngine";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface MetadataFieldRendererProps {
   field: FormFieldConfig;
@@ -85,7 +86,7 @@ export function MetadataFieldRenderer({
             )}
 
             {field.type === "date" && (
-              <DatePicker onChange={() => {}} disabled={readOnly || fieldState.disabled} />
+              <DatePicker onChange={() => { }} disabled={readOnly || fieldState.disabled} />
             )}
 
             {field.type === "datetime" && (
@@ -149,18 +150,19 @@ export function MetadataFieldRenderer({
             )}
 
             {field.type === "radio" && (
-              <div className="space-y-2" data-testid={`radio-group-${field.name}`}>
+              <RadioGroup
+                className="space-y-2"
+                data-testid={`radio-group-${field.name}`}
+                value={fieldProps.value}
+                onValueChange={(val) => fieldProps.onChange(val)}
+                disabled={readOnly || fieldState.disabled}
+              >
                 {field.options?.map((option) => (
                   <div key={option.value} className="flex items-center gap-2">
-                    <input
-                      type="radio"
+                    <RadioGroupItem
                       id={`${field.name}-${option.value}`}
-                      name={field.name}
                       value={option.value}
-                      checked={fieldProps.value === option.value}
-                      onChange={() => fieldProps.onChange(option.value)}
-                      disabled={readOnly || fieldState.disabled}
-                      className="h-4 w-4 text-primary border-gray-300"
+                      className="text-primary border-gray-300"
                       data-testid={`radio-${field.name}-${option.value}`}
                     />
                     <label htmlFor={`${field.name}-${option.value}`} className="text-sm cursor-pointer">
@@ -168,7 +170,7 @@ export function MetadataFieldRenderer({
                     </label>
                   </div>
                 ))}
-              </div>
+              </RadioGroup>
             )}
 
             {field.type === "file" && (

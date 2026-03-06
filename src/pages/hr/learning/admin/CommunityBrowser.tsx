@@ -138,7 +138,7 @@ export default function CommunityBrowser() {
                         {/* Sub-Communities */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {(currentId ? children?.subCommunities : roots)?.map((c: any) => (
-                                <Card key={c.id} className="hover:border-primary cursor-pointer transition-colors" onClick={() => setCurrentId(c.id)}>
+                                <Card key={c.id} className="hover:border-primary cursor-pointer transition-colors" onClick={() => setCurrentId(c.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <CardContent className="p-4 flex items-center gap-3">
                                         <Folder className="h-8 w-8 text-blue-500 fill-blue-500/20" />
                                         <div>

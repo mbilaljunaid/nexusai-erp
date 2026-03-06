@@ -249,13 +249,13 @@ export default function ARInvoiceDetail() {
                                         <h3 className="font-semibold mb-4 text-sm text-muted-foreground">Select Line</h3>
                                         <div className="space-y-2">
                                             {lines.map((l: any) => (
-                                                <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                                <div role="button" tabIndex={0}
                                                     key={l.id}
                                                     className={`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-50'}`}
                                                     onClick={() => {
                                                         setSelectedLineId(l.id);
                                                         form.setValue("amount", l.amount);
-                                                    }}
+                                                    }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                                 >
                                                     <div className="font-medium truncate">{l.description}</div>
                                                     <div className="text-muted-foreground">${l.amount}</div>

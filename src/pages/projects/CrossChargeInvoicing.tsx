@@ -287,11 +287,11 @@ export default function CrossChargeInvoicing() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {invoices?.map((invoice: CrossChargeInvoice) => (
-                            <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                            <div role="button" tabIndex={0}
                                 key={invoice.id}
                                 className={`p-3 rounded-lg cursor-pointer border ${selectedInvoice === invoice.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
                                     }`}
-                                onClick={() => loadInvoice(invoice)}
+                                onClick={() => loadInvoice(invoice)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="font-medium">{invoice.invoiceNumber || "Draft"}</div>

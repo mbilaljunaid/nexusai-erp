@@ -155,7 +155,7 @@ export default function YardManagement() {
                         {appts.map(a => {
                             const cfg = STATUS_CFG[a.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={a.id} onClick={() => setSelected(selected?.id === a.id ? null : a)} style={{ background: '#fff', border: `1px solid ${selected?.id === a.id ? '#1d4ed8' : '#e5e7eb'}`, borderRadius: 10, padding: '10px 12px', cursor: 'pointer' }} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(selected?.id === a.id ? null : a); } }}>
+                                <div key={a.id} onClick={() => setSelected(selected?.id === a.id ? null : a)} style={{ background: '#fff', border: `1px solid ${selected?.id === a.id ? '#1d4ed8' : '#e5e7eb'}`, borderRadius: 10, padding: '10px 12px', cursor: 'pointer' }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
                                         <span style={{ fontSize: 12, fontWeight: 700, fontFamily: 'monospace' }}>Dock {a.dock_number}</span>
                                         <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{a.status}</span>

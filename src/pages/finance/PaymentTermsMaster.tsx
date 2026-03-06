@@ -87,7 +87,7 @@ export default function PaymentTermsMaster() {
                         terms.map(t => {
                             const cfg = TYPE_COLORS[t.term_type] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={t.id} className={`term - card ${selected?.id === t.id ? 'selected' : ''} `} onClick={() => { setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); }} role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); } }}>
+                                <div key={t.id} className={`term - card ${selected?.id === t.id ? 'selected' : ''} `} onClick={() => { setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                     <div className="tc-top">
                                         <span className="tc-code">{t.term_code}</span>
                                         <span className="tc-type" style={{ background: cfg.bg, color: cfg.color }}>{t.term_type}</span>

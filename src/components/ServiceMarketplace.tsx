@@ -506,7 +506,7 @@ export function ServiceMarketplace() {
                       key={pkg.id} 
                       className="cursor-pointer hover-elevate"
                       onClick={() => setSelectedPackage(pkg)}
-                      data-testid={`card-package-${pkg.id}`}
+                      data-testid={`card-package-${pkg.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                     >
                       <CardHeader className="pb-2">
                         <div className="flex items-start justify-between gap-2">
@@ -548,7 +548,7 @@ export function ServiceMarketplace() {
                       key={pkg.id} 
                       className="cursor-pointer hover-elevate"
                       onClick={() => setSelectedPackage(pkg)}
-                      data-testid={`row-package-${pkg.id}`}
+                      data-testid={`row-package-${pkg.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                     >
                       <CardContent className="py-4">
                         <div className="flex items-center justify-between gap-4 flex-wrap">

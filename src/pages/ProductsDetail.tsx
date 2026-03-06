@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTr
 import { ProductForm } from "@/components/forms/ProductForm";
 import type { Product } from "@/types/erp-types";
 import { Plus, CheckCircle2, XCircle, Info, Calendar } from "lucide-react";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function ProductsDetail() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -140,7 +141,7 @@ export default function ProductsDetail() {
                                 <Card
                                     key={product.id}
                                     className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
-                                    onClick={() => setSelectedProduct(product)}
+                                    onClick={() => setSelectedProduct(product)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                 >
                                     <div className={`h-1.5 w-full ${product.isActive ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : 'bg-muted'}`} />
                                     <CardContent className="p-5 flex flex-col flex-1">
@@ -174,27 +175,26 @@ export default function ProductsDetail() {
                             ))}
                         </div>
                         {/* Pagination Controls */}
-                        <div className="flex items-center justify-end gap-2 mt-4">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                disabled={page === 1}
-                            >
-                                <ChevronLeft className="h-4 w-4" /> Previous
-                            </Button>
-                            <span className="text-sm text-muted-foreground">
-                                Page {page} of {pagination.totalPages}
-                            </span>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-                                disabled={page >= pagination.totalPages}
-                            >
-                                Next <ChevronRight className="h-4 w-4" />
-                            </Button>
-                        </div>
+                        
+                                <Pagination className="mt-4">
+                                  <PaginationContent>
+                                    <PaginationItem>
+                                      <PaginationPrevious 
+                                        onClick={() => setPage(p => Math.max(1, p - 1))} 
+                                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
+                                      />
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                      <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                      <PaginationNext 
+                                        onClick={() => setPage(p => p + 1)} 
+                                        className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                      />
+                                    </PaginationItem>
+                                  </PaginationContent>
+                                </Pagination>
                     </>
                 )}
             </div>

@@ -107,7 +107,7 @@ export default function TeamSchedule() {
             cell: (person: any) => {
                 const assignment = getShiftForCell(person.id, day);
                 return (
-                    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} className="cursor-pointer h-full w-full flex items-center justify-center p-1" onClick={() => setSelectedCell({ personId: person.id, date: day })}>
+                    <div role="button" tabIndex={0} className="cursor-pointer h-full w-full flex items-center justify-center p-1" onClick={() => setSelectedCell({ personId: person.id, date: day })} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                         {assignment ? (
                             <div
                                 className={`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`}

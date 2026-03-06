@@ -36,7 +36,7 @@ export function ArCustomerList() {
                     <Card
                         key={customer.id}
                         onClick={() => setSelectedCustomer(customer)}
-                        className="group hover:border-emerald-500/50 transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer overflow-hidden border-t-2 border-t-emerald-500 hover:scale-[1.02] active:scale-[0.98]"
+                        className="group hover:border-emerald-500/50 transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer overflow-hidden border-t-2 border-t-emerald-500 hover:scale-[1.02] active:scale-[0.98]" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                     >
                         <CardContent className="p-5">
                             <div className="flex justify-between items-start mb-4">

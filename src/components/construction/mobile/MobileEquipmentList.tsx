@@ -49,7 +49,7 @@ export function MobileEquipmentCard({ equipment, onSelect }: MobileEquipmentCard
                 "border-2 transition-all",
                 equipment.alerts && equipment.alerts.length > 0 && "border-orange-400"
             )}
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() => setIsExpanded(!isExpanded)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
         >
             <CardContent className="p-4">
                 {/* Compact View */}
