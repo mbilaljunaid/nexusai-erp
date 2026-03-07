@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLedger } from "@/context/LedgerContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Calculator, Layers, Loader2, ArrowRight } from "lucide-react";
+import { Search, Layers, Loader2, ArrowRight, LayoutGrid } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -22,6 +23,10 @@ export default function GLInquiry() {
     const [periodId, setPeriodId] = useState("");
     const [ccid, setCcid] = useState("");
     const [hasSearched, setHasSearched] = useState(false);
+    const [filterSource, setFilterSource] = useState("All");
+    const [filterCategory, setFilterCategory] = useState("All");
+    const [filterCurrency, setFilterCurrency] = useState("All");
+    const [viewBy, setViewBy] = useState("line");
 
     const { data: periods } = useQuery<any[]>({
         queryKey: ["/api/gl/periods", { ledgerId: currentLedgerId }],
@@ -39,12 +44,41 @@ export default function GLInquiry() {
         refetch();
     };
 
-    const lines = inquiryData?.transactionLines || [];
+    const allLines = inquiryData?.transactionLines || [];
+
+    const filteredLines = useMemo(() => {
+        return allLines.filter((line: any) => {
+            if (filterSource !== "All" && (line.journal?.source || 'Manual') !== filterSource) return false;
+            if (filterCategory !== "All" && (line.journal?.category || 'Manual') !== filterCategory) return false;
+            if (filterCurrency !== "All" && (line.currencyCode || activeLedger?.currencyCode || 'USD') !== filterCurrency) return false;
+            return true;
+        });
+    }, [allLines, filterSource, filterCategory, filterCurrency, activeLedger]);
+
+    const groupedLines = useMemo(() => {
+        if (viewBy === "line") return null;
+        const key = viewBy === "source" ? (l: any) => l.journal?.source || 'Manual'
+            : viewBy === "category" ? (l: any) => l.journal?.category || 'Manual'
+                : (l: any) => l.currencyCode || 'USD';
+        const groups: Record<string, { label: string; debit: number; credit: number; count: number }> = {};
+        filteredLines.forEach((l: any) => {
+            const k = key(l);
+            if (!groups[k]) groups[k] = { label: k, debit: 0, credit: 0, count: 0 };
+            groups[k].debit += parseFloat(l.accountedDebit) || 0;
+            groups[k].credit += parseFloat(l.accountedCredit) || 0;
+            groups[k].count++;
+        });
+        return Object.values(groups);
+    }, [filteredLines, viewBy]);
+
+    const lines = filteredLines;
     const totalDebit = lines.reduce((acc: number, line: any) => acc + (parseFloat(line.accountedDebit) || 0), 0);
     const totalCredit = lines.reduce((acc: number, line: any) => acc + (parseFloat(line.accountedCredit) || 0), 0);
-    // Net Balance uses standard GL arithmetic: Debits are positive, Credits are negative for asset/expense, inverted for liability/revenue/equity
-    // For a generic view, we can show Net Change = Debit - Credit
     const netChange = totalDebit - totalCredit;
+
+    const uniqueSources = useMemo(() => ['All', ...Array.from(new Set(allLines.map((l: any) => l.journal?.source || 'Manual')))], [allLines]);
+    const uniqueCategories = useMemo(() => ['All', ...Array.from(new Set(allLines.map((l: any) => l.journal?.category || 'Manual')))], [allLines]);
+    const uniqueCurrencies = useMemo(() => ['All', ...Array.from(new Set(allLines.map((l: any) => l.currencyCode || activeLedger?.currencyCode || 'USD')))], [allLines, activeLedger]);
 
     return (
         <StandardPage
@@ -99,6 +133,40 @@ export default function GLInquiry() {
                             </Button>
                         </div>
                     </div>
+                    {hasSearched && (
+                        <div className="flex flex-wrap items-end gap-4 pt-4 border-t mt-4">
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">Source</Label>
+                                <Select value={filterSource} onValueChange={setFilterSource}>
+                                    <SelectTrigger className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
+                                    <SelectContent>{uniqueSources.map((s: string) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">Category</Label>
+                                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                                    <SelectTrigger className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
+                                    <SelectContent>{uniqueCategories.map((c: string) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">Currency</Label>
+                                <Select value={filterCurrency} onValueChange={setFilterCurrency}>
+                                    <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+                                    <SelectContent>{uniqueCurrencies.map((c: string) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-1 ml-auto">
+                                <Label className="text-xs text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-3 w-3" /> View By</Label>
+                                <ToggleGroup type="single" value={viewBy} onValueChange={(v) => v && setViewBy(v)} className="border rounded-md">
+                                    <ToggleGroupItem value="line" className="text-xs h-8 px-3">Line</ToggleGroupItem>
+                                    <ToggleGroupItem value="source" className="text-xs h-8 px-3">Source</ToggleGroupItem>
+                                    <ToggleGroupItem value="category" className="text-xs h-8 px-3">Category</ToggleGroupItem>
+                                    <ToggleGroupItem value="currency" className="text-xs h-8 px-3">Currency</ToggleGroupItem>
+                                </ToggleGroup>
+                            </div>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 

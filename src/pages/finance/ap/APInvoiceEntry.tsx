@@ -49,6 +49,11 @@ export default function APInvoiceEntry() {
         paymentCurrencyCode: "USD",
         exchangeRate: "1.0",
         payGroupId: "",
+        paymentPriority: "50",
+        isRecurring: false,
+        recurringFrequency: "Monthly",
+        recurringEndDate: "",
+        distributionSetId: "",
         description: "",
         paymentTerms: "Net 30",
         businessUnitId: activeBu.id || "",
@@ -624,6 +629,56 @@ export default function APInvoiceEntry() {
                                     )) : <SelectItem value="none" disabled>No custom pay groups</SelectItem>}
                                 </SelectContent>
                             </Select>
+                        </div>
+                        {/* Oracle Parity: Payment Priority */}
+                        <div className="space-y-2">
+                            <Label>Payment Priority <span className="text-xs text-muted-foreground">(1 = Highest)</span></Label>
+                            <Input
+                                type="number" min={1} max={99}
+                                value={header.paymentPriority}
+                                onChange={e => setHeader({ ...header, paymentPriority: e.target.value })}
+                                className="font-mono w-24"
+                            />
+                        </div>
+                        {/* Oracle Parity: Distribution Set */}
+                        <div className="space-y-2">
+                            <Label>Distribution Set</Label>
+                            <Select value={header.distributionSetId || undefined} onValueChange={v => setHeader({ ...header, distributionSetId: v })}>
+                                <SelectTrigger><SelectValue placeholder="None (manual distributions)" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="ds-it">IT Overhead Allocation</SelectItem>
+                                    <SelectItem value="ds-mk">Marketing – 50/50 Split</SelectItem>
+                                    <SelectItem value="ds-ops">Operations – Dept Allocation</SelectItem>
+                                    <SelectItem value="ds-admin">Admin – G&A Pool</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        {/* Oracle Parity: Recurring Invoice */}
+                        <div className="space-y-2 md:col-span-2">
+                            <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/20">
+                                <Checkbox id="recurring" checked={header.isRecurring} onCheckedChange={v => setHeader({ ...header, isRecurring: !!v })} />
+                                <Label htmlFor="recurring" className="cursor-pointer font-medium">Recurring Invoice</Label>
+                                {header.isRecurring && (
+                                    <div className="flex items-center gap-4 ml-4">
+                                        <div className="space-y-1">
+                                            <Label className="text-xs text-muted-foreground">Frequency</Label>
+                                            <Select value={header.recurringFrequency} onValueChange={v => setHeader({ ...header, recurringFrequency: v })}>
+                                                <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Weekly">Weekly</SelectItem>
+                                                    <SelectItem value="Monthly">Monthly</SelectItem>
+                                                    <SelectItem value="Quarterly">Quarterly</SelectItem>
+                                                    <SelectItem value="Annually">Annually</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Label className="text-xs text-muted-foreground">End Date</Label>
+                                            <DatePicker value={header.recurringEndDate} onChange={v => setHeader({ ...header, recurringEndDate: v })} />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <div className="space-y-2">
                             <Label>Control Amount</Label>

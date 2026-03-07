@@ -1,0 +1,266 @@
+# NexusAI vs Oracle Fusion: Module-by-Module Parity Assessment
+## PART 1: Financial Management Suite
+*Page / Form / Field / Granular Level Comparison*
+
+Legend: ✅ = Exists in NexusAI | ⚠️ = Partial / Simplified | ❌ = Missing entirely
+
+---
+
+## Module 1 — General Ledger (GL)
+**Oracle Equivalent:** Oracle Fusion General Ledger
+
+### NexusAI Pages Currently Existing
+- ✅ [JournalEntries.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/JournalEntries.tsx) — Journal entry list with filters, date/period search
+- ✅ [ChartOfAccounts.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ChartOfAccounts.tsx) — COA viewer with segment structure
+- ✅ [GeneralLedgerDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/GeneralLedgerDetail.tsx) — Ledger header detail view
+- ✅ [AccountReconciliation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AccountReconciliation.tsx) — Manual reconciliation console
+- ✅ [VarianceAnalysis.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/VarianceAnalysis.tsx) — Budget vs Actual comparison
+- ✅ [gl/](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/lib/api.ts#222-223) directory — 47 sub-pages (period close, allocations, subledger transfer, etc.)
+- ✅ [IntercompanyEliminations.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/IntercompanyEliminations.tsx) / [IntercompanyReconciliation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/IntercompanyReconciliation.tsx)
+- ✅ [FinancialConsolidation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/FinancialConsolidation.tsx) — Top-level consolidation engine page
+- ✅ [ConsolidationEngine.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ConsolidationEngine.tsx)
+- ✅ [BudgetPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BudgetPlanning.tsx) / [BudgetingDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BudgetingDashboard.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Manage Journals — Inquiry UI** | ⚠️ Partial | Oracle features a pivot-style Inquiry with multi-dimension drill-down (Period, Ledger, Source, Category, Currency). Nexus has a flat table. Missing: Balance Inquiry cube navigation. |
+| **Account Combinations (Accounting Flexfield)** | ⚠️ Partial | COA exists but lacks the KFF cross-validation rule (CVR) builder. Oracle lets you define rules like "Dept 1000 can only use Exp accounts 5000–5999." |
+| **Subledger Accounting Workbench** | ❌ Missing | Oracle has a full SLA configuration UI: Event Classes, JLTs, ADRs, Mapping Sets. Nexus has the DB schema ([sla.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/sla.ts)) but no configurator UI. |
+| **Financial Statement Generator (FSG)** | ❌ Missing | Oracle FSG lets accountants drag-and-drop account ranges into P&L / Balance Sheet templates. Nexus uses hardcoded report tables. |
+| **Web ADI / ADFDI (Excel Upload)** | ❌ Missing | Mass journal upload via Excel spreadsheet with oracle-defined templates. Critical for month-end close entries. |
+| **Mass Allocations Builder** | ⚠️ Partial | Oracle has a form-based formula builder (Source, Basis, Target accounts) with statistical UOM support. Nexus has a simplified version without formula conditionals. |
+| **Translation / Revaluation Program** | ❌ Missing | Automated currency translation at period end (ASC 830 / IAS 21). UI to select ledger, period, year-to-date rates. Missing UI and background processor. |
+| **Open/Close Periods (per Subledger)** | ⚠️ Partial | Oracle has granular period control at AP/AR/FA/INV subledger level with transition rules. Nexus controls periods at the Ledger level only. |
+| **Statistical Ledger / Reporting Currency** | ❌ Missing | Oracle supports "Group" ledgers (consolidation ledgers) and stat ledgers for headcount/FTE data alongside financial data. |
+| **GL Balance Cube Inquiry** | ❌ Missing | Oracle provides a live pivot table letting users select Any Dimension (Account, Period, Currency) and instantly see aggregated balances. |
+
+### Key Field-Level Gaps (Journal Entry Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Journal Source | ✅ Exists |
+| Journal Category | ✅ Exists |
+| Accounting Period | ✅ Exists |
+| Currency / Conversion Rate Type / Rate | ⚠️ Currency exists; Rate Type dropdown (Spot, Corporate, User) missing |
+| Reversing Journal (Auto-Reverse checkbox) | ❌ Missing |
+| Reference / Description per Line | ✅ Exists |
+| Statistical Amount (for Statistical Ledger) | ❌ Missing |
+| Encumbrance Type | ❌ Missing |
+| Attachment / Supporting Doc upload | ⚠️ Generic file picker exists; not linked to journal record |
+
+---
+
+## Module 2 — Accounts Payable (AP)
+**Oracle Equivalent:** Oracle Fusion Payables
+
+### NexusAI Pages Currently Existing
+- ✅ [SupplierInvoices.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SupplierInvoices.tsx) — Invoice list
+- ✅ [VendorInvoiceEntry.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/VendorInvoiceEntry.tsx) — Invoice creation form
+- ✅ [ThreeWayMatch.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ThreeWayMatch.tsx) — PO/Receipt/Invoice matching screen
+- ✅ [PaymentScheduling.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PaymentScheduling.tsx) — Payment batch setup
+- ✅ [PaymentFlow.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PaymentFlow.tsx)
+- ✅ `finance/` ap sub-directory — approval flows, holds, payment runs
+- ✅ [ApprovalWorkflow.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ApprovalWorkflow.tsx) / [ApprovalEscalations.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ApprovalEscalations.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Invoice Workbench** | ⚠️ Partial | Oracle's workbench is a tabbed, multi-line form with PO matching, distributions, holds, and scheduled payments in one view. Nexus splits these across pages. |
+| **2-Way / 3-Way / 4-Way Match UI** | ⚠️ Partial | ThreeWayMatch exists but lacks configurable tolerance definitions (Qty Variance %, Price Variance %), inspection holds (4-way), and match-in-full vs. partial match controls. |
+| **Payment Process Request (PPR)** | ❌ Missing | Oracle's payment run engine. Allows selecting invoices by Due Date, Pay Group, Bank Account, generating an ISO 20022 / NACHA payment file. Nexus has static payment scheduling but no PPR execution. |
+| **Withholding Tax (WHT) Setup & Extraction** | ❌ Missing | Oracle auto-calculates WHT at invoice/payment time. Exposes a "Withholding Tax Groups" form and generates WHT certificates for vendors. |
+| **Supplier Merge** | ❌ Missing | Merging duplicate supplier records and re-pointing all transactions. |
+| **Invoice Holds & Release Workbench** | ⚠️ Partial | Oracle has a Hold Types configurator (matching holds, manual holds, tax holds). Nexus has generic approval hold status. |
+| **Create Accounting (AP → GL)** | ❌ Missing | The background worker that runs SLA rules and posts AP journals to the GL. Nexus posts directly with no SLA intermediary. |
+| **Payables Open Interface (Import)** | ❌ Missing | Bulk invoice import via staging tables from external systems. |
+| **Invoice Installments / Payment Schedule Tab** | ❌ Missing | Oracle lets you split a single invoice into multiple payment installments with different due dates / discount dates. |
+
+### Key Field-Level Gaps (Invoice Entry Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Invoice Number / Date / Type | ✅ Exists |
+| Supplier / Supplier Site | ✅ Exists |
+| Liability Account | ⚠️ Account picker exists; SLA-based derivation missing |
+| Pay Group | ❌ Missing |
+| Payment Priority (1–99) | ❌ Missing |
+| Payment Terms (early pay discount logic) | ⚠️ Terms exist; discount calculation engine missing |
+| Tax Classification Code | ⚠️ Basic tax code exists |
+| Withholding Tax Group | ❌ Missing |
+| Distribution Set | ❌ Missing |
+| Invoice Lines → Distribution splits | ⚠️ Exists; lacks project costing distribution |
+| Hold / Release (per line-level) | ❌ Missing |
+| Recurring Invoice template | ❌ Missing |
+
+---
+
+## Module 3 — Accounts Receivable (AR)
+**Oracle Equivalent:** Oracle Fusion Receivables
+
+### NexusAI Pages Currently Existing
+- ✅ [AccountsReceivable.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AccountsReceivable.tsx) — AR dashboard
+- ✅ [AccountsDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AccountsDetail.tsx) — Customer account detail (large, 21KB)
+- ✅ [AgingReport.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AgingReport.tsx) — Aging buckets report
+- ✅ [CreditManagementCollections.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CreditManagementCollections.tsx)
+- ✅ [InvoiceGenerator.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/InvoiceGenerator.tsx) / [InvoiceList.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/InvoiceList.tsx) / [InvoiceDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/InvoiceDetail.tsx)
+- ✅ [RevenueForecasting.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RevenueForecasting.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Transactions Workbench** | ⚠️ Partial | Oracle's TX Workbench has Header + Lines tabs (goods/service lines with unit price, qty, tax), Distributions tab (auto-derived from AutoAccounting rules), and Freight lines. Nexus creates invoices at header level. |
+| **AutoAccounting Setup** | ❌ Missing | Rules-based GL account derivation for AR (e.g., Revenue account = Salesperson territory + Product Line). |
+| **AutoInvoice Import** | ❌ Missing | Mass import of invoices from OM/Projects via a mapping rule engine. |
+| **Receipt Applications** | ⚠️ Partial | Basic receipt application exists. Missing: Line-level application, On-Account credits, Unapplied/Unidentified receipt resolution. |
+| **Lockbox Processing (BAI2/EDI)** | ❌ Missing | Automated bank deposit file parsing and receipt auto-matching. |
+| **Advanced Collections — Strategy Engine** | ❌ Missing | Daily scoring engine that advances customer delinquency through Step 1 (Email) → Step 2 (Call) → Step 3 (Legal based on score and days delinquent. |
+| **Customer Profile Classes** | ⚠️ Partial | Credit limit exists at customer level. Missing: Profile Class template that cascades to thousands of customers (Credit limit, Payment Terms, Statement cycle). |
+| **Debit Memos / Credit Memos** | ⚠️ Partial | Invoice creation exists; dedicated DM/CM transaction types with memo line reasons and auto-GL offsetting missing. |
+| **Charge Back Setup** | ❌ Missing |
+| **Dunning Letter Print / Email** | ❌ Missing | Oracle generates PDF dunning letters via BI Publisher or sends emails automatically. |
+| **Adjustment Approvals** | ❌ Missing | Oracle routes AR adjustments above a threshold to a supervisor for approval |
+
+### Key Field-Level Gaps (Customer Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Customer Number / Name | ✅ |
+| Customer Class | ✅ |
+| Account Status (Active/Inactive) | ✅ |
+| Profile Class | ❌ Missing |
+| Credit Limit / Currency | ⚠️ Exists but no auto-hold on new orders |
+| Payment Terms | ✅ |
+| Statement Cycle | ❌ Missing |
+| AutoCash Rule Set | ❌ Missing |
+| Collector | ❌ Missing |
+| Lockbox Number | ❌ Missing |
+| Ship-To / Bill-To Site | ✅ Partially |
+| Tax Registration Number | ⚠️ |
+
+---
+
+## Module 4 — Cash Management (CE)
+**Oracle Equivalent:** Oracle Fusion Cash Management
+
+### NexusAI Pages Currently Existing
+- ✅ [BankReconciliation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BankReconciliation.tsx)
+- ✅ [MatchRuleList.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MatchRuleList.tsx) / [MatchRuleDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MatchRuleDetail.tsx) — Auto-reconciliation rule definition
+- ✅ `treasury/` sub-directory — Bank positions, FX
+- ✅ [TreasuryCommandCenter.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TreasuryCommandCenter.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Bank Statement Import (BAI2 / SWIFT MT940 / CAMT.053)** | ❌ Missing | Oracle parses bank statement files. Nexus requires manual entry. |
+| **Auto-Reconciliation Engine** | ⚠️ Partial | Match rules exist (MatchRuleList) but the background engine that applies them automatically against imported statements is missing. |
+| **Manual Reconciliation Dual-Pane UI** | ⚠️ Partial | Oracle has a drag-and-drop UI where unreconciled bank lines are on the left and system transactions on the right. Nexus has a simpler click-to-match. |
+| **Bank Account Validation (IBAN/SWIFT)** | ❌ Missing |
+| **Cash Forecasting Workbench** | ❌ Missing | Multi-day/week cash position forecast by bank account / currency. |
+| **Notional Cash Pooling** | ❌ Missing | Grouping multiple bank accounts for interest optimization across entities. |
+| **Bank Statement Line Exceptions Workbench** | ❌ Missing | Lines that could not be matched require a dedicated review UI with search / batch-correct. |
+
+---
+
+## Module 5 — Fixed Assets (FA)
+**Oracle Equivalent:** Oracle Fusion Assets
+
+### NexusAI Pages Currently Existing
+- ✅ [FixedAssetsPage.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/FixedAssetsPage.tsx) — Basic asset list
+- ✅ `fixed-assets/` sub-directory (1 child page)
+- ✅ [fixedAssets.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/fixedAssets.ts) schema — Very comprehensive (depreciation, leases, retirements)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Asset Workbench (Multi-tab)** | ❌ Missing | Oracle's main form has: Main (details), Books (depreciation rules per book), Assignments (employee, location, cost center), Source Lines (AP invoice links). |
+| **Mass Additions Interface** | ❌ Missing | AP invoices coded to capital accounts flow into a queue. Accountants review, merge duplicate lines, and "capitalize" them into assets. |
+| **Run Depreciation UI** | ❌ Missing | Oracle has a submission form: select Book, Period, and run. Background engine calculates depreciation and posts to GL. |
+| **Asset Retirements Form** | ❌ Missing | Recording disposals/sales. Fields: Retirement Date, Units, Cost Retired, Proceeds of Sale, Gain/Loss Book. |
+| **Asset Transfers** | ❌ Missing | Changing employee, location, or cost center. Generates cost transfer journal. |
+| **Asset Reclassification** | ❌ Missing | Moving an asset between asset categories. |
+| **Capital Projects Interface** | ❌ Missing | Assets under construction (CIP) tracked in Projects, then "placed in service" and transferred to FA. |
+| **Tax Book Configuration** | ❌ Missing | Separate depreciation books for tax purposes (MACRS, Bonus Depreciation). |
+| **Prorate Convention Setup** | ❌ Missing | Mid-Month, Half-Year, Full-Month timing rules for depreciation start. |
+| **Physical Inventory Reconciliation** | ❌ Missing | Upload results of a barcode scan audit and reconcile against system records. |
+
+---
+
+## Module 6 — Tax Engine (eBTax / E-Business Tax)
+**Oracle Equivalent:** Oracle E-Business Tax
+
+### NexusAI Pages Currently Existing
+- ✅ [TaxManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TaxManagement.tsx) — 23KB, significant tax management UI
+- ✅ `tax/` sub-directory — 6 pages
+- ✅ [ComplianceTax.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ComplianceTax.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Tax Regime Definition** | ❌ Missing | Top of the hierarchy. Oracle Regime = "VAT" or "US Sales Tax." Nexus has flat tax codes. |
+| **Tax Configuration (Regime → Tax → Status → Rate)** | ❌ Missing | The full 4-level hierarchy. Each level has its own setup form in Oracle. |
+| **Determining Factor Sets** | ❌ Missing | Rules that determine which Tax applies based on Ship-From/To geography, item category, customer class. |
+| **Tax Simulator** | ❌ Missing | Oracle has a simulator UI where a consultant can enter a mock transaction and see which tax rates were applied and by which rule. |
+| **Supplier Tax Registration** | ⚠️ Partial | Tax registration number field exists. Missing: Country-specific validation, tax classification by regime. |
+| **Tax Reporting (VAT Returns)** | ❌ Missing | Oracle generates output files for country-specific VAT submissions (Making Tax Digital in UK, etc.). |
+
+---
+
+## Module 7 — Expense Management
+**Oracle Equivalent:** Oracle Fusion Expenses
+
+### NexusAI Pages Currently Existing
+- ✅ [ExpenseManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ExpenseManagement.tsx) — 14.8KB, large primary expense page
+- ✅ [ExpensesDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ExpensesDetail.tsx) — 26KB, very large detailed form
+- ✅ [ExpenseTracking.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ExpenseTracking.tsx) — 14.5KB
+- ✅ [ExpensePolicyManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ExpensePolicyManagement.tsx) — 11.8KB, policy rules  
+- ✅ [ExpenseCalculators.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ExpenseCalculators.tsx) — 19.7KB, with calculators
+- ✅ [CorporateCardReconciliation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CorporateCardReconciliation.tsx) — 14.4KB
+- ✅ [TravelManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TravelManagement.tsx) / [TravelItinerary.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TravelItinerary.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Expense Report Mobile App** | ❌ Missing | Oracle Expenses has a dedicated mobile UI with receipt photo capture using AI OCR for amount/merchant extraction. |
+| **Audit Rule Sets** | ⚠️ Partial | Nexus has policy rules. Oracle has structured audit rule sets (e.g., "Auto-flag if hotel expense > policy limit by >20%"). |
+| **Mileage Calculation Engine** | ⚠️ Partial | Nexus has calculators. Missing: Google Maps integration to validate start/end point and calculate IRS-rate mileage automatically. |
+| **Per Diem Schedules** | ⚠️ Partial | Exists but lacks government-standard GSA rate tables by city/country. |
+| **Cash Advance Reconciliation** | ❌ Missing | Tracking cash advances issued to employees and reconciling against submitted expense reports. |
+| **Expense Reimbursement via Payroll** | ❌ Missing | Oracle can push approved expense reimbursements directly as payroll elements. |
+
+---
+
+## Module 8 — Intercompany (AGIS)
+**Oracle Equivalent:** Oracle Advanced Global Intercompany System
+
+### NexusAI Pages Currently Existing
+- ✅ [IntercompanyEliminations.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/IntercompanyEliminations.tsx) — 6.9KB
+- ✅ [IntercompanyReconciliation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/IntercompanyReconciliation.tsx) — 7.8KB
+- ✅ `intercompany/` sub-directory — 7 pages
+- ✅ [intercompany.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/intercompany.ts) schema — Excellent: IC Batches, Headers, Lines, Transfer Pricing, Netting, Disputes
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **IC Transaction Entry (Initiator side)** | ✅ Good | NexusAI schema and pages cover this well. |
+| **Receiver Acknowledgement/Approval UI** | ⚠️ Partial | Oracle has a dedicated "Receiver Workbench" where the receiving entity approves or rejects the IC charge. |
+| **IC Invoice Generation** | ❌ Missing | Oracle auto-generates AR invoices on the provider side and AP invoices on the receiver side from approved IC transactions. The backend bridge is missing. |
+| **Elimination Rules Configurator** | ❌ Missing | Rules that define which account combinations are eliminated during consolidation (IC Payables vs. IC Receivables). |
+| **IC Netting Settlement** | ⚠️ Partial | Session schema exists. Missing: The settlement payment generation (wire instructions to a bank or netting via AP/AR offset). |
+
+---
+
+## Module 9 — Lease Accounting (ASC 842 / IFRS 16)
+**Oracle Equivalent:** Oracle Lease Accounting
+
+### NexusAI Pages Currently Existing
+- ✅ `leases/` sub-directory — 12 pages
+- ✅ [lease.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/lease.ts) schema — Lease schedules, ROU assets, liabilities
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Lease Abstraction Form** | ⚠️ Partial | Core sections exist but missing: Embedded Derivative determination, Purchase Option, Residual Value Guarantee fields. |
+| **Modification Wizards** | ❌ Missing | Oracle guides the user through a lease modification assessment (Is it a new lease? Remeasure liability?). |
+| **Lease Committee Approval Workflow** | ❌ Missing | Routing new high-value leases for review before commencement. |
+| **Subledger Integration (ROU Asset → FA Book)** | ❌ Missing | Oracle creates a corresponding Fixed Asset record for the ROU asset automatically. |
+| **ASC 842 Disclosure Report** | ❌ Missing | Maturity analysis report of undiscounted future cash flows required for financial statement disclosures. |
+
+---

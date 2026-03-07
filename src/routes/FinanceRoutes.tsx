@@ -15,6 +15,7 @@ import FixedAssetWorkbench from "@/pages/finance/FixedAssetWorkbench";
 import APInvoices from "@/pages/finance/ap/APInvoices";
 import APInvoiceEntry from "@/pages/finance/ap/APInvoiceEntry";
 import APInvoiceDetail from "@/pages/finance/ap/APInvoiceDetail";
+import InvoiceInstallments from "@/pages/finance/ap/InvoiceInstallments";
 import APDashboard from "@/pages/finance/ap/APDashboard";
 import GLDashboard from "@/pages/finance/gl/GLDashboard";
 import APSuppliers from "@/pages/finance/ap/APSuppliers";
@@ -131,6 +132,11 @@ import RevenuePeriodClose from "@/pages/RevenuePeriodClose";
 import AccountAnalysisReport from "@/pages/gl/AccountAnalysisReport";
 import GLInquiry from "@/pages/gl/GLInquiry";
 import GLAllocations from "@/pages/gl/GLAllocations";
+import BalanceCubeInquiry from "@/pages/gl/BalanceCubeInquiry";
+import StatisticalLedgerSetup from "@/pages/gl/StatisticalLedgerSetup";
+import CustomerProfileClasses from "@/pages/finance/ar/CustomerProfileClasses";
+import TaxRegimeSetup from "@/pages/tax/TaxRegimeSetup";
+import TaxDeterminingFactors from "@/pages/tax/TaxDeterminingFactors";
 
 // Lease & Contracts
 import LeasePortfolioWorkbench from "@/pages/leases/LeasePortfolioWorkbench";
@@ -203,6 +209,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ap/suppliers/:id" component={APSupplierDetail} />
                 <Route path="/finance/ap/suppliers" component={APSuppliers} />
                 <Route path="/finance/ap/invoices/new" component={APInvoiceEntry} />
+                <Route path="/finance/ap/invoices/:id/installments" component={InvoiceInstallments} />
                 <Route path="/finance/ap/invoices/:id" component={APInvoiceDetail} />
                 <Route path="/finance/ap/invoices" component={APInvoices} />
                 <Route path="/finance/ap/payments/new" component={CreatePPR} />
@@ -252,6 +259,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/revenue-schedules" component={ArRevenueWorkbench} />
                 <Route path="/finance/ar/revenue" component={ArRevenueWorkbench} />
                 <Route path="/finance/ar/collections" component={CollectionsWorkbench} />
+                <Route path="/finance/ar/profile-classes" component={CustomerProfileClasses} />
                 <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
 
                 <Route path="/finance/gl" component={GLDashboard} />
@@ -266,6 +274,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/gl/reports" component={FinancialReports} />
                 <Route path="/finance/gl/reports/account-analysis" component={AccountAnalysisReport} />
                 <Route path="/finance/gl/inquiry" component={GLInquiry} />
+                <Route path="/finance/gl/inquiry/balance-cube" component={BalanceCubeInquiry} />
                 <Route path="/finance/gl/audit" component={AuditLogsPage} />
                 <Route path="/finance/gl/period-close" component={CloseDashboard} />
                 <Route path="/finance/gl/budgets" component={BudgetManager} />
@@ -294,6 +303,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/gl/config/translation" component={TranslationRules} />
                 <Route path="/finance/gl/config/sources" component={SourceCategorySetup} />
                 <Route path="/finance/gl/config/rate-types" component={GLRateTypes} />
+                <Route path="/finance/gl/config/statistical-ledgers" component={StatisticalLedgerSetup} />
 
                 <Route path="/finance/gl/config/controls" component={LedgerControlSetup} />
                 <Route path="/finance/gl/intercompany" component={IntercompanyRules} />
@@ -324,6 +334,8 @@ export default function FinanceRoutes() {
                 <Route path="/finance/intercompany/data-access" component={ICDataAccessManager} />
 
                 <Route path="/finance/tax" component={TaxManagement} />
+                <Route path="/finance/tax/regimes" component={TaxRegimeSetup} />
+                <Route path="/finance/tax/determining-factors" component={TaxDeterminingFactors} />
                 <Route path="/finance/expense-management" component={ExpenseManagement} />
 
                 <Route path="/finance/ap/settings">

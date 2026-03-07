@@ -76,6 +76,9 @@ export default function JournalEntry() {
         batchName: "",
         description: "",
         currencyCode: "USD",
+        conversionRateType: "Corporate",
+        conversionRate: "",
+        encumbranceType: "None",
         periodId: "",
         category: "Manual",
         reversalPeriodId: "",
@@ -116,6 +119,9 @@ export default function JournalEntry() {
                 batchName: data.batchName || "",
                 description: data.description || "",
                 currencyCode: data.currencyCode || "USD",
+                conversionRateType: data.conversionRateType || "Corporate",
+                conversionRate: data.conversionRate || "",
+                encumbranceType: data.encumbranceType || "None",
                 periodId: data.periodId || "",
                 category: data.category || data.source || "Manual",
                 reversalPeriodId: data.reversalPeriodId || "",
@@ -423,6 +429,46 @@ export default function JournalEntry() {
                                 {periods.map((p: any) => (
                                     <SelectItem key={p.id} value={p.periodName}>{p.periodName}</SelectItem>
                                 ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    {/* Oracle Parity: Currency Rate Type + Encumbrance */}
+                    <div className="space-y-2">
+                        <Label>Conversion Rate Type</Label>
+                        <Select value={header.conversionRateType} onValueChange={(val) => setHeader({ ...header, conversionRateType: val, conversionRate: val !== "User" ? "" : header.conversionRate })}>
+                            <SelectTrigger className="bg-muted/30">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Spot">Spot</SelectItem>
+                                <SelectItem value="Corporate">Corporate</SelectItem>
+                                <SelectItem value="User">User</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    {header.conversionRateType === "User" && (
+                        <div className="space-y-2">
+                            <Label>Conversion Rate</Label>
+                            <Input
+                                type="number"
+                                step="0.000001"
+                                value={header.conversionRate}
+                                onChange={(e) => setHeader({ ...header, conversionRate: e.target.value })}
+                                placeholder="e.g. 1.245678"
+                                className="bg-muted/30 font-mono"
+                            />
+                        </div>
+                    )}
+                    <div className="space-y-2">
+                        <Label>Encumbrance Type</Label>
+                        <Select value={header.encumbranceType} onValueChange={(val) => setHeader({ ...header, encumbranceType: val })}>
+                            <SelectTrigger className="bg-muted/30">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="None">None (Actuals)</SelectItem>
+                                <SelectItem value="Commitment">Commitment</SelectItem>
+                                <SelectItem value="Obligation">Obligation</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

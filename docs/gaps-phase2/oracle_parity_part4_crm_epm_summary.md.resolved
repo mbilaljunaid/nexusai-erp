@@ -1,0 +1,245 @@
+# NexusAI vs Oracle Fusion: Module-by-Module Parity Assessment
+## PART 4: CRM / CX Suite + EPM Suite
+*Page / Form / Field / Granular Level Comparison*
+
+Legend: ✅ = Exists in NexusAI | ⚠️ = Partial / Simplified | ❌ = Missing entirely
+
+---
+
+## Module 27 — CRM Sales (SFA) & Territory Management
+**Oracle Equivalent:** Oracle CX Sales (Fusion Sales)
+
+### NexusAI Pages Currently Existing
+- ✅ [CRM.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CRM.tsx) (6.2KB) — CRM landing
+- ✅ `crm/` sub-directory — **38 pages** (extensive)
+- ✅ [LeadsDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeadsDetail.tsx) (17.7KB) — Full lead detail view
+- ✅ [ContactsDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ContactsDetail.tsx) (20.9KB)
+- ✅ [AccountsDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AccountsDetail.tsx) (21.8KB)
+- ✅ [OpportunitiesDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OpportunitiesDetail.tsx) (23.2KB)
+- ✅ [QuotesDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/QuotesDetail.tsx) (19.8KB) / [QuoteBuilder.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/QuoteBuilder.tsx)
+- ✅ [SalesPipeline.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SalesPipeline.tsx) / [ForecastDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ForecastDashboard.tsx) (7.8KB)
+- ✅ [LeadScoringDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeadScoringDashboard.tsx) (8.5KB) / [LeadScoringAnalytics.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeadScoringAnalytics.tsx)
+- ✅ [SalesCommissionManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SalesCommissionManagement.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Territory Management Setup (Rule Builder)** | ❌ Missing | Oracle lets admins define territory rules: "Zip Code IN (90210, 90211) AND Industry = Technology → Assign to John Doe." Missing rule configurator and auto-assignment engine. |
+| **Sales Quota Management** | ⚠️ Partial | Commission management exists. Missing: A quota distribution UI where sales managers break down annual targets to rep level by month/quarter with approval. |
+| **Collaborative Forecasting (Rollup)** | ⚠️ Partial | ForecastDashboard.tsx exists. Missing: Rep submits a commit → Manager adjusts rollup → VP sees consolidated pipeline call. |
+| **Activity Management (Full Oracle)** | ⚠️ Partial | [SalesActivities.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SalesActivities.tsx) exists. Missing: Oracle's rich task/call/meeting logging with contact linkage and follow-up reminder engine. |
+| **Adaptive Intelligence (AI Scoring)** | ⚠️ Partial | LeadScoring pages exist. Missing: Oracle AI's predictive model that uses historical win rates by industry/size/region to produce an Next Best Action recommendation. |
+| **Partner Relationship Management (PRM)** | ✅ `partner/` schema exists. [PartnersPage.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PartnersPage.tsx) exists (21KB). Relatively strong. |
+| **Mobile Sales App** | ⚠️ Partial | [MobileApps.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MobileApps.tsx) exists generically. Missing: Dedicated offline-capable CRM mobile UI with voice-to-text note capture. |
+
+### Key Field-Level Gaps (Opportunity Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Opportunity Name / Account | ✅ |
+| Close Date / Stage | ✅ |
+| Amount / Probability | ✅ |
+| Win/Loss Reason (configurable picklist) | ⚠️ |
+| Primary Contact | ✅ |
+| Territory | ❌ Missing |
+| Overlay Sales Reps (multi-rep credit split) | ❌ Missing |
+| Forecast Category (Commit/Best Case/Pipeline) | ⚠️ Partial |
+| Competitor (with win/loss tracking) | ❌ Missing |
+| Lead Source | ✅ |
+| Next Step | ⚠️ |
+| Revenue Items (split by product) | ⚠️ Line items exist |
+
+---
+
+## Module 28 — CRM Marketing (Oracle Eloqua / CX Marketing)
+**Oracle Equivalent:** Oracle CX Marketing (Eloqua)
+
+### NexusAI Pages Currently Existing
+- ✅ [CampaignsDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CampaignsDashboard.tsx) (5.5KB) / [CampaignsDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CampaignsDetail.tsx) (15KB — very large)
+- ✅ [Marketing.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Marketing.tsx) (6.3KB) / [MarketingEngagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MarketingEngagement.tsx) (7.2KB)
+- ✅ [LeadConversion.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeadConversion.tsx) — Lead conversion tracking
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Visual Campaign Flow Builder (Node Canvas)** | ❌ Missing | Oracle Eloqua uses a drag-and-drop canvas with conditional nodes (Send Email → IF Opened → Wait 3 Days → Send SMS ELSE → Re-queue). |
+| **Email Template Builder (WYSIWYG)** | ❌ Missing | Visual HTML email builder with dynamic merge fields and preview by device. |
+| **Mass Email Blast Engine** | ❌ Missing | Sending thousands of personalized emails via a queued delivery engine (SMTP/SendGrid). |
+| **Marketing Attribution Model** | ❌ Missing | First-touch, last-touch, or multi-touch attribution assigning credit for each Won Opportunity to the campaigns that influenced it. |
+| **UTM Tracking / Web Beacons** | ❌ Missing | Tracking email open rates (pixel), click rates, and landing page visits with UTM parameters. |
+| **Segment Builder (Dynamic Lists)** | ⚠️ Partial | Campaign members exist. Missing: Rule-based dynamic segment (e.g., "All Contacts with Industry = Finance AND Last Activity > 90 Days"). |
+| **A/B Testing Framework** | ❌ Missing | Split-testing email subject lines or content and measuring statistical significance of opens/clicks. |
+
+---
+
+## Module 29 — CPQ (Configure, Price, Quote)
+**Oracle Equivalent:** Oracle CPQ Cloud (Big Machines)
+
+### NexusAI Pages Currently Existing
+- ✅ [QuotesDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/QuotesDetail.tsx) (19.8KB) — Very rich quote UI
+- ✅ [QuoteBuilder.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/QuoteBuilder.tsx) (4.3KB)
+- ✅ [QuotesAndOrders.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/QuotesAndOrders.tsx) (6.5KB)
+- ✅ [ProductsDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ProductsDetail.tsx) (19.6KB)
+- ✅ [PricingRebatesEngine.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PricingRebatesEngine.tsx) (6.6KB)
+- ✅ [PricingPromotionManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PricingPromotionManagement.tsx) (6.3KB)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Product Configurator (Inclusion/Exclusion Rules)** | ❌ **CRITICAL** | Oracle CPQ has a rule engine: "If Server = Dell PowerEdge THEN require PDU ELSE exclude 110V Power Supply." No rules-engine exists in Nexus. |
+| **Advanced Pricing (Qualifiers + Modifiers)** | ❌ **CRITICAL** | Oracle Advanced Pricing: Qualifiers determine who is eligible. Modifiers calculate the discount. Multi-dimensional pricing matrices. |
+| **Quote Guided Selling** | ❌ Missing | Oracle guides a sales rep through a structured questionnaire to automatically filter and recommend products based on customer requirements. |
+| **Margin Analysis (Deal Desk)** | ⚠️ Partial | Some pricing analysis exists. Missing: Real-time margin calculator with cost roll-up, floor price warnings, approval triggers when margin < threshold. |
+| **Contract Terms Library (CLM)** | ❌ Missing | Oracle CPQ integrates with Contract Lifecycle Management (CLM) to auto-include standard terms or flag deviations. |
+| **E-Signature Integration** | ❌ Missing | DocuSign/Adobe Sign integration to route finalized quotes for electronic signature and auto-create an order upon signature. |
+| **Quote Approval Workflow** | ⚠️ Partial | Approval concept exists. Missing: Multi-level approval based on discount %, deal size, or margin floor violations. |
+
+---
+
+## Module 30 — CRM Service Cloud (Case Management)
+**Oracle Equivalent:** Oracle Service Cloud / B2C Service
+
+### NexusAI Pages Currently Existing
+- ✅ [Service.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Service.tsx) (5.4KB)
+- ✅ [CasesDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CasesDetail.tsx) (11.8KB) — Rich case view
+- ✅ [ServiceRequestPortal.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ServiceRequestPortal.tsx) (9.9KB) / [ServiceRequestQueue.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ServiceRequestQueue.tsx)
+- ✅ [KnowledgeManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/KnowledgeManagement.tsx) (7.5KB)
+- ✅ [TicketDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TicketDashboard.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Omnichannel Routing Engine** | ❌ Missing | Oracle routes inbound cases to the most skilled available agent based on skills, language, and queue priority. Nexus manual-assigns. |
+| **Email-to-Case Ingestion** | ❌ Missing | Customer emails a support address → Oracle auto-creates a case, extracts sentiment, and routes to queue. |
+| **SLA Milestones & Escalation Timers** | ⚠️ Partial | SLA tracking page exists. Missing: The real-time countdown timer per case and automatic escalation action (assign supervisor, send alert) when SLA is breached. |
+| **Agent Scripting** | ❌ Missing | Step-by-step dynamic scripts guiding agents through troubleshooting for specific product issues. |
+| **Customer Survey / CSAT** | ❌ Missing | Post-case resolution survey trigger (email/SMS). CSAT score rolled up to agent scorecards. |
+| **Contact Center Analytics (Supervisor Dashboard)** | ❌ Missing | Real-time view: active queue depth, average handle time, CSAT by agent, escalation count. |
+| **Knowledge Management (AI-Search)** | ⚠️ Partial | KnowledgeManagement.tsx exists. Missing: AI-powered search that recommends relevant KB articles when an agent types the case description. |
+
+---
+
+## Module 31 — Field Service
+**Oracle Equivalent:** Oracle Field Service Cloud (TOA / ClickSoftware)
+
+### NexusAI Pages Currently Existing
+- ✅ [FieldService.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/FieldService.tsx) (2.5KB) — Landing page
+- ✅ [WorkOrdersDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/WorkOrdersDashboard.tsx) / [WorkOrder.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/WorkOrder.tsx)
+- ✅ Schema: [field_service.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/field_service.ts) — Work Orders, Appointments
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Technician Skills & Zones Setup** | ❌ Missing | Oracle maps each technician to skill sets (HVAC, Electrical, Plumbing) and geographic service zones. |
+| **Geo-Spatial Dispatch Optimizer** | ❌ Missing | Oracle's core algorithm: given 50 open work orders and 10 available technicians, produce an optimized schedule minimizing travel time while respecting time windows. |
+| **Dispatch Console (Gantt Map View)** | ❌ Missing | Dispatcher sees all technicians on a map with their current location and assigned stops. Drag-and-drop to re-assign. |
+| **Mobile Technician App (Android/iOS)** | ❌ Missing | Technicians receive jobs on mobile, follow navigation, capture parts, get customer signature. |
+| **Parts Usage & Auto-Replenishment** | ❌ Missing | When a technician uses a part from their van stock, Oracle auto-creates a replenishment order. |
+| **Time-Based SLA Enforcement** | ❌ Missing | "Respond within 4 hours, resolve within 8 hours" with escalation triggers per contract SLA type. |
+
+---
+
+## Module 32 — Incentive Compensation (Sales Comp)
+**Oracle Equivalent:** Oracle Incentive Compensation Cloud
+
+### NexusAI Pages Currently Existing
+- ✅ [SalesCommissionManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SalesCommissionManagement.tsx) (6.6KB) — Fairly comprehensive
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Commission Plan Builder** | ⚠️ Partial | Plans exist. Missing: Multi-tier accelerator logic (0–100% quota = 5% rate, 100–120% = 8% rate, 120%+ = 12% rate with rollover). |
+| **Clawback Rules** | ❌ Missing | Oracle tracks commissions paid on deals that are subsequently cancelled or refunded, and deducts from future periods. |
+| **Dispute Management** | ❌ Missing | Reps can dispute calculated commissions; Oracle provides a structured exception/dispute form and audit trail. |
+| **Gamification Dashboard (Rep Earnings Leaderboard)** | ⚠️ Partial | [gamification.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/gamification.ts) schema exists. Missing: Real-time leaderboard showing rank, YTD earnings, accelerator tier status. |
+| **Plan Agreement (Digital Sign-Off)** | ❌ Missing | Reps digitally acknowledge their compensation plan. Tracked by Oracle for compliance. |
+
+---
+
+## Module 33 — EPM: Financial Planning & Analysis
+**Oracle Equivalent:** Oracle EPM Planning Essbase
+
+### NexusAI Pages Currently Existing
+- ✅ [EPMPage.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/EPMPage.tsx) (9KB) — Main EPM page
+- ✅ `epm/` sub-directory — **11 pages**
+- ✅ [BudgetPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BudgetPlanning.tsx) (7.6KB) / [BudgetingDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BudgetingDashboard.tsx)
+- ✅ [ForecastDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ForecastDashboard.tsx) (7.8KB)
+- ✅ Schema: [epm.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/epm.ts) — Scenarios, Versions, Dimensions, Units, Drivers, ESG metrics
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Grid (Spreadsheet-Style Budget Entry)** | ⚠️ Partial | Some budget entry exists. Missing: Oracle's Excel-like grid with frozen row/column headers, inline cell editing across multiple dimensions simultaneously. |
+| **Smart View (Excel Add-In)** | ❌ **CRITICAL** | Bi-directional Excel integration. CFOs and FP&A teams insist on Excel. Oracle's Smart View lets them load/refresh/submit budget data from Excel directly. |
+| **Essbase Calculation Engine** | ❌ **CRITICAL** | In-memory OLAP engine that aggregates plan_units across hierarchies instantly. Missing: the calc scripts and in-memory aggregation worker. |
+| **Scenario Comparison Dashboard** | ⚠️ Partial | Scenarios exist. Missing: Side-by-side variance comparison (Budget vs. Forecast vs. Actual) across dimensions. |
+| **Driver-Based Forecasting** | ⚠️ Partial | `planDrivers` schema exists. Missing: The execution engine that applies a driver (e.g., headcount × average salary) to auto-populate related plan_units. |
+| **Workflow Approval for Budget Submission** | ❌ Missing | Oracle routes budget enter/submit/approve across an ownership hierarchy. |
+
+---
+
+## Module 34 — EPM: ESG & Sustainability Reporting
+**Oracle Equivalent:** Oracle EPM ESG (Sustainability Cloud)
+
+### NexusAI Pages Currently Existing
+- ✅ [SustainabilityComplianceCPG.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SustainabilityComplianceCPG.tsx) (5KB)
+- ✅ Schema: `planEsgMetrics` — metric codes, values, targets, UOM
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Carbon Conversion Factors Library** | ❌ Missing | Oracle has a library of GHG Protocol Scope 1/2/3 conversion factors (kWh → CO₂e, miles driven → CO₂e). |
+| **Scope 3 Supplier Emission Surveys** | ❌ Missing | Oracle sends surveys to suppliers to capture their Scope 3 emissions. |
+| **ESG Disclosure Report Generator** | ❌ Missing | GRI / SASB / TCFD standardized disclosure report generation. |
+| **Sustainability Public Dashboard** | ❌ Missing | External-facing dashboard showing progress against net-zero commitments. |
+
+---
+
+## MASTER SUMMARY TABLE — All 41 Modules
+*Upgrade Priority: CRITICAL = Foundational architecture changes | HIGH = Feature gaps | MEDIUM = Enhancements | LOW = Nice-to-have*
+
+| # | Module | Oracle Equivalent | UI Parity | Backend/Engine Parity | Priority |
+|---|---|---|---|---|---|
+| 1 | General Ledger | Oracle GL | ⚠️ 60% | ⚠️ 50% (SLA Engine missing) | HIGH |
+| 2 | Accounts Payable | Oracle Payables | ⚠️ 55% | ❌ 40% (PPR missing) | CRITICAL |
+| 3 | Accounts Receivable | Oracle Receivables | ⚠️ 60% | ❌ 45% (AutoInvoice missing) | HIGH |
+| 4 | Cash Management | Oracle Cash Mgmt | ⚠️ 50% | ❌ 40% (Auto-recon engine) | HIGH |
+| 5 | Fixed Assets | Oracle Assets | ❌ 20% | ⚠️ 70% (schema great, UI missing) | CRITICAL |
+| 6 | Tax Engine | Oracle eBTax | ⚠️ 40% | ❌ 20% (hierarchy rewrite) | CRITICAL |
+| 7 | Expenses | Oracle Expenses | ✅ 80% | ⚠️ 70% | MEDIUM |
+| 8 | Intercompany | Oracle AGIS | ⚠️ 65% | ⚠️ 55% (settlement engine) | HIGH |
+| 9 | Lease Accounting | Oracle Leases | ⚠️ 65% | ⚠️ 60% | MEDIUM |
+| 10 | Procurement | Oracle Purchasing | ✅ 75% | ⚠️ 65% (BPAs, PPR) | MEDIUM |
+| 11 | Inventory/PIM | Oracle INV/PIM | ⚠️ 55% | ⚠️ 50% | HIGH |
+| 12 | Warehouse Mgmt | Oracle WMS | ⚠️ 40% | ❌ 20% (rf tasks, wave engine) | CRITICAL |
+| 13 | Manufacturing | Oracle Mfg/WIP | ⚠️ 65% | ⚠️ 55% (MRP engine exec) | HIGH |
+| 14 | Cost Management | Oracle Cost Mgmt | ⚠️ 55% | ❌ 30% (cost processor) | CRITICAL |
+| 15 | Maintenance/EAM | Oracle EAM | ✅ 75% | ⚠️ 60% | MEDIUM |
+| 16 | Transportation | Oracle OTM | ✅ 75% | ⚠️ 60% | MEDIUM |
+| 17 | PPM / Projects | Oracle PPM | ✅ 70% | ⚠️ 55% (billing engine) | HIGH |
+| 18 | Core HR | Oracle Global HR | ⚠️ 60% | ❌ 20% (DateTrack) | CRITICAL |
+| 19 | Global Payroll | Oracle Payroll | ⚠️ 45% | ❌ 25% (FastFormula, retroPay) | CRITICAL |
+| 20 | Time & Labor | Oracle T&L | ✅ 70% | ⚠️ 50% (overtime engine) | HIGH |
+| 21 | Recruitment | Oracle ORC | ✅ 70% | ⚠️ 60% | MEDIUM |
+| 22 | Performance | Oracle Perf Mgmt | ⚠️ 60% | ⚠️ 55% | MEDIUM |
+| 23 | Learning | Oracle Learning | ✅ 65% | ⚠️ 50% (SCORM engine) | MEDIUM |
+| 24 | Succession | Oracle Succession | ✅ 75% | ⚠️ 60% | LOW |
+| 25 | Comp & Benefits | Oracle Comp/Ben | ⚠️ 35% | ❌ 25% (eligibility engine) | HIGH |
+| 26 | Workforce Struct. | Oracle HR Struct. | ⚠️ 60% | ⚠️ 55% | MEDIUM |
+| 27 | CRM Sales/SFA | Oracle CX Sales | ✅ 80% | ⚠️ 65% (territory engine) | MEDIUM |
+| 28 | CRM Marketing | Oracle Eloqua | ⚠️ 55% | ❌ 25% (flow engine, email) | HIGH |
+| 29 | CPQ | Oracle CPQ | ⚠️ 60% | ❌ 20% (configurator rules) | CRITICAL |
+| 30 | Service Cloud | Oracle Service | ⚠️ 65% | ⚠️ 50% (routing, SLA) | HIGH |
+| 31 | Field Service | Oracle FSM | ❌ 25% | ❌ 15% (dispatch engine) | HIGH |
+| 32 | Incentive Comp | Oracle IC | ⚠️ 60% | ⚠️ 50% | MEDIUM |
+| 33 | EPM Planning | Oracle EPM/Essbase | ⚠️ 50% | ❌ 20% (calc engine) | CRITICAL |
+| 34 | EPM ESG | Oracle ESG | ⚠️ 35% | ❌ 25% | MEDIUM |
+| 35 | Order Mgmt | Oracle Order Mgmt | ✅ 70% | ⚠️ 55% | MEDIUM |
+| 36 | Billing/Revenue | Oracle RMCS | ✅ 85% | ✅ 75% | LOW |
+| 37 | Global Trade | Oracle GTM | ⚠️ 30% | ❌ 10% | HIGH |
+| 38 | Risk Management | Oracle Risk Mgmt | ⚠️ 50% | ❌ 30% | MEDIUM |
+| 39 | Data Quality/MDM | Oracle CDH | ✅ 70% | ⚠️ 60% | MEDIUM |
+| 40 | Analytics/BI | Oracle OTBI | ⚠️ 45% | ❌ 20% (OLAP semantic) | HIGH |
+| 41 | Functional Setup | Oracle FSM | ❌ 20% | ❌ 20% | HIGH |
+
+---
+*End of Part 4 — Combined with Parts 1–3 this constitutes the complete 41-module parity assessment.*

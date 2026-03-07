@@ -1,0 +1,221 @@
+# NexusAI vs Oracle Fusion: Module-by-Module Parity Assessment
+## PART 2: Supply Chain Management (SCM) & Manufacturing
+*Page / Form / Field / Granular Level Comparison*
+
+Legend: ✅ = Exists in NexusAI | ⚠️ = Partial / Simplified | ❌ = Missing entirely
+
+---
+
+## Module 10 — Procurement (Purchasing / SQM)
+**Oracle Equivalent:** Oracle Fusion Purchasing + Supplier Qualification Management
+
+### NexusAI Pages Currently Existing
+- ✅ [PurchaseOrders.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PurchaseOrders.tsx) (7.6KB) — PO list with search and status
+- ✅ [PurchaseRequisitions.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PurchaseRequisitions.tsx) — PR shopping cart style
+- ✅ [RFQs.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RFQs.tsx) (6.3KB) — Request for Quotation
+- ✅ [SupplierManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SupplierManagement.tsx) (8.4KB) — Supplier master
+- ✅ [SupplierCollaborationPortal.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SupplierCollaborationPortal.tsx) (12.4KB) — Supplier-facing portal
+- ✅ [SupplierQualification.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SupplierQualification.tsx)
+- ✅ [ExternalSupplierRegistration.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ExternalSupplierRegistration.tsx) (16.9KB)
+- ✅ [ThreeWayMatch.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ThreeWayMatch.tsx)
+- ✅ [GoodsReceipt.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/GoodsReceipt.tsx) / [GoodsReceiptPutaway.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/GoodsReceiptPutaway.tsx)
+- ✅ `procurement/` sub-directory — 3 pages
+- ✅ [ProcurementSourcing.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ProcurementSourcing.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Purchase Order (Full Form — Lines, Distributions, Schedules)** | ⚠️ Partial | Oracle PO has Line-level splits to multiple Distributions (charge account, project, cost center). Nexus PO lacks the distribution split form. |
+| **Blanket Purchase Agreements (BPAs)** | ❌ Missing | Long-term price agreements with suppliers. Orders placed against BPAs auto-inherit price terms. Schema and UI are both missing. |
+| **Contract Purchase Agreements (CPAs)** | ❌ Missing | Framework agreements without specific item lines. |
+| **Buyer Work Area (Requisition-to-PO)** | ⚠️ Partial | Oracle's Buyer Work Area shows exception-based alerts: Unfulfilled PRs, Overdue POs, Price Breaks. Nexus lacks the exception/alerting dashboard. |
+| **Punchout Catalog (cXML / OCI)** | ❌ Missing | Shopping on Amazon Business / Staples and importing the cart back into a PR. |
+| **Supplier Negotiations (Sourcing)** | ⚠️ Partial | [ProcurementSourcing.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ProcurementSourcing.tsx) exists but Oracle's Negotiation module has structured Bid Rounds, Transformations (sealed bids), and automatic Award processing. |
+| **Supplier Performance Scorecards** | ⚠️ Partial | [SupplierQualityScorecard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SupplierQualityScorecard.tsx) exists but lacks KPI weighting engine and benchmarking across suppliers. |
+| **Intrastat / Landed Cost (Import)** | ⚠️ Partial | Customs compliance page exists. Missing: Direct integration with PO receipts to apportion customs duty to item cost. |
+| **PO Change Orders (Amendment Log)** | ❌ Missing | Oracle tracks every amendment to a PO with version history, requiring re-approval if amount changes exceed thresholds. |
+
+### Key Field-Level Gaps (PO Header Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| PO Number / Type (Standard, Blanket, Planned) | ✅ |
+| Supplier / Site / Contact | ✅ |
+| Ship-To Location | ✅ |
+| Bill-To Location | ❌ Missing |
+| Pay Site | ❌ Missing |
+| Payment Terms | ✅ |
+| Buyer | ✅ |
+| Note to Supplier | ⚠️ |
+| BPA Release Number | ❌ Missing |
+| Encumbrance / Funds Check | ❌ Missing |
+| Accept / Acknowledge by Date | ❌ Missing |
+
+---
+
+## Module 11 — Inventory Management / PIM
+**Oracle Equivalent:** Oracle Fusion Inventory + Product Information Management
+
+### NexusAI Pages Currently Existing
+- ✅ [Inventory.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Inventory.tsx) (11.3KB) — Main inventory list
+- ✅ [ItemDirectory.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ItemDirectory.tsx) (8.8KB) — Item master directory
+- ✅ [ItemProfile.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ItemProfile.tsx) (7KB) — Individual item detail  
+- ✅ [MaterialMaster.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MaterialMaster.tsx) (4.8KB)
+- ✅ [CycleCountingAudit.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CycleCountingAudit.tsx) (6KB)
+- ✅ [StockTransfer.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/StockTransfer.tsx) / [StockIssue.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/StockIssue.tsx) / [StockPickingPacking.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/StockPickingPacking.tsx)
+- ✅ [BulkInventoryManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BulkInventoryManagement.tsx)
+- ✅ `inventory/` — 1-page subdir + extensive [InventoryDashboardView.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/InventoryDashboardView.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Item Master (Multi-Tab — Full Oracle)** | ⚠️ Partial | Oracle item master has 10+ organization-specific tabs: Purchasing, Inventory, BOM, Costing, Planning, Receiving, Shipping, WIP, Physical. Nexus has a simpler single-view form. |
+| **Item Categories & Catalog Hierarchy** | ⚠️ Partial | Categories exist. Missing: Hierarchical catalog structure (Parent > Child), multi-catalog assignment. |
+| **Item Relationships** | ❌ Missing | Substitute items, related items (cross-sell), ATO/PTO model options. |
+| **Item Revisions** | ❌ Missing | ECO (Engineering Change Order) driving a controlled revision history on items. |
+| **Lot / Serial Control UI (Transactions)** | ⚠️ Partial | Tables exist. Missing: Lot genealogy tree visualization, expiry date tracking, quarantine holds. |
+| **Min-Max Planning Setup** | ❌ Missing | Setting Min Stock / Max Stock per item/subinventory so MRP can auto-generate replenishment suggestions. |
+| **Locator Control (Bin-Level)** | ⚠️ Partial | Present but lacks the picking-sequence ordering used by WMS to direct warehouse operators. |
+| **Material Status Controls** | ❌ Missing | Active / Hold / Quarantine / Obsolete statuses that block or restrict transactions on an item at a specific locator. |
+| **Unit of Measure Conversions** | ⚠️ Partial | UOM exists. Missing: Inter-class conversions (e.g., "5 gallons = 1 jug") and item-specific conversion overrides. |
+
+---
+
+## Module 12 — Warehouse Management (WMS)
+**Oracle Equivalent:** Oracle WMS Cloud (LogFire / Warehouse Management)
+
+### NexusAI Pages Currently Existing
+- ✅ [Warehouse.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Warehouse.tsx) (10KB) — Main warehouse dashboard
+- ✅ [GoodsReceiptPutaway.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/GoodsReceiptPutaway.tsx) (6.2KB)
+- ✅ `wms/` sub-directory — 6 pages
+- ✅ [YardDockManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/YardDockManagement.tsx) (5.9KB)
+- ✅ Schema: [scm.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/scm.ts) contains wms_waves, wms_handling_units, wms_strategies
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Directed Putaway Rules** | ❌ Missing | Rules engine (item category + zone capacity + temperature zone) dictating which bin an operator must deposit goods into. |
+| **Wave Planning / Outbound Release** | ❌ Missing | Grouping outbound orders into efficient "waves" based on zone, carrier, ship window. No execution engine exists. |
+| **RF Scanner Task Manager UI** | ❌ Missing | Mobile-optimized scanner screens: Receive PO, Putaway, Pick, Pack, Ship Confirm. These are the core WMS UIs Oracle relies on for floor operations. |
+| **LPN (License Plate Number) Management** | ⚠️ Partial | Schema exists (`wms_handling_units`). No UI to scan/create/split/merge LPNs. |
+| **Task Interleaving Engine** | ❌ Missing | Algorithm alternating putaway tasks with picking tasks to eliminate wasted operator travel. |
+| **Cross-Docking** | ❌ Missing | Routing incoming goods directly to outbound orders without bin storage. |
+| **Pack Station UI** | ❌ Missing | Step-by-step screen for packing operators: Scan item, select container, print label, close carton. |
+| **Carrier Manifesting (Ship Confirm)** | ⚠️ Partial | [ShipmentPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ShipmentPlanning.tsx) exists. Missing: Rate shopping between carriers, manifest printing, BOL generation. |
+
+---
+
+## Module 13 — Manufacturing / WIP (Discrete & Process)
+**Oracle Equivalent:** Oracle Fusion Manufacturing (FusionApp + WIP Cloud)
+
+### NexusAI Pages Currently Existing
+- ✅ `manufacturing/` sub-directory — 24 pages
+- ✅ [BOMRouting.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BOMRouting.tsx) — BOM and routing viewer
+- ✅ [WIPTracking.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/WIPTracking.tsx) / [WIPTrackingDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/WIPTrackingDashboard.tsx)
+- ✅ [BatchManufacturing.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BatchManufacturing.tsx) / [BatchOrdersManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/BatchOrdersManagement.tsx) (for process mfg)
+- ✅ [ShopFloor.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ShopFloor.tsx) / [ShopFloorDataCollection.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ShopFloorDataCollection.tsx)
+- ✅ [ProductionPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ProductionPlanning.tsx) / [ProductionSchedulingGantt.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ProductionSchedulingGantt.tsx)
+- ✅ [MRPDashboardFull.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MRPDashboardFull.tsx) / [MRPMPSPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MRPMPSPlanning.tsx)
+- ✅ [FormulationRecipeManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/FormulationRecipeManagement.tsx)
+- ✅ Schema: Comprehensive (`bom`, `routings`, `production_orders`, `mrp_plans`, `mrp_recommendations`)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Visual BOM Designer (Drag-and-Drop)** | ⚠️ Partial | BOMRouting exists but Oracle has a visual tree-expansion designer. Missing: Effectivity dates on BOM components, multi-level phantom assembly handling. |
+| **Work Execution (Shop Floor UI)** | ⚠️ Partial | ShopFloorDataCollection.tsx exists. Missing: Oracle's dispatcher-to-operator real-time task screen. Operators scan job number, see operation steps, report quantities per step. |
+| **Outside Processing (OSP) Integration** | ❌ Missing | Sending a sub-assembly to an external supplier (via PO) for a processing operation and receiving it back. |
+| **MRP Engine — Execution (Run Plan)** | ⚠️ Partial | MRP tables and UI exist. Missing: The actual recursive BOM explosion + demand netting algorithm that populates mrp_recommendations. |
+| **Supply Chain Event Management** | ❌ Missing | Oracle alerts planners when demand changes threaten a Planned Order (e.g. supplier lead time increase). |
+| **Finite Capacity Scheduling** | ❌ Missing | Oracle can constrain the schedule to available machine/labor capacity and shift production orders accordingly. |
+| **SCORM-Based Work Instructions** | ❌ Missing | Attaching training videos/documents to operation steps for operator guidance. |
+
+---
+
+## Module 14 — Cost Management
+**Oracle Equivalent:** Oracle Fusion Cost Management
+
+### NexusAI Pages Currently Existing
+- ✅ [StandardCosting.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/StandardCosting.tsx) (8.4KB)
+- ✅ [CostInsights.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CostInsights.tsx) (6.4KB)
+- ✅ [CostingProfitability.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CostingProfitability.tsx)
+- ✅ `cost-management/` sub-directory — 5 pages
+- ✅ Schema: [costing.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/costing.ts) with standard costs, overhead rules, cost elements
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Cost Processor (Background Worker)** | ❌ Missing | Oracle's async cost processor intercepts every inventory transaction and values it using the configured cost method. No automation exists in Nexus. |
+| **Cost Rollup Engine** | ❌ Missing | Multi-level BOM traversal that rolls up material + labor + overhead costs to compute the standard cost of a finished good. |
+| **Receipt Accounting (AP Accruals)** | ❌ Missing | Oracle auto-posts "Inventory AP Accruals" when a PO receipt occurs, and clears on invoice match. This bridge between PO/INV/AP doesn't exist in Nexus. |
+| **Average / FIFO / LIFO Cost Methods** | ❌ Missing | Nexus supports Standard Costing. Oracle also supports Average, FIFO, LIFO with separate cost layer tracking. |
+| **Periodic Average Costing** | ❌ Missing | Calculating average costs at month-end across all receipts in the period. |
+| **Cost Group Setup** | ❌ Missing | Different cost methods per inventory organization. |
+| **Cost Comparison Report** | ⚠️ Partial | Cost Insights exists as a manual report. Missing: Automated variance roll: actual vs. standard by cost element. |
+
+---
+
+## Module 15 — Maintenance (EAM / CMMS)
+**Oracle Equivalent:** Oracle Enterprise Asset Management (EAM)
+
+### NexusAI Pages Currently Existing
+- ✅ [CMMSMaintenance.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CMMSMaintenance.tsx) (8KB)
+- ✅ `maintenance/` sub-directory — 20 pages (most extensive in SCM)
+- ✅ [MaintenanceScheduling.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/MaintenanceScheduling.tsx) (6.6KB)
+- ✅ [PredictiveMaintenance.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PredictiveMaintenance.tsx)
+- ✅ Schemas: [maintenance.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/maintenance.ts), [maintenance_pm.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/maintenance_pm.ts), [maintenance_meters.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/maintenance_meters.ts), [maintenance_quality.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/maintenance_quality.ts), etc.
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Asset Hierarchy Builder** | ⚠️ Partial | Asset structure exists. Missing: Visual parent-child hierarchy builder (Plant > Process Unit > Equipment > Component). |
+| **Condition Monitoring Setup** | ⚠️ Partial | Meters exist in schema. Missing: Threshold-alert rules that auto-generate a Work Order when a sensor reading exceeds a limit. |
+| **PM Route Grouping** | ❌ Missing | Grouping multiple assets on a single planned maintenance route for a technician. |
+| **Materials Planning for WO** | ⚠️ Partial | WO exists. Missing: Auto-requisition of spare parts needed for a work order, linking to Procurement for auto-PO. |
+| **Warranty Tracking on Assets** | ⚠️ Partial | [WarrantyClaimsManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/WarrantyClaimsManagement.tsx) exists separately. Missing: Asset-level warranty expiry flag that prevents labor charging. |
+| **Failure Code / FMEA Catalog** | ⚠️ Partial | [maintenance_failure.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/maintenance_failure.ts) schema exists. Missing: Full FMEA (Failure Mode Effects Analysis) UI tree. |
+
+---
+
+## Module 16 — Transportation Management (TMS)
+**Oracle Equivalent:** Oracle Transportation Management Cloud (OTM)
+
+### NexusAI Pages Currently Existing
+- ✅ [TransportationManagementSystem.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TransportationManagementSystem.tsx) (10KB) — Comprehensive TMS view
+- ✅ `transportation/` sub-directory — 12 pages
+- ✅ [FreightManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/FreightManagement.tsx) / [FreightCostingBilling.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/FreightCostingBilling.tsx) / [FreightRateCalculation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/FreightRateCalculation.tsx)
+- ✅ [CarrierProcurement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CarrierProcurement.tsx) / [ShipmentPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ShipmentPlanning.tsx)
+- ✅ [RouteOptimization.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RouteOptimization.tsx) / [RouteLoadOptimization.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RouteLoadOptimization.tsx)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Rate Management (Tariff Builder)** | ⚠️ Partial | FreightRateCalculation exists. Missing: Multi-dimensional tariff matrix (Origin Zone x Dest Zone x Weight Break x Service Level). |
+| **Shipment Planning Optimizer** | ⚠️ Partial | ShipmentPlanning exists. Missing: Automated load consolidation and multi-stop route building with constraint satisfaction. |
+| **Carrier Tender & Acceptance** | ❌ Missing | Electronic tendering of a shipment to a ranked carrier list and waiting for acceptance/rejection. |
+| **Track & Trace (Real-Time Visibility)** | ⚠️ Partial | [ShipmentTracking.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ShipmentTracking.tsx) exists. Missing: EDI 214 integration with carriers for automated status events. |
+| **Freight Audit & Payment** | ⚠️ Partial | FreightCostingBilling exists. Missing: Automated matching of carrier invoices against rate agreements and flagging discrepancies. |
+| **Dangerous Goods Compliance** | ❌ Missing | IATA/IMDG regulation enforcement on shipment build. |
+
+---
+
+## Module 17 — Project Portfolio Management (PPM)
+**Oracle Equivalent:** Oracle Project Financial Management
+
+### NexusAI Pages Currently Existing
+- ✅ `projects/` sub-directory — 28 pages (extensive)
+- ✅ [ProjectBudgetManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ProjectBudgetManagement.tsx) (7.8KB)
+- ✅ [EarnedValueAnalysis.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/EarnedValueAnalysis.tsx)
+- ✅ [ResourceAllocation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ResourceAllocation.tsx)
+- ✅ [AgileBoard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AgileBoard.tsx) / [Sprints.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Sprints.tsx) / [Epics.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Epics.tsx) / [Stories.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Stories.tsx) / [KanbanBoard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/KanbanBoard.tsx)
+- ✅ Schema: [ppm.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/ppm.ts) — Very comprehensive Oracle-like PPM structure
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Financial Project Manager Dashboard** | ⚠️ Partial | Budget vs Actuals exists conceptually. Missing: Real-time EVM metrics (CPI, SPI, EAC) displayed in a project control dashboard. |
+| **Expenditure Entry & Approval** | ⚠️ Partial | Timesheet entry exists. Missing: Non-labor expenditure batches (materials, travel) with project-level approval. |
+| **Project Costing Processor (Burdening)** | ❌ Missing | Oracle applies overhead/burden rates to raw project costs via the Project Cost Processor (a background engine). |
+| **Project Billing Engine** | ❌ Missing | Oracle generates draft project invoices from unbilled expenditures based on billing actions/events. |
+| **Funding Sources (Grants)** | ❌ Missing | Oracle tracks external funding agreements and automatically applies them as cost offsets. |
+| **Cross-Charge / Borrowed Resources** | ❌ Missing | When a resource in BU-A works on a project in BU-B, Oracle generates IC cross-charge transactions automatically. |
+| **Time & Labor → Project Integration** | ⚠️ Partial | Timesheets exist. Missing: Automatic push of approved project timesheets into the PPM Expenditure Cost Processor. |

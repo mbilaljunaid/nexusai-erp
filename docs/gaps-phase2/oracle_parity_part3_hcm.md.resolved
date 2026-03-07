@@ -1,0 +1,240 @@
+# NexusAI vs Oracle Fusion: Module-by-Module Parity Assessment
+## PART 3: Human Capital Management (HCM) Suite
+*Page / Form / Field / Granular Level Comparison*
+
+Legend: ✅ = Exists in NexusAI | ⚠️ = Partial / Simplified | ❌ = Missing entirely
+
+---
+
+## Module 18 — Core Human Resources (Global HR)
+**Oracle Equivalent:** Oracle Global Human Resources Cloud
+
+### NexusAI Pages Currently Existing
+- ✅ [HR.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/HR.tsx) — Core HR landing
+- ✅ [EmployeeDirectory.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/EmployeeDirectory.tsx) (2.7KB)
+- ✅ [OrgChart.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OrgChart.tsx)
+- ✅ `hr/` sub-directory — **49 pages** (most comprehensive HR section)
+- ✅ [HRReports.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/HRReports.tsx) (8.2KB) / [HRAnalyticsDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/HRAnalyticsDashboard.tsx) (10.3KB)
+- ✅ [Attendance.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Attendance.tsx) / [AttendanceDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AttendanceDashboard.tsx)
+- ✅ [OnboardingAutomation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OnboardingAutomation.tsx)
+- ✅ Schemas: [hr_worker.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_worker.ts), [hr_structures.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_structures.ts), [hr_compliance.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_compliance.ts), [hr_delegation.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_delegation.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Hire Flow (New Person Wizard)** | ⚠️ Partial | HR pages exist. Missing: Oracle's guided transaction flow that creates Person → Work Relationship → Assignment → Pay as a multi-step wizard with validation. |
+| **DateTrack (Effective Dating on all forms)** | ❌ **CRITICAL** | Oracle routes every change (department, salary, title) through "When does this take effect?" UI. Any backdated or future-dated changes create a new effective-dated row. Nexus has no effective dating architecture. |
+| **Assignment Form (Full Oracle)** | ⚠️ Partial | Basic assignment exists. Oracle's Assignment form has: Grade, Step, Grade Ladder, Probation End Date, Working Hours, Full-Time/Part-Time indicator, Manager (with DateTrack). |
+| **Manager Self-Service (MSS) Guided Transactions** | ❌ Missing | Managers access guided flows: "Transfer," "Change Working Hours," "Request Promotion" — all routing through AME approval. |
+| **Employment Contracts** | ⚠️ Partial | Document management exists. Missing: Contract type, start/end date, renewal alert, jurisdiction-specific fields. |
+| **Position Management** | ⚠️ Partial | Structures schema exists. Missing: Position budgeting (FTE budget vs. actual), Position sync (changes cascade to incumbent Assignment). |
+| **HR Help Desk (Journeys / HR Service Delivery)** | ⚠️ Partial | [ServiceRequestPortal.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/ServiceRequestPortal.tsx) exists generically. Missing: HR-specific "Journey" templates (onboarding journey, life event flows, offboarding checklist). |
+| **Person Spotlight View** | ❌ Missing | Oracle's 360° person view that shows employment data, compensation history, performance ratings, and absence all in one page. |
+| **Seniority / Length of Service Calculations** | ❌ Missing | Automatic seniority date derivation from hire date with oracle rule overrides. |
+
+### Key Field-Level Gaps (Worker / Assignment Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Person Number / Name (First/Middle/Last) | ✅ |
+| Date of Birth | ✅ |
+| National Identifier (SSN, NIN) | ⚠️ Exists but no format validation |
+| Gender / Pronouns | ⚠️ Gender exists |
+| Person Type (Employee / Contingent) | ✅ |
+| Legal Employer | ✅ |
+| Business Unit | ✅ |
+| Department | ✅ |
+| Job / Position | ✅ |
+| Grade / Step / Grade Ladder | ❌ Missing |
+| Assignment Category (Full/Part Time) | ⚠️ |
+| Probation End Date | ❌ Missing |
+| Effective Start/End Date (DateTrack) | ❌ **CRITICAL** |
+| Manager (as of date) | ⚠️ Manager field exists, no DateTrack |
+| Work Location | ✅ |
+| Working Hours / Schedule | ⚠️ Schedule exists, no FTE calculation |
+
+---
+
+## Module 19 — Global Payroll
+**Oracle Equivalent:** Oracle Global Payroll / Payroll Connect
+
+### NexusAI Pages Currently Existing
+- ✅ [PayrollEngine.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollEngine.tsx) (5KB) — Run payroll UI
+- ✅ [PayrollProcessing.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollProcessing.tsx) (4.7KB)
+- ✅ [PayrollRuns.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollRuns.tsx) (2.7KB) — List of payroll runs
+- ✅ [PayrollDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollDetail.tsx)
+- ✅ `rewards/` sub-directory — 5 pages (payroll, benefits, comp)
+- ✅ Schemas: [rewards_payroll.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/rewards_payroll.ts), [hr_payroll_ext.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_payroll_ext.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Payroll Definition Setup** | ⚠️ Partial | Basic payroll run exists. Missing: Pay Frequency (Weekly/Biweekly/Monthly), Cut-Off Date rules, Period number/date auto-generation. |
+| **Element Setup & Entry (FastFormula)** | ❌ **CRITICAL** | Oracle uses "Elements" (earnings/deductions) defined with FastFormula rules. Nexus has static payroll components. Missing: A formula-driven element definition UI. |
+| **Retro-Pay Engine** | ❌ Missing | If a salary change is backdated 2 months, Oracle auto-calculates the arrears owed and pays in the current period. |
+| **Payroll Flow Submission UI** | ⚠️ Partial | PayrollRuns exists. Missing: Full Payroll Flow orchestrator: Calculate → Verify → Prepayments → Archival → Payment → Costing → GL Transfer as discrete steps. |
+| **Costing & GL Transfer** | ❌ Missing | Distributing payroll costs across cost centers/departments and posting to the GL. |
+| **Tax Filing (Statutory Reports)** | ❌ Missing | W-2, 941, P60, statutory country-specific payroll tax reporting. |
+| **Employee Pay Slip PDF** | ⚠️ Partial | PayrollDetail exists. Missing: Formatted PDF pay slip generation with YTD totals, tax breakdown, deduction listing. |
+| **Off-Cycle Payment Run** | ❌ Missing | Ad-hoc salary advance or correction payment outside the normal payroll cycle. |
+| **Payroll Simulation** | ❌ Missing | Oracle lets payroll managers simulate changes (e.g., "What if I increase John's salary by 10%?") and see the net pay impact before running the actual payroll. |
+
+### Key Field-Level Gaps (PayRun Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Payroll Definition | ⚠️ |
+| Payroll Period | ✅ |
+| Process Date | ✅ |
+| Consolidation Group | ❌ Missing |
+| Run Type (Regular / Supplemental / Report) | ❌ Missing |
+| Element Entry Override | ❌ Missing |
+| Retro-Pay Indicator | ❌ Missing |
+| GL Cost Allocation (per employee) | ❌ Missing |
+
+---
+
+## Module 20 — Time & Labor (WFM)
+**Oracle Equivalent:** Oracle Fusion Time and Labor / Absence Management
+
+### NexusAI Pages Currently Existing
+- ✅ `wfm/` sub-directory — **18 pages** (very extensive)
+- ✅ [TimesheetManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TimesheetManagement.tsx) (5.9KB)
+- ✅ [TimeAttendance.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TimeAttendance.tsx)
+- ✅ [WorkforceScheduling.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/WorkforceScheduling.tsx) (6.2KB)
+- ✅ [LeaveRequest.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeaveRequest.tsx) / [LeaveApproval.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeaveApproval.tsx) / [LeaveWorkflows.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeaveWorkflows.tsx)
+- ✅ Schema: [time_labor.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/time_labor.ts) (11.5KB), [time_rules.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/time_rules.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Web Clock / Badge Integration** | ❌ Missing | Oracle Time Collection Devices (TCD): Web clock, physical badge swipe, mobile GPS-based punch. |
+| **Time Entry Rules (Overtime / Double-Time)** | ⚠️ Partial | [time_rules.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/time_rules.ts) exists. Missing: The execution engine that applies state/union overtime rules (1.5× after 8 hrs/day, 2× on Sunday) to raw time entries. |
+| **Manager Time Approval (Calendar View)** | ⚠️ Partial | Scheduling exists. Missing: Manager-facing weekly calendar where they see all their team's submitted timesheets and can approve/reject individual line items. |
+| **Absence Accrual Engine** | ❌ Missing | The FastFormula-driven formula that adds accrual hours to an employee's balance monthly, enforces caps, and calculates carryover at year-end. |
+| **FMLA / Leave of Absence Workflow** | ❌ Missing | Oracle has structured leave plan types with FMLA designation, medical certification tracking, and intermittent leave handling. |
+| **Shift Bidding** | ❌ Missing | Employees bid on available shifts; managers approve selections. |
+| **Time Card Audit Report** | ❌ Missing | Who changed a timecard, when, and from what value to what value. |
+
+---
+
+## Module 21 — Recruitment (Taleo / ORC)
+**Oracle Equivalent:** Oracle Recruiting Cloud (ORC) / Taleo
+
+### NexusAI Pages Currently Existing
+- ✅ `recruitment/` sub-directory — **13 pages**
+- ✅ [RecruitmentManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RecruitmentManagement.tsx) (6.6KB)
+- ✅ [RecruitmentConfiguration.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RecruitmentConfiguration.tsx) (9.5KB) — Significant config page
+- ✅ `recruiting/` sub-directory — 2 pages
+- ✅ Schema: [talent_recruitment.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_recruitment.ts) (9.1KB — Requisitions, Candidates, Offers, Interviews)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Career Site Builder** | ❌ Missing | Oracle ORC provides a branded, public-facing career page builder with custom sections. Job postings publish directly from the requisition. |
+| **Interview Scoring Rubrics** | ⚠️ Partial | Interview records exist. Missing: Structured interview guide with per-competency scoring (1–5 scale), automated consensus scoring panel view. |
+| **Offer Letter Generator (PDF)** | ❌ Missing | Oracle generates a formatted PDF offer letter from HR metadata (salary, start date, position) using a BI Publisher template. |
+| **AI Resume Parsing** | ❌ Missing | Oracle ORC uses ML to parse resumes and auto-populate candidate profile fields (Skills, Education, Experience). |
+| **Job Posting (External Boards)** | ⚠️ Partial | Posting concept exists. Missing: Direct integration with LinkedIn, Indeed, Glassdoor via standardized job feed. |
+| **Candidate Merge / Duplicate Detection** | ❌ Missing | Same candidate applying multiple times — Oracle detects and merges profiles. |
+| **Requisition Approval Rules** | ⚠️ Partial | Basic approval exists. Missing: AME-style rules (e.g., VP-level approval required if salary band is Sr. Director+). |
+| **Onboarding Checklist Assignment** | ⚠️ Partial | [OnboardingAutomation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OnboardingAutomation.tsx) exists. Missing: Auto-assignment of onboarding task checklists when an offer is accepted (IT setup, badge, document signing). |
+
+---
+
+## Module 22 — Performance Management
+**Oracle Equivalent:** Oracle Performance Management Cloud
+
+### NexusAI Pages Currently Existing
+- ✅ [PerformanceManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PerformanceManagement.tsx) (5KB)
+- ✅ [PerformanceReviews.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PerformanceReviews.tsx) (4.7KB)
+- ✅ [PerformanceConfiguration.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PerformanceConfiguration.tsx) (3.1KB)
+- ✅ Schema: [talent_performance.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_performance.ts) — Goals, Documents, Feedback
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Performance Document Template Builder** | ⚠️ Partial | Config exists. Missing: Oracle's template designer with Section types (Goals, Competencies, Summary Rating), eligibility profiles, and rating model selector. |
+| **Goal Cascading Engine** | ❌ Missing | Oracle's goal cascade allows VP to create a goal, manager aligns a child goal, employee aligns a grandchild goal — forming a purpose hierarchy tree. |
+| **Calibration Session UI** | ❌ Missing | Managers gather in a calibration room view — a 9-box style grid where they can drag employees between rating cells and discuss. |
+| **Document Routing State Machine** | ❌ Missing | Oracle's performance document has strict states: Not Started → Worker Self-Evaluation → Manager Evaluation → Manager Meeting → Approval → Complete. |
+| **360-Degree Feedback Request** | ⚠️ Partial | Feedback schema exists. Missing: Anonymous feedback request lifecycle (invite → deadline tracking → results revealed only to manager). |
+| **Performance Rating Integration → Compensation** | ❌ Missing | Oracle uses the performance rating as an input to the merit matrix in the Compensation Workbench. |
+
+---
+
+## Module 23 — Learning Management (Oracle Learning Cloud)
+**Oracle Equivalent:** Oracle Learning Cloud
+
+### NexusAI Pages Currently Existing
+- ✅ `learning/` sub-directory — **10 pages**
+- ✅ [Certification.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Certification.tsx) (5KB) / [CourseManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CourseManagement.tsx)
+- ✅ Schema: [talent_learning.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_learning.ts) (9.9KB) — Courses, Offerings, Enrollments, Content, Completions
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **SCORM Player (In-App Launch)** | ❌ Missing | Oracle Learning has a built-in SCORM 1.2/2004 player that tracks completion, score, and time-spent inside the LMS. |
+| **Instructor-Led Training (ILT) Scheduling** | ⚠️ Partial | Offerings concept exists. Missing: Classroom capacity management, waitlist, instructor assignments, and room booking. |
+| **Compliance Renewal Cron** | ❌ Missing | Oracle auto-assigns a course to employees whose certification is about to expire. |
+| **Learning Path (Curricula)** | ✅ Schema exists; Missing: Visual progress tracker showing employee's progression through a prescribed learning path. |
+| **External Training Credit (CPE)** | ❌ Missing | Recording credits from external training events, conferences, or self-study. |
+| **Skill Profile Integration** | ❌ Missing | Completing a course auto-adds a Skill to the employee's profile with a competency level. |
+| **Learning Recommendations (AI)** | ❌ Missing | Oracle suggests courses based on role, career goals, and skill gaps. |
+
+---
+
+## Module 24 — Succession Planning
+**Oracle Equivalent:** Oracle Succession Management
+
+### NexusAI Pages Currently Existing
+- ✅ [SuccessionPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SuccessionPlanning.tsx) (**33KB** — most comprehensive in talent suite)
+- ✅ Schema: [talent_succession.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_succession.ts) — Plans, Pools, Readiness Assessments
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **9-Box Interactive Grid (Performance vs. Potential)** | ❌ Missing | Oracle's graphical 9-box lets managers drag employee icons between quadrants. Nexus renders succession data in tables. |
+| **Succession Org Chart Overlay** | ❌ Missing | Oracle overlays primary/secondary successors on top of the organizational chart with readiness indicators. |
+| **Talent Pool Management** | ✅ Good — [SuccessionPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SuccessionPlanning.tsx) is comprehensive |
+| **Readiness Assessment Form** | ✅ Schema supports it; UI is partial |
+| **Risk of Loss Score** | ❌ Missing | Oracle calculates a Risk of Loss / Impact of Loss score using tenure, performance, critical role factors. |
+| **Succession Plan Notification** | ❌ Missing | Notifying a successor when they are named as primary for a key position. |
+
+---
+
+## Module 25 — Compensation & Benefits
+**Oracle Equivalent:** Oracle Compensation + Oracle Benefits
+
+### NexusAI Pages Currently Existing
+- ✅ [CompensationManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CompensationManagement.tsx) (4.5KB)
+- ✅ `rewards/` sub-directory — 5 pages
+- ✅ Schema: [rewards_compensation.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/rewards_compensation.ts), [rewards_benefits.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/rewards_benefits.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Workforce Compensation Workbench (Merit Budget)** | ❌ Missing | Oracle's most complex HCM UI: Manager sees all their reports in a budget table. They can drag merit % sliders and the remaining budget pool updates in real-time. |
+| **Compensation Plan Definition (Eligibility Profiles)** | ❌ Missing | Rules engine determining which employees are eligible for which plan (e.g., "Full-time employees with 1+ year tenure"). |
+| **Benefits Open Enrollment Shopping Wizard** | ❌ Missing | Oracle's multi-step enrollment wizard: Select medical plan → Select dependents → Select dental → Summary. |
+| **Life Event Processing** | ❌ Missing | Triggering benefit re-enrollment options when a life event occurs (marriage, new child, divorce). |
+| **Salary Ranges / Grade Hierarchy** | ❌ Missing | Oracle maps grades to salary bands. CompaRatio = Employee Salary / Band Midpoint. |
+| **Stock / Equity Awards** | ❌ Missing | Oracle tracks RSUs, ISO, NQSO grants and vesting schedules. |
+| **Total Compensation Statement** | ❌ Missing | A PDF statement showing employees the full value of their compensation (base + bonus + benefits + equity). |
+
+---
+
+## Module 26 — Workforce Structures (Org Design)
+**Oracle Equivalent:** Oracle Global HR — Workforce Structures
+
+### NexusAI Pages Currently Existing
+- ✅ [OrgChart.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OrgChart.tsx)
+- ✅ [EmployeeDirectory.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/EmployeeDirectory.tsx)
+- ✅ Schema: [hr_structures.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_structures.ts) — Department, Location, Job, Position, Grade
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Geography Hierarchy** | ⚠️ Partial | Locations exist. Missing: Country → State → County → City validation hierarchy used for payroll tax and compliance. |
+| **Job Families & Job Profiles** | ⚠️ Partial | Jobs exist. Missing: Job Family groupings and Job Profiles that attach required Competencies to a job. |
+| **Grade Ladders (Pay Progression)** | ❌ Missing | Oracle defines step-based pay progression within Grades (e.g., Step 1: $50K, Step 2: $55K, Step 3: $60K). |
+| **Establishment Reporting** | ❌ Missing | EEO-1 / VETS-4212 workforce demographic reporting required in the US for OFCCP compliance. |
+| **Tree Versioning (Org Chart History)** | ❌ Missing | Oracle stores every previous state of the management hierarchy tree with effective dates. |

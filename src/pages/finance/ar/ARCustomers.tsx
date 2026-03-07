@@ -3,9 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -53,6 +54,12 @@ export default function ARCustomers() {
     customerType: z.string().min(1, "Customer Type is required"),
     taxId: z.string().optional(),
     contactEmail: z.string().email("Invalid email").optional().or(z.literal("")),
+    // Oracle AR Profile fields
+    profileClass: z.string().optional(),
+    statementCycle: z.string().optional(),
+    autoCashRuleSet: z.string().optional(),
+    collector: z.string().optional(),
+    creditHoldAuto: z.boolean().default(false),
   });
 
   const accountSchema = z.object({
@@ -83,7 +90,18 @@ export default function ARCustomers() {
   // Forms
   const customerForm = useForm<z.infer<typeof customerSchema>>({
     resolver: zodResolver(customerSchema),
-    defaultValues: { businessUnitId: "", name: "", customerType: "Commercial", taxId: "", contactEmail: "" }
+    defaultValues: {
+      businessUnitId: "",
+      name: "",
+      customerType: "Commercial",
+      taxId: "",
+      contactEmail: "",
+      profileClass: "",
+      statementCycle: "",
+      autoCashRuleSet: "",
+      collector: "",
+      creditHoldAuto: false,
+    }
   });
 
   const accountForm = useForm<z.infer<typeof accountSchema>>({
@@ -185,27 +203,140 @@ export default function ARCustomers() {
             <h2 className="text-lg font-semibold flex items-center gap-2"><Users className="w-5 h-5" /> Customers</h2>
             <Dialog>
               <DialogTrigger asChild><Button size="sm"><Plus className="w-4 h-4 mr-2" /> New Customer</Button></DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader><DialogTitle>Create Customer Party</DialogTitle></DialogHeader>
                 <Form {...customerForm}>
                   <form onSubmit={customerForm.handleSubmit((d) => createCustomer.mutate({ ...d, contactEmail: d.contactEmail || undefined, taxId: d.taxId || undefined }))} className="space-y-4">
-                    <FormField control={customerForm.control} name="businessUnitId" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Business Unit *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Select BU..." /></SelectTrigger></FormControl>
-                          <SelectContent>
-                            <SelectItem value="BU_US">US Operations</SelectItem>
-                            <SelectItem value="BU_EU">EU Operations</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-                    <FormField control={customerForm.control} name="name" render={({ field }) => (
-                      <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                    )} />
-                    <Button type="submit">Save</Button>
+                    {/* Core Identity */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField control={customerForm.control} name="businessUnitId" render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Business Unit *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select BU..." /></SelectTrigger></FormControl>
+                            <SelectContent>
+                              <SelectItem value="BU_US">US Operations</SelectItem>
+                              <SelectItem value="BU_EU">EU Operations</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField control={customerForm.control} name="name" render={({ field }) => (
+                        <FormItem className="col-span-2"><FormLabel>Customer Name *</FormLabel><FormControl><Input {...field} placeholder="Acme Corporation" /></FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={customerForm.control} name="customerType" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Customer Type *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                            <SelectContent>
+                              <SelectItem value="Commercial">Commercial</SelectItem>
+                              <SelectItem value="Government">Government</SelectItem>
+                              <SelectItem value="Non-Profit">Non-Profit</SelectItem>
+                              <SelectItem value="Internal">Internal</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <FormField control={customerForm.control} name="taxId" render={({ field }) => (
+                        <FormItem><FormLabel>Tax ID / VAT Number</FormLabel><FormControl><Input {...field} placeholder="XX-XXXXXXX" /></FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={customerForm.control} name="contactEmail" render={({ field }) => (
+                        <FormItem className="col-span-2"><FormLabel>Primary Contact Email</FormLabel><FormControl><Input type="email" {...field} placeholder="ar@customer.com" /></FormControl><FormMessage /></FormItem>
+                      )} />
+                    </div>
+
+                    {/* Oracle AR Profile Fields */}
+                    <div className="border-t pt-4">
+                      <p className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Oracle AR — Customer Profile</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField control={customerForm.control} name="profileClass" render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Profile Class</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="None (manual)" /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                <SelectItem value="PLATINUM">Platinum</SelectItem>
+                                <SelectItem value="GOLD">Gold</SelectItem>
+                                <SelectItem value="SILVER">Silver</SelectItem>
+                                <SelectItem value="NEW_ACCOUNT">New Account</SelectItem>
+                                <SelectItem value="GOVERNMENT">Government</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormDescription className="text-xs">Cascades credit limit, payment terms, and statement cycle defaults.</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                        <FormField control={customerForm.control} name="statementCycle" render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Statement Cycle</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Select cycle..." /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                <SelectItem value="1ST_OF_MONTH">1st of Month</SelectItem>
+                                <SelectItem value="15TH_OF_MONTH">15th of Month</SelectItem>
+                                <SelectItem value="END_OF_MONTH">End of Month</SelectItem>
+                                <SelectItem value="WEEKLY">Weekly</SelectItem>
+                                <SelectItem value="NONE">None</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                        <FormField control={customerForm.control} name="autoCashRuleSet" render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>AutoCash Rule Set</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Select rule set..." /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                <SelectItem value="OLDEST_FIRST">Apply to Oldest Invoice First</SelectItem>
+                                <SelectItem value="PRORATE">Prorate by Invoice Amount</SelectItem>
+                                <SelectItem value="LIFO">Apply to Newest Invoice First</SelectItem>
+                                <SelectItem value="LARGEST_FIRST">Apply to Largest Invoice First</SelectItem>
+                                <SelectItem value="NONE">None (Manual)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormDescription className="text-xs">Governs automatic receipt-to-invoice matching in lockbox / auto-cash processing.</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                        <FormField control={customerForm.control} name="collector" render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Collector</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl><SelectTrigger><SelectValue placeholder="Assign collector..." /></SelectTrigger></FormControl>
+                              <SelectContent>
+                                <SelectItem value="COL_SMITH">J. Smith (AR Collections)</SelectItem>
+                                <SelectItem value="COL_JONES">M. Jones (AR Collections)</SelectItem>
+                                <SelectItem value="COL_PATEL">R. Patel (Credit &amp; Collections)</SelectItem>
+                                <SelectItem value="COL_TEAM">Collections Team</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormDescription className="text-xs">AR collector responsible for following up on overdue balances.</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                        <FormField control={customerForm.control} name="creditHoldAuto" render={({ field }) => (
+                          <FormItem className="col-span-2 flex items-center justify-between gap-4 rounded-lg border p-4 bg-muted/20">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base cursor-pointer">Auto-Hold Orders When Credit Limit Exceeded</FormLabel>
+                              <FormDescription>When enabled, new sales orders and AR transactions for this customer will be automatically placed on hold if they exceed the assigned credit limit.</FormDescription>
+                            </div>
+                            <FormControl>
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
+                            </FormControl>
+                          </FormItem>
+                        )} />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-2">
+                      <Button type="submit" disabled={createCustomer.isPending}>
+                        {createCustomer.isPending ? "Saving..." : "Save Customer"}
+                      </Button>
+                    </div>
                   </form>
                 </Form>
               </DialogContent>
