@@ -112,15 +112,15 @@ export default function RFQs() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 rounded">
+              <div className="p-4 bg-blue-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Total RFQs</p>
                 <p className="text-2xl font-bold">{rfqs.length}</p>
               </div>
-              <div className="p-4 bg-amber-50 rounded">
+              <div className="p-4 bg-amber-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Pending Response</p>
                 <p className="text-2xl font-bold">{rfqs.filter((r: any) => r.status === "sent").length}</p>
               </div>
-              <div className="p-4 bg-green-50 rounded">
+              <div className="p-4 bg-green-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Quoted</p>
                 <p className="text-2xl font-bold">{rfqs.filter((r: any) => r.status === "quoted").length}</p>
               </div>

@@ -88,7 +88,7 @@ export default function ARReceiptDetail() {
             </div>
 
             <Card className="mt-6 border-orange-200">
-                <CardHeader className="bg-orange-50">
+                <CardHeader className="bg-orange-500/10">
                     <CardTitle>Invoice Applications</CardTitle>
                     <CardDescription>Invoices that this receipt has been applied to.</CardDescription>
                 </CardHeader>

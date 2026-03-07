@@ -426,7 +426,7 @@ export function RiskDashboard() {
 
             {/* Real-Time Breach Alerts */}
             {metrics.breaches > 0 && (
-                <Card className="bg-red-50/50 border-red-200">
+                <Card className="bg-red-500/10 border-red-200">
                     <CardHeader>
                         <CardTitle className="text-sm flex items-center gap-2 text-red-700">
                             <Bell className="w-4 h-4 animate-pulse" />

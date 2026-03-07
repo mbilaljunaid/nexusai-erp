@@ -168,7 +168,7 @@ export default function ArAnalytics() {
                         </div>
 
                         {selectedCustomer && !loadingAdvice && advice && (
-                            <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-lg border">
+                            <div className="flex items-start gap-4 p-4 bg-slate-500/10 rounded-lg border">
                                 <div className={cn(`p-3 rounded-full ${advice.priority === "High" ? "bg-red-100 text-red-600" : "bg-blue-100 text-blue-600"
                                     }`)}>
                                     <AlertTriangle className="h-6 w-6" />
@@ -203,7 +203,7 @@ function FeatureCard({ title, value, desc, icon: Icon, color }: any) {
                     <div className={cn(`p-2 rounded-lg bg-opacity-10 ${color.replace('text-', 'bg-')}`)}>
                         <Icon className={cn(`h-6 w-6 ${color}`)} />
                     </div>
-                    <span className="text-xs font-medium text-emerald-600 flex items-center bg-emerald-50 px-2 py-1 rounded">
+                    <span className="text-xs font-medium text-emerald-600 flex items-center bg-emerald-500/10 px-2 py-1 rounded">
                         <ArrowUpRight className="h-3 w-3 mr-1" /> +12%
                     </span>
                 </div>

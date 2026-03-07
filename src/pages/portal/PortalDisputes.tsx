@@ -127,7 +127,7 @@ export default function PortalDisputes() {
             {/* Create Dispute Form */}
             {showForm && (
                 <Card className="border-amber-200">
-                    <CardHeader className="bg-amber-50">
+                    <CardHeader className="bg-amber-500/10">
                         <CardTitle className="flex items-center gap-2">
                             <AlertCircle className="h-5 w-5 text-amber-600" />
                             Create New Dispute
@@ -226,7 +226,7 @@ export default function PortalDisputes() {
                                     {files.length > 0 && (
                                         <div className="mt-2 space-y-2">
                                             {files.map((file, index) => (
-                                                <div key={index} className="flex items-center justify-between text-sm bg-slate-50 p-2 rounded">
+                                                <div key={index} className="flex items-center justify-between text-sm bg-slate-500/10 p-2 rounded">
                                                     <span className="truncate">{file.name} ({(file.size / 1024).toFixed(1)} KB)</span>
                                                     <Button
                                                         type="button"
@@ -265,7 +265,7 @@ export default function PortalDisputes() {
                     {disputes.length > 0 ? (
                         <div className="space-y-3">
                             {disputes.map((dispute: any) => (
-                                <div key={dispute.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                                <div key={dispute.id} className="flex items-center justify-between p-4 bg-slate-500/10 rounded-lg">
                                     <div className="flex-1">
                                         <h3 className="font-semibold">{dispute.disputeReason}</h3>
                                         <p className="text-sm text-muted-foreground">

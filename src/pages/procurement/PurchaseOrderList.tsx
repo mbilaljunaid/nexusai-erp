@@ -90,7 +90,7 @@ export default function PurchaseOrderList() {
                     {item.status === 'Draft' && (
                         <Button size="sm" variant="outline" onClick={() => approvePOMutation.mutate(item.id)}>Approve</Button>
                     )}
-                    <Button size="icon" variant="ghost" onClick={() => deletePOMutation.mutate(item.id)}>
+                    <Button size="icon" variant="ghost" onClick={() => deletePOMutation.mutate(item.id)} aria-label="Delete">
                         <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                     </Button>
                 </div>

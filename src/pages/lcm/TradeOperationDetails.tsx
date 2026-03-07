@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 import { Loader2 } from "lucide-react";
 import React, { useState} from'react';
 import { useQuery, useMutation, useQueryClient} from'@tanstack/react-query';
@@ -117,7 +118,7 @@ export default function TradeOperationDetails() {
                 {/* Header / Breadcrumbs */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" onClick={() => setLocation("/scm/lcm/operations")}>
+                        <Button variant="ghost" size="icon" onClick={() => setLocation("/scm/lcm/operations")} aria-label="Go back">
                             <ArrowLeft className="h-5 w-5" />
                         </Button>
                         <div>
@@ -380,7 +381,7 @@ export default function TradeOperationDetails() {
                                         </Button>
                                     </CardContent>
                                 </Card>
-                                <Card className="bg-blue-50/50 border-blue-100">
+                                <Card className="bg-blue-500/10 border-blue-100">
                                     <CardContent className="p-4 flex gap-3">
                                         <AlertCircle className="h-5 w-5 text-blue-600 shrink-0" />
                                         <p className="text-xs text-blue-800 leading-relaxed">
@@ -441,7 +442,7 @@ export default function TradeOperationDetails() {
                                         <div className="text-3xl font-bold font-mono">-$1.2k</div>
                                         <p className="text-xs text-muted-foreground">Ocean freight is trending lower than previous similar shipments.</p>
                                         <div className="h-2 w-full bg-muted rounded-full overflow-hidden mt-4">
-                                            <div className="h-full bg-blue-500 w-[65%]" />
+                                            <Progress value={65} className="h-2" indicatorClassName="bg-blue-500" />
                                         </div>
                                     </div>
                                 </div>

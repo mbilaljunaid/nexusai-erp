@@ -36,7 +36,7 @@ export default function BackendIntegration() {
         ))}
       </div>
 
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-blue-500/10 border-blue-200">
         <CardHeader>
           <CardTitle>Integration Status</CardTitle>
         </CardHeader>

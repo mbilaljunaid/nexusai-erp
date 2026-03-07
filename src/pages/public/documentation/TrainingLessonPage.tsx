@@ -2117,7 +2117,7 @@ export default function TrainingLessonPage() {
           ))}
 
           <Card className="mb-8 border-green-200 dark:border-green-800">
-            <CardHeader className="bg-green-50 dark:bg-green-900/30">
+            <CardHeader className="bg-green-500/10 dark:bg-green-900/30">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Lightbulb className="w-5 h-5 text-green-600" /> Key Takeaways
               </CardTitle>

@@ -158,7 +158,7 @@ export default function PerformanceTemplateBuilder() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-blue-50/50 dark:bg-blue-900/10 border-blue-200/50 dark:border-blue-800/50">
+                        <Card className="bg-blue-500/10 dark:bg-blue-900/10 border-blue-200/50 dark:border-blue-800/50">
                             <CardContent className="pt-6 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <Label className="text-sm font-medium">Require Acknowledgement</Label>
@@ -184,7 +184,7 @@ export default function PerformanceTemplateBuilder() {
                                 <p className="text-sm text-muted-foreground">Define what needs to be reviewed and who can evaluate it.</p>
                             </div>
                             <div className="flex items-center gap-4">
-                                <div className={cn(`px-3 py-1.5 rounded border text-sm font-semibold flex items-center gap-2 ${totalWeight === 100 ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30' : 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30'}`)}>
+                                <div className={cn(`px-3 py-1.5 rounded border text-sm font-semibold flex items-center gap-2 ${totalWeight === 100 ? 'bg-green-500/10 text-green-700 border-green-200 dark:bg-green-900/30' : 'bg-red-500/10 text-red-700 border-red-200 dark:bg-red-900/30'}`)}>
                                     Total Weight: {totalWeight}%
                                     {totalWeight !== 100 && <span className="text-xs font-normal">(Must equal 100%)</span>}
                                 </div>
@@ -230,7 +230,7 @@ export default function PerformanceTemplateBuilder() {
                                         </div>
 
                                         {/* Multi-Participant Matrix */}
-                                        <div className="flex-1 min-w-72 border rounded-lg p-3 bg-zinc-50 dark:bg-zinc-900/50">
+                                        <div className="flex-1 min-w-72 border rounded-lg p-3 bg-zinc-500/10 dark:bg-zinc-900/50">
                                             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1.5"><Users className="h-3 w-3" /> Evaluating Roles</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {(["WORKER", "MANAGER", "PEER", "MATRIX_MANAGER"] as ParticipantRole[]).map(role => (
@@ -258,7 +258,7 @@ export default function PerformanceTemplateBuilder() {
                                                 />
                                                 <span className="absolute right-3 top-2 text-sm text-muted-foreground">%</span>
                                             </div>
-                                            <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => removeSection(section.id)}>
+                                            <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-600 hover:bg-red-500/10 dark:hover:bg-red-900/20" onClick={() => removeSection(section.id)} aria-label="Delete">
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>

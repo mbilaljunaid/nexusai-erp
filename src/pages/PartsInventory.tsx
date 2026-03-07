@@ -97,7 +97,7 @@ export default function PartsInventory() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={(parseInt(p.quantity) || 0) < (parseInt(p.reorder) || 50) ? "destructive" : "default"} className="text-xs">Qty</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

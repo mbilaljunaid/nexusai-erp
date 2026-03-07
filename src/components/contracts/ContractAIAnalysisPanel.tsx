@@ -90,7 +90,7 @@ export function ContractAIAnalysisPanel({ isOpen, onClose, contractId }: Contrac
                     {analysis && (
                         <div className="space-y-4">
                             {/* Overall Risk */}
-                            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                            <div className="flex items-center justify-between p-4 bg-slate-500/10 rounded-lg">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Overall Risk Level</p>
                                     <p className="text-2xl font-bold mt-1">
@@ -116,7 +116,7 @@ export function ContractAIAnalysisPanel({ isOpen, onClose, contractId }: Contrac
                                                     'bg-red-600'
                                                 }`)}
                                             data-score={analysis.complianceScore}
-                                            style={{ width: `${Math.min(100, Math.max(0, analysis.complianceScore))}%` }}
+                                            style={{ width: `${Math.min(100, Math.max(0, analysis.complianceScore))}%`}}
                                         />
                                     </div>
                                 </div>
@@ -154,7 +154,7 @@ export function ContractAIAnalysisPanel({ isOpen, onClose, contractId }: Contrac
 
                             {/* Summary */}
                             {analysis.summary && (
-                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div className="p-4 bg-blue-500/10 border border-blue-200 rounded-lg">
                                     <h3 className="font-medium text-sm mb-2">AI Summary</h3>
                                     <p className="text-sm text-muted-foreground">
                                         {analysis.summary}

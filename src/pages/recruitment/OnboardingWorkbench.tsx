@@ -104,7 +104,7 @@ export default function OnboardingWorkbench() {
                                                         variant="ghost"
                                                         size="icon"
                                                         className={cn("h-6 w-6", task.status === "COMPLETED" ? "text-green-600" : "text-muted-foreground")}
-                                                        onClick={() => updateTaskMutation.mutate({ taskId: task.id, status: task.status === "COMPLETED" ? "PENDING" : "COMPLETED" })}
+                                                        onClick={() => updateTaskMutation.mutate({ taskId: task.id, status: task.status === "COMPLETED" ? "PENDING" : "COMPLETED" })} aria-label="Toggle task completion"
                                                     >
                                                         {task.status === "COMPLETED" ? <CheckCircle2 className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
                                                     </Button>

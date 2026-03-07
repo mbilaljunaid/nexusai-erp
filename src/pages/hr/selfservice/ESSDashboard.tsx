@@ -106,7 +106,7 @@ export default function ESSDashboard() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 {pendingTasks.map((task, i) => (
-                                    <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-teal-500/20 transition-all">
+                                    <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-zinc-500/10 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800 group hover:border-teal-500/20 transition-all">
                                         <div className="flex gap-4 items-center">
                                             <div className="h-2 w-2 rounded-full bg-teal-500" />
                                             <div>
@@ -185,7 +185,7 @@ export default function ESSDashboard() {
                                 <p className="text-teal-100/80 text-sm mb-4">Ask our AI Assistant any HR policy questions or request time off.</p>
                                 <Button
                                     variant="secondary"
-                                    className="w-full bg-white text-teal-600 hover:bg-zinc-100"
+                                    className="w-full bg-white text-teal-600 hover:bg-zinc-500/15"
                                     onClick={() => open()}
                                 >
                                     Launch NexusAI

@@ -15,10 +15,10 @@ interface EVMMetric { wbs_code: string; description: string; pv: number; ev: num
 
 const STATUS_CLR: Record<string, string> = { Draft: 'bg-gray-100 text-gray-400 border-l-gray-400', Pending_Approval: 'bg-amber-100 text-amber-600 border-l-amber-600', Approved: 'bg-blue-100 text-blue-700 border-l-blue-700', Presented: 'bg-purple-100 text-purple-600 border-l-purple-600', Won: 'bg-emerald-100 text-emerald-600 border-l-emerald-600', Lost: 'bg-red-100 text-red-600 border-l-red-600', Expired: 'bg-gray-100 text-gray-500 border-l-gray-500', Pending: 'bg-amber-100 text-amber-600 border-l-amber-600', Renewed: 'bg-emerald-100 text-emerald-600 border-l-emerald-600', Churned: 'bg-red-100 text-red-600 border-l-red-600', On_Hold: 'bg-amber-100 text-amber-500 border-l-amber-500' };
 const ACTIONS: Record<string, { a: string; label: string; textClass: string; bgClass: string }[]> = {
-    Draft: [{ a: 'SUBMIT', label: 'Submit', textClass: 'text-blue-700', bgClass: 'bg-blue-50 hover:bg-blue-100' }],
-    Pending_Approval: [{ a: 'APPROVE', label: 'Approve', textClass: 'text-emerald-600', bgClass: 'bg-emerald-50 hover:bg-emerald-100' }, { a: 'LOSE', label: 'Decline', textClass: 'text-red-600', bgClass: 'bg-red-50 hover:bg-red-100' }],
-    Approved: [{ a: 'PRESENT', label: 'Mark Presented', textClass: 'text-purple-600', bgClass: 'bg-purple-50 hover:bg-purple-100' }],
-    Presented: [{ a: 'WIN', label: 'Won!', textClass: 'text-emerald-600', bgClass: 'bg-emerald-50 hover:bg-emerald-100' }, { a: 'LOSE', label: 'Lost', textClass: 'text-red-600', bgClass: 'bg-red-50 hover:bg-red-100' }],
+    Draft: [{ a: 'SUBMIT', label: 'Submit', textClass: 'text-blue-700', bgClass: 'bg-blue-500/10 hover:bg-blue-500/15' }],
+    Pending_Approval: [{ a: 'APPROVE', label: 'Approve', textClass: 'text-emerald-600', bgClass: 'bg-emerald-500/10 hover:bg-emerald-500/15' }, { a: 'LOSE', label: 'Decline', textClass: 'text-red-600', bgClass: 'bg-red-500/10 hover:bg-red-500/15' }],
+    Approved: [{ a: 'PRESENT', label: 'Mark Presented', textClass: 'text-purple-600', bgClass: 'bg-purple-500/10 hover:bg-purple-500/15' }],
+    Presented: [{ a: 'WIN', label: 'Won!', textClass: 'text-emerald-600', bgClass: 'bg-emerald-500/10 hover:bg-emerald-500/15' }, { a: 'LOSE', label: 'Lost', textClass: 'text-red-600', bgClass: 'bg-red-500/10 hover:bg-red-500/15' }],
 };
 
 export default function CPQDashboard() {
@@ -131,7 +131,7 @@ export default function CPQDashboard() {
                             <Card className="w-72 flex-shrink-0 p-3.5 h-fit sticky top-4 shadow-sm">
                                 <div className="font-bold text-[13px] mb-2">{selected.quote_number}</div>
                                 <div className="text-[11px] font-bold mb-1.5">Line Items</div>
-                                <Card className="p-2 border-none shadow-none bg-gray-50">
+                                <Card className="p-2 border-none shadow-none bg-slate-500/10">
                                     {(selected.lines ?? []).map(l => (
                                         <div key={l.id} className="border-b border-gray-100 pb-1 mb-1 text-[10px]">
                                             <div className="font-semibold">#{l.line_number} {l.product_id}</div>
@@ -153,7 +153,7 @@ export default function CPQDashboard() {
             {view === 'renewal' && (
                 <div>
                     {upcoming.length > 0 && (
-                        <div className="bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 mb-3 text-[11px]">
+                        <div className="bg-amber-500/10 border border-amber-300 rounded-lg px-3 py-2 mb-3 text-[11px]">
                             <strong>⚠️ {upcoming.length} contract(s)</strong> renewing within 30 days
                         </div>
                     )}

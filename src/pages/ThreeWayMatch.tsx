@@ -61,7 +61,7 @@ export default function ThreeWayMatch() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-4 gap-4 text-sm mb-4">
-                <div className="p-3 bg-slate-50 rounded">
+                <div className="p-3 bg-slate-500/10 rounded">
                   <p className="text-muted-foreground text-xs font-semibold mb-1">QUANTITY</p>
                   {match.quantityVariance ? (
                     <div>
@@ -72,7 +72,7 @@ export default function ThreeWayMatch() {
                     <p className="text-green-600 font-semibold">Matched ✓</p>
                   )}
                 </div>
-                <div className="p-3 bg-slate-50 rounded">
+                <div className="p-3 bg-slate-500/10 rounded">
                   <p className="text-muted-foreground text-xs font-semibold mb-1">PRICE</p>
                   {match.priceVariance ? (
                     <div>
@@ -83,19 +83,19 @@ export default function ThreeWayMatch() {
                     <p className="text-green-600 font-semibold">Matched ✓</p>
                   )}
                 </div>
-                <div className="p-3 bg-slate-50 rounded">
+                <div className="p-3 bg-slate-500/10 rounded">
                   <p className="text-muted-foreground text-xs font-semibold mb-1">STATUS</p>
                   <p className="font-semibold capitalize">{match.matchStatus.replace("_", " ")}</p>
                 </div>
-                <div className="p-3 bg-slate-50 rounded">
+                <div className="p-3 bg-slate-500/10 rounded">
                   <p className="text-muted-foreground text-xs font-semibold mb-1">MATCHED AT</p>
                   <p className="font-semibold">{match.matchedAt ? formatDate(match.matchedAt) : "Pending"}</p>
                 </div>
               </div>
 
               {match.exceptionReason && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded mb-4">
-                  <p className="text-xs font-semibold text-red-900 mb-1">Exception Reason</p>
+                <div className="p-3 bg-red-500/10 border border-red-200 rounded mb-4">
+                  <p className="text-xs font-semibold text-red-900 dark:text-red-200 mb-1">Exception Reason</p>
                   <p className="text-sm text-red-800">{match.exceptionReason}</p>
                 </div>
               )}

@@ -77,7 +77,7 @@ export default function DataGovernancePage() {
             <p className="text-2xl font-bold text-green-600">{loading ? "..." : stats.dataQualityScore}%</p>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:bg-slate-50" onClick={() => setLocation("/mdm/duplicates")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+        <Card className="cursor-pointer hover:bg-slate-500/10" onClick={() => setLocation("/mdm/duplicates")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
           <CardContent className="pt-6">
             <p className="text-muted-foreground text-sm">Open Duplicate Sets</p>
             <p className="text-2xl font-bold text-orange-600">{loading ? "..." : stats.openDuplicateSets}</p>

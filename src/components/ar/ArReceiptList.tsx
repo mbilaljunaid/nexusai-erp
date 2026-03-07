@@ -108,12 +108,12 @@ export function ArReceiptList() {
                                 </div>
 
                                 {Number(receipt.unappliedAmount) > 0 && (
-                                    <div className="p-2 bg-amber-50 rounded border border-amber-100 flex justify-between items-center text-xs">
+                                    <div className="p-2 bg-amber-500/10 rounded border border-amber-100 flex justify-between items-center text-xs">
                                         <span className="text-amber-700 font-medium">Unapplied: ${receipt.unappliedAmount}</span>
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-6 text-[10px] px-2 bg-white hover:bg-amber-100 text-amber-600"
+                                            className="h-6 text-[10px] px-2 bg-white hover:bg-amber-500/15 text-amber-600"
                                             onClick={() => {
                                                 setSelectedReceipt(receipt);
                                                 setApplicationDialogOpen(true);
@@ -125,12 +125,12 @@ export function ArReceiptList() {
                                 )}
 
                                 {receipt.status === 'Applied' && (
-                                    <div className="p-2 bg-red-50 rounded border border-red-100 flex justify-between items-center text-xs">
+                                    <div className="p-2 bg-red-500/10 rounded border border-red-100 flex justify-between items-center text-xs">
                                         <span className="text-red-700 font-medium">Reverse application?</span>
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-6 text-[10px] px-2 bg-white hover:bg-red-100 text-red-600"
+                                            className="h-6 text-[10px] px-2 bg-white hover:bg-red-500/15 text-red-600"
                                             disabled={unapplyMutation.isPending}
                                             onClick={() => unapplyMutation.mutate(receipt.id)}
                                         >

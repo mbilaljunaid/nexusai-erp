@@ -102,7 +102,7 @@ export default function ElementConfiguration() {
                                     <div key={element.id} className="grid grid-cols-12 gap-4 p-4 text-sm items-center hover:bg-muted/10 transition-colors">
                                         <div className="col-span-3 font-medium text-primary cursor-pointer hover:underline">{element.name}</div>
                                         <div className="col-span-1">
-                                            <Badge variant="outline" className={element.type === 'Earning' ? 'text-green-600 border-green-200 bg-green-50' : 'text-amber-600 border-amber-200 bg-amber-50'}>
+                                            <Badge variant="outline" className={element.type === 'Earning' ? 'text-green-600 border-green-200 bg-green-500/10' : 'text-amber-600 border-amber-200 bg-amber-500/10'}>
                                                 {element.type}
                                             </Badge>
                                         </div>

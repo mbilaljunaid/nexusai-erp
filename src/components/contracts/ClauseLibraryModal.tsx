@@ -133,7 +133,7 @@ export function ClauseLibraryModal({ isOpen, onClose, contractId }: ClauseLibrar
                             {filteredClauses.map((clause: any) => (
                                 <div
                                     key={clause.id}
-                                    className="p-4 border rounded-lg hover:bg-slate-50 transition-colors"
+                                    className="p-4 border rounded-lg hover:bg-slate-500/10 transition-colors"
                                 >
                                     <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1 space-y-2">

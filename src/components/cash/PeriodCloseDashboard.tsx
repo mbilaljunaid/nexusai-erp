@@ -175,10 +175,10 @@ export function PeriodCloseDashboard() {
                 onClose={() => setReportOpen(false)}
             />
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-4 items-start">
+            <div className="bg-amber-500/10 border border-amber-200 rounded-lg p-4 flex gap-4 items-start">
                 <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
                 <div className="text-sm">
-                    <p className="font-semibold text-amber-900">Period Close Requirement</p>
+                    <p className="font-semibold text-amber-900 dark:text-amber-200">Period Close Requirement</p>
                     <p className="text-amber-800 mt-1">
                         All bank accounts must reach 100% reconciliation status before the General Ledger period can be closed.
                         Unreconciled items will cause variance in the Trial Balance.

@@ -98,7 +98,7 @@ export default function ClinicalDocumentation() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={n.status === "signed" ? "default" : "secondary"} className="text-xs">{n.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(n.id)} data-testid={`button-delete-${n.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(n.id)} data-testid={`button-delete-${n.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

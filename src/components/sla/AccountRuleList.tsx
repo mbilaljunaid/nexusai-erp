@@ -161,11 +161,11 @@ export function AccountRuleList() {
                             <TableCell>
                                 <div className="flex items-center justify-end gap-2">
                                     <Link href="/gl/config/sla/adr">
-                                        <Button variant="ghost" size="icon" title="Edit in Builder">
+                                        <Button variant="ghost" size="icon" title="Edit in Builder" aria-label="Edit">
                                             <Edit className="h-4 w-4 text-blue-500" />
                                         </Button>
                                     </Link>
-                                    <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(rule.id)}>
+                                    <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(rule.id)} aria-label="Delete">
                                         <Trash2 className="h-4 w-4 text-red-500" />
                                     </Button>
                                 </div>

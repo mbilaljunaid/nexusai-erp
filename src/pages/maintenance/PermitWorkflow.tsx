@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Progress } from "@/components/ui/progress";
 import {
     ShieldCheck,
     ClipboardList,
@@ -110,7 +111,6 @@ export function PermitWorkflow() {
             const apiTypes = await permitService.getPermitTypes();
             setPermitTypes(apiTypes);
         } catch (error) {
-            console.error("Failed to load permit types:", error);
             setPermitTypes([]); // Fallback
         } finally {
             setLoading(false);
@@ -125,7 +125,6 @@ export function PermitWorkflow() {
             // Using the API data as-is; if type mismatches occur, will need mapper function
             setPermits(apiPermits as any); // Temporary any cast
         } catch (error) {
-            console.error("Failed to load permits:", error);
             setPermits([]); // Fallback
         }
     };
@@ -151,7 +150,6 @@ export function PermitWorkflow() {
             setShowForm(false);
             form.reset({ permitTypeId: "", assetName: "", workOrderId: "", safetyNotes: "" });
         } catch (error) {
-            console.error("Failed to request permit:", error);
             // TODO: Show error toast
         }
     };
@@ -278,7 +276,7 @@ export function PermitWorkflow() {
                                         )}
                                     />
 
-                                    <div className="border rounded p-4 bg-blue-50">
+                                    <div className="border rounded p-4 bg-blue-500/10">
                                         <div className="text-sm font-medium mb-2">Required Documents:</div>
                                         <ul className="text-sm space-y-1">
                                             {selectedType.requiredDocuments.map((doc, i) => (
@@ -363,7 +361,7 @@ export function PermitWorkflow() {
                                                 )}
 
                                                 {permit.safetyNotes && (
-                                                    <div className="p-3 bg-yellow-50 rounded border border-yellow-200 mb-4">
+                                                    <div className="p-3 bg-yellow-500/10 rounded border border-yellow-200 mb-4">
                                                         <div className="flex items-start gap-2">
                                                             <AlertTriangle className="h-4 w-4 mt-0.5 text-yellow-600" />
                                                             <div className="flex-1 text-sm">{permit.safetyNotes}</div>
@@ -418,12 +416,7 @@ export function PermitWorkflow() {
                                                             {progress.approved} / {progress.total} approved
                                                         </span>
                                                     </div>
-                                                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                                        <div
-                                                            className="h-full bg-blue-600 transition-all"
-                                                            style={{ width: `${progress.percentage}%` }}
-                                                        />
-                                                    </div>
+                                                    <Progress value={progress.percentage} className="h-2" indicatorClassName="bg-blue-600 transition-all" />
 
                                                     <div className="mt-3 space-y-2">
                                                         {permit.approvals.map(approval => (

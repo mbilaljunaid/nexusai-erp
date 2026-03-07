@@ -147,7 +147,7 @@ export default function ApSettings() {
                 <TabsContent value="options" className="space-y-6 focus-visible:outline-none">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <Card className="shadow-sm border-slate-200/60 overflow-hidden">
-                            <CardHeader className="bg-slate-50/50 border-b">
+                            <CardHeader className="bg-slate-500/10 border-b">
                                 <CardTitle className="text-lg flex items-center gap-2">
                                     <Receipt className="h-4 w-4 text-primary" />
                                     Invoice Entry Defaults
@@ -224,7 +224,7 @@ export default function ApSettings() {
                         </Card>
 
                         <Card className="shadow-sm border-slate-200/60 overflow-hidden">
-                            <CardHeader className="bg-slate-50/50 border-b">
+                            <CardHeader className="bg-slate-500/10 border-b">
                                 <CardTitle className="text-lg flex items-center gap-2">
                                     <CreditCard className="h-4 w-4 text-primary" />
                                     Payment Defaults
@@ -277,7 +277,7 @@ export default function ApSettings() {
 
                 <TabsContent value="tolerances" className="space-y-6 focus-visible:outline-none">
                     <Card className="shadow-sm border-slate-200/60 overflow-hidden">
-                        <CardHeader className="bg-slate-50/50 border-b">
+                        <CardHeader className="bg-slate-500/10 border-b">
                             <CardTitle className="text-lg flex items-center gap-2">
                                 <ShieldCheck className="h-4 w-4 text-primary" />
                                 Validation & Matching Tolerances
@@ -326,7 +326,7 @@ export default function ApSettings() {
 
                 <TabsContent value="accounting" className="space-y-6 focus-visible:outline-none">
                     <Card className="shadow-sm border-slate-200/60 overflow-hidden">
-                        <CardHeader className="bg-slate-50/50 border-b">
+                        <CardHeader className="bg-slate-500/10 border-b">
                             <CardTitle className="text-lg">Subledger Accounting Policies</CardTitle>
                             <CardDescription>Control when and how subledger journals are generated for AP transactions.</CardDescription>
                         </CardHeader>
@@ -379,7 +379,7 @@ export default function ApSettings() {
 
                 <TabsContent value="distribution" className="space-y-6 focus-visible:outline-none">
                     <Card className="shadow-sm border-slate-200/60 overflow-hidden">
-                        <CardHeader className="bg-slate-50/50 border-b flex flex-row items-center justify-between">
+                        <CardHeader className="bg-slate-500/10 border-b flex flex-row items-center justify-between">
                             <div>
                                 <CardTitle className="text-lg">Distribution Sets</CardTitle>
                                 <CardDescription>Expense allocation templates for rapid invoice entry.</CardDescription>
@@ -427,7 +427,7 @@ export default function ApSettings() {
                                             </div>
                                             <div className="space-y-3">
                                                 {setLines.map((line, idx) => (
-                                                    <div key={idx} className="flex gap-4 items-end bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                                    <div key={idx} className="flex gap-4 items-end bg-slate-500/10 p-3 rounded-lg border border-slate-100">
                                                         <div className="flex-1 space-y-1.5">
                                                             <Label className="text-xs">GL Account Combination ID</Label>
                                                             <Input
@@ -452,7 +452,7 @@ export default function ApSettings() {
                                                                 }}
                                                             />
                                                         </div>
-                                                        <Button variant="ghost" size="icon" className="text-destructive h-10 w-10" onClick={() => handleRemoveDistLine(idx)}>
+                                                        <Button variant="ghost" size="icon" className="text-destructive h-10 w-10" onClick={() => handleRemoveDistLine(idx)} aria-label="Delete">
                                                             <Trash2 className="h-4 w-4" />
                                                         </Button>
                                                     </div>

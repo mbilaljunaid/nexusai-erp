@@ -194,7 +194,7 @@ export default function MyLearning() {
                         </Card>
                     ) : (
                         completed.map((enrollment: Enrollment) => (
-                            <Card key={enrollment.id} className="border-green-200 bg-green-50/50">
+                            <Card key={enrollment.id} className="border-green-200 bg-green-500/10">
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">

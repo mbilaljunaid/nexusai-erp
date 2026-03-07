@@ -85,7 +85,7 @@ export default function Analytics() {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-64 flex items-center justify-center bg-gray-50 rounded">
+                                    <div className="h-64 flex items-center justify-center bg-gray-500/10 rounded">
                                         <p className="text-muted-foreground">User growth chart placeholder</p>
                                     </div>
                                 </CardContent>
@@ -98,7 +98,7 @@ export default function Analytics() {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-64 flex items-center justify-center bg-gray-50 rounded">
+                                    <div className="h-64 flex items-center justify-center bg-gray-500/10 rounded">
                                         <p className="text-muted-foreground">DAU chart placeholder</p>
                                     </div>
                                 </CardContent>
@@ -117,7 +117,7 @@ export default function Analytics() {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-64 flex items-center justify-center bg-gray-50 rounded">
+                                    <div className="h-64 flex items-center justify-center bg-gray-500/10 rounded">
                                         <p className="text-muted-foreground">MRR trend chart placeholder</p>
                                     </div>
                                 </CardContent>
@@ -130,7 +130,7 @@ export default function Analytics() {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-64 flex items-center justify-center bg-gray-50 rounded">
+                                    <div className="h-64 flex items-center justify-center bg-gray-500/10 rounded">
                                         <p className="text-muted-foreground">Revenue distribution chart placeholder</p>
                                     </div>
                                 </CardContent>

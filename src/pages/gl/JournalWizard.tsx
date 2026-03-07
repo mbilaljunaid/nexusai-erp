@@ -207,7 +207,7 @@ export default function JournalWizard() {
             cell: (line) => (
                 <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => {
                     setLines(prev => prev.filter(l => l.id !== line.id));
-                }}>
+                }} aria-label="Delete">
                     <Trash2 className="h-3 w-3" />
                 </Button>
             )

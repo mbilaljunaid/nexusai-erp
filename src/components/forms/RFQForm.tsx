@@ -168,7 +168,7 @@ export function RFQForm() {
                 <Label className="text-xs">Specification</Label>
                 <Input placeholder="Specs/Details" value={line.specification} onChange={(e) => updateLine(line.id, "specification", e.target.value)} data-testid={`input-spec-${line.id}`} />
               </div>
-              <Button size="icon" variant="ghost" onClick={() => removeLine(line.id)} data-testid={`button-delete-item-${line.id}`}>
+              <Button size="icon" variant="ghost" onClick={() => removeLine(line.id)} data-testid={`button-delete-item-${line.id}`} aria-label="Delete">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>
@@ -194,7 +194,7 @@ export function RFQForm() {
                 <Label className="text-xs">Email</Label>
                 <Input type="email" placeholder="vendor@example.com" value={vendor.email} onChange={(e) => updateVendor(vendor.id, "email", e.target.value)} data-testid={`input-vendor-email-${vendor.id}`} />
               </div>
-              <Button size="icon" variant="ghost" onClick={() => removeVendor(vendor.id)} data-testid={`button-delete-vendor-${vendor.id}`}>
+              <Button size="icon" variant="ghost" onClick={() => removeVendor(vendor.id)} data-testid={`button-delete-vendor-${vendor.id}`} aria-label="Delete">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>

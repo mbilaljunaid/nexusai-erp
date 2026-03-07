@@ -118,32 +118,32 @@ export default function CompetitorIntelligence() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Total Wins</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                                 {winLossData.reduce((sum, c) => sum + c.wins, 0)}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase">Total Losses</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">
                                 {winLossData.reduce((sum, c) => sum + c.losses, 0)}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Overall Win Rate</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">
                                 {winLossData.length > 0
                                     ? formatNumber(((winLossData.reduce((sum, c) => sum + c.wins, 0) /
                                         (winLossData.reduce((sum, c) => sum + c.wins + c.losses, 0))) * 100), 0)

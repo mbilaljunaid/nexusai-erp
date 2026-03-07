@@ -13,7 +13,7 @@ export function LogisticsInsightsCard() {
             type: "OPTIMIZATION",
             icon: Zap,
             color: "text-blue-600",
-            bgColor: "bg-blue-50"
+            bgColor: "bg-blue-500/10"
         },
         {
             title: "Carrier Rate Alert",
@@ -21,7 +21,7 @@ export function LogisticsInsightsCard() {
             type: "RATE_SAVING",
             icon: TrendingDown,
             color: "text-emerald-600",
-            bgColor: "bg-emerald-50"
+            bgColor: "bg-emerald-500/10"
         },
         {
             title: "SLA Risk High",
@@ -29,7 +29,7 @@ export function LogisticsInsightsCard() {
             type: "EXCEPTION",
             icon: ShieldAlert,
             color: "text-amber-600",
-            bgColor: "bg-amber-50"
+            bgColor: "bg-amber-500/10"
         }
     ];
 
@@ -54,7 +54,7 @@ export function LogisticsInsightsCard() {
                             </div>
                             <div className="flex-1 space-y-1">
                                 <div className="flex justify-between items-start">
-                                    <h4 className="text-sm font-bold text-gray-900">{insight.title}</h4>
+                                    <h4 className="text-sm font-bold text-gray-900 dark:text-gray-200">{insight.title}</h4>
                                     <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
                                 <p className="text-xs text-gray-600 leading-relaxed">
@@ -65,7 +65,7 @@ export function LogisticsInsightsCard() {
                     </div>
                 ))}
 
-                <Button variant="outline" className="w-full text-xs font-bold py-6 border-indigo-100 text-indigo-700 hover:bg-indigo-50">
+                <Button variant="outline" className="w-full text-xs font-bold py-6 border-indigo-100 text-indigo-700 hover:bg-indigo-500/10">
                     View Comprehensive Network Analysis
                 </Button>
             </CardContent>

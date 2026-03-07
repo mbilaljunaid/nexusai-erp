@@ -149,7 +149,7 @@ export default function ERP() {
 
       {activeNav === "po" && (
         <div className="space-y-4">
-          <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4">
+          <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4">
             <p className="text-sm font-medium text-blue-900 dark:text-blue-100">PO Workflow: Create a requisition → Send RFQ to vendors → Convert to Purchase Order → Invoice linked to PO</p>
           </Card>
           <div className="flex gap-2 items-center">
@@ -221,7 +221,7 @@ export default function ERP() {
                 />
                 <Button data-testid="button-new-supplier">+ New Supplier</Button>
               </div>
-              <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+              <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
                 <CardContent className="pt-6">
                   <p className="text-sm text-blue-900 dark:text-blue-100">
                     Click "Create Invoice" to generate a supplier invoice with AP GL entries (2100) for complete vendor invoice processing.

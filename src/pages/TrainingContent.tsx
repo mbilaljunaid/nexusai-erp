@@ -302,7 +302,7 @@ export default function TrainingContent() {
                               onClick={() => likeMutation.mutate(resource.id)}
                               disabled={likeMutation.isPending}
                               className="flex-shrink-0"
-                              data-testid={`button-like-${resource.id}`}
+                              data-testid={`button-like-${resource.id}`} aria-label="Thumbs up"
                             >
                               <ThumbsUp className="w-4 h-4" />
                             </Button>

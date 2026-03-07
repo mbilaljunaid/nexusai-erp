@@ -110,19 +110,19 @@ export default function GoodsReceipt() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-4 gap-4">
-              <div className="p-4 bg-blue-50 rounded">
+              <div className="p-4 bg-blue-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Total GRNs</p>
                 <p className="text-2xl font-bold">{grns.length}</p>
               </div>
-              <div className="p-4 bg-yellow-50 rounded">
+              <div className="p-4 bg-yellow-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Received</p>
                 <p className="text-2xl font-bold">{grns.filter((g: any) => g.status === "received").length}</p>
               </div>
-              <div className="p-4 bg-green-50 rounded">
+              <div className="p-4 bg-green-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Accepted</p>
                 <p className="text-2xl font-bold">{grns.filter((g: any) => g.status === "accepted").length}</p>
               </div>
-              <div className="p-4 bg-red-50 rounded">
+              <div className="p-4 bg-red-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Rejected</p>
                 <p className="text-2xl font-bold">{grns.filter((g: any) => g.status === "rejected").length}</p>
               </div>

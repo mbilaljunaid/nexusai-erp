@@ -24,7 +24,7 @@ export function RelationshipViewer({ partyId }: RelationshipViewerProps) {
 
     if (relationships.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-lg bg-slate-50">
+            <div className="flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-lg bg-slate-500/10">
                 <Network className="w-10 h-10 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium">No Relationships Found</h3>
                 <p className="text-muted-foreground text-sm max-w-sm text-center mt-2">

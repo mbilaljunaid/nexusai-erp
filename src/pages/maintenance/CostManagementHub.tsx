@@ -110,7 +110,6 @@ export function CostManagementHub() {
             ];
             setVarianceData(varianceArray);
         } catch (error) {
-            console.error("Failed to load cost data:", error);
             setWorkOrderCosts([]);
             setGlQueue([]);
             setVarianceData([]);
@@ -129,7 +128,6 @@ export function CostManagementHub() {
 
             // TODO: Show success toast
         } catch (error) {
-            console.error("Failed to approve cost:", error);
             // TODO: Show error toast
         }
     };
@@ -147,7 +145,6 @@ export function CostManagementHub() {
 
             // TODO: Show success toast
         } catch (error) {
-            console.error("Failed to post to GL:", error);
             // TODO: Show error toast
         }
     };
@@ -164,7 +161,6 @@ export function CostManagementHub() {
 
             // TODO: Show success toast
         } catch (error) {
-            console.error("Failed to transfer to project:", error);
             // TODO: Show error toast
         }
     };

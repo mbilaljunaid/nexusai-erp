@@ -229,9 +229,9 @@ export function HedgeAccountingWorkbench() {
             width: "10%",
             cell: (item) => {
                 const colors: Record<string, string> = {
-                    ACTIVE: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                    ACTIVE: "bg-emerald-500/10 text-emerald-700 border-emerald-200",
                     INACTIVE: "bg-gray-100 text-gray-700 border-gray-200",
-                    TERMINATED: "bg-red-50 text-red-700 border-red-200",
+                    TERMINATED: "bg-red-500/10 text-red-700 border-red-200",
                 };
                 return (
                     <Badge className={cn(`${colors[item.status] || colors.ACTIVE} border`)}>
@@ -476,7 +476,7 @@ export function HedgeAccountingWorkbench() {
 
             {/* Unhedged Exposure Alert */}
             {unhedgedDeals.length > 0 && (
-                <Card className="bg-amber-50/50 border-amber-200">
+                <Card className="bg-amber-500/10 border-amber-200">
                     <CardHeader>
                         <CardTitle className="text-sm flex items-center gap-2">
                             <AlertCircle className="w-4 h-4 text-amber-600" />
@@ -545,12 +545,12 @@ export function HedgeAccountingWorkbench() {
             </Card>
 
             {/* ASC 815 Compliance Note */}
-            <Card className="bg-blue-50/30 border-blue-200">
+            <Card className="bg-blue-500/10 border-blue-200">
                 <CardContent className="pt-4">
                     <div className="flex gap-3">
                         <FileText className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                         <div className="text-sm">
-                            <p className="font-bold text-blue-900 mb-1">ASC 815 Compliance</p>
+                            <p className="font-bold text-blue-900 dark:text-blue-200 mb-1">ASC 815 Compliance</p>
                             <p className="text-blue-700 leading-relaxed">
                                 All hedge relationships are documented per ASC 815 requirements. Effectiveness is
                                 tested quarterly using the dollar-offset method (80-125% range). Ineffective hedges

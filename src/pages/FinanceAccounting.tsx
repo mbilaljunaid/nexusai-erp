@@ -26,7 +26,7 @@ export default function FinanceAccounting() {
         >
             <DashboardWidget title="Total Revenue" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-emerald-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <TrendingUp className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
@@ -38,7 +38,7 @@ export default function FinanceAccounting() {
 
             <DashboardWidget title="Total Cost" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-red-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <TrendingDown className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
@@ -50,7 +50,7 @@ export default function FinanceAccounting() {
 
             <DashboardWidget title="Profit" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-blue-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <DollarSign className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
@@ -62,7 +62,7 @@ export default function FinanceAccounting() {
 
             <DashboardWidget title="Margin %" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-slate-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Percent className="h-4 w-4 text-slate-600" />
                     </div>
                     <div>

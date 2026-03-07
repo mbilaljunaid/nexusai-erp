@@ -102,7 +102,7 @@ export default function CycleCountingAudit() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={Math.abs(parseFloat(c.variance) || 0) === 0 ? "default" : "destructive"} className="text-xs">{c.variance}%</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

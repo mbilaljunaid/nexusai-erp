@@ -102,7 +102,7 @@ export default function ApprovalEscalations() {
                 <h3 className="font-semibold">{e.rule}</h3>
                 <p className="text-sm text-muted-foreground">Trigger: {e.trigger} • Action: {e.action} • After {e.days} days</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(e.id)} data-testid={`button-delete-${e.id}`}>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(e.id)} data-testid={`button-delete-${e.id}`} aria-label="Delete">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>

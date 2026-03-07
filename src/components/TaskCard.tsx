@@ -83,7 +83,7 @@ export function TaskCard({ task, onToggleComplete, draggable }: TaskCardProps) {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-task-menu-${task.id}`}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-task-menu-${task.id}`} aria-label="More options">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

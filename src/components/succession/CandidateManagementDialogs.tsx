@@ -66,7 +66,7 @@ export function CandidateComparisonModal({ isOpen, onClose, candidates }: Candid
                                     <div className="flex items-center gap-2">
                                         <User className="h-4 w-4 text-blue-600" />
                                         <div>
-                                            <div className="font-semibold text-blue-900">{candidate.employeeName}</div>
+                                            <div className="font-semibold text-blue-900 dark:text-blue-200">{candidate.employeeName}</div>
                                             <div className="text-xs text-blue-700">{candidate.employeeId}</div>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@ export function CandidateComparisonModal({ isOpen, onClose, candidates }: Candid
                             Current Role
                         </div>
                         {maxCandidates.map((candidate) => (
-                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-50">
+                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-500/10">
                                 <div className="text-sm font-medium">{candidate.currentRole}</div>
                             </div>
                         ))}
@@ -95,7 +95,7 @@ export function CandidateComparisonModal({ isOpen, onClose, candidates }: Candid
                             Performance
                         </div>
                         {maxCandidates.map((candidate) => (
-                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-50">
+                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-500/10">
                                 <div className="flex items-center gap-1">
                                     {Array.from({ length: 5 }).map((_, i) => (
                                         <span
@@ -118,7 +118,7 @@ export function CandidateComparisonModal({ isOpen, onClose, candidates }: Candid
                             Potential
                         </div>
                         {maxCandidates.map((candidate) => (
-                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-50">
+                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-500/10">
                                 <div className="flex items-center gap-1">
                                     {Array.from({ length: 5 }).map((_, i) => (
                                         <span
@@ -141,7 +141,7 @@ export function CandidateComparisonModal({ isOpen, onClose, candidates }: Candid
                             Readiness
                         </div>
                         {maxCandidates.map((candidate) => (
-                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-50">
+                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-500/10">
                                 <Badge
                                     variant={
                                         candidate.readiness === "READY_NOW" ? "default" :
@@ -159,7 +159,7 @@ export function CandidateComparisonModal({ isOpen, onClose, candidates }: Candid
                     <div className="grid gap-4" style={{ gridTemplateColumns: `200px repeat(${maxCandidates.length}, 1fr)` }}>
                         <div className="font-medium text-sm">Development Plan</div>
                         {maxCandidates.map((candidate) => (
-                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-50">
+                            <div key={candidate.id} className="p-3 border rounded-lg bg-slate-500/10">
                                 <div className="text-sm text-muted-foreground">
                                     {candidate.developmentPlan || "Not specified"}
                                 </div>
@@ -174,7 +174,7 @@ export function CandidateComparisonModal({ isOpen, onClose, candidates }: Candid
                             const perfLabel = candidate.performance >= 4 ? "High" : candidate.performance >= 3 ? "Medium" : "Low";
                             const potLabel = candidate.potential >= 4 ? "High" : candidate.potential >= 3 ? "Medium" : "Low";
                             return (
-                                <div key={candidate.id} className="p-3 border rounded-lg bg-slate-50">
+                                <div key={candidate.id} className="p-3 border rounded-lg bg-slate-500/10">
                                     <div className="text-sm font-medium">
                                         {perfLabel} Performance / {potLabel} Potential
                                     </div>
@@ -222,18 +222,18 @@ export function RemoveCandidateDialog({
                 </DialogHeader>
 
                 {candidate && (
-                    <div className="p-4 border border-rose-200 bg-rose-50 rounded-lg">
+                    <div className="p-4 border border-rose-200 bg-rose-500/10 rounded-lg">
                         <div className="space-y-2">
                             <div className="flex justify-between">
-                                <span className="text-sm font-medium text-rose-900">Candidate:</span>
+                                <span className="text-sm font-medium text-rose-900 dark:text-rose-200">Candidate:</span>
                                 <span className="text-sm text-rose-700">{candidate.employeeName}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-sm font-medium text-rose-900">Employee ID:</span>
+                                <span className="text-sm font-medium text-rose-900 dark:text-rose-200">Employee ID:</span>
                                 <span className="text-sm text-rose-700">{candidate.employeeId}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-sm font-medium text-rose-900">Current Role:</span>
+                                <span className="text-sm font-medium text-rose-900 dark:text-rose-200">Current Role:</span>
                                 <span className="text-sm text-rose-700">{candidate.currentRole}</span>
                             </div>
                         </div>

@@ -151,42 +151,42 @@ export default function FxTranslationDashboard() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Active Rates</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{rates.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{rates.length}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase flex items-center gap-1">
                                 <AlertTriangle className="h-3 w-3" /> Missing Rates
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">{missingRates}</div>
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">{missingRates}</div>
                         </CardContent>
                     </Card>
-                    <Card className={cn(`${totalGainLoss >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`)}>
+                    <Card className={cn(`${totalGainLoss >= 0 ? 'bg-green-500/10 border-green-100' : 'bg-red-500/10 border-red-100'}`)}>
                         <CardHeader className="pb-2">
                             <CardTitle className={cn(`text-xs font-bold uppercase ${totalGainLoss >= 0 ? 'text-green-800' : 'text-red-800'}`)}>
                                 FX Gain/Loss
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={cn(`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
+                            <div className={cn(`text-2xl font-bold ${totalGainLoss >= 0 ? 'text-green-900 dark:text-green-200' : 'text-red-900'}`)}>
                                 {totalGainLoss >= 0 ? '+' : ''}${totalGainLoss.toFixed(0)}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Currency Pairs</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{coverage.length}</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{coverage.length}</div>
                         </CardContent>
                     </Card>
                 </div>

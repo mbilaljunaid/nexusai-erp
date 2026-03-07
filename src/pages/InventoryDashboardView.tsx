@@ -93,7 +93,7 @@ const InventoryDashboard = () => {
   const replenishmentColumns: SpreadsheetColumn<any>[] = [
     { id: "item", header: "Item", width: "40%", cell: (item: any) => <div className="p-2 font-medium">{item.item}</div> },
     { id: "onHand", header: "On Hand", width: "30%", cell: (item: any) => <div className="p-2 text-red-600 font-bold">{item.onHand}</div> },
-    { id: "suggest", header: "Suggestion", width: "30%", cell: (item: any) => <div className="p-2"><Badge variant="outline" className="bg-blue-50 text-blue-700">{item.suggest}</Badge></div> },
+    { id: "suggest", header: "Suggestion", width: "30%", cell: (item: any) => <div className="p-2"><Badge variant="outline" className="bg-blue-500/10 text-blue-700">{item.suggest}</Badge></div> },
   ];
 
   return (

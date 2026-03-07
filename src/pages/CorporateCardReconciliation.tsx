@@ -280,7 +280,7 @@ export default function CorporateCardReconciliation() {
             </Card>
 
             {/* Instructions */}
-            <Card className="border-blue-200 bg-blue-50/50">
+            <Card className="border-blue-200 bg-blue-500/10">
                 <CardHeader>
                     <CardTitle className="text-base">💡 How to Use</CardTitle>
                 </CardHeader>

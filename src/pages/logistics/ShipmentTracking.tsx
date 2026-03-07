@@ -42,7 +42,7 @@ interface PerformanceRow {
 
 const STATUS_CFG: Record<string, string> = {
     Tendered: 'bg-gray-100 text-gray-500',
-    PickedUp: 'bg-blue-50 text-blue-700',
+    PickedUp: 'bg-blue-500/10 text-blue-700',
     InTransit: 'bg-sky-100 text-sky-600',
     OutForDelivery: 'bg-amber-100 text-amber-600',
     Delivered: 'bg-emerald-100 text-emerald-600',

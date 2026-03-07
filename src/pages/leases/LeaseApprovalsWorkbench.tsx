@@ -160,7 +160,7 @@ export default function LeaseApprovalsWorkbench() {
                                     <div className="grid grid-cols-2 gap-3 pt-2">
                                         <Button
                                             variant="outline"
-                                            className="border-red-500 text-red-600 hover:bg-red-50"
+                                            className="border-red-500 text-red-600 hover:bg-red-500/10"
                                             onClick={() => approvalMutation.mutate({ id: selectedLeaseId, action: "reject" })}
                                             disabled={approvalMutation.isPending}
                                         >
@@ -177,7 +177,7 @@ export default function LeaseApprovalsWorkbench() {
                                         </Button>
                                     </div>
 
-                                    <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-950/20 rounded border border-amber-200 dark:border-amber-900 mt-4">
+                                    <div className="flex items-center gap-2 p-3 bg-amber-500/10 dark:bg-amber-950/20 rounded border border-amber-200 dark:border-amber-900 mt-4">
                                         <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
                                         <p className="text-xs text-amber-700 dark:text-amber-400">
                                             Approving this will automatically generate the ROU Asset and Liability entries in the General Ledger for the next period.

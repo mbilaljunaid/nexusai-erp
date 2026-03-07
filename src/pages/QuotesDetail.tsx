@@ -46,7 +46,7 @@ export default function QuotesDetail() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pb-4 border-b">
                 <div className="flex items-center gap-2">
                     <Link href="/crm">
-                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors"><ArrowLeft className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors" aria-label="Go back"><ArrowLeft className="h-4 w-4" /></Button>
                     </Link>
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Sales Quotes</h1>
@@ -147,7 +147,7 @@ export default function QuotesDetail() {
                                 <div className={cn(`h-1.5 w-full ${quote.status ==='Accepted' ?'bg-gradient-to-r from-green-500 to-emerald-600' :'bg-muted'}`)} />
                                 <CardContent className="p-5 flex flex-col flex-1">
                                     <div className="flex justify-between items-start mb-4">
-                                        <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${quote.status ==='Accepted' ?'bg-green-50 dark:bg-green-900/40 text-green-600 dark:text-green-300' :'bg-muted text-muted-foreground'}`)}>
+                                        <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${quote.status ==='Accepted' ?'bg-green-500/10 dark:bg-green-900/40 text-green-600 dark:text-green-300' :'bg-muted text-muted-foreground'}`)}>
                                             <FileText className="h-6 w-6" />
                                         </div>
                                         <Badge variant={quote.status ==="Accepted" ?"default" :"secondary"} className="font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider">
@@ -283,7 +283,7 @@ export default function QuotesDetail() {
                                     )}
 
                                     {(selectedQuote.status ==='Presented' || selectedQuote.status ==='Approved') && (
-                                        <Button variant="outline" className="flex-1 text-green-600 border-green-200 hover:bg-green-50">Mark Accepted</Button>
+                                        <Button variant="outline" className="flex-1 text-green-600 border-green-200 hover:bg-green-500/10">Mark Accepted</Button>
                                     )}
 
                                     <Button variant="outline" className="flex-1 text-destructive hover:bg-destructive/10">Void Quote</Button>

@@ -129,7 +129,7 @@ export default function SupplierASNs() {
                 </div>
                 <div className="flex gap-2">
                     {selectedAsns.size > 0 && (
-                        <Button onClick={() => setSelectedAsns(new Set())} variant="ghost" size="icon">
+                        <Button onClick={() => setSelectedAsns(new Set())} variant="ghost" size="icon" aria-label="Close">
                             <X className="h-4 w-4" />
                         </Button>
                     )}
@@ -255,7 +255,7 @@ export default function SupplierASNs() {
                                 </TableRow>
                             ) : (
                                 filteredAsns.map((asn: any) => (
-                                    <TableRow key={asn.id} className={selectedAsns.has(asn.id) ? 'bg-blue-50' : ''}>
+                                    <TableRow key={asn.id} className={selectedAsns.has(asn.id) ? 'bg-blue-500/10' : ''}>
                                         <TableCell>
                                             <Checkbox
                                                 checked={selectedAsns.has(asn.id)}

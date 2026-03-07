@@ -80,7 +80,7 @@ export default function PasswordPolicies() {
         </Card>
       </div>
 
-      <Card className="border-orange-200 bg-orange-50 dark:border-orange-900 dark:bg-orange-900/10">
+      <Card className="border-orange-200 bg-orange-500/10 dark:border-orange-900 dark:bg-orange-900/10">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2 text-orange-900 dark:text-orange-200">
             <AlertTriangle className="h-4 w-4" />

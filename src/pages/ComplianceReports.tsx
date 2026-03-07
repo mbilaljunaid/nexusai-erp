@@ -79,7 +79,7 @@ export default function ComplianceReports() {
                   <h3 className="font-semibold">{report.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">Framework: {report.framework} • Format: {report.format}</p>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(report.id)} data-testid={`button-delete-${report.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(report.id)} data-testid={`button-delete-${report.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

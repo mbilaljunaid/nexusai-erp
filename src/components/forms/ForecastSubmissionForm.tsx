@@ -257,7 +257,7 @@ export function ForecastSubmissionForm() {
       </div>
 
       {/* Summary */}
-      <Card className="border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950">
+      <Card className="border-blue-200 dark:border-blue-900 bg-blue-500/10 dark:bg-blue-950">
         <CardContent className="p-4 text-sm">
           <p className="font-medium mb-2">Forecast Summary</p>
           <div className="grid grid-cols-4 gap-2 text-xs">

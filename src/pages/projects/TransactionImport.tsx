@@ -109,7 +109,7 @@ export default function TransactionImport() {
             }
         >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="bg-yellow-50 dark:bg-yellow-900/10 border-yellow-200 dark:border-yellow-900/50">
+                <Card className="bg-yellow-500/10 dark:bg-yellow-900/10 border-yellow-200 dark:border-yellow-900/50">
                     <CardHeader className="py-4">
                         <CardTitle className="text-sm font-medium text-yellow-800 dark:text-yellow-500 flex items-center gap-2">
                             <AlertTriangle className="h-4 w-4" /> Pending Validation

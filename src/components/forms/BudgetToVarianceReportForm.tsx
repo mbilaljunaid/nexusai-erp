@@ -63,7 +63,7 @@ export function BudgetToVarianceReportForm({ budget, onClose }: { budget: Budget
         <p className="text-sm text-muted-foreground mt-1">Generate variance report for budget vs actuals</p>
       </div>
 
-      <Card className={variance > 0 ? "bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800" : "bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800"}>
+      <Card className={variance > 0 ? "bg-red-500/10 dark:bg-red-950 border border-red-200 dark:border-red-800" : "bg-green-500/10 dark:bg-green-950 border border-green-200 dark:border-green-800"}>
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -90,7 +90,7 @@ export function BudgetToVarianceReportForm({ budget, onClose }: { budget: Budget
         </CardContent>
       </Card>
 
-      <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+      <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
         <CardContent className="pt-6">
           <div className="flex gap-2">
             <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />

@@ -219,7 +219,7 @@ export function CompetitorList({ opportunityId }: { opportunityId: string }) {
                                         {link.status}
                                     </span>
                                 </div>
-                                <Button variant="ghost" size="icon" onClick={() => removeMutation.mutate(link.id)}>
+                                <Button variant="ghost" size="icon" onClick={() => removeMutation.mutate(link.id)} aria-label="Delete">
                                     <Trash2 className="h-4 w-4 text-muted-foreground hover:text-red-500" />
                                 </Button>
                             </div>
@@ -231,12 +231,12 @@ export function CompetitorList({ opportunityId }: { opportunityId: string }) {
                             {(link.competitorStrengths || link.competitorWeaknesses) && (
                                 <div className="mt-3 text-xs grid grid-cols-2 gap-2">
                                     {link.competitorStrengths && (
-                                        <div className="text-green-600 bg-green-50 p-1 rounded">
+                                        <div className="text-green-600 bg-green-500/10 p-1 rounded">
                                             <strong>+ </strong> {link.competitorStrengths}
                                         </div>
                                     )}
                                     {link.competitorWeaknesses && (
-                                        <div className="text-red-600 bg-red-50 p-1 rounded">
+                                        <div className="text-red-600 bg-red-500/10 p-1 rounded">
                                             <strong>- </strong> {link.competitorWeaknesses}
                                         </div>
                                     )}

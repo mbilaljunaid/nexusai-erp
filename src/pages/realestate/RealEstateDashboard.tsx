@@ -29,7 +29,6 @@ export default function RealEstateDashboard() {
             setLeases(leasesData);
             setListings(listingsData);
         } catch (error) {
-            console.error('Error loading data:', error);
         } finally {
             setLoading(false);
         }

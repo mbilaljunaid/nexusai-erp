@@ -53,7 +53,7 @@ export default function IntercompanyReconciliation() {
 
       {/* LE Context Banner */}
       {legalEntityId && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800 rounded-lg text-sm">
+        <div className="flex items-center gap-2 px-4 py-2 bg-violet-500/10 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800 rounded-lg text-sm">
           <Building2 className="h-4 w-4 text-violet-600 dark:text-violet-400" />
           <span className="text-violet-700 dark:text-violet-300 font-medium">
             IC Scope: Legal Entity {legalEntityId}
@@ -139,7 +139,7 @@ export default function IntercompanyReconciliation() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={m.status === "matched" ? "default" : m.status === "pending" ? "secondary" : "outline"}>{m.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import {
     Brain,
     Move,
@@ -99,7 +100,7 @@ export default function SlottingWorkbench() {
                                 <span className="text-white font-bold">72%</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                <div className="h-full bg-purple-500" style={{ width: '72%' }} />
+                                <Progress value={72} className="h-full" indicatorClassName="bg-purple-500" />
                             </div>
 
                             <div className="flex justify-between items-center text-sm">
@@ -107,7 +108,7 @@ export default function SlottingWorkbench() {
                                 <span className="text-white font-bold">14.2%</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                <div className="h-full bg-orange-500" style={{ width: '14%' }} />
+                                <Progress value={14} className="h-full" indicatorClassName="bg-orange-500" />
                             </div>
                         </CardContent>
                     </Card>

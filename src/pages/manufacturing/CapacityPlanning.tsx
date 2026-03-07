@@ -34,10 +34,10 @@ export default function CapacityPlanning() {
     });
 
     const utilizationColor = (utilization: number) => {
-        if (utilization >= 100) return "text-red-600 bg-red-50";
-        if (utilization >= 90) return "text-orange-600 bg-orange-50";
-        if (utilization >= 70) return "text-green-600 bg-green-50";
-        return "text-blue-600 bg-blue-50";
+        if (utilization >= 100) return "text-red-600 bg-red-500/10";
+        if (utilization >= 90) return "text-orange-600 bg-orange-500/10";
+        if (utilization >= 70) return "text-green-600 bg-green-500/10";
+        return "text-blue-600 bg-blue-500/10";
     };
 
     return (
@@ -163,7 +163,7 @@ export default function CapacityPlanning() {
                         <CardContent>
                             <div className="space-y-3">
                                 {bottlenecks?.map((bn: any) => (
-                                    <div key={bn.id} className="border rounded-lg p-4 bg-orange-50">
+                                    <div key={bn.id} className="border rounded-lg p-4 bg-orange-500/10">
                                         <div className="flex justify-between items-start">
                                             <div>
                                                 <div className="font-semibold">{bn.workCenterName}</div>

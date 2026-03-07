@@ -30,7 +30,7 @@ interface ValidationRule {
 const STATUS_CFG: Record<string, string> = {
     Validated: 'bg-emerald-100 text-emerald-600',
     Error: 'bg-red-100 text-red-600',
-    Pending: 'bg-blue-50 text-blue-700',
+    Pending: 'bg-blue-500/10 text-blue-700',
     Imported: 'bg-purple-100 text-purple-700',
 };
 

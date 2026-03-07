@@ -130,7 +130,7 @@ export default function AuditLogs() {
                         ) : (
                             <div className="space-y-3">
                                 {logs.map((log: any) => (
-                                    <div key={log.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                                    <div key={log.id} className="border rounded-lg p-4 hover:bg-gray-500/10">
                                         <div className="flex items-start justify-between gap-4">
                                             <div className="flex items-start gap-3 flex-1">
                                                 <Activity className="w-5 h-5 text-muted-foreground mt-0.5" />

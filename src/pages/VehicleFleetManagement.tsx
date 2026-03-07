@@ -106,7 +106,7 @@ export default function VehicleFleetManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={v.status === "available" ? "default" : "secondary"} className="text-xs">{v.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${v.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${v.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

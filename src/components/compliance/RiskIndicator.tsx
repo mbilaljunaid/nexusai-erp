@@ -30,7 +30,7 @@ interface RiskIndicatorProps {
 export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorProps) {
     if (isLoading) {
         return (
-            <div className={cn("p-4 rounded-xl border bg-slate-50 animate-pulse flex items-center gap-3", className)}>
+            <div className={cn("p-4 rounded-xl border bg-slate-500/10 animate-pulse flex items-center gap-3", className)}>
                 <div className="h-10 w-10 rounded-full bg-slate-200" />
                 <div className="flex-1 space-y-2">
                     <div className="h-4 bg-slate-200 rounded w-1/3" />
@@ -42,7 +42,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
 
     if (!analysis) {
         return (
-            <div className={cn("p-4 rounded-xl border border-dashed bg-slate-50 flex items-center gap-3 text-muted-foreground", className)}>
+            <div className={cn("p-4 rounded-xl border border-dashed bg-slate-500/10 flex items-center gap-3 text-muted-foreground", className)}>
                 <ShieldQuestion className="h-5 w-5" />
                 <span className="text-sm">Initiate risk analysis to preview compliance impact.</span>
             </div>
@@ -52,7 +52,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
     const config = {
         low: {
             color: "text-green-600",
-            bg: "bg-green-50",
+            bg: "bg-green-500/10",
             border: "border-green-100",
             icon: ShieldCheck,
             barColor: "bg-green-500",
@@ -60,7 +60,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
         },
         medium: {
             color: "text-yellow-600",
-            bg: "bg-yellow-50",
+            bg: "bg-yellow-500/10",
             border: "border-yellow-100",
             icon: Info,
             barColor: "bg-yellow-500",
@@ -68,7 +68,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
         },
         high: {
             color: "text-orange-600",
-            bg: "bg-orange-50",
+            bg: "bg-orange-500/10",
             border: "border-orange-100",
             icon: AlertTriangle,
             barColor: "bg-orange-500",
@@ -76,7 +76,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
         },
         critical: {
             color: "text-red-600",
-            bg: "bg-red-50",
+            bg: "bg-red-500/10",
             border: "border-red-100",
             icon: ShieldAlert,
             barColor: "bg-red-500",

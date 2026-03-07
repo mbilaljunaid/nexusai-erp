@@ -70,7 +70,7 @@ export function BackOfficeWorkbench() {
                 </div>
             </div>
 
-            <Card className="border-orange-500/20 bg-orange-500/5">
+            <Card className="border-orange-500/20 bg-orange-500/100/5">
                 <CardHeader>
                     <CardTitle className="text-sm flex items-center gap-2">
                         <ShieldAlert className="w-4 h-4" />

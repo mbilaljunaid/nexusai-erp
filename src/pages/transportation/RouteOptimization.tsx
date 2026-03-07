@@ -184,7 +184,7 @@ export default function RouteOptimization() {
                             <CardContent>
                                 <div className="space-y-3">
                                     {routes.optimizationSuggestions.map((suggestion: any, i: number) => (
-                                        <div key={i} className="border rounded-lg p-4 bg-green-50">
+                                        <div key={i} className="border rounded-lg p-4 bg-green-500/10">
                                             <div className="font-semibold">{suggestion.title}</div>
                                             <div className="text-sm text-muted-foreground mt-1">{suggestion.description}</div>
                                             <div className="mt-2 text-sm">

@@ -89,7 +89,7 @@ export function ProjectHealthCard({ metrics, alerts }: ProjectHealthCardProps) {
 
             {/* Alerts Section */}
             {alerts.length > 0 && (
-                <div className="bg-rose-50 border border-rose-100 rounded-lg p-4">
+                <div className="bg-rose-500/10 border border-rose-100 rounded-lg p-4">
                     <h4 className="text-sm font-bold text-rose-800 flex items-center gap-2 mb-2">
                         <AlertCircle className="w-4 h-4" /> Project Health Alerts
                     </h4>

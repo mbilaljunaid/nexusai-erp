@@ -221,7 +221,7 @@ export function LeaseGLPostingModal({ leaseId, period, isOpen, onClose, onSucces
                             </Table>
 
                             {!isBalanced && (
-                                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+                                <div className="mt-4 p-3 bg-red-500/10 border border-red-200 rounded text-sm text-red-700">
                                     <strong>Warning:</strong> Debits and credits do not balance.
                                     Difference: {formatCurrency(Math.abs(totalDebits - totalCredits))}
                                 </div>

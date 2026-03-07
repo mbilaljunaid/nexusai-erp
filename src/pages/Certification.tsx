@@ -25,7 +25,7 @@ export default function Certification() {
         >
             <DashboardWidget title="Certificates" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-blue-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Award className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
@@ -37,7 +37,7 @@ export default function Certification() {
 
             <DashboardWidget title="Issued" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-emerald-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <CheckCircle className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
@@ -49,7 +49,7 @@ export default function Certification() {
 
             <DashboardWidget title="Pending" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-amber-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Clock className="h-4 w-4 text-amber-600" />
                     </div>
                     <div>
@@ -61,7 +61,7 @@ export default function Certification() {
 
             <DashboardWidget title="Issue %" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-slate-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Percent className="h-4 w-4 text-slate-600" />
                     </div>
                     <div>

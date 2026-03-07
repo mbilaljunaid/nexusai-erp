@@ -331,7 +331,7 @@ export function RFIManager({ projectId }: RFIManagerProps) {
                             {selectedRFI.response && (
                                 <div>
                                     <div className="text-sm font-medium text-muted-foreground mb-1">Response</div>
-                                    <div className="text-sm bg-green-50 border border-green-200 p-3 rounded-lg">
+                                    <div className="text-sm bg-green-500/10 border border-green-200 p-3 rounded-lg">
                                         {selectedRFI.response}
                                     </div>
                                     {selectedRFI.respondedAt && (

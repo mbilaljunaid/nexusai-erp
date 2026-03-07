@@ -122,7 +122,7 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                                         so an inline style is used here. */}
                                     <div
                                         className="bg-green-600 h-full transition-all"
-                                        style={{ width: `${Math.min(percentComplete, 100)}%` }}
+                                        style={{ width: `${Math.min(percentComplete, 100)}%`}}
                                     />
                                 </div>
                             </div>
@@ -138,11 +138,11 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                             Current Period Breakdown
                         </div>
                         <div className="grid grid-cols-3 gap-3">
-                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                            <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-200">
                                 <div className="text-xs text-blue-700 mb-1">Previous Amount</div>
-                                <div className="font-mono font-bold text-blue-900">${previous.toLocaleString()}</div>
+                                <div className="font-mono font-bold text-blue-900 dark:text-blue-200">${previous.toLocaleString()}</div>
                             </div>
-                            <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <div className="bg-green-500/10 p-3 rounded-lg border border-green-200">
                                 <div className="text-xs text-green-700 mb-1 flex items-center gap-1">
                                     Work This Period
                                     {isIncrease && changeFromPrevious > 0 && (
@@ -152,11 +152,11 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                                         </Badge>
                                     )}
                                 </div>
-                                <div className="font-mono font-bold text-green-900">${thisPeriod.toLocaleString()}</div>
+                                <div className="font-mono font-bold text-green-900 dark:text-green-200">${thisPeriod.toLocaleString()}</div>
                             </div>
-                            <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                            <div className="bg-purple-500/10 p-3 rounded-lg border border-purple-200">
                                 <div className="text-xs text-purple-700 mb-1">Total to Date</div>
-                                <div className="font-mono font-bold text-purple-900">${totalCompleted.toLocaleString()}</div>
+                                <div className="font-mono font-bold text-purple-900 dark:text-purple-200">${totalCompleted.toLocaleString()}</div>
                             </div>
                         </div>
                     </div>
@@ -181,7 +181,7 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                                 </span>
                                 <span className="font-mono font-semibold text-red-600">(${retention.toLocaleString()})</span>
                             </div>
-                            <div className="flex justify-between items-center py-3 bg-green-50 px-3 rounded-lg">
+                            <div className="flex justify-between items-center py-3 bg-green-500/10 px-3 rounded-lg">
                                 <span className="font-semibold">Current Payment Due</span>
                                 <span className="font-mono text-xl font-bold text-green-700">${paymentDue.toLocaleString()}</span>
                             </div>
@@ -189,7 +189,7 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                     </div>
 
                     {/* Balance Remaining */}
-                    <div className="bg-gray-50 p-4 rounded-lg border">
+                    <div className="bg-gray-500/10 p-4 rounded-lg border">
                         <div className="flex justify-between items-center">
                             <div>
                                 <div className="text-sm text-muted-foreground mb-1">Balance to Finish</div>

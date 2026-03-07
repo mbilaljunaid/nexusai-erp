@@ -60,7 +60,7 @@ export function AutoRequisitionForm({ item }: { item: LowStockItem }) {
 
   if (!showForm) {
     return (
-      <Card className="border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950">
+      <Card className="border-orange-200 dark:border-orange-800 bg-orange-500/10 dark:bg-orange-950">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -112,7 +112,7 @@ export function AutoRequisitionForm({ item }: { item: LowStockItem }) {
           </div>
         </div>
 
-        <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+        <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
           <CardContent className="pt-4">
             <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
               This will automatically create a Purchase Requisition that will flow through RFQ → Purchase Order → Invoice workflow

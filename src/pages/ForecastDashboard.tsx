@@ -107,7 +107,7 @@ export default function ForecastDashboard() {
                 <h3 className="font-semibold">{f.forecastName}</h3>
                 <p className="text-sm text-muted-foreground">Period: {f.period} • Value: ${f.value}M • Confidence: {f.confidence}</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`}>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`} aria-label="Delete">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>

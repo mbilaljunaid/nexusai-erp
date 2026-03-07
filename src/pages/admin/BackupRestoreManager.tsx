@@ -31,7 +31,6 @@ export default function BackupRestoreManager() {
             const data = await response.json();
             setRestorePoints(data);
         } catch (error) {
-            console.error('Failed to fetch restore points:', error);
             setRestorePoints([]);
         } finally {
             setLoading(false);
@@ -69,7 +68,6 @@ export default function BackupRestoreManager() {
                 toast({ variant: 'destructive', description: 'Failed to create backup' });
             }
         } catch (error) {
-            console.error('Error creating backup:', error);
             toast({ variant: 'destructive', description: 'Failed to create backup' });
         } finally {
             setCreating(false);
@@ -100,7 +98,6 @@ export default function BackupRestoreManager() {
                 toast({ variant: 'destructive', description: 'Failed to verify backup' });
             }
         } catch (error) {
-            console.error('Error verifying backup:', error);
             toast({ variant: 'destructive', description: 'Failed to verify backup' });
         }
     };
@@ -108,10 +105,10 @@ export default function BackupRestoreManager() {
 
 
     const restorePointColumns: SpreadsheetColumn[] = [
-        { id: "timestamp", header: "Timestamp", width: 200, cell: (item) => <span className="text-sm text-gray-900">{formatDateTime(item.timestamp)}</span> },
+        { id: "timestamp", header: "Timestamp", width: 200, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{formatDateTime(item.timestamp)}</span> },
         { id: "type", header: "Type", width: 150, cell: (item) => <span className="text-sm capitalize">{item.type}</span> },
-        { id: "dataSize", header: "Size", width: 120, cell: (item) => <span className="text-sm text-gray-900">{item.dataSize}</span> },
-        { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-gray-900">{item.itemCount.toLocaleString()}</span> },
+        { id: "dataSize", header: "Size", width: 120, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{item.dataSize}</span> },
+        { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{item.itemCount.toLocaleString()}</span> },
         { id: "status", header: "Status", width: 150, cell: (item) => <StatusBadge status={item.status} /> },
         { id: "lastVerified", header: "Last Verified", width: 200, cell: (item) => <span className="text-sm text-gray-500">{item.lastVerified ? formatDateTime(item.lastVerified) : 'Never'}</span> },
         {
@@ -119,7 +116,7 @@ export default function BackupRestoreManager() {
                 <div className="flex items-center justify-end gap-2 pr-4 w-full">
                     <button
                         onClick={() => verifyBackup(item.id)}
-                        className="text-blue-600 hover:text-blue-900 flex items-center gap-1 text-sm font-medium"
+                        className="text-blue-600 hover:text-blue-900 dark:text-blue-200 flex items-center gap-1 text-sm font-medium"
                         title="Verify Backup"
                     >
                         <Play className="w-4 h-4" />
@@ -135,7 +132,7 @@ export default function BackupRestoreManager() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Backup & Restore Manager</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-200">Backup & Restore Manager</h2>
                     <p className="mt-1 text-sm text-gray-600">
                         Create, verify, and manage database backups
                     </p>
@@ -160,7 +157,7 @@ export default function BackupRestoreManager() {
             </div>
 
             {/* Warning Banner */}
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-red-500/10 border border-red-200 rounded-lg p-4">
                 <div className="flex gap-3">
                     <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                     <div>
@@ -181,7 +178,7 @@ export default function BackupRestoreManager() {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-600">Total Backups</p>
-                            <p className="text-2xl font-bold text-gray-900">{restorePoints.length}</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">{restorePoints.length}</p>
                         </div>
                     </div>
                 </Card>
@@ -193,7 +190,7 @@ export default function BackupRestoreManager() {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-600">Verified</p>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">
                                 {restorePoints.filter(p => p.status === 'verified').length}
                             </p>
                         </div>
@@ -207,7 +204,7 @@ export default function BackupRestoreManager() {
                         </div>
                         <div>
                             <p className="text-sm font-medium text-gray-600">Latest Backup</p>
-                            <p className="text-sm font-semibold text-gray-900">
+                            <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">
                                 {restorePoints.length > 0
                                     ? formatDate(restorePoints[0].timestamp)
                                     : 'None'}
@@ -219,8 +216,8 @@ export default function BackupRestoreManager() {
 
             {/* Restore Points Table */}
             <Card className="overflow-hidden">
-                <div className="px-6 py-4 border-b bg-gray-50">
-                    <h3 className="text-sm font-semibold text-gray-900">Restore Points</h3>
+                <div className="px-6 py-4 border-b bg-gray-500/10">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Restore Points</h3>
                 </div>
 
                 <div className="h-[400px]">
@@ -245,7 +242,7 @@ export default function BackupRestoreManager() {
 
             {/* Backup Schedule (Placeholder) */}
             <Card className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Automated Backup Schedule</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-4">Automated Backup Schedule</h3>
                 <p className="text-sm text-gray-600 mb-4">
                     Configure automated backup schedules to ensure regular data protection.
                 </p>

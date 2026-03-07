@@ -79,7 +79,7 @@ export default function AccountDirectory() {
                     <p className="text-xs"><strong>Revenue:</strong> {acc.revenue}</p>
                   </div>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(acc.id)} data-testid={`button-delete-${acc.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(acc.id)} data-testid={`button-delete-${acc.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

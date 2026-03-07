@@ -101,7 +101,6 @@ export function ModuleSelectionStep({ data, onNext, onBack }: ModuleSelectionSte
                 selectedModuleIds: Array.from(selectedModules),
             });
         } catch (error) {
-            console.error("Failed to save module selection:", error);
         } finally {
             setIsLoading(false);
         }
@@ -140,7 +139,7 @@ export function ModuleSelectionStep({ data, onNext, onBack }: ModuleSelectionSte
 
             {/* Required Modules Alert */}
             {modules.some((m) => m.isRequired) && (
-                <div className="flex items-start gap-2 p-3 rounded-md bg-blue-50 text-blue-900 text-sm">
+                <div className="flex items-start gap-2 p-3 rounded-md bg-blue-500/10 text-blue-900 dark:text-blue-200 text-sm">
                     <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <div>
                         <p className="font-medium">Required modules are pre-selected</p>

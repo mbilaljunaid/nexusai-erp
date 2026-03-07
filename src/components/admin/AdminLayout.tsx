@@ -85,7 +85,7 @@ export default function AdminLayout({ children}: AdminLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = React.useState(true);
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             {/* Sidebar */}
             <aside
                 className={cn(
@@ -105,7 +105,7 @@ export default function AdminLayout({ children}: AdminLayoutProps) {
                         variant="ghost"
                         size="icon"
                         className="text-white hover:bg-gray-800"
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Toggle sidebar"
                     >
                         {sidebarOpen ? (
                             <ChevronLeft className="w-5 h-5" />

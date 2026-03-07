@@ -245,7 +245,7 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
                                     </td>
                                     <td className="p-3">
                                         <div className="flex justify-end gap-2">
-                                            <Button size="icon" variant="ghost" onClick={() => setModalState({ isOpen: true, mode: 'edit', goal })}>
+                                            <Button size="icon" variant="ghost" onClick={() => setModalState({ isOpen: true, mode: 'edit', goal })} aria-label="Edit">
                                                 <Edit2 className="h-4 w-4" />
                                             </Button>
                                             <Button
@@ -255,7 +255,7 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
                                                     if (confirm(`Delete goal "${goal.title}"?`)) {
                                                         deleteMutation.mutate(goal.id);
                                                     }
-                                                }}
+                                                }} aria-label="Delete"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>

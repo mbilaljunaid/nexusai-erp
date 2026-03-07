@@ -87,7 +87,7 @@ export function RequisitionManager() {
                             {cart.map((line, idx) => (
                                 <div key={idx} className="flex justify-between text-sm border-b pb-1">
                                     <span>{line.description} (x{line.quantity})</span>
-                                    <Button size="icon" variant="ghost" className="h-4 w-4" onClick={() => { const c = [...cart]; c.splice(idx, 1); setCart(c); }}><Trash2 className="w-3 h-3" /></Button>
+                                    <Button size="icon" variant="ghost" className="h-4 w-4" onClick={() => { const c = [...cart]; c.splice(idx, 1); setCart(c); }} aria-label="Delete"><Trash2 className="w-3 h-3" /></Button>
                                 </div>
                             ))}
                             <Button className="w-full" disabled={cart.length === 0} onClick={submitRequisition}>Submit Requisition</Button>

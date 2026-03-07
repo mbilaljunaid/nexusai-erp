@@ -71,7 +71,7 @@ export default function SlaReconciliation() {
             {data && (
                 <>
                     <DashboardWidget colSpan={1} title="Status">
-                        <div className={cn(`p-6 flex flex-col items-center justify-center h-full rounded-md border ${data.status === "RECONCILED" ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`)}>
+                        <div className={cn(`p-6 flex flex-col items-center justify-center h-full rounded-md border ${data.status === "RECONCILED" ? "bg-green-500/10 border-green-200" : "bg-red-500/10 border-red-200"}`)}>
                             {data.status === "RECONCILED" ? (
                                 <>
                                     <CheckCircle className="h-12 w-12 text-green-600 mb-2" />

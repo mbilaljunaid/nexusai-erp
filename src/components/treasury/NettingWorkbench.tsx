@@ -293,7 +293,7 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
             </div>
 
             {/* Settlement Impact Preview */}
-            <Card className="bg-amber-50/50 border-amber-200">
+            <Card className="bg-amber-500/10 border-amber-200">
                 <CardHeader>
                     <CardTitle className="text-sm flex items-center gap-2">
                         <AlertCircle className="w-4 h-4 text-amber-600" />
@@ -382,9 +382,9 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                                                     <TableCell
                                                         key={toEntity}
                                                         className={cn(`text-center font-mono text-xs ${amount > 0
-                                                                ? "bg-emerald-50 text-emerald-700 font-bold"
+                                                                ? "bg-emerald-500/10 text-emerald-700 font-bold"
                                                                 : amount < 0
-                                                                    ? "bg-red-50 text-red-700 font-bold"
+                                                                    ? "bg-red-500/10 text-red-700 font-bold"
                                                                     : "text-muted-foreground"
                                                             }`)}
                                                     >

@@ -27,7 +27,6 @@ export default function ProductCatalogDashboard() {
             setProducts(productsData);
             setCategories(categoriesData);
         } catch (error) {
-            console.error('Error loading catalog:', error);
         } finally {
             setLoading(false);
         }

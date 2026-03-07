@@ -62,7 +62,7 @@ export default function CompensationManagement() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold">{emp.employee}</h3>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(emp.id)} data-testid={`button-delete-${emp.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(emp.id)} data-testid={`button-delete-${emp.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

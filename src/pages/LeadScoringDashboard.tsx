@@ -167,7 +167,7 @@ export default function LeadScoringDashboard() {
               <div className="flex gap-2 items-center">
                 <Badge>{l.score}</Badge>
                 <Badge variant="secondary">{l.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${l.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${l.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

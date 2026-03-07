@@ -9,7 +9,7 @@ export default function InvoiceDetail() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" data-testid="button-back"><ArrowLeft className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" data-testid="button-back" aria-label="Go back"><ArrowLeft className="h-5 w-5" /></Button>
           <div>
             <h1 className="text-3xl font-bold">INV-001</h1>
             <p className="text-muted-foreground">Acme Corp</p>

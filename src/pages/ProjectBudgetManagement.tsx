@@ -151,7 +151,7 @@ export default function ProjectBudgetManagement() {
                         size="icon"
                         variant="ghost"
                         data-testid={`button-delete-${budget.id}`}
-                        onClick={() => deleteMutation.mutate(budget.id)}
+                        onClick={() => deleteMutation.mutate(budget.id)} aria-label="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

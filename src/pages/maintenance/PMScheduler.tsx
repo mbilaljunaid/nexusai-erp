@@ -60,7 +60,6 @@ export function PMScheduler() {
             const apiDefs = await pmService.getPMDefinitions();
             setDefinitions(apiDefs);
         } catch (error) {
-            console.error("Failed to load PM definitions:", error);
             setDefinitions([]); // Fallback to empty array
         } finally {
             setLoading(false);
@@ -131,14 +130,12 @@ export function PMScheduler() {
                 endDate: format(endDate, "yyyy-MM-dd")
             });
 
-            console.log(`Generated ${result.count} work orders:`, result.workOrders);
             // TODO: Show success toast with count
 
             setShowPreview(false);
             setSelectedDefs([]);
             await loadPMDefinitions(); // Refresh
         } catch (error) {
-            console.error("Failed to generate PMs:", error);
             // TODO: Show error toast
         } finally {
             setGenerating(false);
@@ -381,7 +378,7 @@ export function PMScheduler() {
                                             </div>
                                         </div>
 
-                                        <Button variant="ghost" size="icon">
+                                        <Button variant="ghost" size="icon" aria-label="Settings">
                                             <Settings className="h-4 w-4" />
                                         </Button>
                                     </div>

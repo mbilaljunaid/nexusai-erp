@@ -131,7 +131,7 @@ export default function OnboardingWizard() {
                             className={cn(`flex items-center gap-2 p-3 rounded-lg border ${step.id === currentStep
                                 ? "bg-primary/10 border-primary"
                                 : step.id < currentStep
-                                    ? "bg-green-50 border-green-200"
+                                    ? "bg-green-500/10 border-green-200"
                                     : "bg-white border-gray-200"
                                 }`)}
                         >

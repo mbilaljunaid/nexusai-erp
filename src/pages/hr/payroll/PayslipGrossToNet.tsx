@@ -152,7 +152,7 @@ export default function PayslipGrossToNet() {
 
                             <CardContent className="p-0">
                                 {/* Table Header */}
-                                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-50 dark:bg-zinc-900 border-b text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-zinc-500/10 dark:bg-zinc-900 border-b text-xs font-bold uppercase tracking-wider text-muted-foreground">
                                     <div className="col-span-4 lg:col-span-5">Description</div>
                                     <div className="col-span-2 text-right hidden md:block">Hours</div>
                                     <div className="col-span-2 text-right hidden md:block">Rate</div>
@@ -162,7 +162,7 @@ export default function PayslipGrossToNet() {
 
                                 {/* Earnings Section */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('earnings')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('earnings')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                         <div className="flex items-center gap-2 font-bold text-teal-700 dark:text-teal-400">
                                             {expandedSections.earnings ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                                             Earnings
@@ -178,7 +178,7 @@ export default function PayslipGrossToNet() {
 
                                 {/* Pre-Tax Deductions */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('preTax')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('preTax')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                         <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-500">
                                             {expandedSections.preTax ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                                             Pre-Tax Deductions
@@ -194,7 +194,7 @@ export default function PayslipGrossToNet() {
 
                                 {/* Taxes */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('taxes')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('taxes')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                         <div className="flex items-center gap-2 font-bold text-red-700 dark:text-red-500">
                                             {expandedSections.taxes ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                                             Taxes
@@ -210,7 +210,7 @@ export default function PayslipGrossToNet() {
 
                                 {/* Post-Tax Deductions */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('postTax')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('postTax')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                         <div className="flex items-center gap-2 font-bold text-indigo-700 dark:text-indigo-400">
                                             {expandedSections.postTax ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                                             Post-Tax Deductions

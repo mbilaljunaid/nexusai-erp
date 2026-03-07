@@ -126,40 +126,40 @@ export default function BillingEventsManager() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Unbilled Events</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{rawEvents.filter(e => !e.billedFlag).length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{rawEvents.filter(e => !e.billedFlag).length}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">T&M Events</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                                 {rawEvents.filter(e => e.eventType === "TM_ITEM").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Milestones</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">
                                 {rawEvents.filter(e => e.eventType === "FIXED_MILESTONE").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Total Value</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">
                                 ${rawEvents.reduce((sum, e) => sum + e.amount, 0).toFixed(0)}
                             </div>
                         </CardContent>
@@ -241,7 +241,7 @@ export default function BillingEventsManager() {
                                     </TableHeader>
                                     <TableBody>
                                         {filteredEvents.map((event) => (
-                                            <TableRow key={event.id} className={event.selected ? "bg-blue-50" : ""}>
+                                            <TableRow key={event.id} className={event.selected ? "bg-blue-500/10" : ""}>
                                                 <TableCell>
                                                     <Checkbox
                                                         checked={event.selected}

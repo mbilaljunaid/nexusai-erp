@@ -118,7 +118,7 @@ export function WhatsNew() {
         size="icon"
         onClick={handleOpen}
         className="relative"
-        data-testid="button-whats-new"
+        data-testid="button-whats-new" aria-label="Gift"
       >
         <Gift className="h-4 w-4" />
         {hasUnseenUpdates && (

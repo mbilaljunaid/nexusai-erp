@@ -22,9 +22,9 @@ const Node = ({ service, isCenter = false}: { service: ServiceStatus; isCenter?:
     const getColor = (s: string) => {
         switch (s) {
             case'Closed': return'bg-green-100 border-green-500 text-green-700';
-            case'Open': return'bg-blue-50 border-blue-400 text-blue-700';
-            case'Error': return'bg-red-50 border-red-400 text-red-700';
-            default: return'bg-gray-50 border-gray-300 text-gray-500';
+            case'Open': return'bg-blue-500/10 border-blue-400 text-blue-700';
+            case'Error': return'bg-red-500/10 border-red-400 text-red-700';
+            default: return'bg-gray-500/10 border-gray-300 text-gray-500';
        }
    };
 
@@ -74,7 +74,7 @@ export const CloseDependencyGraph: React.FC<CloseDependencyGraphProps> = ({ stat
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="relative flex items-center justify-center min-h-[400px] bg-slate-50/50 rounded-lg overflow-hidden">
+            <CardContent className="relative flex items-center justify-center min-h-[400px] bg-slate-500/10 rounded-lg overflow-hidden">
 
                 {/* SVG Connections Layer */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none">

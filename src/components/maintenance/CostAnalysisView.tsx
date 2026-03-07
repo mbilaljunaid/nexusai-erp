@@ -140,7 +140,7 @@ export default function CostAnalysisView({ workOrderId }: CostAnalysisViewProps)
                                     <TableCell className="text-right font-medium">${Number(c.totalCost).toFixed(2)}</TableCell>
                                     <TableCell className="text-right">
                                         {c.glStatus === 'POSTED' ? (
-                                            <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-100">Posted</Badge>
+                                            <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-500/15">Posted</Badge>
                                         ) : (
                                             <Badge variant="outline" className="text-yellow-600 border-yellow-200">Pending</Badge>
                                         )}

@@ -1897,7 +1897,7 @@ export default function IndustryDetail() {
             <p className="text-blue-100 mb-6 text-lg">Get instant access to a fully seeded demo environment for {industry.name}</p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link to={`/demo?industry=${industry.name}`}>
-                <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-50" data-testid="button-request-demo">
+                <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-500/10" data-testid="button-request-demo">
                   Request Demo <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>

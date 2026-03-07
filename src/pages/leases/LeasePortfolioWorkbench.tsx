@@ -94,7 +94,7 @@ export default function LeasePortfolioWorkbench() {
 
                     <Dialog open={isAiWizardOpen} onOpenChange={setIsAiWizardOpen}>
                         <DialogTrigger asChild>
-                            <Button variant="secondary" className="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200">
+                            <Button variant="secondary" className="bg-indigo-500/10 text-indigo-700 hover:bg-indigo-500/15 border border-indigo-200">
                                 <FileText className="mr-2 h-4 w-4" /> AI Abstract Lease
                             </Button>
                         </DialogTrigger>

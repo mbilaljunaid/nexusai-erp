@@ -130,7 +130,7 @@ export function AppSidebar() {
             size="icon"
             onClick={handleLogout}
             data-testid="button-logout"
-            title="Logout"
+            title="Logout" aria-label="Log out"
           >
             <LogOut className="h-4 w-4" />
           </Button>

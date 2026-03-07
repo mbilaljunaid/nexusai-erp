@@ -787,7 +787,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                             variant="ghost"
                             size="icon"
                             onClick={() => { setEditingApp(app); setAppFormOpen(true); }}
-                            data-testid={`button-edit-app-${app.id}`}
+                            data-testid={`button-edit-app-${app.id}`} aria-label="Edit"
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -797,7 +797,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
                               size="icon"
                               onClick={() => submitMutation.mutate(app.id)}
                               disabled={submitMutation.isPending}
-                              data-testid={`button-submit-app-${app.id}`}
+                              data-testid={`button-submit-app-${app.id}`} aria-label="Send"
                             >
                               <Send className="w-4 h-4" />
                             </Button>

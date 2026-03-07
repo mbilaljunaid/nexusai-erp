@@ -46,9 +46,9 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
     const { readiness, riskDistribution, auditSummary } = data;
 
     const scoreColor = useMemo(() => {
-        if (readiness.score >= 85) return "text-emerald-500 border-emerald-500 bg-emerald-50";
-        if (readiness.score >= 60) return "text-amber-500 border-amber-500 bg-amber-50";
-        return "text-rose-500 border-rose-500 bg-rose-50";
+        if (readiness.score >= 85) return "text-emerald-500 border-emerald-500 bg-emerald-500/10";
+        if (readiness.score >= 60) return "text-amber-500 border-amber-500 bg-amber-500/10";
+        return "text-rose-500 border-rose-500 bg-rose-500/10";
     }, [readiness.score]);
 
     const chartData = riskDistribution.map(d => ({
@@ -99,10 +99,10 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                                 <ShieldAlert className="h-4 w-4 text-rose-500" />
                                 Critical Exposures
                             </h4>
-                            <p className="text-2xl font-bold mt-2 text-slate-900">{readiness.criticalUnresolved}</p>
+                            <p className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-200">{readiness.criticalUnresolved}</p>
                         </div>
                         <div className="mt-2">
-                            <Badge variant="outline" className="text-rose-600 border-rose-100 bg-rose-50 text-[10px]">
+                            <Badge variant="outline" className="text-rose-600 border-rose-100 bg-rose-500/10 text-[10px]">
                                 <TrendingDown className="h-3 w-3 mr-1" />
                                 Requires Action
                             </Badge>
@@ -115,7 +115,7 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                                 <CheckCircle className="h-4 w-4 text-emerald-500" />
                                 Resolution Efficiency
                             </h4>
-                            <p className="text-2xl font-bold mt-2 text-slate-900">
+                            <p className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-200">
                                 {readiness.totalViolations > 0
                                     ? Math.round((readiness.resolvedCount / readiness.totalViolations) * 100)
                                     : 100}%
@@ -126,7 +126,7 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                 </div>
             </div>
 
-            <Card className="rounded-2xl border-none bg-slate-50 ring-1 ring-slate-200 shadow-sm overflow-hidden">
+            <Card className="rounded-2xl border-none bg-slate-500/10 ring-1 ring-slate-200 shadow-sm overflow-hidden">
                 <CardHeader className="bg-white border-b border-slate-100 py-4 flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-lg font-bold flex items-center gap-2">

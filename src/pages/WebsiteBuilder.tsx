@@ -107,7 +107,7 @@ export default function WebsiteBuilder() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={page.status === "published" ? "default" : "secondary"}>{page.status}</Badge>
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${page.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${page.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

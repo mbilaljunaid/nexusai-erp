@@ -176,18 +176,18 @@ export default function CpqConfigurator() {
                 {selectedProduct && configuration && (
                     <>
                         {/* Configuration Progress */}
-                        <Card className="bg-purple-50 border-purple-100">
+                        <Card className="bg-purple-500/10 border-purple-100">
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <CardTitle className="text-purple-900">{configuration.baseProduct.name}</CardTitle>
+                                        <CardTitle className="text-purple-900 dark:text-purple-200">{configuration.baseProduct.name}</CardTitle>
                                         <CardDescription className="text-purple-700">
                                             Configuration Progress: {completionPercentage.toFixed(0)}%
                                         </CardDescription>
                                     </div>
                                     <div className="text-right">
                                         <div className="text-sm font-medium text-purple-800">Estimated Price</div>
-                                        <div className="text-2xl font-bold text-purple-900">${totalPrice.toLocaleString()}</div>
+                                        <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">${totalPrice.toLocaleString()}</div>
                                     </div>
                                 </div>
                             </CardHeader>

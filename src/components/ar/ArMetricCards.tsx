@@ -40,7 +40,7 @@ export function ArMetricCards({ buId }: { buId?: string }) {
             value: `$${metrics.totalOutstanding.toLocaleString()}`,
             icon: DollarSign,
             color: "text-emerald-600",
-            bg: "bg-emerald-50",
+            bg: "bg-emerald-500/10",
             description: "Total unpaid sales invoices"
         },
         {
@@ -48,7 +48,7 @@ export function ArMetricCards({ buId }: { buId?: string }) {
             value: `$${metrics.overdue.toLocaleString()}`,
             icon: AlertCircle,
             color: "text-rose-600",
-            bg: "bg-rose-50",
+            bg: "bg-rose-500/10",
             description: "Invoices past their due date"
         },
         {
@@ -56,7 +56,7 @@ export function ArMetricCards({ buId }: { buId?: string }) {
             value: `$${metrics.paidThisMonth.toLocaleString()}`,
             icon: CheckCircle2,
             color: "text-blue-600",
-            bg: "bg-blue-50",
+            bg: "bg-blue-500/10",
             description: "Total receipts this month"
         },
         {
@@ -64,7 +64,7 @@ export function ArMetricCards({ buId }: { buId?: string }) {
             value: `${metrics.averageDso} Days`,
             icon: TrendingUp,
             color: "text-amber-600",
-            bg: "bg-amber-50",
+            bg: "bg-amber-500/10",
             description: "Days Sales Outstanding"
         }
     ];

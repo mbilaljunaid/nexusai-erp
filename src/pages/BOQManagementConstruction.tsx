@@ -93,7 +93,7 @@ export default function BOQManagementConstruction() {
                   <p className="font-semibold">{b.item}</p>
                   <p className="text-xs text-muted-foreground">{b.qty} {b.uom} @ ${b.rate} = ${amount.toFixed(0)} | CC: {b.costCode}</p>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(b.id)} data-testid={`button-delete-${b.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(b.id)} data-testid={`button-delete-${b.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

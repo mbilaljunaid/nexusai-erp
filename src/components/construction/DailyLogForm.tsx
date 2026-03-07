@@ -198,7 +198,7 @@ export function DailyLogForm({ open, onOpenChange, projectId, onSubmit }: DailyL
                                             type="button"
                                             size="icon"
                                             variant="ghost"
-                                            onClick={() => removeLaborLine(index)}
+                                            onClick={() => removeLaborLine(index)} aria-label="Close"
                                         >
                                             <X className="h-4 w-4" />
                                         </Button>
@@ -254,7 +254,7 @@ export function DailyLogForm({ open, onOpenChange, projectId, onSubmit }: DailyL
                                             type="button"
                                             size="icon"
                                             variant="ghost"
-                                            onClick={() => removeEquipmentLine(index)}
+                                            onClick={() => removeEquipmentLine(index)} aria-label="Close"
                                         >
                                             <X className="h-4 w-4" />
                                         </Button>

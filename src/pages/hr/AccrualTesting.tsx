@@ -103,7 +103,7 @@ export default function AccrualTesting() {
 
                 {/* Simulation Matrix */}
                 <Card className="border-indigo-500/20 shadow-sm overflow-hidden">
-                    <CardHeader className="bg-indigo-500/5 pb-4 border-b">
+                    <CardHeader className="bg-indigo-500/100/5 pb-4 border-b">
                         <CardTitle className="text-lg text-indigo-800 dark:text-indigo-300 flex items-center gap-2">
                             <Calculator className="h-5 w-5" /> Test Parameters
                         </CardTitle>
@@ -215,7 +215,7 @@ export default function AccrualTesting() {
                             <Separator />
 
                             {/* Calculation Trace Log */}
-                            <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50">
+                            <div className="p-4 bg-zinc-500/10 dark:bg-zinc-900/50">
                                 <details className="text-sm group cursor-pointer">
                                     <summary className="font-medium text-muted-foreground hover:text-foreground list-none flex items-center gap-2">
                                         <span className="text-xs bg-zinc-200 dark:bg-zinc-800 rounded px-1.5 py-0.5 group-open:rotate-90 transition-transform">▶</span>

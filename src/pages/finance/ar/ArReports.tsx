@@ -131,15 +131,15 @@ export default function ArReports() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid gap-4 md:grid-cols-3">
-                                <div className="p-4 border rounded bg-slate-50">
+                                <div className="p-4 border rounded bg-slate-500/10">
                                     <div className="text-sm text-muted-foreground">Subledger Balance</div>
                                     <div className="text-2xl font-bold">{formatCurrency(recon?.subledgerBalance ?? 0)}</div>
                                 </div>
-                                <div className="p-4 border rounded bg-slate-50">
+                                <div className="p-4 border rounded bg-slate-500/10">
                                     <div className="text-sm text-muted-foreground">GL Control Account</div>
                                     <div className="text-2xl font-bold">{formatCurrency(recon?.glBalance ?? 0)}</div>
                                 </div>
-                                <div className={cn(`p-4 border rounded ${recon?.difference === 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`)}>
+                                <div className={cn(`p-4 border rounded ${recon?.difference === 0 ? 'bg-emerald-500/10 border-emerald-200' : 'bg-red-500/10 border-red-200'}`)}>
                                     <div className="text-sm text-muted-foreground">Difference</div>
                                     <div className={cn(`text-2xl font-bold ${recon?.difference === 0 ? 'text-emerald-700' : 'text-red-700'}`)}>
                                         {formatCurrency(recon?.difference ?? 0)}
@@ -235,7 +235,7 @@ export default function ArReports() {
                             </div>
 
                             {revalResult && (
-                                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 font-medium">
+                                <div className="p-4 bg-emerald-500/10 border border-emerald-200 rounded-md text-emerald-800 font-medium">
                                     {revalResult}
                                 </div>
                             )}

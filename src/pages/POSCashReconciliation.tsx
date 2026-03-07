@@ -101,7 +101,7 @@ export default function POSCashReconciliation() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={Math.abs(variance) < 0.01 ? "default" : "destructive"} className="text-xs">{Math.abs(variance) < 0.01 ? "Balanced" : "Discrepancy"}</Badge>
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} className="h-7 w-7" aria-label="Delete">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>

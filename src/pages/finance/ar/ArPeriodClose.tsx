@@ -81,7 +81,7 @@ export default function ArPeriodClose() {
 
                 {/* LE Context Banner */}
                 {legalEntityId && (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-lg text-sm">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-lg text-sm">
                         <Building2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                         <span className="text-emerald-700 dark:text-emerald-300 font-medium">
                             AR Period Close scoped to Legal Entity: {legalEntityId}

@@ -136,7 +136,7 @@ export default function BudgetPlanning() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={budget.status === "active" ? "default" : "secondary"}>{budget.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(budget.id)} data-testid={`button-delete-${budget.id}`}>
+                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(budget.id)} data-testid={`button-delete-${budget.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

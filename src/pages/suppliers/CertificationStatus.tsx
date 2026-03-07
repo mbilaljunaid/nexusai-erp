@@ -15,7 +15,7 @@ interface Portfolio { cert_type: string; suppliers_with_cert: number; active: nu
 const CERT_STATUS: Record<string, { className: string; color: string; icon: React.ElementType }> = {
     Active: { className: 'bg-emerald-100 text-emerald-600', color: '#059669', icon: ShieldCheck },
     Expired: { className: 'bg-red-100 text-red-600', color: '#dc2626', icon: ShieldOff },
-    Pending: { className: 'bg-blue-50 text-blue-700', color: '#1d4ed8', icon: ShieldAlert },
+    Pending: { className: 'bg-blue-500/10 text-blue-700', color: '#1d4ed8', icon: ShieldAlert },
     Revoked: { className: 'bg-amber-100 text-amber-600', color: '#d97706', icon: AlertCircle },
 };
 
@@ -71,9 +71,9 @@ export default function CertificationStatus() {
 
             {/* Expiry alert */}
             {expiring.length > 0 && (
-                <div className="bg-amber-50 border border-amber-300 rounded-lg py-2.5 px-3.5 mb-3.5 flex items-center gap-2">
+                <div className="bg-amber-500/10 border border-amber-300 rounded-lg py-2.5 px-3.5 mb-3.5 flex items-center gap-2">
                     <AlertCircle size={14} color="#d97706" />
-                    <span className="text-[12px] text-amber-900 font-semibold">{expiring.length} cert{expiring.length !== 1 ? 's' : ''} expiring within 60 days</span>
+                    <span className="text-[12px] text-amber-900 dark:text-amber-200 font-semibold">{expiring.length} cert{expiring.length !== 1 ? 's' : ''} expiring within 60 days</span>
                     <button onClick={() => setTab('expiring')} className="px-2.5 py-0.5 bg-amber-600 text-white border-0 rounded text-[11px] cursor-pointer">View all</button>
                 </div>
             )}

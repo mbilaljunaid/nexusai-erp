@@ -123,15 +123,15 @@ export default function BudgetControlRules() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Rules</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{totalRules}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{totalRules}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <CheckCircle2 className="h-3 w-3" />
@@ -139,10 +139,10 @@ export default function BudgetControlRules() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{activeRules}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{activeRules}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase flex items-center gap-1">
                                 <AlertTriangle className="h-3 w-3" />
@@ -150,13 +150,13 @@ export default function BudgetControlRules() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{violations}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{violations}</div>
                         </CardContent>
                     </Card>
                 </div>
 
                 <div className="flex justify-end gap-2">
-                    <Button variant="outline" className="bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200" onClick={handleSimulate}>
+                    <Button variant="outline" className="bg-amber-500/10 hover:bg-amber-500/15 text-amber-700 border-amber-200" onClick={handleSimulate}>
                         <PlayCircle className="h-4 w-4 mr-2" />
                         Run Simulation Dry-Run
                     </Button>
@@ -177,13 +177,13 @@ export default function BudgetControlRules() {
                                     </AlertDescription>
                                 </Alert>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-4 border rounded-lg bg-red-50">
+                                    <div className="p-4 border rounded-lg bg-red-500/10">
                                         <div className="text-xs text-red-600 font-semibold">VIOLATIONS</div>
-                                        <div className="text-2xl font-bold text-red-900">{simResult.violations}</div>
+                                        <div className="text-2xl font-bold text-red-900 dark:text-red-200">{simResult.violations}</div>
                                     </div>
-                                    <div className="p-4 border rounded-lg bg-amber-50">
+                                    <div className="p-4 border rounded-lg bg-amber-500/10">
                                         <div className="text-xs text-amber-600 font-semibold">WARNINGS</div>
-                                        <div className="text-2xl font-bold text-amber-900">{simResult.warnings}</div>
+                                        <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{simResult.warnings}</div>
                                     </div>
                                 </div>
                                 <div className="space-y-2">

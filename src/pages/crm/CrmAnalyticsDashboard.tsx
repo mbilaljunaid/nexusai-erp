@@ -57,7 +57,7 @@ export default function CrmAnalyticsDashboard() {
             <div className="space-y-6">
                 {/* KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <DollarSign className="h-3 w-3" />
@@ -65,11 +65,11 @@ export default function CrmAnalyticsDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">${(totalPipelineValue / 1000000).toFixed(1)}M</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">${(totalPipelineValue / 1000000).toFixed(1)}M</div>
                             <p className="text-xs text-green-700">+12% from last month</p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-1">
                                 <TrendingUp className="h-3 w-3" />
@@ -77,11 +77,11 @@ export default function CrmAnalyticsDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{winRate?.rate || 0}%</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{winRate?.rate || 0}%</div>
                             <p className="text-xs text-blue-700">Based on {winRate?.totalClosed || 0} deals</p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -89,11 +89,11 @@ export default function CrmAnalyticsDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">42 days</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">42 days</div>
                             <p className="text-xs text-purple-700">5 days faster than Q3</p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <Target className="h-3 w-3" />
@@ -101,7 +101,7 @@ export default function CrmAnalyticsDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{forecastAccuracy?.accuracy || 0}%</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{forecastAccuracy?.accuracy || 0}%</div>
                             <p className="text-xs text-amber-700">{forecastAccuracy?.variance || "N/A"} variance</p>
                         </CardContent>
                     </Card>

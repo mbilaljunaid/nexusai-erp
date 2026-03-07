@@ -87,7 +87,7 @@ export function SupplierSiteManager({ supplierId, supplierName }: SupplierSiteMa
             header: "",
             accessorKey: "id",
             cell: (id) => (
-                <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteMutation.mutate(id)}>
+                <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteMutation.mutate(id)} aria-label="Delete">
                     <Trash2 className="h-4 w-4" />
                 </Button>
             )

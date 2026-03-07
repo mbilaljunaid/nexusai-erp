@@ -57,7 +57,6 @@ export function TemplateSelection({
             setSelectedTemplates(defaultTemplateIds);
             onTemplatesSelected(defaultTemplateIds);
         } catch (error) {
-            console.error('Failed to fetch templates:', error);
         } finally {
             setIsLoading(false);
         }
@@ -76,7 +75,6 @@ export function TemplateSelection({
             setPreviewData(data);
             setIsPreviewOpen(true);
         } catch (error) {
-            console.error('Failed to preview template:', error);
         }
     };
 

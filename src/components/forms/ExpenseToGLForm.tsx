@@ -73,7 +73,7 @@ export function ExpenseToGLForm({ expense, onClose }: { expense: Expense; onClos
         <p className="text-sm text-muted-foreground mt-1">Record expense in general ledger for accounting</p>
       </div>
 
-      <Card className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800">
+      <Card className="bg-orange-500/10 dark:bg-orange-950 border border-orange-200 dark:border-orange-800">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">

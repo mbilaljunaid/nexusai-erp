@@ -45,11 +45,11 @@ export default function ChargeVarianceSheet({ tradeOpId, isOpen, onClose }: { tr
                 <div className="py-6 space-y-6">
                     {/* KPI Cards */}
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-slate-50 p-4 rounded-lg">
+                        <div className="bg-slate-500/10 p-4 rounded-lg">
                             <p className="text-sm font-medium text-muted-foreground">Estimated Total</p>
                             <p className="text-xl font-bold">${totalEst.toFixed(2)}</p>
                         </div>
-                        <div className="bg-slate-50 p-4 rounded-lg">
+                        <div className="bg-slate-500/10 p-4 rounded-lg">
                             <p className="text-sm font-medium text-muted-foreground">Actual Total</p>
                             <p className="text-xl font-bold">${totalAct.toFixed(2)}</p>
                         </div>

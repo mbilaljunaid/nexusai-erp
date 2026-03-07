@@ -127,7 +127,7 @@ export function NexusAIPanel() {
         <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
           <div className="flex items-center gap-2">
             {panelView ==="history" && (
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPanelView("chat")} title="Back to chat">
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPanelView("chat")} title="Back to chat" aria-label="Previous">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
             )}
@@ -158,30 +158,30 @@ export function NexusAIPanel() {
                 <Button
                   variant="ghost" size="icon" className="h-8 w-8"
                   onClick={() => setShowContextBar(prev => !prev)}
-                  title="Context & Agent settings"
+                  title="Context & Agent settings" aria-label="Layers"
                 >
                   <Layers className={cn("h-4 w-4", showContextBar ?"text-primary" :"text-muted-foreground")} />
                 </Button>
                 <Button
                   variant="ghost" size="icon" className="h-8 w-8"
                   onClick={() => setPanelView("history")}
-                  title="Conversation history"
+                  title="Conversation history" aria-label="History"
                 >
                   <HistoryIcon className="h-4 w-4 text-muted-foreground" />
                 </Button>
                 <Button
                   variant="ghost" size="icon" className="h-8 w-8"
                   onClick={handleNewConversation}
-                  title="New conversation"
+                  title="New conversation" aria-label="New message"
                 >
                   <MessageSquarePlus className="h-4 w-4 text-muted-foreground" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={clearMessages} title="Delete conversation">
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={clearMessages} title="Delete conversation" aria-label="Delete">
                   <Trash2 className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </>
             )}
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={close} title="Close panel">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={close} title="Close panel" aria-label="Close">
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -463,7 +463,7 @@ export function NexusAIPanel() {
                 className="absolute right-1 text-muted-foreground hover:text-primary h-8 w-8"
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
-                title="Send message"
+                title="Send message" aria-label="Send"
               >
                 <Send className="h-4 w-4" />
               </Button>

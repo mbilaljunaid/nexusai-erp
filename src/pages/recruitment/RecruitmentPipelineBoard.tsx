@@ -73,7 +73,7 @@ export default function RecruitmentPipelineBoard() {
                 {STAGES.map((stage) => {
                     const candidates = pipeline[stage] || [];
                     return (
-                        <div key={stage} className="flex flex-col h-full bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div key={stage} className="flex flex-col h-full bg-slate-500/10 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
                             <div className="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-800">
                                 <h3 className="font-bold text-sm tracking-tight text-slate-700 dark:text-slate-300">{stage}</h3>
                                 <Badge variant="secondary" className="bg-slate-200 text-slate-700">{candidates.length}</Badge>
@@ -106,8 +106,8 @@ export default function RecruitmentPipelineBoard() {
                                                 </div>
                                                 <div className="flex-1" />
                                                 <div className="flex gap-1">
-                                                    <Button variant="ghost" size="icon" className="h-6 w-6"><Mail className="w-3 h-3" /></Button>
-                                                    <Button variant="ghost" size="icon" className="h-6 w-6"><Calendar className="w-3 h-3" /></Button>
+                                                    <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Email"><Mail className="w-3 h-3" /></Button>
+                                                    <Button variant="ghost" size="icon" className="h-6 w-6" aria-label="Calendar"><Calendar className="w-3 h-3" /></Button>
                                                 </div>
                                             </div>
 

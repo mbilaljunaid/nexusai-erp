@@ -171,7 +171,7 @@ export default function CreatePPR() {
                                 <div className={cn(`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step.id ?"bg-blue-600 text-white" :"bg-white border-2 border-gray-300 text-gray-500"}`)}>
                                     {currentStep > step.id ? <CheckCircle2 className="w-5 h-5" /> : step.id}
                                 </div>
-                                <span className={cn(`text-xs font-medium ${currentStep >= step.id ?"text-blue-900" :"text-gray-500"}`)}>{step.name}</span>
+                                <span className={cn(`text-xs font-medium ${currentStep >= step.id ?"text-blue-900 dark:text-blue-200" :"text-gray-500"}`)}>{step.name}</span>
                             </div>
                         ))}
                     </div>
@@ -285,7 +285,7 @@ export default function CreatePPR() {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    <div className="p-4 bg-slate-50 border rounded text-sm text-slate-600 mt-4">
+                                    <div className="p-4 bg-slate-500/10 border rounded text-sm text-slate-600 mt-4">
                                         Note: Only invoices with'Validated' status and'Approved' workflow will be selected in the next step.
                                     </div>
                                 </div>
@@ -307,7 +307,7 @@ export default function CreatePPR() {
 
                         {currentStep === 3 && (
                             <div className="space-y-4">
-                                <div className="p-4 bg-green-50 text-green-800 border-green-200 border rounded-md mb-4 flex items-center gap-2">
+                                <div className="p-4 bg-green-500/10 text-green-800 border-green-200 border rounded-md mb-4 flex items-center gap-2">
                                     <CheckCircle2 className="h-5 w-5" />
                                     <span>System has grouped <strong>{selectedInvoices.size}</strong> invoices into <strong>{proposedPayments.length}</strong> proposed payments based on Supplier grouping rules.</span>
                                 </div>

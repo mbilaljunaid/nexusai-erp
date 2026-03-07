@@ -104,7 +104,7 @@ export default function ESGPlanning() {
                     </div>
 
                     {showNew && (
-                        <div className="bg-green-50 border border-green-200 rounded-xl p-3.5 mb-3">
+                        <div className="bg-green-500/10 border border-green-200 rounded-xl p-3.5 mb-3">
                             <div className="font-bold text-xs mb-2">Create ESG Goal</div>
                             <div className="grid grid-cols-4 gap-2 mb-2">
                                 {[['Code', 'goalCode', 'text'], ['Name', 'goalName', 'text'], ['Unit', 'unit', 'text'], ['Owner', 'owner', 'text'], ['Baseline', 'baselineValue', 'number'], ['Target', 'targetValue', 'number'], ['Target Year', 'targetYear', 'number'], ['Subcategory', 'subcategory', 'text']].map(([lbl, key, type]) => (
@@ -179,7 +179,7 @@ export default function ESGPlanning() {
                                         </div>
                                     ))}
                                 </Card>
-                                <Card className="bg-green-50 border-green-200 p-3 shadow-sm">
+                                <Card className="bg-green-500/10 border-green-200 p-3 shadow-sm">
                                     <div className="text-[11px] font-bold mb-2">Record Actual</div>
                                     {[['Period', 'period', 'text'], ['Value', 'actualValue', 'number'], ['Source', 'dataSource', 'text']].map(([lbl, key, type]) => (
                                         <div key={key} className="mb-1.5">

@@ -67,7 +67,7 @@ export function EmployeeToPayrollForm({ employee, onClose }: { employee: Employe
         <p className="text-sm text-muted-foreground mt-1">Generate payroll entry from employee data</p>
       </div>
 
-      <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+      <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -119,7 +119,7 @@ export function EmployeeToPayrollForm({ employee, onClose }: { employee: Employe
             </div>
           </div>
 
-          <Card className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800">
+          <Card className="bg-green-500/10 dark:bg-green-950 border border-green-200 dark:border-green-800">
             <CardContent className="pt-4">
               <p className="text-sm font-medium text-green-900 dark:text-green-100">
                 This will create a payroll record with automatic tax calculations and link to HR records for compliance tracking.

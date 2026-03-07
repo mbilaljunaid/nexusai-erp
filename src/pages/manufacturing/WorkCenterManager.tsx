@@ -144,7 +144,7 @@ export default function WorkCenterManager() {
                     <Button variant="ghost" size="icon" onClick={() => {
                         setEditingCenter(row);
                         setIsSheetOpen(true);
-                    }}>
+                    }} aria-label="Edit">
                         <Edit2 className="h-4 w-4" />
                     </Button>
                 </div>

@@ -105,7 +105,7 @@ export default function FreightRateCalculation() {
                 <p className="font-semibold">{r.carrier}</p>
                 <p className="text-xs text-muted-foreground">{r.origin} → {r.destination} • {r.weight}lbs • ${r.rate}</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7">
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} className="h-7 w-7" aria-label="Delete">
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>

@@ -72,7 +72,7 @@ export function HelpButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="ghost" data-testid="button-help-menu">
+        <Button size="icon" variant="ghost" data-testid="button-help-menu" aria-label="Help">
           <HelpCircle className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>

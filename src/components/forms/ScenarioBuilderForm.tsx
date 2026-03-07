@@ -241,7 +241,7 @@ export function ScenarioBuilderForm() {
           </Card>
 
           {/* AI Insights */}
-          <Card className="border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-950">
+          <Card className="border-blue-200 dark:border-blue-900 bg-blue-500/10 dark:bg-blue-950">
             <CardContent className="p-4 flex gap-3">
               <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <div className="text-sm">

@@ -89,7 +89,7 @@ export default function FundingLimits() {
                     {tab === 'funding' && (
                         <>
                             {showNewFL && (
-                                <Card className="bg-gray-50 p-3 mb-2.5 shadow-sm">
+                                <Card className="bg-slate-500/10 p-3 mb-2.5 shadow-sm">
                                     <div className="text-xs font-bold mb-2">Add Funding Limit</div>
                                     <div className="grid grid-cols-3 gap-2">
                                         <div className="flex flex-col gap-0.5">
@@ -169,7 +169,7 @@ export default function FundingLimits() {
                             )}
 
                             {showNewCommit && (
-                                <Card className="bg-gray-50 p-3 mb-2.5 shadow-sm">
+                                <Card className="bg-slate-500/10 p-3 mb-2.5 shadow-sm">
                                     <div className="text-xs font-bold mb-2">Add Commitment</div>
                                     <div className="grid grid-cols-3 gap-2">
                                         <div className="flex flex-col gap-0.5">

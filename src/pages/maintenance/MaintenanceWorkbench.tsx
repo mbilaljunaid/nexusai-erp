@@ -65,7 +65,7 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
                     </div>
                 </div>
                 {activeInvOrgId && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-violet-50 border border-violet-200 text-violet-800 text-sm w-fit">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-violet-500/10 border border-violet-200 text-violet-800 text-sm w-fit">
                         <Building2 className="h-4 w-4 flex-shrink-0" />
                         <span>Maintenance Execution scoped to Inventory Org: <strong>{activeInvOrgId}</strong></span>
                     </div>

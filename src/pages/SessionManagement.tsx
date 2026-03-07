@@ -58,7 +58,7 @@ export default function SessionManagement() {
                   <span>Last active: {session.lastActive}</span>
                 </div>
                 {session.status === "active" && (
-                  <Button size="icon" variant="ghost" data-testid={`button-logout-${session.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-logout-${session.id}`} aria-label="Log out">
                     <LogOut className="h-4 w-4 text-red-500" />
                   </Button>
                 )}

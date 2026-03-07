@@ -28,7 +28,7 @@ export default function CampaignDetail() {
         >
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Card className={stats?.roi > 0 ? "bg-green-50 border-green-200" : ""}>
+                <Card className={stats?.roi > 0 ? "bg-green-500/10 border-green-200" : ""}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">ROI</CardTitle>
                         <TrendingUp className="h-4 w-4 text-green-600" />

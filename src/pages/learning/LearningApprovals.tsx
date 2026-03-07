@@ -185,7 +185,7 @@ export default function LearningApprovals() {
                         </Card>
                     ) : (
                         approved.map((request: EnrollmentRequest) => (
-                            <Card key={request.id} className="border-green-200 bg-green-50/30">
+                            <Card key={request.id} className="border-green-200 bg-green-500/10">
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
@@ -219,7 +219,7 @@ export default function LearningApprovals() {
                         </Card>
                     ) : (
                         rejected.map((request: EnrollmentRequest) => (
-                            <Card key={request.id} className="border-red-200 bg-red-50/30">
+                            <Card key={request.id} className="border-red-200 bg-red-500/10">
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">

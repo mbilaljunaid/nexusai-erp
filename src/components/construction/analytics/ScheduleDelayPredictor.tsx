@@ -225,8 +225,8 @@ export function ScheduleDelayPredictor({ projectId }: ScheduleDelayPredictorProp
 
                                     {/* Delay Days */}
                                     {delayDays > 0 && (
-                                        <div className="mb-3 p-2 bg-orange-50 rounded text-sm">
-                                            <span className="font-medium text-orange-900">
+                                        <div className="mb-3 p-2 bg-orange-500/10 rounded text-sm">
+                                            <span className="font-medium text-orange-900 dark:text-orange-200">
                                                 Expected Delay: +{delayDays} days
                                             </span>
                                         </div>

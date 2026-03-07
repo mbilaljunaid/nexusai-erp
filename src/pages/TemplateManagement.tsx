@@ -74,7 +74,6 @@ export default function TemplateManagement() {
             const data = await response.json();
             setTemplates(data);
         } catch (error) {
-            console.error('Failed to fetch templates:', error);
         } finally {
             setIsLoading(false);
         }
@@ -90,7 +89,6 @@ export default function TemplateManagement() {
             setApplications(data);
             setIsApplicationsOpen(true);
         } catch (error) {
-            console.error('Failed to fetch applications:', error);
         }
     };
 
@@ -107,7 +105,6 @@ export default function TemplateManagement() {
             setPreviewData(data);
             setIsPreviewOpen(true);
         } catch (error) {
-            console.error('Failed to preview template:', error);
         }
     };
 

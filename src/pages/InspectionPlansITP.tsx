@@ -104,7 +104,7 @@ export default function InspectionPlansITP() {
       breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Inspection Plans" }]}
     >
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 border-none">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200 border-none">
           Inspection Plans (ITP)
         </h1>
         <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-slate-600">Incoming, in-process, final inspections, and SPC monitoring</p>

@@ -283,7 +283,7 @@ export default function ContributingPage() {
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <a href="https://github.com/mbilaljunaid/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-100" data-testid="button-fork-repo">
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-500/15" data-testid="button-fork-repo">
                   Fork Repository
                 </Button>
               </a>

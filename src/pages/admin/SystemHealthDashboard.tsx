@@ -95,7 +95,7 @@ export default function SystemHealthDashboard() {
                     <button
                         onClick={() => setAutoRefresh(!autoRefresh)}
                         className={cn(`px-3 py-2 text-sm rounded-md border ${autoRefresh
-                            ? 'bg-blue-50 text-blue-700 border-blue-200'
+                            ? 'bg-blue-500/10 text-blue-700 border-blue-200'
                             : 'bg-white text-gray-700 border-gray-300'
                             }`)}
                     >
@@ -119,7 +119,7 @@ export default function SystemHealthDashboard() {
                     <div className="flex items-center gap-4">
                         {getStatusIcon(health.status)}
                         <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200">
                                 System Status:
                                 <span className={cn(`ml-2 px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(health.status)}`)}>
                                     {health.status.toUpperCase()}
@@ -136,7 +136,7 @@ export default function SystemHealthDashboard() {
             {/* Active Alerts */}
             {alerts.length > 0 && (
                 <div className="space-y-2">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200 uppercase tracking-wide">
                         Active Alerts ({alerts.length})
                     </h3>
                     {alerts.map((alert) => (
@@ -147,7 +147,7 @@ export default function SystemHealthDashboard() {
 
             {/* Component Health Metrics */}
             <div>
-                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200 uppercase tracking-wide mb-4">
                     Component Health
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -200,21 +200,21 @@ export default function SystemHealthDashboard() {
 
             {/* Quick Stats */}
             <Card className="p-6">
-                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200 uppercase tracking-wide mb-4">
                     System Information
                 </h3>
                 <dl className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <dt className="text-sm font-medium text-gray-500">Environment</dt>
-                        <dd className="mt-1 text-lg font-semibold text-gray-900">Production</dd>
+                        <dd className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-200">Production</dd>
                     </div>
                     <div>
                         <dt className="text-sm font-medium text-gray-500">Version</dt>
-                        <dd className="mt-1 text-lg font-semibold text-gray-900">v1.0.0</dd>
+                        <dd className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-200">v1.0.0</dd>
                     </div>
                     <div>
                         <dt className="text-sm font-medium text-gray-500">Uptime</dt>
-                        <dd className="mt-1 text-lg font-semibold text-gray-900">99.9%</dd>
+                        <dd className="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-200">99.9%</dd>
                     </div>
                 </dl>
             </Card>

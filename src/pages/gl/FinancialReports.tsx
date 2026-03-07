@@ -362,7 +362,7 @@ export default function FinancialReports() {
                     {drillCell && (
                         <div className="flex-1 overflow-y-auto py-6 space-y-6">
                             {/* Context Card */}
-                            <div className="p-4 rounded-lg bg-blue-50/50 border border-blue-100 dark:bg-blue-950/20 dark:border-blue-900">
+                            <div className="p-4 rounded-lg bg-/15 border border-blue-100 dark:bg-blue-950/20 dark:border-blue-900">
                                 <div className="grid grid-cols-2 gap-4 text-sm">
                                     <div>
                                         <p className="text-muted-foreground text-xs">Account / Row</p>

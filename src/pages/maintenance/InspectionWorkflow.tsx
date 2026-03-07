@@ -87,7 +87,6 @@ export function InspectionWorkflow() {
 
             setTemplates(mappedTemplates);
         } catch (error) {
-            console.error("Failed to load templates:", error);
             setTemplates([]); // Fallback
         } finally {
             setLoading(false);
@@ -109,7 +108,6 @@ export function InspectionWorkflow() {
 
             setInspections(mappedInspections);
         } catch (error) {
-            console.error("Failed to load inspections:", error);
             setInspections([]); // Fallback
         }
     };
@@ -119,7 +117,6 @@ export function InspectionWorkflow() {
             const items = await qualityService.getTemplateItems(template.id);
             setInspectionItems(items);
         } catch (e) {
-            console.error("Failed to load template items", e);
             setInspectionItems([]);
         }
         setSelectedTemplate(template);
@@ -180,7 +177,6 @@ export function InspectionWorkflow() {
             setResults([]);
             await loadInspections();
         } catch (error) {
-            console.error("Failed to submit inspection:", error);
             // TODO: Show error toast
         }
     };
@@ -362,10 +358,10 @@ export function InspectionWorkflow() {
                                                             )}
 
                                                             {result && !result.passed && (
-                                                                <div className="mt-2 p-2 bg-red-50 rounded flex items-start gap-2">
+                                                                <div className="mt-2 p-2 bg-red-500/10 rounded flex items-start gap-2">
                                                                     <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
                                                                     <div className="flex-1">
-                                                                        <div className="text-sm font-medium text-red-900">Defect Noted</div>
+                                                                        <div className="text-sm font-medium text-red-900 dark:text-red-200">Defect Noted</div>
                                                                         <Textarea
                                                                             placeholder="Describe the issue..."
                                                                             className="mt-1 text-sm"
@@ -472,7 +468,7 @@ export function InspectionWorkflow() {
                                             </div>
                                         </div>
 
-                                        <Button variant="ghost" size="icon">
+                                        <Button variant="ghost" size="icon" aria-label="Next">
                                             <ChevronRight className="h-4 w-4" />
                                         </Button>
                                     </div>

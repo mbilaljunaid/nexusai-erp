@@ -61,7 +61,7 @@ export function LeadCard({ lead, onCall, onEmail }: LeadCardProps) {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-lead-menu-${lead.id}`}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-lead-menu-${lead.id}`} aria-label="More options">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

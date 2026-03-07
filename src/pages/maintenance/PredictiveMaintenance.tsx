@@ -90,7 +90,7 @@ export default function PredictiveMaintenance() {
                     <CardContent>
                         <div className="space-y-3">
                             {predictions.alerts.map((alert: any) => (
-                                <div key={alert.id} className="border rounded-lg p-4 bg-orange-50">
+                                <div key={alert.id} className="border rounded-lg p-4 bg-orange-500/10">
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <div className="font-semibold">{alert.component}</div>

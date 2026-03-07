@@ -414,7 +414,7 @@ export default function DemoManagement() {
 
                     {/* Error State */}
                     {error && (
-                        <Card className="border-red-200 bg-red-50">
+                        <Card className="border-red-200 bg-red-500/10">
                             <CardContent className="pt-6">
                                 <p className="text-red-600">Failed to load demo environments. Please try again.</p>
                             </CardContent>

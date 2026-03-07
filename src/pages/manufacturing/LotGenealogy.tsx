@@ -67,12 +67,12 @@ export default function LotGenealogy() {
                 <div className="bg-amber-100 border border-amber-200 rounded-lg py-2 px-3.5 mb-3 flex items-center gap-2">
                     <AlertTriangle size={12} color="#d97706" />
                     <span className="text-xs text-amber-600 font-bold">{expiring.length} lot{expiring.length > 1 ? 's' : ''} expiring within 30 days</span>
-                    <span className="text-[11px] text-amber-900">{expiring.slice(0, 3).map(l => `${l.lot_number} (${l.item_number})`).join(', ')}</span>
+                    <span className="text-[11px] text-amber-900 dark:text-amber-200">{expiring.slice(0, 3).map(l => `${l.lot_number} (${l.item_number})`).join(', ')}</span>
                 </div>
             )}
 
             {showNew && (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3.5 mb-3">
                     <div className="text-xs font-bold mb-2.5">Create Lot</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         {[['lotNumber', 'Lot Number', 'text'], ['itemNumber', 'Item Number', 'text'], ['quantity', 'Quantity', 'number'], ['unitOfMeasure', 'UOM', 'text'], ['expiryDate', 'Expiry Date', 'date'], ['supplierLot', 'Supplier Lot', 'text'], ['workOrderId', 'Work Order ID', 'text']].map(([k, l, t]) => (
@@ -140,7 +140,7 @@ export default function LotGenealogy() {
                         {traceMode && (
                             <div className="mb-2.5">
                                 {(traceData as any[]).map((t: any, i: number) => (
-                                    <div key={i} className="py-1 px-2 bg-gray-50 rounded-md mb-1 text-[10px]">
+                                    <div key={i} className="py-1 px-2 bg-gray-500/10 rounded-md mb-1 text-[10px]">
                                         <span className="font-mono font-bold">{t.lot_number}</span> — {t.item_number}
                                     </div>
                                 ))}
@@ -150,7 +150,7 @@ export default function LotGenealogy() {
                         <div className="text-[10px] font-bold mb-1.5">Trace Events</div>
                         <div className="flex flex-col gap-1">
                             {(selected.trace_events ?? []).slice(-5).reverse().map((ev: any, i: number) => (
-                                <div key={i} className="flex gap-1.5 text-[9px] items-center py-1 px-1.5 bg-gray-50 rounded">
+                                <div key={i} className="flex gap-1.5 text-[9px] items-center py-1 px-1.5 bg-gray-500/10 rounded">
                                     <span className="py-0.5 px-1 rounded-sm bg-gray-900 text-white text-[8px]">{ev.event}</span>
                                     <span className="text-gray-500">{formatDate(ev.at)}</span>
                                     {ev.qty && <span className="font-mono">{ev.qty}</span>}

@@ -297,7 +297,7 @@ export function BudgetWorkbench() {
                                 </div>
 
                                 {testResult && (
-                                    <div className={cn(`p-4 rounded-md border ${testResult.status === "FAIL" ? "bg-red-50 border-red-200" : testResult.status === "ADVISORY" ? "bg-yellow-50 border-yellow-200" : "bg-green-50 border-green-200"}`)}>
+                                    <div className={cn(`p-4 rounded-md border ${testResult.status === "FAIL" ? "bg-red-500/10 border-red-200" : testResult.status === "ADVISORY" ? "bg-yellow-500/10 border-yellow-200" : "bg-green-500/10 border-green-200"}`)}>
                                         <div className="flex items-center gap-2 mb-2">
                                             {testResult.status === "FAIL" && <AlertTriangle className="text-red-600" />}
                                             {testResult.status === "ADVISORY" && <AlertTriangle className="text-yellow-600" />}
@@ -330,7 +330,7 @@ export function BudgetWorkbench() {
                     </TabsContent>
                 </Tabs>
             ) : (
-                <div className="text-center py-20 text-muted-foreground border rounded-lg bg-slate-50">
+                <div className="text-center py-20 text-muted-foreground border rounded-lg bg-slate-500/10">
                     Please select a Project to begin Planning.
                 </div>
             )}

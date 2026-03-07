@@ -87,7 +87,7 @@ export function ReadinessAssessmentDialog({
 
                 <div className="space-y-6">
                     {/* Candidate Info */}
-                    <Card className="bg-slate-50 border-slate-200">
+                    <Card className="bg-slate-500/10 border-slate-200">
                         <CardContent className="p-4">
                             <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div>
@@ -197,7 +197,7 @@ export function ReadinessAssessmentDialog({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <div className="text-sm font-medium text-blue-900">Overall Readiness Score</div>
+                                    <div className="text-sm font-medium text-blue-900 dark:text-blue-200">Overall Readiness Score</div>
                                     <div className="text-xs text-blue-700 mt-1">
                                         Technical (35%) + Leadership (40%) + Cultural Fit (25%)
                                     </div>

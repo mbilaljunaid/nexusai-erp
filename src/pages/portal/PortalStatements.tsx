@@ -44,7 +44,7 @@ export default function PortalStatements() {
                                 const periodName = format(periodDate, "MMMM yyyy");
 
                                 return (
-                                    <div key={stmt.id} className="p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                                    <div key={stmt.id} className="p-4 bg-slate-500/10 rounded-lg hover:bg-slate-500/15 transition-colors">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-4">
                                                 <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -69,7 +69,7 @@ export default function PortalStatements() {
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-xs text-muted-foreground">Balance</p>
-                                                    <p className={cn(`font-semibold ${stmt.balance > 0 ? "text-red-600" : "text-slate-900"}`)}>
+                                                    <p className={cn(`font-semibold ${stmt.balance > 0 ? "text-red-600" : "text-slate-900 dark:text-slate-200"}`)}>
                                                         {formatCurrency(Number(stmt.balance))}
                                                     </p>
                                                 </div>

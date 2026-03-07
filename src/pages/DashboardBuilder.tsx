@@ -74,7 +74,7 @@ export default function DashboardBuilder() {
                   <h3 className="font-semibold">{dash.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{dash.widgets || 5} widgets • {dash.owner || "Unknown"}</p>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(dash.id)} data-testid={`button-delete-${dash.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(dash.id)} data-testid={`button-delete-${dash.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

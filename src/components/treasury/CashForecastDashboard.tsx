@@ -430,7 +430,7 @@ export function CashForecastDashboard() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                                    <div className="p-4 bg-emerald-500/10 rounded-lg border border-emerald-200">
                                         <p className="text-xs text-emerald-600 font-bold mb-1">Average Accuracy</p>
                                         <p className="text-3xl font-black text-emerald-700">
                                             {accuracyMetrics.avgAccuracy}%
@@ -439,7 +439,7 @@ export function CashForecastDashboard() {
                                             Last {accuracyMetrics.pastDays}d
                                         </p>
                                     </div>
-                                    <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                    <div className="p-4 bg-amber-500/10 rounded-lg border border-amber-200">
                                         <p className="text-xs text-amber-600 font-bold mb-1">Avg Deviation</p>
                                         <p className="text-3xl font-black text-amber-700">
                                             {accuracyMetrics.avgDeviation}%
@@ -463,7 +463,7 @@ export function CashForecastDashboard() {
                                     </div>
                                 </div>
 
-                                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-200">
                                     <p className="text-xs text-blue-700">
                                         <strong>Trend:</strong> Forecast accuracy improving over time. Pattern
                                         recognition enhanced by ML model training on historical data.
@@ -491,10 +491,10 @@ export function CashForecastDashboard() {
                                         <div
                                             key={anomaly.id}
                                             className={cn(`p-4 rounded-lg border ${anomaly.severity === "HIGH"
-                                                ? "bg-red-50 border-red-200"
+                                                ? "bg-red-500/10 border-red-200"
                                                 : anomaly.severity === "MEDIUM"
-                                                    ? "bg-amber-50 border-amber-200"
-                                                    : "bg-blue-50 border-blue-200"
+                                                    ? "bg-amber-500/10 border-amber-200"
+                                                    : "bg-blue-500/10 border-blue-200"
                                                 }`)}
                                         >
                                             <div className="flex justify-between items-start mb-2">

@@ -200,13 +200,13 @@ export default function ExpenseCalculators() {
                         </Button>
 
                         {mileageResult !== null && (
-                            <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-2 animate-in slide-in-from-top-2">
+                            <div className="bg-green-500/10 border border-green-200 rounded-lg p-4 space-y-2 animate-in slide-in-from-top-2">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm font-medium text-green-900">Total Reimbursement</p>
+                                    <p className="text-sm font-medium text-green-900 dark:text-green-200">Total Reimbursement</p>
                                     <CheckCircle className="h-4 w-4 text-green-600" />
                                 </div>
                                 <div className="flex items-baseline justify-between">
-                                    <p className="text-3xl font-bold text-green-900 font-mono">
+                                    <p className="text-3xl font-bold text-green-900 dark:text-green-200 font-mono">
                                         {formatCurrency(mileageResult)}
                                     </p>
                                     <Button
@@ -316,13 +316,13 @@ export default function ExpenseCalculators() {
                         </Button>
 
                         {perDiemResult && (
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3 animate-in slide-in-from-top-2">
+                            <div className="bg-blue-500/10 border border-blue-200 rounded-lg p-4 space-y-3 animate-in slide-in-from-top-2">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm font-medium text-blue-900">Total Per Diem</p>
+                                    <p className="text-sm font-medium text-blue-900 dark:text-blue-200">Total Per Diem</p>
                                     <Badge variant="secondary">{perDiemResult.days} days</Badge>
                                 </div>
                                 <div className="flex items-baseline justify-between">
-                                    <p className="text-3xl font-bold text-blue-900 font-mono">
+                                    <p className="text-3xl font-bold text-blue-900 dark:text-blue-200 font-mono">
                                         {formatCurrency(perDiemResult.total)}
                                     </p>
                                     <Button
@@ -367,7 +367,7 @@ export default function ExpenseCalculators() {
             </div>
 
             {/* Usage Instructions */}
-            <Card className="border-purple-200 bg-purple-50/50">
+            <Card className="border-purple-200 bg-purple-500/10">
                 <CardHeader>
                     <CardTitle className="text-base">💡 How to Use</CardTitle>
                 </CardHeader>

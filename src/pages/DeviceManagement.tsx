@@ -56,7 +56,7 @@ export default function DeviceManagement() {
                   {device.status === "pending" && (
                     <Button size="sm" variant="outline" data-testid={`button-approve-${device.id}`}>Approve</Button>
                   )}
-                  <Button size="icon" variant="ghost" data-testid={`button-remove-${device.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-remove-${device.id}`} aria-label="Close">
                     <X className="h-4 w-4 text-red-500" />
                   </Button>
                 </div>

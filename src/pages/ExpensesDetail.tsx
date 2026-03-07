@@ -701,7 +701,7 @@ export default function ExpensesDetail() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="bg-blue-50 border border-blue-200 p-3 rounded text-sm">
+            <div className="bg-blue-500/10 border border-blue-200 p-3 rounded text-sm">
               <p className="font-medium mb-1">After Upload:</p>
               <p className="text-muted-foreground text-xs">
                 1. Receipt will appear in the gallery below<br />

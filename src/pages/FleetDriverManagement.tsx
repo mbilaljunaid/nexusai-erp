@@ -98,7 +98,7 @@ export default function FleetDriverManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={d.status === "active" ? "default" : "secondary"} className="text-xs">{d.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(d.id)} data-testid={`button-delete-${d.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(d.id)} data-testid={`button-delete-${d.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

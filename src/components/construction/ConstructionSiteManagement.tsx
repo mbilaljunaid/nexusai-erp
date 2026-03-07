@@ -314,7 +314,7 @@ export default function ConstructionSiteManagement() {
                                             <AlertTriangle className="h-3 w-3" /> Payment Blocked
                                         </Badge>
                                     ) : (
-                                        <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Compliant</Badge>
+                                        <Badge variant="outline" className="text-green-600 border-green-200 bg-green-500/10">Compliant</Badge>
                                     );
                                 }
                             }

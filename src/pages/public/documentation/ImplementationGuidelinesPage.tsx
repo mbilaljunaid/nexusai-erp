@@ -216,7 +216,7 @@ export default function ImplementationGuidelinesPage() {
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link to="/docs/implementation/system-setup">
-                <Button size="lg" className="bg-white text-green-600 hover:bg-slate-100" data-testid="button-system-setup">
+                <Button size="lg" className="bg-white text-green-600 hover:bg-slate-500/15" data-testid="button-system-setup">
                   System Setup Guide <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>

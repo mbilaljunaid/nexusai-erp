@@ -110,7 +110,7 @@ export default function SystemLogsViewer() {
             <Card className="p-4">
                 <div className="flex items-center gap-2 mb-4">
                     <Filter className="w-5 h-5 text-gray-400" />
-                    <h3 className="text-sm font-semibold text-gray-900">Filters</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Filters</h3>
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
@@ -211,11 +211,11 @@ export default function SystemLogsViewer() {
 
             {/* Logs List */}
             <Card>
-                <div className="px-4 py-3 border-b bg-gray-50">
+                <div className="px-4 py-3 border-b bg-gray-500/10">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <FileText className="w-5 h-5 text-gray-400" />
-                            <h3 className="text-sm font-semibold text-gray-900">
+                            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
                                 Log Entries ({logs.length})
                             </h3>
                         </div>

@@ -111,7 +111,7 @@ export default function TradeComplianceDashboard() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={t.status === "cleared" ? "default" : t.status === "held" ? "destructive" : "secondary"}>{t.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

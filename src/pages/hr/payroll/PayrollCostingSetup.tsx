@@ -166,7 +166,7 @@ export default function PayrollCostingSetup() {
                                             const isConfigured = !!rule;
 
                                             return (
-                                                <div key={element.id} className="p-6 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                                                <div key={element.id} className="p-6 hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors">
                                                     <div className="flex justify-between items-start mb-6">
                                                         <div>
                                                             <div className="flex items-center gap-2 mb-1">

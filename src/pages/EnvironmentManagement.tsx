@@ -48,7 +48,6 @@ export default function EnvironmentManagement() {
         setEnvVars(await res.json());
       }
     } catch (e) {
-      console.error("Failed to load environment variables", e);
     }
   };
 
@@ -79,7 +78,6 @@ export default function EnvironmentManagement() {
         setIsSecret(false);
       }
     } catch (e) {
-      console.error("Failed to add variable", e);
     } finally {
       setLoading(false);
     }
@@ -96,7 +94,6 @@ export default function EnvironmentManagement() {
       await fetch(`/api/environment-vars/${deletingVarId}`, { method: "DELETE" });
       setEnvVars(envVars.filter((v) => v.id !== deletingVarId));
     } catch (e) {
-      console.error("Failed to delete variable", e);
     }
     setDeletingVarId(null);
   };
@@ -136,10 +133,10 @@ export default function EnvironmentManagement() {
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2 justify-end">
-          <Button variant="ghost" size="icon" onClick={() => handleCopy(row.original.value, row.original.id)}>
+          <Button variant="ghost" size="icon" onClick={() => handleCopy(row.original.value, row.original.id)} aria-label="Copy value">
             {copied === row.original.id ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
           </Button>
-          <Button variant="ghost" size="icon" className="text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteVariable(row.original.id)}>
+          <Button variant="ghost" size="icon" className="text-red-600 hover:text-red-700 hover:bg-red-500/10" onClick={() => handleDeleteVariable(row.original.id)} aria-label="Delete">
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
@@ -242,7 +239,7 @@ export default function EnvironmentManagement() {
           onChange={() => { }} containerHeight="600px" />
 
         {/* Security Warning */}
-        <Card className="p-4 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-900">
+        <Card className="p-4 bg-orange-500/10 dark:bg-orange-900/20 border-orange-200 dark:border-orange-900">
           <div className="flex gap-3">
             <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
             <div>

@@ -104,7 +104,7 @@ export default function RevenueRecognition() {
 
                     {/* Setup form */}
                     {showSetup && (
-                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                        <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3 mb-2.5">
                             <div className="text-xs font-bold mb-2">Setup Recognition Method — Project {activeProject}</div>
                             <div className="grid grid-cols-3 gap-2">
                                 <div className="flex flex-col gap-0.5">
@@ -136,7 +136,7 @@ export default function RevenueRecognition() {
 
                     {/* Recognize form */}
                     {showRecognize && (
-                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-2.5">
+                        <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3 mb-2.5">
                             <div className="text-xs font-bold mb-2">Recognize Revenue — {summary.method}</div>
                             <div className="grid grid-cols-3 gap-2">
                                 {(

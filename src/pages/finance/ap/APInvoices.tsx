@@ -336,12 +336,12 @@ export default function APInvoices() {
 
         {/* Enterprise KPI Infolets */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="bg-blue-50/50 border-blue-100">
+          <Card className="bg-blue-500/10 border-blue-100">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-blue-800">Draft Invoices</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-900">
+              <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">
                 {isLoading ? "..." : (filteredData.filter((i: any) => i.invoiceStatus === 'DRAFT').length || '12')}
               </div>
               <p className="text-xs text-blue-600 mt-1">Needs Completion</p>
@@ -358,23 +358,23 @@ export default function APInvoices() {
               <p className="text-xs text-yellow-600 mt-1">Awaiting Workflow</p>
             </CardContent>
           </Card>
-          <Card className="bg-orange-50/50 border-orange-100">
+          <Card className="bg-orange-500/10 border-orange-100">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-orange-800">Unvalidated / Holds</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-900">
+              <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">
                 {isLoading ? "..." : (filteredData.filter((i: any) => i.validationStatus !== 'VALIDATED').length || '7')}
               </div>
               <p className="text-xs text-orange-600 mt-1">Action Required</p>
             </CardContent>
           </Card>
-          <Card className="bg-green-50/50 border-green-100">
+          <Card className="bg-green-500/10 border-green-100">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-green-800">Ready for Payment</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-900">
+              <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                 {isLoading ? "..." : (filteredData.filter((i: any) => i.paymentStatus === 'UNPAID' && i.validationStatus === 'VALIDATED').length || '45')}
               </div>
               <p className="text-xs text-green-600 mt-1">Eligible for PPR</p>
@@ -435,7 +435,7 @@ export default function APInvoices() {
           </div>
 
           {advancedSearchOpen && (
-            <Card className="border-muted bg-slate-50/50">
+            <Card className="border-muted bg-slate-500/10">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="space-y-2">
@@ -578,7 +578,7 @@ export default function APInvoices() {
             </DialogHeader>
             <div className="space-y-4 py-4">
               {selectedInvoice?.documentUrl ? (
-                <div className="flex flex-col items-center justify-center p-6 border rounded-md bg-slate-50">
+                <div className="flex flex-col items-center justify-center p-6 border rounded-md bg-slate-500/10">
                   <FileText className="h-12 w-12 text-blue-500 mb-2" />
                   <p className="text-sm font-medium mb-4">Document Attachment Available</p>
                   <Button variant="outline" onClick={() => window.open(selectedInvoice.documentUrl, '_blank')}>

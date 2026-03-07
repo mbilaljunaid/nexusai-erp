@@ -50,7 +50,7 @@ export default function CustomerPortalLayout({ children}: { children: ReactNode}
    }
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-muted/50">
             {/* Top Navbar */}
             <nav className="bg-white border-b px-6 py-3 flex justify-between items-center sticky top-0">
                 <div className="flex items-center gap-2">
@@ -108,8 +108,8 @@ function NavItem({ href, icon: Icon, label, active}: any) {
     return (
         <Link href={href}>
             <div className={cn(`flex items-center gap-3 px-3 py-2 rounded-md font-medium text-sm transition-colors cursor-pointer ${active
-                ?"bg-emerald-50 text-emerald-700"
-                :"text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                ?"bg-emerald-500/10 text-emerald-700"
+                :"text-slate-600 hover:bg-slate-500/15 hover:text-slate-900 dark:text-slate-200"
                }`)}>
                 <Icon className={cn(`h-4 w-4 ${active ?"text-emerald-600" :"text-slate-400"}`)} />
                 {label}

@@ -32,19 +32,19 @@ interface NineBoxMatrixProps {
 
 const NINE_BOX_GRID = [
     // Row 3 (High Performance)
-    { id: "HIGH_PERF_LOW_POT", label: "Solid Performer", performance: 3, potential: 1, color: "bg-yellow-50 border-yellow-200" },
-    { id: "HIGH_PERF_MED_POT", label: "High Professional", performance: 3, potential: 2, color: "bg-amber-50 border-amber-200" },
-    { id: "HIGH_PERF_HIGH_POT", label: "Star / High Potential", performance: 3, potential: 3, color: "bg-emerald-50 border-emerald-300" },
+    { id: "HIGH_PERF_LOW_POT", label: "Solid Performer", performance: 3, potential: 1, color: "bg-yellow-500/10 border-yellow-200" },
+    { id: "HIGH_PERF_MED_POT", label: "High Professional", performance: 3, potential: 2, color: "bg-amber-500/10 border-amber-200" },
+    { id: "HIGH_PERF_HIGH_POT", label: "Star / High Potential", performance: 3, potential: 3, color: "bg-emerald-500/10 border-emerald-300" },
 
     // Row 2 (Medium Performance)
-    { id: "MED_PERF_LOW_POT", label: "Effective Performer", performance: 2, potential: 1, color: "bg-slate-50 border-slate-200" },
-    { id: "MED_PERF_MED_POT", label: "Core Talent", performance: 2, potential: 2, color: "bg-blue-50 border-blue-200" },
-    { id: "MED_PERF_HIGH_POT", label: "High Potential", performance: 2, potential: 3, color: "bg-cyan-50 border-cyan-200" },
+    { id: "MED_PERF_LOW_POT", label: "Effective Performer", performance: 2, potential: 1, color: "bg-slate-500/10 border-slate-200" },
+    { id: "MED_PERF_MED_POT", label: "Core Talent", performance: 2, potential: 2, color: "bg-blue-500/10 border-blue-200" },
+    { id: "MED_PERF_HIGH_POT", label: "High Potential", performance: 2, potential: 3, color: "bg-cyan-500/10 border-cyan-200" },
 
     // Row 1 (Low Performance)
-    { id: "LOW_PERF_LOW_POT", label: "Underperformer", performance: 1, potential: 1, color: "bg-rose-50 border-rose-200" },
-    { id: "LOW_PERF_MED_POT", label: "Inconsistent", performance: 1, potential: 2, color: "bg-orange-50 border-orange-200" },
-    { id: "LOW_PERF_HIGH_POT", label: "Enigma / New Hire", performance: 1, potential: 3, color: "bg-purple-50 border-purple-200" },
+    { id: "LOW_PERF_LOW_POT", label: "Underperformer", performance: 1, potential: 1, color: "bg-rose-500/10 border-rose-200" },
+    { id: "LOW_PERF_MED_POT", label: "Inconsistent", performance: 1, potential: 2, color: "bg-orange-500/10 border-orange-200" },
+    { id: "LOW_PERF_HIGH_POT", label: "Enigma / New Hire", performance: 1, potential: 3, color: "bg-purple-500/10 border-purple-200" },
 ];
 
 const READINESS_COLORS: Record<string, string> = {
@@ -235,7 +235,6 @@ export function NineBoxMatrix({ candidates, onPositionChange, onAutoPosition, pl
             link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (error) {
-            console.error('Export failed:', error);
         }
     };
 

@@ -105,7 +105,7 @@ export default function VarianceAnalysis() {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className={totalVariance >= 0 ? "bg-green-50 border-green-100" : "bg-red-50 border-red-100"}>
+                    <Card className={totalVariance >= 0 ? "bg-green-500/10 border-green-100" : "bg-red-500/10 border-red-100"}>
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold uppercase flex items-center gap-2">
                                 {totalVariance >= 0 ? (
@@ -117,7 +117,7 @@ export default function VarianceAnalysis() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={cn(`text-2xl font-bold ${totalVariance >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
+                            <div className={cn(`text-2xl font-bold ${totalVariance >= 0 ? 'text-green-900 dark:text-green-200' : 'text-red-900'}`)}>
                                 {totalVariance >= 0 ? '+' : ''}${totalVariance.toLocaleString()}
                             </div>
                             <p className="text-xs text-muted-foreground mt-1">
@@ -125,7 +125,7 @@ export default function VarianceAnalysis() {
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase flex items-center gap-2">
                                 <TrendingUp className="h-4 w-4" />
@@ -133,11 +133,11 @@ export default function VarianceAnalysis() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">{significantIncreases}</div>
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">{significantIncreases}</div>
                             <p className="text-xs text-muted-foreground mt-1">{'>'}5% growth</p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-2">
                                 <TrendingDown className="h-4 w-4" />
@@ -145,7 +145,7 @@ export default function VarianceAnalysis() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{significantDecreases}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{significantDecreases}</div>
                             <p className="text-xs text-muted-foreground mt-1">{'<'}-5% decline</p>
                         </CardContent>
                     </Card>

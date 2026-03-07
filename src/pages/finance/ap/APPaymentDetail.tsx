@@ -160,7 +160,7 @@ export default function APPaymentDetail() {
                     <CardTitle>Batch Details & Log</CardTitle>
                     <CardDescription>System execution history will appear here.</CardDescription>
                 </CardHeader>
-                <CardContent className="h-64 flex items-center justify-center border-dashed border-2 rounded-lg bg-slate-50 mt-4 mx-6 mb-6">
+                <CardContent className="h-64 flex items-center justify-center border-dashed border-2 rounded-lg bg-slate-500/10 mt-4 mx-6 mb-6">
                     <p className="text-muted-foreground">
                         {status === "NEW" || status === "DRAFT" ? "Ready to select invoices based on profile criteria." :
                             status === "SELECTED" ? `${batch.paymentCount} invoices locked for this execution run. Pending confirmation.` :

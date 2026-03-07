@@ -163,7 +163,7 @@ export default function APInvoiceDetail() {
                             ]}
                             onChange={() => { }} containerHeight="600px" />
                     ) : (
-                        <div className="text-center py-8 text-muted-foreground bg-slate-50 rounded-lg border border-dashed">
+                        <div className="text-center py-8 text-muted-foreground bg-slate-500/10 rounded-lg border border-dashed">
                             No lines found for this invoice.
                         </div>
                     )}

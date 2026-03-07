@@ -109,9 +109,9 @@ export function MyConsents({ personId }: { personId?: string }) {
                             <p className="text-xs text-muted-foreground">No history yet.</p>
                         ) : (
                             history.map(ack => (
-                                <div key={ack.id} className="flex items-center justify-between text-sm p-2 bg-slate-50 rounded">
+                                <div key={ack.id} className="flex items-center justify-between text-sm p-2 bg-slate-500/10 rounded">
                                     <span className="text-muted-foreground">{ack.policyCode} ({ack.consentVersion})</span>
-                                    <Badge variant="outline" className="gap-1 bg-green-50 text-green-700 border-green-200">
+                                    <Badge variant="outline" className="gap-1 bg-green-500/10 text-green-700 border-green-200">
                                         <CheckCircle className="h-3 w-3" /> {formatDate(ack.acknowledgedAt)}
                                     </Badge>
                                 </div>
@@ -129,7 +129,7 @@ export function MyConsents({ personId }: { personId?: string }) {
                                 Please confirm that you have read and agree to the <b>{selectedPolicy?.title}</b> ({selectedPolicy?.version}).
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="py-4 text-sm text-muted-foreground bg-slate-50 p-4 rounded">
+                        <div className="py-4 text-sm text-muted-foreground bg-slate-500/10 p-4 rounded">
                             <p>By clicking "I Agree", you electronically sign this document and agree to be bound by its terms. This action is recorded with your IP address and timestamp.</p>
                         </div>
                         <DialogFooter>

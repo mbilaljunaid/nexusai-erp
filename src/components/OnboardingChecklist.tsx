@@ -144,7 +144,7 @@ export function OnboardingChecklist() {
             </div>
             <div className="flex items-center gap-1">
               <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="icon" data-testid="button-toggle-onboarding">
+                <Button variant="ghost" size="icon" data-testid="button-toggle-onboarding" aria-label="Toggle checklist">
                   {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                 </Button>
               </CollapsibleTrigger>
@@ -152,7 +152,7 @@ export function OnboardingChecklist() {
                 variant="ghost"
                 size="icon"
                 onClick={handleDismiss}
-                data-testid="button-dismiss-onboarding"
+                data-testid="button-dismiss-onboarding" aria-label="Close"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -179,7 +179,7 @@ export function OnboardingChecklist() {
                     size="icon"
                     className="shrink-0 h-6 w-6"
                     onClick={() => toggleComplete(item.id)}
-                    data-testid={`button-toggle-${item.id}`}
+                    data-testid={`button-toggle-${item.id}`} aria-label="Toggle item completion"
                   >
                     {isCompleted ? (
                       <CheckCircle2 className="h-5 w-5 text-green-600" />

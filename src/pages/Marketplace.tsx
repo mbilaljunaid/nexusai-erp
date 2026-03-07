@@ -784,10 +784,10 @@ export default function Marketplace() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")} data-testid="button-view-grid">
+            <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")} data-testid="button-view-grid" aria-label="Grid">
               <Grid3X3 className="w-4 h-4" />
             </Button>
-            <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")} data-testid="button-view-list">
+            <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")} data-testid="button-view-list" aria-label="List view">
               <List className="w-4 h-4" />
             </Button>
           </div>
@@ -1159,7 +1159,7 @@ export default function Marketplace() {
 
         <TutorialOverlay
           storageKey="marketplace-tutorial-completed"
-          onComplete={() => console.log('Tutorial completed')}
+          onComplete={() => { }}
         />
       </main>
       <Footer />

@@ -256,7 +256,7 @@ export function SettlementExecutionModal({
 
                     {step === 'confirm' && (
                         <div className="space-y-4">
-                            <div className="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded">
+                            <div className="flex items-start gap-3 p-4 bg-yellow-500/10 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded">
                                 <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
                                 <div>
                                     <p className="font-medium text-yellow-900 dark:text-yellow-400">

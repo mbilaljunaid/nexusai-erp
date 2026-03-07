@@ -137,7 +137,7 @@ export function ServiceTicketForm() {
 
           {/* AI Suggestions */}
           {showAISuggestions && (
-            <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-900">
+            <Alert className="border-blue-200 bg-blue-500/10 dark:bg-blue-950 dark:border-blue-900">
               <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               <AlertDescription className="text-sm text-blue-900 dark:text-blue-100 ml-2 space-y-2">
                 <p><strong>AI Triage Analysis:</strong></p>

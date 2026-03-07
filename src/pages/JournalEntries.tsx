@@ -129,7 +129,7 @@ export default function JournalEntries() {
             formId="gl/journals/import"
             templateColumns={['Journal Number', 'Description', 'Ledger', 'Currency', 'Account', 'Debit', 'Credit', 'Line Description']}
           />
-          <Button variant="outline" className="border-slate-200 hover:bg-slate-50 text-slate-600">
+          <Button variant="outline" className="border-slate-200 hover:bg-slate-500/10 text-slate-600">
             <Download className="h-4 w-4 mr-2" /> Export
           </Button>
           <Button onClick={() => setLocation("/gl/journals/new")} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100 px-6">
@@ -168,7 +168,7 @@ export default function JournalEntries() {
 
       {/* Premium Table Card */}
       <Card className="border-none shadow-xl shadow-slate-200/50 bg-white/80 backdrop-blur-sm overflow-hidden">
-        <CardHeader className="border-b border-slate-50 bg-slate-50/30 py-6">
+        <CardHeader className="border-b border-slate-50 bg-slate-500/10 py-6">
           <div className="flex justify-between items-center">
             <div>
               <CardTitle className="text-xl font-bold text-slate-800">Recent Transactions</CardTitle>
@@ -187,7 +187,7 @@ export default function JournalEntries() {
                   }}
                 />
               </div>
-              <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:text-indigo-600">
+              <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:text-indigo-600" aria-label="Filter">
                 <Filter className="h-4 w-4" />
               </Button>
             </div>

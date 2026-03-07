@@ -99,7 +99,7 @@ export default function HospitalityInventory() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={(parseInt(i.quantity) || 0) < (parseInt(i.reorder) || 50) ? "destructive" : "default"} className="text-xs">{i.category}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

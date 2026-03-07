@@ -32,7 +32,7 @@ export default function HealthcarePage() {
     >
       <DashboardWidget title="Active Patients" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-blue-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Stethoscope className="h-4 w-4 text-blue-600" />
           </div>
           <div>
@@ -44,7 +44,7 @@ export default function HealthcarePage() {
 
       <DashboardWidget title="Clinical Vitals" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-emerald-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Heart className="h-4 w-4 text-emerald-600" />
           </div>
           <div>
@@ -56,7 +56,7 @@ export default function HealthcarePage() {
 
       <DashboardWidget title="System Integrity" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-indigo-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Activity className="h-4 w-4 text-indigo-600" />
           </div>
           <div>
@@ -68,7 +68,7 @@ export default function HealthcarePage() {
 
       <DashboardWidget title="Alert Queue" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-rose-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <ShieldAlert className="h-4 w-4 text-rose-600" />
           </div>
           <div>
@@ -121,7 +121,7 @@ export default function HealthcarePage() {
                   <Badge variant={item.status === "Active" ? "default" : "secondary"} className="text-[10px] uppercase font-mono">
                     {item.status || "Authenticated"}
                   </Badge>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground">
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground" aria-label="User">
                     <User className="w-3 h-3" />
                   </Button>
                 </div>

@@ -110,10 +110,10 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
 
     return (
         <Card className="w-full max-w-2xl mx-auto shadow-xl border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-6">
+            <CardHeader className="bg-slate-500/10 border-b pb-6">
                 <div className="flex justify-between items-center">
                     <div>
-                        <CardTitle className="text-2xl font-bold text-slate-900">Hire New Worker</CardTitle>
+                        <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-200">Hire New Worker</CardTitle>
                         <CardDescription className="text-slate-500">Step {step} of 2: {step === 1 ? "Personal Details" : "Employment Information"}</CardDescription>
                     </div>
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -171,7 +171,7 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
                                             size="sm"
                                             onClick={() => riskMutation.mutate(form.getValues())}
                                             disabled={riskMutation.isPending}
-                                            className="h-8 gap-2 bg-slate-50"
+                                            className="h-8 gap-2 bg-slate-500/10"
                                         >
                                             {riskMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <ShieldCheck className="h-3 w-3" />}
                                             Preview Compliance Risk

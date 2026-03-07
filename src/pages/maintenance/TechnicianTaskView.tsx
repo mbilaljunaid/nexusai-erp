@@ -125,7 +125,7 @@ export default function TechnicianTaskView() {
                                             {step}
                                         </div>
                                         <div className="flex-1 text-sm font-medium">Step {step}: Inspect safety guards</div>
-                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600">
+                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600" aria-label="Confirm">
                                             <CheckCircle2 className="h-5 w-5" />
                                         </Button>
                                     </div>

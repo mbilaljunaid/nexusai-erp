@@ -61,7 +61,7 @@ export default function FailureCodeConfig() {
         >
             <div className="grid grid-cols-4 gap-6">
                 {/* Sidebar Navigation */}
-                <div className="col-span-1 border rounded-lg p-4 bg-slate-50 h-[600px] overflow-auto">
+                <div className="col-span-1 border rounded-lg p-4 bg-slate-500/10 h-[600px] overflow-auto">
                     <h3 className="font-semibold mb-4 flex items-center gap-2">
                         <FolderTree className="h-4 w-4" /> Library Structure
                     </h3>

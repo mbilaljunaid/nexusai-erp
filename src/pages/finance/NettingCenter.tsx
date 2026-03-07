@@ -17,9 +17,9 @@ interface TPAnalysis { id: string; policy_name: string; transaction_category: st
 const STATUS_STYLES: Record<string, { bg: string; text: string; border: string }> = {
     Draft: { text: 'text-gray-500', bg: 'bg-gray-100', border: 'border-gray-500' },
     Running: { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-600' },
-    Completed: { text: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-700' },
-    Settled: { text: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-600' },
-    Cancelled: { text: 'text-red-600', bg: 'bg-red-50', border: 'border-red-600' }
+    Completed: { text: 'text-blue-700', bg: 'bg-blue-500/10', border: 'border-blue-700' },
+    Settled: { text: 'text-emerald-600', bg: 'bg-emerald-500/10', border: 'border-emerald-600' },
+    Cancelled: { text: 'text-red-600', bg: 'bg-red-500/10', border: 'border-red-600' }
 };
 
 export default function NettingCenter() {
@@ -79,7 +79,7 @@ export default function NettingCenter() {
                             <button onClick={() => setShowNew(true)} className="px-3.5 py-1.5 bg-blue-700 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-blue-800">+ New Session</button>
                         </div>
                         {showNew && (
-                            <Card className="bg-gray-50 p-3.5 mb-3 shadow-sm">
+                            <Card className="bg-slate-500/10 p-3.5 mb-3 shadow-sm">
                                 <div className="font-bold text-[12px] mb-2">Create Netting Session</div>
                                 <div className="grid grid-cols-4 gap-2 mb-2.5">
                                     {[['Session Name', 'sessionName', 'text'], ['Period (YYYY-MM)', 'period', 'text'], ['Currency', 'currency', 'text'], ['Settlement Date', 'settlementDate', 'date']].map(([lbl, key, type]) => (
@@ -110,8 +110,8 @@ export default function NettingCenter() {
                                                 <span className={cn(`px-1.5 py-0.5 rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`)}>{s.status}</span>
                                             </div>
                                             <div className="text-[10px] text-gray-400">{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
-                                            {s.status === 'Draft' && <button onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-blue-50 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-100">▶ Run Netting</button>}
-                                            {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-emerald-50 border-none rounded-[4px] text-[9px] cursor-pointer text-emerald-600 font-bold hover:bg-emerald-100 flex items-center gap-1"><CheckCircle2 size={9} /> Settle</button>}
+                                            {s.status === 'Draft' && <button onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-blue-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-500/15">▶ Run Netting</button>}
+                                            {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-emerald-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-emerald-600 font-bold hover:bg-emerald-500/15 flex items-center gap-1"><CheckCircle2 size={9} /> Settle</button>}
                                         </Card>
                                     );
                                 })}
@@ -146,7 +146,7 @@ export default function NettingCenter() {
                                     <button onClick={() => setShowNewPolicy(true)} className="px-2.5 py-1 bg-blue-700 text-white border-none rounded-[6px] text-[10px] cursor-pointer hover:bg-blue-800">+ Policy</button>
                                 </div>
                                 {showNewPolicy && (
-                                    <Card className="bg-gray-50 p-2.5 mb-2 shadow-sm">
+                                    <Card className="bg-slate-500/10 p-2.5 mb-2 shadow-sm">
                                         {[['Policy Name', 'policyName', 'text'], ['Category', 'transactionCategory', 'select'], ['Method', 'method', 'select'], ['Range Low %', 'benchmarkRangeLow', 'number'], ['Range High %', 'benchmarkRangeHigh', 'number'], ['Effective From', 'effectiveFrom', 'date']].map(([lbl, key, type]) => (
                                             <div key={key} className="mb-1">
                                                 <label className="text-[9px] font-bold block">{lbl}</label>
@@ -168,7 +168,7 @@ export default function NettingCenter() {
                                         <div className="font-bold text-[12px]">{p.policy_name}</div>
                                         <div className="text-[9px] text-gray-400 mb-0.5">{p.method} · {p.transaction_category}</div>
                                         <div className="text-[10px] text-gray-700">Range: {p.benchmark_range_low ?? '—'}% – {p.benchmark_range_high ?? '—'}%</div>
-                                        <button onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} className="mt-1 px-1.5 py-0.5 bg-blue-50 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-100">Select for Analysis</button>
+                                        <button onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} className="mt-1 px-1.5 py-0.5 bg-blue-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-500/15">Select for Analysis</button>
                                     </Card>
                                 ))}
                             </div>

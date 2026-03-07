@@ -25,7 +25,7 @@ export default function SustainabilityComplianceCPG() {
         >
             <DashboardWidget title="Items Tracked" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-blue-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Activity className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
@@ -37,7 +37,7 @@ export default function SustainabilityComplianceCPG() {
 
             <DashboardWidget title="Certified" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-emerald-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <ShieldCheck className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
@@ -49,7 +49,7 @@ export default function SustainabilityComplianceCPG() {
 
             <DashboardWidget title="Compliant" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-indigo-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <CheckCircle className="h-4 w-4 text-indigo-600" />
                     </div>
                     <div>
@@ -61,7 +61,7 @@ export default function SustainabilityComplianceCPG() {
 
             <DashboardWidget title="Compliance %" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-slate-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Percent className="h-4 w-4 text-slate-600" />
                     </div>
                     <div>

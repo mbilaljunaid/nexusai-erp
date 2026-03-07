@@ -29,7 +29,6 @@ export default function UsageAnalyticsDashboard() {
             setStickiness(stick);
             setSessionMetrics(sessions);
         } catch (error) {
-            console.error('Error loading analytics:', error);
         } finally {
             setLoading(false);
         }

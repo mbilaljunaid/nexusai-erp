@@ -100,7 +100,7 @@ export default function ContractDashboard() {
 
             {/* Expiring Alert */}
             {expiring.length > 0 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 text-amber-800">
+                <div className="bg-amber-500/10 border border-amber-200 rounded-lg p-4 flex gap-3 text-amber-800">
                     <AlertTriangle className="h-5 w-5" />
                     <div>
                         <p className="font-semibold">{expiring.length} Contracts Expiring Soon</p>

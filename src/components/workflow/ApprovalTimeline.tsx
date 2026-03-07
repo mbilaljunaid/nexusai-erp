@@ -89,7 +89,7 @@ export function ApprovalTimeline({ leaseId, status}: ApprovalTimelineProps) {
                    })}
                 </div>
                 {status ==="REJECTED" && (
-                    <div className="mt-4 p-2 bg-red-50 text-red-800 text-sm rounded border border-red-200">
+                    <div className="mt-4 p-2 bg-red-500/10 text-red-800 text-sm rounded border border-red-200">
                         <strong>Status: Rejected.</strong> Please review terms and re-submit.
                     </div>
                 )}

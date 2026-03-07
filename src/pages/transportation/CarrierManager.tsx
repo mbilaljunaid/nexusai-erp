@@ -66,36 +66,36 @@ export default function CarrierManager() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="border-none shadow-sm bg-blue-50/50">
+                <Card className="border-none shadow-sm bg-blue-500/10">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-blue-900">Total Carriers</CardTitle>
+                        <CardTitle className="text-sm font-medium text-blue-900 dark:text-blue-200">Total Carriers</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-blue-900">{carriers?.length || 0}</div>
+                        <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{carriers?.length || 0}</div>
                     </CardContent>
                 </Card>
-                <Card className="border-none shadow-sm bg-green-50/50">
+                <Card className="border-none shadow-sm bg-green-500/10">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-green-900">Avg. Performance</CardTitle>
+                        <CardTitle className="text-sm font-medium text-green-900 dark:text-green-200">Avg. Performance</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-900">4.82</div>
+                        <div className="text-2xl font-bold text-green-900 dark:text-green-200">4.82</div>
                     </CardContent>
                 </Card>
-                <Card className="border-none shadow-sm bg-purple-50/50">
+                <Card className="border-none shadow-sm bg-purple-500/10">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-purple-900">Active Agreements</CardTitle>
+                        <CardTitle className="text-sm font-medium text-purple-900 dark:text-purple-200">Active Agreements</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-purple-900">24</div>
+                        <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">24</div>
                     </CardContent>
                 </Card>
-                <Card className="border-none shadow-sm bg-amber-50/50">
+                <Card className="border-none shadow-sm bg-amber-500/10">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-amber-900">Renewal Alerts</CardTitle>
+                        <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-200">Renewal Alerts</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-amber-900">3</div>
+                        <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">3</div>
                     </CardContent>
                 </Card>
             </div>
@@ -128,7 +128,7 @@ export default function CarrierManager() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="border-none shadow-sm h-full">
                     <CardHeader>
-                        <CardTitle className="text-lg flex items-center gap-2 text-indigo-900">
+                        <CardTitle className="text-lg flex items-center gap-2 text-indigo-900 dark:text-indigo-200">
                             <Shield className="h-5 w-5 text-indigo-600" />
                             Compliance Status
                         </CardTitle>
@@ -154,7 +154,7 @@ export default function CarrierManager() {
 
                 <Card className="border-none shadow-sm h-full">
                     <CardHeader>
-                        <CardTitle className="text-lg flex items-center gap-2 text-emerald-900">
+                        <CardTitle className="text-lg flex items-center gap-2 text-emerald-900 dark:text-emerald-200">
                             <TrendingUp className="h-5 w-5 text-emerald-600" />
                             Rate Trends
                         </CardTitle>

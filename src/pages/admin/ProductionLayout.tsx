@@ -39,7 +39,7 @@ export default function ProductionLayout({ children}: { children?: React.ReactNo
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Link to="/" className="hover:text-blue-600">Home</Link>
                         <ChevronRight className="w-4 h-4" />
-                        <span className="text-gray-900 font-medium">System Admin</span>
+                        <span className="text-gray-900 dark:text-gray-200 font-medium">System Admin</span>
                     </div>
                 </div>
             </div>
@@ -59,8 +59,8 @@ export default function ProductionLayout({ children}: { children?: React.ReactNo
                                             key={item.path}
                                             to={item.path}
                                             className={cn(`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
-                                                ?'bg-blue-50 text-blue-700'
-                                                :'text-gray-700 hover:bg-gray-50'
+                                                ?'bg-blue-500/10 text-blue-700'
+                                                :'text-gray-700 hover:bg-gray-500/10'
                                                }`)}
                                         >
                                             <Icon className="w-5 h-5" />
@@ -72,7 +72,7 @@ export default function ProductionLayout({ children}: { children?: React.ReactNo
                         </Card>
 
                         {/* Security Notice */}
-                        <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                        <div className="mt-4 bg-yellow-500/10 border border-yellow-200 rounded-lg p-3">
                             <div className="flex gap-2">
                                 <Shield className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                                 <div>

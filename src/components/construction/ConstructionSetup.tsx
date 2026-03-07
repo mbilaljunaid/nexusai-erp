@@ -107,7 +107,7 @@ export default function ConstructionSetup() {
                                 { header: "Description", accessorKey: "description" }
                             ]}
                             actions={(item: SetupEntry) => (
-                                <Button variant="ghost" size="icon" className="h-8 w-8" title="Reset to default">
+                                <Button variant="ghost" size="icon" className="h-8 w-8" title="Reset to default" aria-label="Undo">
                                     <RotateCcw className="h-3 w-3" />
                                 </Button>
                             )}

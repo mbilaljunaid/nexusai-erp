@@ -114,7 +114,7 @@ export function LeaseExtractionWizard({ onClose }: { onClose: () => void }) {
 
                 {step === "review" && (
                     <div className="space-y-6">
-                        <div className="bg-green-50 p-4 rounded-md border border-green-200 flex items-center gap-2">
+                        <div className="bg-green-500/10 p-4 rounded-md border border-green-200 flex items-center gap-2">
                             <CheckCircle className="h-5 w-5 text-green-600" />
                             <span className="text-green-800 font-medium">Confidence Score: {(data.confidence * 100).toFixed(0)}%</span>
                         </div>

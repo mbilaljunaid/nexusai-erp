@@ -39,7 +39,6 @@ export default function IndustryPage({
         setTimeout(() => setDemoRequested(false), 5000);
       }
     } catch (error) {
-      console.error("Demo request failed", error);
     }
   };
 
@@ -145,7 +144,7 @@ export default function IndustryPage({
             />
             <Button
               onClick={handleDemoRequest}
-              className="w-full bg-white text-blue-600 hover:bg-blue-50 font-bold"
+              className="w-full bg-white text-blue-600 hover:bg-blue-500/10 font-bold"
               data-testid="button-demo-request"
             >
               {demoRequested ? "Demo Request Sent!" : "Click Here to See Demo"} <ArrowRight className="ml-2 w-4 h-4" />

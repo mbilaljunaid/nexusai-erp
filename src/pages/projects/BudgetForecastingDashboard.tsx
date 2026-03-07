@@ -149,34 +149,34 @@ export default function BudgetForecastingDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{formatPercent(avgConfidence, 0)}</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{formatPercent(avgConfidence, 0)}</div>
                             <p className="text-xs text-purple-700 mt-1">Prediction accuracy</p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Predicted Total</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{formatCurrency(totalPredicted)}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{formatCurrency(totalPredicted)}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Actual to Date</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{formatCurrency(totalActual)}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{formatCurrency(totalActual)}</div>
                         </CardContent>
                     </Card>
-                    <Card className={cn(`${variance >= 0 ? 'bg-orange-50 border-orange-100' : 'bg-green-50 border-green-100'}`)}>
+                    <Card className={cn(`${variance >= 0 ? 'bg-orange-500/10 border-orange-100' : 'bg-green-500/10 border-green-100'}`)}>
                         <CardHeader className="pb-2">
                             <CardTitle className={cn(`text-xs font-bold uppercase ${variance >= 0 ? 'text-orange-800' : 'text-green-800'}`)}>
                                 Variance
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={cn(`text-2xl font-bold ${variance >= 0 ? 'text-orange-900' : 'text-green-900'}`)}>
+                            <div className={cn(`text-2xl font-bold ${variance >= 0 ? 'text-orange-900 dark:text-orange-200' : 'text-green-900'}`)}>
                                 {variance >= 0 ? '+' : ''}{formatCurrency(Math.abs(variance))}
                             </div>
                         </CardContent>
@@ -372,9 +372,9 @@ export default function BudgetForecastingDashboard() {
                                 ) : (
                                     <div className="space-y-3">
                                         {insights.map((insight, idx) => (
-                                            <Card key={idx} className={cn(`${insight.type === 'warning' ? 'bg-orange-50 border-orange-200' :
-                                                insight.type === 'opportunity' ? 'bg-green-50 border-green-200' :
-                                                    'bg-blue-50 border-blue-200'
+                                            <Card key={idx} className={cn(`${insight.type === 'warning' ? 'bg-orange-500/10 border-orange-200' :
+                                                insight.type === 'opportunity' ? 'bg-green-500/10 border-green-200' :
+                                                    'bg-blue-500/10 border-blue-200'
                                                 }`)}>
                                                 <CardContent className="pt-4">
                                                     <div className="flex items-start gap-3">

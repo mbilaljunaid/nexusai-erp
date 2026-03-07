@@ -117,15 +117,15 @@ export default function LeadScoringDashboard() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Leads</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{leads.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{leads.length}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <Zap className="h-3 w-3" />
@@ -133,24 +133,24 @@ export default function LeadScoringDashboard() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{hotLeads.length}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{hotLeads.length}</div>
                             <div className="text-xs text-green-700">Score &gt; 80</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Avg Score</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{avgScore.toFixed(0)}</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{avgScore.toFixed(0)}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase">Conversion Rate</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">
                                 {leads.length > 0 ? ((funnelData[3].count / leads.length) * 100).toFixed(0) : 0}%
                             </div>
                             <div className="text-xs text-amber-700">Lead → Opportunity</div>

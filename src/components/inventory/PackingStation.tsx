@@ -51,7 +51,6 @@ export const PackingStation: React.FC = () => {
                 }
             }
         } catch (error) {
-            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -98,7 +97,6 @@ export const PackingStation: React.FC = () => {
                 toast({ title: "Error", description: err.error, variant: "destructive" });
             }
         } catch (error) {
-            console.error(error);
         } finally {
             setLoading(false);
         }

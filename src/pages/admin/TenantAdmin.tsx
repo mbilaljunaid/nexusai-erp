@@ -116,7 +116,7 @@ export default function TenantAdmin() {
     {
       id: "actions", header: "Actions", width: 100, cell: (item) => (
         <div className="flex justify-end pr-2 w-full">
-          <Button variant="ghost" size="icon" data-testid={`button-user-actions-${item.id}`}>
+          <Button variant="ghost" size="icon" data-testid={`button-user-actions-${item.id}`} aria-label="More options">
             <MoreVertical className="h-4 w-4" />
           </Button>
         </div>
@@ -222,7 +222,7 @@ export default function TenantAdmin() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="p-3 rounded-md bg-blue-500/10 border border-blue-500/20 text-sm">
+              <div className="p-3 rounded-md bg-/15 border border-blue-500/20 text-sm">
                 <p className="font-medium">Upcoming upgrade recommended</p>
                 <p className="text-xs text-muted-foreground mt-1">You're approaching 50% of your API request limit. Consider upgrading your plan.</p>
               </div>

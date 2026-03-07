@@ -261,7 +261,7 @@ function TerritoryRulesEditor({ territory }: { territory: Territory }) {
                                 <TableCell><Badge variant="outline">{rule.operator}</Badge></TableCell>
                                 <TableCell>{rule.value}</TableCell>
                                 <TableCell>
-                                    <Button variant="ghost" size="icon" disabled><Trash2 className="h-4 w-4 text-muted-foreground" /></Button>
+                                    <Button variant="ghost" size="icon" disabled aria-label="Delete"><Trash2 className="h-4 w-4 text-muted-foreground" /></Button>
                                 </TableCell>
                             </TableRow>
                         ))}

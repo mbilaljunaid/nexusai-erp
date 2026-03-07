@@ -229,7 +229,7 @@ export default function RepeatingTimePeriods() {
                     {/* Right Preview Panel */}
                     <div className="col-span-12 md:col-span-8">
                         <Card className="h-full flex flex-col shadow-sm border-zinc-200 dark:border-zinc-800">
-                            <CardHeader className="border-b bg-zinc-50/50 dark:bg-zinc-900/20 pb-4">
+                            <CardHeader className="border-b bg-slate-500/10 dark:bg-zinc-900/20 pb-4">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <CardTitle className="text-base flex items-center gap-2">
@@ -251,7 +251,7 @@ export default function RepeatingTimePeriods() {
                                     </div>
                                 ) : (
                                     <Table>
-                                        <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50 sticky top-0 shadow-sm">
+                                        <TableHeader className="bg-zinc-500/10 dark:bg-zinc-900/50 sticky top-0 shadow-sm">
                                             <TableRow>
                                                 <TableHead className="w-20">Seq #</TableHead>
                                                 <TableHead>Period Name</TableHead>

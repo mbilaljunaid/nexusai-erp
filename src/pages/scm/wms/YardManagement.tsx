@@ -116,7 +116,7 @@ export default function YardManagement() {
                                         >
                                             {appt.status}
                                         </Badge>
-                                        <Button variant="ghost" size="icon"><MoreVertical className="w-4 h-4 text-slate-500" /></Button>
+                                        <Button variant="ghost" size="icon" aria-label="More options"><MoreVertical className="w-4 h-4 text-slate-500" /></Button>
                                     </div>
                                 </div>
                             ))}

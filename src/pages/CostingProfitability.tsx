@@ -27,7 +27,7 @@ export default function CostingProfitability() {
         >
             <DashboardWidget title="SKUs Costed" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-blue-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Layers className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
@@ -39,7 +39,7 @@ export default function CostingProfitability() {
 
             <DashboardWidget title="Avg Margin %" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-emerald-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <LineChart className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
@@ -51,7 +51,7 @@ export default function CostingProfitability() {
 
             <DashboardWidget title="Total Revenue" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-indigo-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <DollarSign className="h-4 w-4 text-indigo-600" />
                     </div>
                     <div>
@@ -63,7 +63,7 @@ export default function CostingProfitability() {
 
             <DashboardWidget title="Collections" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-slate-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <TrendingUp className="h-4 w-4 text-slate-600" />
                     </div>
                     <div>

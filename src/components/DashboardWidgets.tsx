@@ -163,7 +163,7 @@ function PinnedAppsWidget() {
               <span>{installed.app?.averageRating ? String(installed.app.averageRating) : '0.0'}</span>
             </div>
           </div>
-          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" aria-label="Open link">
             <ExternalLink className="w-3.5 h-3.5" />
           </Button>
         </div>
@@ -923,7 +923,7 @@ export function DashboardWidgets() {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7"
-                        data-testid={`button-widget-menu-${widget.id}`}
+                        data-testid={`button-widget-menu-${widget.id}`} aria-label="Settings"
                       >
                         <Settings className="w-3.5 h-3.5" />
                       </Button>

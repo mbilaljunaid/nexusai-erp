@@ -257,7 +257,7 @@ export default function RoutingEditor() {
                                                         <Label className="text-[10px] uppercase text-muted-foreground">Run</Label>
                                                         <Input className="h-8" type="number" value={op.runTime} onChange={e => updateOperation(idx, "runTime", parseFloat(e.target.value))} />
                                                     </div>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 mb-0" onClick={() => setOperations(operations.filter((_, i) => i !== idx))}>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 mb-0" onClick={() => setOperations(operations.filter((_, i) => i !== idx))} aria-label="Close">
                                                         <X className="h-4 w-4" />
                                                     </Button>
                                                 </div>

@@ -21,7 +21,7 @@ export function ValidationControls() {
                 setControls(data);
                 setLoading(false);
             })
-            .catch(err => console.error("Failed to load controls", err));
+            .catch(() => { setLoading(false); });
     }, []);
 
     const updateControl = async (field: string, value: any) => {
@@ -36,7 +36,6 @@ export function ValidationControls() {
                 body: JSON.stringify(newControls)
             });
         } catch (e) {
-            console.error("Failed to update control", e);
             // Revert on fail? For MVP, just log.
         }
     };

@@ -72,7 +72,6 @@ export function AddLeadDialog({ onAddLead }: AddLeadDialogProps) {
       setOpen(false);
       setFormData({ name: "", email: "", company: "", status: "new", value: "" });
     } catch (err) {
-      console.error("Error adding lead:", err);
       toast({
         variant: "destructive",
         title: "Error",

@@ -86,7 +86,7 @@ export default function EnterpriseDashboard() {
                     </div>
                 </div>
 
-                <Card className="bg-slate-50 border-slate-200">
+                <Card className="bg-slate-500/10 border-slate-200">
                     <CardHeader>
                         <CardTitle>Enterprise Architecture Overview</CardTitle>
                         <CardDescription>Core structural components and their scoping boundaries</CardDescription>

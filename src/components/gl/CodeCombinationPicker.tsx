@@ -80,7 +80,7 @@ export function CodeCombinationPicker({ value, onChange, ledgerId = "primary-led
             />
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button variant="outline" size="icon">
+                    <Button variant="outline" size="icon" aria-label="Grid">
                         <Grid className="h-4 w-4" />
                     </Button>
                 </PopoverTrigger>

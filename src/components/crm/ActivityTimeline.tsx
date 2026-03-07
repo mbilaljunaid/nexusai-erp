@@ -52,7 +52,6 @@ export function ActivityTimeline({ entityType, entityId }: ActivityTimelineProps
             queryClient.invalidateQueries({ queryKey: ["/api/crm/interactions", entityType, entityId] });
         },
         onError: (err) => {
-            console.error(err);
             toast({ title: "Error", description: "Failed to log activity", variant: "destructive" });
         }
     });

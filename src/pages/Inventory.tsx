@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import { IconNavigation } from "@/components/IconNavigation";
 import { AutoRequisitionForm } from "@/components/forms/AutoRequisitionForm";
 import { Package, Plus, Search, AlertTriangle, Warehouse, Trash2, LayoutDashboard, Building2 } from "lucide-react";
@@ -120,7 +121,7 @@ export default function Inventory() {
                         <p className="font-semibold">{item.itemName}</p>
                         <p className="text-sm text-muted-foreground">SKU: {item.sku} • Qty: {item.quantity}</p>
                       </div>
-                      <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
+                      <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`} aria-label="Delete">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
@@ -133,7 +134,7 @@ export default function Inventory() {
 
         {activeNav === "reorder-points" && (
           <div className="space-y-4">
-            <Card className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800">
+            <Card className="bg-orange-500/10 dark:bg-orange-950 border border-orange-200 dark:border-orange-800">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5 text-orange-600" />
@@ -170,9 +171,7 @@ export default function Inventory() {
                       <span className="text-slate-400">Total Capacity</span>
                       <span className="text-white font-mono">82%</span>
                     </div>
-                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 w-[82%]" />
-                    </div>
+                    <Progress value={82} className="h-2 bg-slate-800" indicatorClassName="bg-blue-500" />
                   </div>
                 </CardContent>
               </Card>
@@ -184,7 +183,7 @@ export default function Inventory() {
                 <CardContent className="space-y-4">
                   <p className="text-blue-100 text-sm">Access advanced warehouse management features including wave planning and LPN tracking.</p>
                   <div className="flex gap-2">
-                    <Button variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
+                    <Button variant="secondary" className="bg-white text-blue-600 hover:bg-blue-500/10" asChild>
                       <Link to="/scm/wms/operations">Enter Operations Workbench</Link>
                     </Button>
                     <Button variant="outline" className="border-blue-400 text-white hover:bg-blue-500" asChild>

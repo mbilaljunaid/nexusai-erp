@@ -162,7 +162,7 @@ export default function AdrBuilder() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-blue-50/50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-2">
                                 <Info className="h-3 w-3" /> Quick Tip
@@ -282,10 +282,10 @@ export default function AdrBuilder() {
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => deleteMutation.mutate(rule.id)}>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => deleteMutation.mutate(rule.id)} aria-label="Delete">
                                                             <Trash2 className="h-4 w-4" />
                                                         </Button>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Go forward">
                                                             <ArrowRight className="h-4 w-4" />
                                                         </Button>
                                                     </div>

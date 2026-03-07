@@ -117,7 +117,7 @@ export default function DealDesk() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -125,13 +125,13 @@ export default function DealDesk() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{pendingRequests.length}</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{pendingRequests.length}</div>
                             <div className="text-xs text-amber-700">
                                 ${pendingRequests.reduce((sum, r) => sum + r.amount, 0).toLocaleString()} total value
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <CheckCircle className="h-3 w-3" />
@@ -139,13 +139,13 @@ export default function DealDesk() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{approvedRequests.length}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{approvedRequests.length}</div>
                             <div className="text-xs text-green-700">
                                 Avg approval time: 2.3 hours
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase flex items-center gap-1">
                                 <XCircle className="h-3 w-3" />
@@ -153,7 +153,7 @@ export default function DealDesk() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{rejectedRequests.length}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{rejectedRequests.length}</div>
                             <div className="text-xs text-red-700">
                                 {rejectedRequests.length > 0 ? ((rejectedRequests.length / approvalQueue.length) * 100).toFixed(0) : 0}% rejection rate
                             </div>

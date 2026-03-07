@@ -51,9 +51,9 @@ export function ArCreditProfile({ account }: ArCreditProfileProps) {
     };
 
     const getScoreBadge = (s: number) => {
-        if (s >= 75) return <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-emerald-200">Excellent</Badge>;
-        if (s >= 50) return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200">Fair</Badge>;
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100 border-red-200">High Risk</Badge>;
+        if (s >= 75) return <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-500/15 border-emerald-200">Excellent</Badge>;
+        if (s >= 50) return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-500/15 border-amber-200">Fair</Badge>;
+        return <Badge className="bg-red-100 text-red-800 hover:bg-red-500/15 border-red-200">High Risk</Badge>;
     };
 
     return (
@@ -67,7 +67,7 @@ export function ArCreditProfile({ account }: ArCreditProfileProps) {
                         <Lock className="h-3 w-3" /> On Hold
                     </Badge>
                 ) : (
-                    <Badge variant="outline" className="flex items-center gap-1 text-emerald-600 border-emerald-200 bg-emerald-50">
+                    <Badge variant="outline" className="flex items-center gap-1 text-emerald-600 border-emerald-200 bg-emerald-500/10">
                         <ShieldCheck className="h-3 w-3" /> Active
                     </Badge>
                 )}

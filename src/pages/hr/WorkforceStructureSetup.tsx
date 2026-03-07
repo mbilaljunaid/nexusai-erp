@@ -38,8 +38,8 @@ export default function WorkforceStructureSetup() {
     };
 
     const LADDERS = [
-        { id: 'l1', name: 'Engineering Professional Series', type: 'Time-in-Step', typeClass: 'bg-blue-50 text-blue-700 border-blue-200', grades: 'G1, G2, G3 (12 Steps Total)', status: 'Active' },
-        { id: 'l2', name: 'Executive Leadership', type: 'Manual / Performance', typeClass: 'bg-purple-50 text-purple-700 border-purple-200', grades: 'E1, E2 (No Steps)', status: 'Active' },
+        { id: 'l1', name: 'Engineering Professional Series', type: 'Time-in-Step', typeClass: 'bg-blue-500/10 text-blue-700 border-blue-200', grades: 'G1, G2, G3 (12 Steps Total)', status: 'Active' },
+        { id: 'l2', name: 'Executive Leadership', type: 'Manual / Performance', typeClass: 'bg-purple-500/10 text-purple-700 border-purple-200', grades: 'E1, E2 (No Steps)', status: 'Active' },
     ];
 
     const ladderColumns: SpreadsheetColumn<any>[] = [

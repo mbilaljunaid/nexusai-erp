@@ -90,7 +90,7 @@ export default function CaseManagement() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-1">
                                 <AlertCircle className="h-3 w-3" />
@@ -98,11 +98,11 @@ export default function CaseManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{newCases.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{newCases.length}</div>
                             <div className="text-xs text-blue-700">Unassigned</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase flex items-center gap-1">
                                 <TrendingUp className="h-3 w-3" />
@@ -110,11 +110,11 @@ export default function CaseManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{inProgressCases.length}</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{inProgressCases.length}</div>
                             <div className="text-xs text-purple-700">Active</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase flex items-center gap-1">
                                 <XCircle className="h-3 w-3" />
@@ -122,11 +122,11 @@ export default function CaseManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{criticalCases.length}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{criticalCases.length}</div>
                             <div className="text-xs text-red-700">Urgent attention</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -134,11 +134,11 @@ export default function CaseManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{breachedSLA.length}</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{breachedSLA.length}</div>
                             <div className="text-xs text-amber-700">Past deadline</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <CheckCircle className="h-3 w-3" />
@@ -146,7 +146,7 @@ export default function CaseManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{resolvedCases.length}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{resolvedCases.length}</div>
                             <div className="text-xs text-green-700">Completed</div>
                         </CardContent>
                     </Card>
@@ -341,7 +341,7 @@ export default function CaseManagement() {
                     <TabsContent value="critical">
                         <div className="grid gap-4">
                             {criticalCases.map((caseItem) => (
-                                <Card key={caseItem.id} className="border-l-4 border-l-red-500 bg-red-50/30">
+                                <Card key={caseItem.id} className="border-l-4 border-l-red-500 bg-red-500/10">
                                     <CardHeader>
                                         <div className="flex items-start justify-between">
                                             <div>
@@ -357,7 +357,7 @@ export default function CaseManagement() {
                                     <CardContent>
                                         <div className="flex items-center justify-between">
                                             <div className="text-sm">
-                                                <div className="font-medium text-red-900">Requires immediate attention</div>
+                                                <div className="font-medium text-red-900 dark:text-red-200">Requires immediate attention</div>
                                                 <div className="text-muted-foreground">Customer: {caseItem.customer}</div>
                                             </div>
                                             <Button size="sm" variant="destructive">

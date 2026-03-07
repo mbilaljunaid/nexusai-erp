@@ -93,7 +93,7 @@ export default function AllocationsWorkbench() {
                 ) : (
                     <div className="grid grid-cols-1 gap-4">
                         {rules.length === 0 && (
-                            <div className="text-center py-10 bg-slate-50 dark:bg-slate-900 rounded-lg border border-dashed">
+                            <div className="text-center py-10 bg-slate-500/10 dark:bg-slate-900 rounded-lg border border-dashed">
                                 <p className="text-muted-foreground">No allocation rules defined.</p>
                             </div>
                         )}
@@ -207,7 +207,7 @@ function CreateRuleDialog({ open, onOpenChange, orgs, onSubmit }: { open: boolea
                                     }}
                                 />
                                 {idx === lines.length - 1 && (
-                                    <Button variant="ghost" size="icon" onClick={() => setLines([...lines, { targetOrgId: "", percentage: "" }])}>
+                                    <Button variant="ghost" size="icon" onClick={() => setLines([...lines, { targetOrgId: "", percentage: "" }])} aria-label="Add">
                                         <Plus className="h-4 w-4" />
                                     </Button>
                                 )}

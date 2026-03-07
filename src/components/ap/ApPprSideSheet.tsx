@@ -267,7 +267,7 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                                                                     size="icon"
                                                                     className="h-8 w-8 text-green-600 opacity-0 group-hover:opacity-100"
                                                                     onClick={() => clearMutation.mutate(payment.id)}
-                                                                    disabled={clearMutation.isPending}
+                                                                    disabled={clearMutation.isPending} aria-label="Clear payment"
                                                                 >
                                                                     {clearMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
                                                                 </Button>
@@ -276,14 +276,14 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                                                                     size="icon"
                                                                     className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100"
                                                                     onClick={() => voidMutation.mutate(payment.id)}
-                                                                    disabled={voidMutation.isPending}
+                                                                    disabled={voidMutation.isPending} aria-label="Void payment"
                                                                 >
                                                                     {voidMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
                                                                 </Button>
                                                             </>
                                                         )}
                                                         {payment.status === "CLEARED" && (
-                                                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none text-[8px] h-4">CLEARED</Badge>
+                                                            <Badge className="bg-green-100 text-green-700 hover:bg-green-500/15 border-none text-[8px] h-4">CLEARED</Badge>
                                                         )}
                                                     </div>
                                                 </div>

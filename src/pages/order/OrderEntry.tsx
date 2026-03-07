@@ -206,7 +206,7 @@ export function OrderEntry() {
                                             )}
                                         />
                                     </div>
-                                    <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="mb-2">
+                                    <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="mb-2" aria-label="Delete">
                                         <Trash2 className="text-destructive h-4 w-4" />
                                     </Button>
                                 </div>

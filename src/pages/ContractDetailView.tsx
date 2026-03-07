@@ -59,13 +59,13 @@ export default function ContractDetailView() {
         <StandardPage
             title="ContractDetailView"
             description=""
-            className="p-6 space-y-6 bg-slate-50 min-h-screen"
+            className="p-6 space-y-6 bg-muted/50 min-h-screen"
         >
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                     <Link href="/contracts">
-                        <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" aria-label="Go back"><ArrowLeft className="h-4 w-4" /></Button>
                     </Link>
                     <div>
                         <div className="flex items-center gap-2">
@@ -233,7 +233,7 @@ export default function ContractDetailView() {
                             {(contract.documents && contract.documents.length > 0) ? (
                                 <div className="space-y-2">
                                     {contract.documents.map((doc: any) => (
-                                        <div key={doc.id} className="flex items-center justify-between p-3 border rounded hover:bg-slate-50">
+                                        <div key={doc.id} className="flex items-center justify-between p-3 border rounded hover:bg-slate-500/10">
                                             <div className="flex items-center gap-3">
                                                 <FileText className="h-5 w-5 text-blue-500" />
                                                 <div>

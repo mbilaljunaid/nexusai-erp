@@ -115,10 +115,10 @@ export default function PersonalDetails() {
         {
             id: "actions", header: <div className="text-right w-full">Actions</div> as any, width: "120px", cell: (row) => (
                 <div className="text-right w-full space-x-2">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600" aria-label="Download">
                         <Download className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600" aria-label="Delete">
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>
@@ -186,7 +186,7 @@ export default function PersonalDetails() {
                     {isHistorical && (
                         <div className="bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-400 p-3 rounded-lg flex items-center gap-3 text-sm animate-in fade-in slide-in-from-top-2">
                             <History className="h-4 w-4 shrink-0" />
-                            <div>You are viewing this record as it existed (or will exist) on <strong>{format(effectiveDate, "PP")}</strong>. <Link href="/hr/self-service/history"><a className="underline font-medium hover:text-amber-900 ml-1">View Full Timeline</a></Link></div>
+                            <div>You are viewing this record as it existed (or will exist) on <strong>{format(effectiveDate, "PP")}</strong>. <Link href="/hr/self-service/history"><a className="underline font-medium hover:text-amber-900 dark:text-amber-200 ml-1">View Full Timeline</a></Link></div>
                         </div>
                     )}
 
@@ -217,14 +217,14 @@ export default function PersonalDetails() {
                                             <Label htmlFor="email" className="text-zinc-500 text-xs font-semibold uppercase tracking-wider">Work Email</Label>
                                             <div className="relative group">
                                                 <Mail className="absolute left-3 top-3 h-4 w-4 text-zinc-400 group-focus-within:text-teal-500" />
-                                                <Input id="email" defaultValue="john.doe@nexusai.com" disabled={!isEditing} className="pl-10 bg-zinc-50 dark:bg-zinc-900 border-none h-11" />
+                                                <Input id="email" defaultValue="john.doe@nexusai.com" disabled={!isEditing} className="pl-10 bg-zinc-500/10 dark:bg-zinc-900 border-none h-11" />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="phone" className="text-zinc-500 text-xs font-semibold uppercase tracking-wider">Mobile Phone</Label>
                                             <div className="relative group">
                                                 <Phone className="absolute left-3 top-3 h-4 w-4 text-zinc-400 group-focus-within:text-teal-500" />
-                                                <Input id="phone" defaultValue={isHistorical ? "+1 (555) 000-0000" : "+1 (555) 000-1234"} disabled={!isEditing || isHistorical} className="pl-10 bg-zinc-50 dark:bg-zinc-900 border-none h-11" />
+                                                <Input id="phone" defaultValue={isHistorical ? "+1 (555) 000-0000" : "+1 (555) 000-1234"} disabled={!isEditing || isHistorical} className="pl-10 bg-zinc-500/10 dark:bg-zinc-900 border-none h-11" />
                                             </div>
                                         </div>
                                     </div>
@@ -236,7 +236,7 @@ export default function PersonalDetails() {
                                             </div>
                                             <div className="relative group">
                                                 <MapPin className="absolute left-3 top-3 h-4 w-4 text-zinc-400 group-focus-within:text-teal-500" />
-                                                <Input id="address" defaultValue={isHistorical ? "456 Old Street, Austin, TX" : "123 Innovation Drive, Silicon Valley, CA"} disabled className="pl-10 bg-zinc-50 dark:bg-zinc-900 border-none h-11 opacity-70" />
+                                                <Input id="address" defaultValue={isHistorical ? "456 Old Street, Austin, TX" : "123 Innovation Drive, Silicon Valley, CA"} disabled className="pl-10 bg-zinc-500/10 dark:bg-zinc-900 border-none h-11 opacity-70" />
                                             </div>
                                             <p className="text-[10px] text-muted-foreground italic">Official address changes require HR approval.</p>
                                         </div>
@@ -302,7 +302,7 @@ export default function PersonalDetails() {
                                         </div>
                                         <div className="text-right">
                                             <p className="font-mono text-sm">WAC-20-123-45678</p>
-                                            <Badge variant="outline" className="text-[10px] mt-1.5 text-green-600 border-green-200 bg-green-50 shadow-sm">Valid until: 10-Oct-2027</Badge>
+                                            <Badge variant="outline" className="text-[10px] mt-1.5 text-green-600 border-green-200 bg-green-500/10 shadow-sm">Valid until: 10-Oct-2027</Badge>
                                         </div>
                                     </div>
                                 </div>
@@ -319,7 +319,7 @@ export default function PersonalDetails() {
                                 <p className="text-muted-foreground text-sm">Manage multiple concurrent roles and responsibilities</p>
                             </div>
                             {/* In Oracle, adding an assignment is a complex wizard */}
-                            <Button variant="outline" size="sm" className="bg-white hover:bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+                            <Button variant="outline" size="sm" className="bg-white hover:bg-zinc-500/10 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
                                 <Plus className="h-4 w-4 mr-2" /> Add Assignment
                             </Button>
                         </div>

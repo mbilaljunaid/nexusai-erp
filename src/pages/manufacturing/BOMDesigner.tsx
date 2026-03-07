@@ -236,7 +236,7 @@ export default function BOMDesigner() {
                                                         </SelectContent>
                                                     </Select>
                                                 </div>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 mb-0" onClick={() => removeComponent(idx)}>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 mb-0" onClick={() => removeComponent(idx)} aria-label="Close">
                                                     <X className="h-4 w-4" />
                                                 </Button>
                                             </div>

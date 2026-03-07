@@ -184,7 +184,7 @@ export default function CreditMemoWorkbench() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-amber-500/5 border-amber-500/20">
+                    <Card className="bg-amber-500/100/5 border-amber-500/20">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-amber-600">Pending Approval</CardTitle>
                             <CheckCircle className="h-4 w-4 text-amber-600" />
@@ -195,7 +195,7 @@ export default function CreditMemoWorkbench() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-red-500/5 border-red-500/20">
+                    <Card className="bg-red-500/100/5 border-red-500/20">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-red-600">Total Credit Amount</CardTitle>
                             <DollarSign className="h-4 w-4 text-red-600" />
@@ -208,7 +208,7 @@ export default function CreditMemoWorkbench() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-green-500/5 border-green-500/20">
+                    <Card className="bg-green-500/100/5 border-green-500/20">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium text-green-600">Applied This Month</CardTitle>
                             <Undo className="h-4 w-4 text-green-600" />

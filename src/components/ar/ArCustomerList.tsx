@@ -40,7 +40,7 @@ export function ArCustomerList() {
                     >
                         <CardContent className="p-5">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-2 bg-emerald-50 rounded-lg group-hover:bg-emerald-100 transition-colors w-fit">
+                                <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/15 transition-colors w-fit">
                                     <Fingerprint className="h-5 w-5 text-emerald-600" />
                                 </div>
                                 <Badge variant="secondary" className="text-[10px] font-black uppercase tracking-widest">

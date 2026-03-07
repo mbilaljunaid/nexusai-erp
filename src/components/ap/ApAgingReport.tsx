@@ -66,7 +66,7 @@ export default function ApAgingReport() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-red-50 border-red-100 dark:bg-red-950/20 dark:border-red-900/30">
+                <Card className="bg-red-500/10 border-red-100 dark:bg-red-950/20 dark:border-red-900/30">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-red-600 dark:text-red-400">Past Due (&gt; 30 Days)</CardTitle>
                     </CardHeader>

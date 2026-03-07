@@ -205,7 +205,7 @@ export default function UsageMeteringDashboard() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-orange-500/50 bg-orange-500/5">
+                <Card className="border-orange-500/50 bg-orange-500/100/5">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-orange-600">Threshold Alerts</CardTitle>
                         <AlertCircle className="h-4 w-4 text-orange-600" />

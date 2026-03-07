@@ -251,8 +251,8 @@ export default function RevenueSSPManager() {
                                     <div role="button" tabIndex={0}
                                         key={book.id}
                                         className={cn(`p-3 border rounded-lg cursor-pointer transition-colors ${selectedBook?.id === book.id
-                                            ? "bg-blue-50 border-blue-300"
-                                            : "hover:bg-slate-50"
+                                            ? "bg-blue-500/10 border-blue-300"
+                                            : "hover:bg-slate-500/10"
                                             }`)}
                                         onClick={() => setSelectedBook(book)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                     >

@@ -131,7 +131,7 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
                                             <HeartPulse className={cn(`h-4 w-4 ${health?.healthScore < 50 ? 'text-red-500' : health?.healthScore < 80 ? 'text-yellow-500' : 'text-green-500'}`)} />
                                             <span className="font-bold">Health Score:</span>
                                         </div>
-                                        <Badge variant="outline" className={health?.healthScore < 50 ? 'bg-red-50 text-red-700' : health?.healthScore < 80 ? 'bg-yellow-50 text-yellow-700' : 'bg-green-50 text-green-700'}>
+                                        <Badge variant="outline" className={health?.healthScore < 50 ? 'bg-red-500/10 text-red-700' : health?.healthScore < 80 ? 'bg-yellow-500/10 text-yellow-700' : 'bg-green-500/10 text-green-700'}>
                                             {health?.healthScore}% - {health?.status}
                                         </Badge>
                                     </div>
@@ -158,7 +158,7 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
                                                 </div>
                                             </div>
                                             {op.status !== "COMPLETED" && (
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600" onClick={() => completeOpMutation.mutate(op.id)}>
+                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600" onClick={() => completeOpMutation.mutate(op.id)} aria-label="Confirm">
                                                     <CheckCircle2 className="h-4 w-4" />
                                                 </Button>
                                             )}
@@ -288,7 +288,7 @@ function MaterialsSection({ workOrderId, materials, status, onUpdate }: { workOr
                                     Actual: {mat.actualQuantity}
                                 </span>
                                 {mat.purchaseRequisitionLineId && (
-                                    <Badge variant="outline" className="text-[9px] h-4 bg-blue-50">PR Linked</Badge>
+                                    <Badge variant="outline" className="text-[9px] h-4 bg-blue-500/10">PR Linked</Badge>
                                 )}
                             </div>
                         </div>
@@ -457,7 +457,7 @@ function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, o
     });
 
     return (
-        <Card className="border-orange-100 bg-orange-50/20">
+        <Card className="border-orange-100 bg-orange-500/10">
             <CardHeader className="py-3">
                 <CardTitle className="text-sm flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-orange-600" />

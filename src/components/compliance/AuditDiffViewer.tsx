@@ -16,7 +16,7 @@ export function AuditDiffViewer({ changes }: AuditDiffViewerProps) {
 
     if (fields.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-8 text-muted-foreground bg-slate-50 rounded-lg border border-dashed">
+            <div className="flex flex-col items-center justify-center p-8 text-muted-foreground bg-slate-500/10 rounded-lg border border-dashed">
                 <RefreshCw className="h-8 w-8 mb-2 opacity-20" />
                 <p className="text-sm italic">No granular field changes detected.</p>
             </div>
@@ -28,7 +28,7 @@ export function AuditDiffViewer({ changes }: AuditDiffViewerProps) {
             <div className="space-y-3">
                 {fields.map((field) => (
                     <div key={field} className="bg-white rounded-lg border shadow-sm overflow-hidden">
-                        <div className="px-3 py-1.5 bg-slate-50 border-b flex justify-between items-center">
+                        <div className="px-3 py-1.5 bg-slate-500/10 border-b flex justify-between items-center">
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-600">{field}</span>
                             <Badge variant="outline" className="text-[10px] h-4 px-1.5">MUTATION</Badge>
                         </div>
@@ -38,7 +38,7 @@ export function AuditDiffViewer({ changes }: AuditDiffViewerProps) {
                                     <MinusCircle className="h-3 w-3 text-red-400" />
                                     PREVIOUS
                                 </div>
-                                <div className="text-sm font-mono bg-red-50/50 p-2 rounded border border-red-100/50 text-red-900 break-all">
+                                <div className="text-sm font-mono bg-red-50/50 p-2 rounded border border-red-100/50 text-red-900 dark:text-red-200 break-all">
                                     {renderValue(changes[field].old)}
                                 </div>
                             </div>
@@ -50,7 +50,7 @@ export function AuditDiffViewer({ changes }: AuditDiffViewerProps) {
                                     <PlusCircle className="h-3 w-3 text-green-400" />
                                     CURRENT
                                 </div>
-                                <div className="text-sm font-mono bg-green-50/50 p-2 rounded border border-green-100/50 text-green-900 break-all">
+                                <div className="text-sm font-mono bg-green-50/50 p-2 rounded border border-green-100/50 text-green-900 dark:text-green-200 break-all">
                                     {renderValue(changes[field].new)}
                                 </div>
                             </div>

@@ -259,7 +259,7 @@ export default function StatutoryForms() {
                                         <p className="text-sm font-medium">{template.name}</p>
                                         <p className="text-xs text-muted-foreground">{template.region}</p>
                                     </div>
-                                    <Button variant="ghost" size="icon">
+                                    <Button variant="ghost" size="icon" aria-label="Download">
                                         <Download className="w-4 h-4" />
                                     </Button>
                                 </div>
@@ -267,7 +267,7 @@ export default function StatutoryForms() {
                         </CardContent>
                     </Card>
 
-                    <Card className="vanguard-card bg-teal-50/50 border-teal-100">
+                    <Card className="vanguard-card bg-teal-500/10 border-teal-100">
                         <CardHeader className="pb-2">
                             <div className="flex items-center gap-2 text-teal-700">
                                 <Info className="w-4 h-4" />

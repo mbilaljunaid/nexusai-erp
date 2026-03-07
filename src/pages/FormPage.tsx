@@ -34,7 +34,7 @@ export default function FormPage({ formId: propFormId}: FormPageProps) {
               variant="outline" 
               size="icon" 
               onClick={handleBack}
-              data-testid="button-back"
+              data-testid="button-back" aria-label="Go back"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>

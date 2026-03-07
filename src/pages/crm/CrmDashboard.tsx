@@ -50,10 +50,10 @@ export default function CrmDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium text-blue-900">Pipeline Value</CardTitle>
+                            <CardTitle className="text-sm font-medium text-blue-900 dark:text-blue-200">Pipeline Value</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-blue-900">
+                            <div className="text-3xl font-bold text-blue-900 dark:text-blue-200">
                                 {pipelineValue != null ? fmt(pipelineValue, "$") : "$8.5M"}
                             </div>
                             <div className="text-xs text-blue-700 mt-1 flex items-center gap-1">
@@ -65,10 +65,10 @@ export default function CrmDashboard() {
 
                     <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium text-green-900">Win Rate</CardTitle>
+                            <CardTitle className="text-sm font-medium text-green-900 dark:text-green-200">Win Rate</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-green-900">
+                            <div className="text-3xl font-bold text-green-900 dark:text-green-200">
                                 {winRate != null ? `${winRate}%` : "68%"}
                             </div>
                             <div className="text-xs text-green-700 mt-1 flex items-center gap-1">
@@ -80,10 +80,10 @@ export default function CrmDashboard() {
 
                     <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium text-purple-900">Active Leads</CardTitle>
+                            <CardTitle className="text-sm font-medium text-purple-900 dark:text-purple-200">Active Leads</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-purple-900">
+                            <div className="text-3xl font-bold text-purple-900 dark:text-purple-200">
                                 {activeLeads != null ? activeLeads.toLocaleString() : "342"}
                             </div>
                             <div className="text-xs text-purple-700 mt-1 flex items-center gap-1">
@@ -95,10 +95,10 @@ export default function CrmDashboard() {
 
                     <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium text-amber-900">Avg Deal Size</CardTitle>
+                            <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-200">Avg Deal Size</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold text-amber-900">
+                            <div className="text-3xl font-bold text-amber-900 dark:text-amber-200">
                                 {avgDealSize != null ? fmt(avgDealSize, "$") : "$125K"}
                             </div>
                             <div className="text-xs text-amber-700 mt-1 flex items-center gap-1">

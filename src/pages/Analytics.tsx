@@ -277,8 +277,8 @@ export default function Analytics() {
                   />
                 </div>
               </div>
-              <div className="mt-4 p-3 bg-blue-50 rounded">
-                <p className="text-sm text-blue-900">
+              <div className="mt-4 p-3 bg-blue-500/10 rounded">
+                <p className="text-sm text-blue-900 dark:text-blue-200">
                   Tip: You can edit values directly in this table, and changes will update all connected dashboards in real-time.
                 </p>
               </div>

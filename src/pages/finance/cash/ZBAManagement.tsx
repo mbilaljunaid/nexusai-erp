@@ -108,7 +108,7 @@ export default function ZBAManagement() {
             <div className="space-y-6">
 
                 {/* Info Card */}
-                <Card className="border-purple-500 bg-purple-50 dark:bg-purple-950/20">
+                <Card className="border-purple-500 bg-purple-500/10 dark:bg-purple-950/20">
                     <CardContent className="pt-6">
                         <p className="text-sm text-purple-900 dark:text-purple-100">
                             <strong>Zero-Based Accounting (ZBA)</strong> automatically transfers funds between subsidiary

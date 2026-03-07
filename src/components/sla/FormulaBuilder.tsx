@@ -95,7 +95,7 @@ export function FormulaBuilder({ value, onChange }: FormulaBuilderProps) {
                                     value={part.value}
                                     onChange={e => setParts(parts.map(p => p.id === part.id ? { ...p, value: e.target.value } : p))}
                                 />
-                                <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => setParts(parts.filter(p => p.id !== part.id))}>
+                                <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => setParts(parts.filter(p => p.id !== part.id))} aria-label="Delete">
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                             </div>

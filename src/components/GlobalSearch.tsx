@@ -70,7 +70,6 @@ export function GlobalSearch({ onSelect }: GlobalSearchProps) {
   const handleSelect = (result: SearchResult) => {
     onSelect?.(result);
     setOpen(false);
-    console.log("Selected:", result);
   };
 
   return (

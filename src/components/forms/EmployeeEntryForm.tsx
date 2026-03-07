@@ -151,7 +151,7 @@ export function EmployeeEntryForm() {
           </div>
 
           {successMessage && (
-            <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+            <Alert className="border-green-200 bg-green-500/10 dark:bg-green-950 dark:border-green-900">
               <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
               <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
                 {successMessage}

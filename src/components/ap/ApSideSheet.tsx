@@ -431,7 +431,7 @@ function InvoicePrepaymentsView({ invoiceId }: { invoiceId: number }) {
                                         size="icon"
                                         className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                                         onClick={() => unapplyMutation.mutate(app.id)}
-                                        disabled={unapplyMutation.isPending}
+                                        disabled={unapplyMutation.isPending} aria-label="Unapply"
                                     >
                                         {unapplyMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
                                     </Button>
@@ -484,7 +484,7 @@ function InvoiceHoldsView({ invoiceId }: { invoiceId: number }) {
                                 </span>
                             </div>
                             {hold.release_lookup_code ? (
-                                <Badge variant="outline" className="text-[10px] h-5 bg-green-50 text-green-700 border-green-200">
+                                <Badge variant="outline" className="text-[10px] h-5 bg-green-500/10 text-green-700 border-green-200">
                                     Released: {hold.release_lookup_code}
                                 </Badge>
                             ) : (

@@ -51,7 +51,7 @@ export function DocumentViewer({ attachment, isOpen, onClose }: DocumentViewerPr
                         <DialogTitle className="flex items-center gap-2 truncate">
                             {attachment.filename}
                         </DialogTitle>
-                        <Button variant="ghost" size="icon" onClick={onClose}>
+                        <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">
                             <X className="h-4 w-4" />
                         </Button>
                     </div>

@@ -53,10 +53,10 @@ export default function RetailProductCatalog() {
       width: "10%",
       cell: () => (
         <div className="p-2 flex gap-2 justify-end">
-          <Button size="icon" variant="ghost" className="h-8 w-8">
+          <Button size="icon" variant="ghost" className="h-8 w-8" aria-label="Edit">
             <Edit2 className="h-4 w-4" />
           </Button>
-          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive">
+          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" aria-label="Delete">
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>

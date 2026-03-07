@@ -141,12 +141,12 @@ export default function YTDBalanceUpload() {
                                         <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Employees</p>
                                         <p className="text-3xl font-black">428</p>
                                     </div>
-                                    <div className="p-4 bg-green-50 dark:bg-green-950/30 rounded-xl border border-green-200 dark:border-green-900/50 shadow-sm text-center relative overflow-hidden">
+                                    <div className="p-4 bg-green-500/10 dark:bg-green-950/30 rounded-xl border border-green-200 dark:border-green-900/50 shadow-sm text-center relative overflow-hidden">
                                         <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
                                         <p className="text-sm font-semibold text-green-700 dark:text-green-500 uppercase tracking-wider mb-1">Valid Records</p>
                                         <p className="text-3xl font-black text-green-700 dark:text-green-400">1,449</p>
                                     </div>
-                                    <div className="p-4 bg-red-50 dark:bg-red-950/30 rounded-xl border border-red-200 dark:border-red-900/50 shadow-sm text-center relative overflow-hidden">
+                                    <div className="p-4 bg-red-500/10 dark:bg-red-950/30 rounded-xl border border-red-200 dark:border-red-900/50 shadow-sm text-center relative overflow-hidden">
                                         <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
                                         <p className="text-sm font-semibold text-red-700 dark:text-red-500 uppercase tracking-wider mb-1">Errors</p>
                                         <p className="text-3xl font-black text-red-700 dark:text-red-400">3</p>
@@ -162,13 +162,13 @@ export default function YTDBalanceUpload() {
                                         <div className="col-span-5">Error Reason</div>
                                     </div>
                                     <div className="divide-y divide-zinc-100 dark:divide-zinc-800 text-sm">
-                                        <div className="grid grid-cols-12 gap-4 px-4 py-3 items-center hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                                        <div className="grid grid-cols-12 gap-4 px-4 py-3 items-center hover:bg-zinc-500/10 dark:hover:bg-zinc-800/50">
                                             <div className="col-span-1 text-muted-foreground">42</div>
                                             <div className="col-span-2 font-mono">N1102</div>
                                             <div className="col-span-4">Legacy_401k_Catchup</div>
                                             <div className="col-span-5 text-red-600 flex items-center gap-1.5"><XCircle className="h-4 w-4 shrink-0" /> Element does not exist in target system.</div>
                                         </div>
-                                        <div className="grid grid-cols-12 gap-4 px-4 py-3 items-center hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                                        <div className="grid grid-cols-12 gap-4 px-4 py-3 items-center hover:bg-zinc-500/10 dark:hover:bg-zinc-800/50">
                                             <div className="col-span-1 text-muted-foreground">185</div>
                                             <div className="col-span-2 font-mono">N0899</div>
                                             <div className="col-span-4">Regular Salary</div>
@@ -188,7 +188,7 @@ export default function YTDBalanceUpload() {
                 )}
 
                 {uploadState === 'complete' && (
-                    <Card className="border-green-500/30 bg-green-50/50 dark:bg-green-950/20 text-center py-12">
+                    <Card className="border-green-500/30 bg-green-500/10 dark:bg-green-950/20 text-center py-12">
                         <CardContent className="space-y-4">
                             <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <CheckCircle2 className="h-10 w-10 text-green-600 dark:text-green-400" />
@@ -198,7 +198,7 @@ export default function YTDBalanceUpload() {
                                 Balances successfully committed to the database. You can view these under individual employee tax cards.
                             </p>
                             <div className="pt-6">
-                                <Button variant="outline" className="border-green-600/30 text-green-700 hover:bg-green-100 dark:border-green-400/30 dark:text-green-300 dark:hover:bg-green-900/50" onClick={reset}>
+                                <Button variant="outline" className="border-green-600/30 text-green-700 hover:bg-green-500/15 dark:border-green-400/30 dark:text-green-300 dark:hover:bg-green-900/50" onClick={reset}>
                                     Upload Another File
                                 </Button>
                             </div>

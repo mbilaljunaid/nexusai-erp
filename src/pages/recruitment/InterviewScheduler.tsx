@@ -193,7 +193,7 @@ export default function InterviewScheduler() {
                     </Card>
 
                     {step === 3 && (
-                        <Card className="bg-green-50 border-green-200">
+                        <Card className="bg-green-500/10 border-green-200">
                             <CardContent className="pt-6 text-center space-y-4">
                                 <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto" />
                                 <div className="space-y-2">

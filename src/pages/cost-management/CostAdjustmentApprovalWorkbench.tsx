@@ -149,7 +149,7 @@ function ApprovalRow({
                                     <Button
                                         size="sm"
                                         variant="outline"
-                                        className="w-full border-red-300 text-red-600 hover:bg-red-50"
+                                        className="w-full border-red-300 text-red-600 hover:bg-red-500/10"
                                         onClick={() => setRejecting(true)}
                                     >
                                         <XCircle className="h-3.5 w-3.5 mr-1" /> Reject
@@ -279,7 +279,7 @@ function CreateAdjustmentDialog({
                         <Label className="text-xs">Your User ID (Submitter) *</Label>
                         <Input value={form.submittedBy} onChange={(e) => update("submittedBy", e.target.value)} placeholder="user-..." className="mt-1" />
                     </div>
-                    <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
+                    <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-500/10 p-2 text-xs text-amber-800">
                         <ShieldCheck className="h-4 w-4 mt-0.5 flex-shrink-0" />
                         <span><strong>Maker-Checker (SoD):</strong> The approver must be a <em>different person</em> from the submitter. Self-approval is blocked by the system.</span>
                     </div>
@@ -406,7 +406,7 @@ export default function CostAdjustmentApprovalWorkbench() {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-3 gap-4">
-                <Card className="border-amber-200 bg-amber-50/50">
+                <Card className="border-amber-200 bg-amber-500/10">
                     <CardContent className="p-4 flex items-center gap-3">
                         <Clock className="h-8 w-8 text-amber-500" />
                         <div>
@@ -415,7 +415,7 @@ export default function CostAdjustmentApprovalWorkbench() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="border-emerald-200 bg-emerald-50/50">
+                <Card className="border-emerald-200 bg-emerald-500/10">
                     <CardContent className="p-4 flex items-center gap-3">
                         <CheckCircle className="h-8 w-8 text-emerald-500" />
                         <div>
@@ -424,7 +424,7 @@ export default function CostAdjustmentApprovalWorkbench() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="border-red-200 bg-red-50/50">
+                <Card className="border-red-200 bg-red-500/10">
                     <CardContent className="p-4 flex items-center gap-3">
                         <XCircle className="h-8 w-8 text-red-500" />
                         <div>
@@ -436,7 +436,7 @@ export default function CostAdjustmentApprovalWorkbench() {
             </div>
 
             {/* SoD Policy Banner */}
-            <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+            <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-500/10 p-3 text-sm text-blue-800">
                 <ShieldCheck className="h-5 w-5 mt-0.5 flex-shrink-0 text-blue-600" />
                 <div>
                     <strong>Segregation of Duties Enforced.</strong> The person who submits a cost adjustment cannot approve it. Any self-approval attempt is blocked at the API layer (HTTP 403 Forbidden) and logged to the audit trail.

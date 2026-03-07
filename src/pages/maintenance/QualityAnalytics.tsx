@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 import {
     TrendingUp,
     TrendingDown,
@@ -75,7 +76,6 @@ export function QualityAnalytics() {
             setTrends(data.trendData || []);
             setDefectCategories(data.defectCategories || []);
         } catch (error) {
-            console.error("Failed to load analytics:", error);
             setMetrics(null);
             setTrends([]);
             setDefectCategories([]);
@@ -253,12 +253,7 @@ export function QualityAnalytics() {
                                         </div>
                                         <div className="text-sm font-bold">{defect.count} defects</div>
                                     </div>
-                                    <div className="h-2 bg-white/50 rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-current opacity-60"
-                                            style={{ width: `${percentage}%` }}
-                                        />
-                                    </div>
+                                    <Progress value={percentage} className="h-2 bg-white/50" indicatorClassName="bg-current opacity-60" />
                                     <div className="text-xs text-right mt-1 opacity-75">{percentage}% of total defects</div>
                                 </div>
                             );

@@ -140,7 +140,7 @@ export function ESignatureModal({ isOpen, onClose, contractId, contractNumber }:
                     </div>
 
                     {/* Info */}
-                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+                    <div className="p-3 bg-blue-500/10 border border-blue-200 rounded-lg text-sm text-blue-800">
                         <div className="flex gap-2">
                             <CheckCircle className="h-4 w-4 shrink-0 mt-0.5" />
                             <div>

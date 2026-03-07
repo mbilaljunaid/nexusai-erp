@@ -174,7 +174,7 @@ export default function QuestionnaireBuilder() {
                         </Card>
 
                         <Card className="border-purple-200/50 dark:border-purple-800/50 shadow-sm">
-                            <CardHeader className="pb-3 border-b bg-purple-50/50 dark:bg-purple-900/10">
+                            <CardHeader className="pb-3 border-b bg-purple-500/10 dark:bg-purple-900/10">
                                 <CardTitle className="text-sm flex items-center gap-2 text-purple-800 dark:text-purple-300">
                                     <Plus className="h-4 w-4" /> Add Question Block
                                 </CardTitle>
@@ -226,7 +226,7 @@ export default function QuestionnaireBuilder() {
                                                     <Switch checked={q.required} onCheckedChange={() => toggleRequired(q.id)} id={`req-${q.id}`} />
                                                     <Label htmlFor={`req-${q.id}`} className="cursor-pointer">Required</Label>
                                                 </div>
-                                                <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-600 hover:bg-red-50" onClick={() => removeQuestion(q.id)}>
+                                                <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-600 hover:bg-red-500/10" onClick={() => removeQuestion(q.id)} aria-label="Delete">
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>
@@ -235,7 +235,7 @@ export default function QuestionnaireBuilder() {
                                         {/* Configuration based on type */}
                                         <div className="pl-2 border-l-[3px] border-muted ml-1 mb-2">
                                             {q.type === "TEXT" && (
-                                                <div className="p-3 bg-zinc-50 dark:bg-zinc-900/50 rounded text-muted-foreground text-sm border border-dashed">
+                                                <div className="p-3 bg-zinc-500/10 dark:bg-zinc-900/50 rounded text-muted-foreground text-sm border border-dashed">
                                                     Participant will see a multi-line text area here.
                                                 </div>
                                             )}
@@ -261,13 +261,13 @@ export default function QuestionnaireBuilder() {
                                                                 className="h-8 w-64 bg-transparent border-transparent hover:border-zinc-200 focus-visible:border-purple-500 transition-colors"
                                                             />
                                                             {q.options!.length > 1 && (
-                                                                <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover/opt:opacity-100 text-muted-foreground hover:text-red-500" onClick={() => removeOption(q.id, oIdx)}>
+                                                                <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover/opt:opacity-100 text-muted-foreground hover:text-red-500" onClick={() => removeOption(q.id, oIdx)} aria-label="Delete">
                                                                     <Trash2 className="h-3 w-3" />
                                                                 </Button>
                                                             )}
                                                         </div>
                                                     ))}
-                                                    <Button variant="ghost" size="sm" onClick={() => addOption(q.id)} className="ml-1 text-purple-600 hover:text-purple-700 hover:bg-purple-50">
+                                                    <Button variant="ghost" size="sm" onClick={() => addOption(q.id)} className="ml-1 text-purple-600 hover:text-purple-700 hover:bg-purple-500/10">
                                                         <Plus className="h-3 w-3 mr-1" /> Add Option
                                                     </Button>
                                                 </div>

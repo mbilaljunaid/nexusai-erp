@@ -23,7 +23,7 @@ export default function AbsencePlanSetup() {
             return (
                 <div className="space-y-6">
                     <Card className="border-blue-500/20 shadow-sm">
-                        <CardHeader className="border-b bg-blue-500/5 pb-4">
+                        <CardHeader className="border-b bg-blue-500/100/5 pb-4">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <Badge variant="outline" className="mb-2 bg-background border-blue-500/30 text-blue-700">Concurrent Absences</Badge>
@@ -91,7 +91,7 @@ export default function AbsencePlanSetup() {
             return (
                 <div className="space-y-6">
                     <Card className="border-purple-500/20 shadow-sm">
-                        <CardHeader className="border-b bg-purple-500/5 pb-4">
+                        <CardHeader className="border-b bg-purple-500/100/5 pb-4">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <Badge variant="outline" className="mb-2 bg-background border-purple-500/30 text-purple-700">Certification Rules</Badge>
@@ -259,7 +259,7 @@ export default function AbsencePlanSetup() {
                                     <Input defaultValue="40" className="h-8" />
                                 </div>
                                 <div className="col-span-1 text-right">
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive"><span className="sr-only">Remove</span>&times;</Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" aria-label="Remove"><span className="sr-only">Remove</span>&times;</Button>
                                 </div>
                             </div>
 
@@ -286,7 +286,7 @@ export default function AbsencePlanSetup() {
                                     <Input defaultValue="80" className="h-8 border-primary/30 focus-visible:ring-primary/50" />
                                 </div>
                                 <div className="col-span-1 text-right">
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive"><span className="sr-only">Remove</span>&times;</Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" aria-label="Remove"><span className="sr-only">Remove</span>&times;</Button>
                                 </div>
                             </div>
 
@@ -313,7 +313,7 @@ export default function AbsencePlanSetup() {
                                     <Input defaultValue="120" className="h-8" />
                                 </div>
                                 <div className="col-span-1 text-right">
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive"><span className="sr-only">Remove</span>&times;</Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" aria-label="Remove"><span className="sr-only">Remove</span>&times;</Button>
                                 </div>
                             </div>
                         </div>
@@ -389,7 +389,7 @@ export default function AbsencePlanSetup() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-amber-500/10 border-amber-500/20">
+                    <Card className="bg-amber-500/100/10 border-amber-500/20">
                         <CardContent className="p-4 flex gap-3 text-amber-800 dark:text-amber-400 text-sm">
                             <Info className="w-5 h-5 shrink-0" />
                             <p>Changes saved here create a new <strong>Effective Date</strong> version. Existing balances will recalculate based on plan year settings.</p>

@@ -80,7 +80,7 @@ export default function LifeEvents() {
             <div className="max-w-4xl mx-auto space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {!selectedEvent ? (
                     <>
-                        <Card className="bg-amber-500/10 border-amber-500/20 shadow-none">
+                        <Card className="bg-amber-500/100/10 border-amber-500/20 shadow-none">
                             <CardContent className="p-4 flex items-start gap-3">
                                 <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
                                 <div className="text-sm text-amber-900 dark:text-amber-200">
@@ -110,7 +110,7 @@ export default function LifeEvents() {
                 ) : (
                     <Card className="border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
                         <CardHeader className="flex flex-row items-center gap-4 bg-muted/20 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-                            <Button variant="ghost" size="icon" onClick={() => setSelectedEvent(null)}>
+                            <Button variant="ghost" size="icon" onClick={() => setSelectedEvent(null)} aria-label="Go back">
                                 &larr;
                             </Button>
                             <div>
@@ -174,7 +174,7 @@ export default function LifeEvents() {
 
                                     <div className="space-y-3">
                                         <Label className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Supporting Documentation <span className="text-red-500">*</span></Label>
-                                        <div className="border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-xl p-8 text-center bg-zinc-50 dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer">
+                                        <div className="border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-xl p-8 text-center bg-zinc-500/10 dark:bg-zinc-900/50 hover:bg-zinc-500/15 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer">
                                             <UploadCloud className="mx-auto h-10 w-10 text-zinc-400 mb-4" />
                                             <p className="text-sm font-medium">Click to upload or drag and drop</p>
                                             <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (Max 10MB)</p>

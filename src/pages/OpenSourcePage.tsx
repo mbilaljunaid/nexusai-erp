@@ -244,7 +244,7 @@ export default function OpenSourcePage() {
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
                 <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100" data-testid="button-star-github">
+                  <Button size="lg" className="bg-white text-slate-900 dark:text-slate-200 hover:bg-slate-500/15" data-testid="button-star-github">
                     <Star className="mr-2 w-5 h-5" /> Star on GitHub
                   </Button>
                 </a>

@@ -82,7 +82,7 @@ export function RuleBuilder({ onSave, initialLogic, legislationCode = "GLOBAL" }
     return (
         <div className="space-y-6 p-1">
             {availableTemplates.length > 0 && (
-                <div className="bg-indigo-50 border border-indigo-100 p-3 rounded-xl flex items-center gap-4">
+                <div className="bg-indigo-500/10 border border-indigo-100 p-3 rounded-xl flex items-center gap-4">
                     <BookTemplate className="h-5 w-5 text-indigo-600" />
                     <div className="flex-1">
                         <Label className="text-xs font-bold text-indigo-800 uppercase tracking-wider mb-1 block">
@@ -224,7 +224,7 @@ export function RuleBuilder({ onSave, initialLogic, legislationCode = "GLOBAL" }
             )}
 
             {(type === "IDENTIFICATION" || type === "GHOST_EMPLOYEE") && (
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3 animate-in fade-in slide-in-from-top-1">
+                <div className="p-4 rounded-xl bg-slate-500/10 border border-slate-200 flex items-start gap-3 animate-in fade-in slide-in-from-top-1">
                     <ShieldCheck className="h-5 w-5 text-green-600 mt-0.5" />
                     <div>
                         <p className="text-sm font-bold text-slate-800">Dynamic Heuristic Rule</p>

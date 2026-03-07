@@ -63,7 +63,7 @@ export default function ShippingWorkbench() {
                                             <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <Button variant="ghost" size="icon"><Printer className="w-4 h-4" /></Button>
+                                                        <Button variant="ghost" size="icon" aria-label="Print"><Printer className="w-4 h-4" /></Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
                                                         <p>Print Labels</p>

@@ -166,8 +166,8 @@ export function JournalLineRuleTable({ eventClassId }: { eventClassId: string })
                                     <Button
                                         size="icon"
                                         variant="ghost"
-                                        className="h-8 w-8 text-blue-600 bg-blue-50 hover:bg-blue-100"
-                                        onClick={() => handleUpdate(jlt)}
+                                        className="h-8 w-8 text-blue-600 bg-blue-500/10 hover:bg-blue-500/15"
+                                        onClick={() => handleUpdate(jlt)} aria-label="Save"
                                     >
                                         <Save className="h-4 w-4" />
                                     </Button>

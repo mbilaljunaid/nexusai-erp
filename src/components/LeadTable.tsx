@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Progress } from "@/components/ui/progress";
 import { 
   MoreHorizontal, 
   ArrowUpDown, 
@@ -216,12 +217,7 @@ export function LeadTable({ leads, onSelectLead, onBulkAction }: LeadTableProps)
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="w-12 h-2 bg-muted rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary rounded-full" 
-                          style={{ width: `${lead.score}%` }}
-                        />
-                      </div>
+                      <Progress value={lead.score} className="w-12 h-2" />
                       <span className="text-sm font-mono">{lead.score}</span>
                     </div>
                   </TableCell>
@@ -230,15 +226,15 @@ export function LeadTable({ leads, onSelectLead, onBulkAction }: LeadTableProps)
                   </TableCell>
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Call">
                         <Phone className="h-3 w-3" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Email">
                         <Mail className="h-3 w-3" />
                       </Button>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="More options">
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>

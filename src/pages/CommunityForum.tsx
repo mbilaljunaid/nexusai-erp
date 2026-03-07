@@ -317,11 +317,11 @@ export default function CommunityForum() {
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="flex flex-col items-center gap-1">
-                    <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "upvote" })} data-testid="button-upvote-post"><ThumbsUp className="w-5 h-5" /></Button>
+                    <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "upvote" })} data-testid="button-upvote-post" aria-label="Thumbs up"><ThumbsUp className="w-5 h-5" /></Button>
                     <span className="font-bold text-lg" data-testid="text-post-score">{(postDetail.upvotes || 0) - (postDetail.downvotes || 0)}</span>
-                    <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "downvote" })} data-testid="button-downvote-post"><ThumbsDown className="w-5 h-5" /></Button>
+                    <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "post", targetId: postDetail.id, voteType: "downvote" })} data-testid="button-downvote-post" aria-label="Thumbs down"><ThumbsDown className="w-5 h-5" /></Button>
                   </div>
-                  <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-destructive" onClick={(e) => { e.stopPropagation(); setFlagTarget({ type: "post", id: postDetail.id }); }} data-testid="button-flag-post"><Flag className="w-4 h-4" /></Button>
+                  <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-destructive" onClick={(e) => { e.stopPropagation(); setFlagTarget({ type: "post", id: postDetail.id }); }} data-testid="button-flag-post" aria-label="Flag"><Flag className="w-4 h-4" /></Button>
                 </div>
               </div>
             </CardHeader>
@@ -340,9 +340,9 @@ export default function CommunityForum() {
                 <CardContent className="pt-4">
                   <div className="flex gap-4">
                     <div className="flex flex-col items-center gap-1">
-                      <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "comment", targetId: comment.id, voteType: "upvote" })} data-testid={`button-upvote-comment-${comment.id}`}><ThumbsUp className="w-4 h-4" /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "comment", targetId: comment.id, voteType: "upvote" })} data-testid={`button-upvote-comment-${comment.id}`} aria-label="Thumbs up"><ThumbsUp className="w-4 h-4" /></Button>
                       <span className="font-medium">{(comment.upvotes || 0) - (comment.downvotes || 0)}</span>
-                      <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "comment", targetId: comment.id, voteType: "downvote" })} data-testid={`button-downvote-comment-${comment.id}`}><ThumbsDown className="w-4 h-4" /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => voteMutation.mutate({ targetType: "comment", targetId: comment.id, voteType: "downvote" })} data-testid={`button-downvote-comment-${comment.id}`} aria-label="Thumbs down"><ThumbsDown className="w-4 h-4" /></Button>
                       {comment.isAccepted ? <CheckCircle className="w-6 h-6 text-green-600 mt-2" /> : !postDetail.acceptedAnswerId && (
                         <Button size="sm" variant="outline" className="mt-2 text-xs" onClick={() => acceptAnswerMutation.mutate({ postId: postDetail.id, commentId: comment.id })} disabled={acceptAnswerMutation.isPending} data-testid={`button-accept-answer-${comment.id}`}><CheckCircle className="w-3 h-3 mr-1" />Accept</Button>
                       )}
@@ -419,7 +419,7 @@ export default function CommunityForum() {
                   <Button variant={selectedSpace === space.id ? "secondary" : "ghost"} className="flex-1 justify-start text-sm" onClick={() => { setSelectedSpace(space.id); setFilterBySubscribed(false); addToRecent(space.id); }} data-testid={`button-space-${space.slug}`}>
                     {getSpaceIcon(space.icon)} <span className="ml-2">{space.name}</span>
                   </Button>
-                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => saveSubscription(space.id, !subscribedSpaces.has(space.id))} data-testid={`button-subscribe-${space.slug}`}>
+                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => saveSubscription(space.id, !subscribedSpaces.has(space.id))} data-testid={`button-subscribe-${space.slug}`} aria-label="Toggle subscription">
                     {subscribedSpaces.has(space.id) ? <BellOff className="w-3 h-3" /> : <Bell className="w-3 h-3" />}
                   </Button>
                 </div>
@@ -548,7 +548,7 @@ export default function CommunityForum() {
                   onSearch={(filters) => setSearchQuery(filters.query || "")}
                 />
               </div>
-              <Button variant="outline" size="icon" className="lg:hidden" onClick={() => setShowMobileFilters(!showMobileFilters)} data-testid="button-mobile-filters"><Filter className="w-4 h-4" /></Button>
+              <Button variant="outline" size="icon" className="lg:hidden" onClick={() => setShowMobileFilters(!showMobileFilters)} data-testid="button-mobile-filters" aria-label="Filter"><Filter className="w-4 h-4" /></Button>
             </div>
 
             {showMobileFilters && (

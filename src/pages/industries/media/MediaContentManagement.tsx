@@ -22,7 +22,7 @@ export default function MediaPage() {
     >
       <DashboardWidget title="Active Library" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-blue-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Film className="h-4 w-4 text-blue-600" />
           </div>
           <div>
@@ -34,7 +34,7 @@ export default function MediaPage() {
 
       <DashboardWidget title="Audience Reach" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-emerald-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Eye className="h-4 w-4 text-emerald-600" />
           </div>
           <div>
@@ -46,7 +46,7 @@ export default function MediaPage() {
 
       <DashboardWidget title="Subscriber Base" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-indigo-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Users className="h-4 w-4 text-indigo-600" />
           </div>
           <div>
@@ -58,7 +58,7 @@ export default function MediaPage() {
 
       <DashboardWidget title="Monetization" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-amber-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <TrendingUp className="h-4 w-4 text-amber-600" />
           </div>
           <div>
@@ -98,7 +98,7 @@ export default function MediaPage() {
                   <Badge variant={item.status === "Active" ? "default" : "secondary"} className="text-[10px] uppercase font-mono">
                     {item.status || "Distribution"}
                   </Badge>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground">
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground" aria-label="Activity">
                     <Activity className="w-3 h-3" />
                   </Button>
                 </div>

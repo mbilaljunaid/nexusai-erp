@@ -156,7 +156,7 @@ export default function PlaybookBuilder() {
                             {playbooks.map((playbook) => (
                                 <div role="button" tabIndex={0}
                                     key={playbook.id}
-                                    className={cn(`p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-50 border-blue-500' : ''
+                                    className={cn(`p-3 border rounded-lg cursor-pointer hover:bg-gray-500/10 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-500/10 border-blue-500' : ''
                                         }`)}
                                     onClick={() => {
                                         setSelectedPlaybook(playbook);
@@ -283,7 +283,7 @@ export default function PlaybookBuilder() {
 
                                     <div className="space-y-3">
                                         {selectedPlaybook.actions.map((action, index) => (
-                                            <Card key={index} className="bg-gray-50">
+                                            <Card key={index} className="bg-slate-500/10">
                                                 <CardContent className="pt-4">
                                                     <div className="flex items-start space-x-3">
                                                         <div className="flex-1 space-y-3">

@@ -45,7 +45,7 @@ const STATUS_CFG: Record<string, string> = {
 };
 
 const RECON_CFG: Record<string, string> = {
-    Draft: 'bg-blue-50 text-blue-700',
+    Draft: 'bg-blue-500/10 text-blue-700',
     Reviewed: 'bg-amber-100 text-amber-600',
     Approved: 'bg-emerald-100 text-emerald-600',
 };
@@ -395,7 +395,7 @@ function DcmKpi({ label, value, colorClass, borderClass, alert }: { label: strin
 
 function ReconKpi({ label, value, colorClass, isText }: { label: string; value: number | string; colorClass: string; isText?: boolean }) {
     return (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 flex-1">
+        <div className="bg-gray-500/10 border border-gray-200 rounded-lg px-4 py-2.5 flex-1">
             <div className={cn(`font-[800] ${colorClass} ${isText ? 'text-base font-mono' : 'text-[22px]'}`)}>{value}</div>
             <div className="text-[11px] text-gray-400 mt-0.5">{label}</div>
         </div>

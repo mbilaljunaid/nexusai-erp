@@ -44,7 +44,6 @@ export function ProductForm() {
             });
         },
         onError: (err) => {
-            console.error(err);
             toast({ title: "Error", description: "Failed to create product", variant: "destructive" });
         }
     });

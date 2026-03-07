@@ -54,7 +54,6 @@ export function CampaignForm() {
             });
         },
         onError: (err) => {
-            console.error(err);
             toast({ title: "Error", description: "Failed to create campaign", variant: "destructive" });
         }
     });

@@ -137,7 +137,7 @@ export default function PerformanceCalibrationBoard() {
                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 placeholder="Find employee..."
-                                className="pl-9 bg-zinc-50 dark:bg-zinc-900"
+                                className="pl-9 bg-zinc-500/10 dark:bg-zinc-900"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -150,7 +150,7 @@ export default function PerformanceCalibrationBoard() {
                 </div>
 
                 <Card className="shadow-sm border-zinc-200 dark:border-zinc-800">
-                    <CardHeader className="border-b bg-zinc-50/50 dark:bg-zinc-900/20 pb-4">
+                    <CardHeader className="border-b bg-slate-500/10 dark:bg-zinc-900/20 pb-4">
                         <div className="flex justify-between items-center">
                             <CardTitle className="text-base flex items-center gap-2">Interactive 9-Box Grid</CardTitle>
                             <div className="flex gap-4 text-sm font-medium">
@@ -223,7 +223,7 @@ export default function PerformanceCalibrationBoard() {
                                                                                     <p className="text-sm font-semibold truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{emp.name}</p>
                                                                                     <p className="text-[10px] text-muted-foreground truncate">{emp.role}</p>
                                                                                 </div>
-                                                                                <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                                <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="More options">
                                                                                     <MoreHorizontal className="h-3 w-3" />
                                                                                 </Button>
                                                                             </div>

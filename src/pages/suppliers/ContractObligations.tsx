@@ -88,7 +88,7 @@ export default function ContractObligations() {
 
             {/* Upcoming alert banner */}
             {upcoming.length > 0 && (
-                <div className="bg-amber-50 border border-amber-300 rounded-xl px-3.5 py-2.5 mb-3.5 flex items-center gap-2">
+                <div className="bg-amber-500/10 border border-amber-300 rounded-xl px-3.5 py-2.5 mb-3.5 flex items-center gap-2">
                     <AlertTriangle size={14} color="#d97706" />
                     <span className="text-xs text-amber-800 font-semibold">{upcoming.length} obligation{upcoming.length !== 1 ? 's' : ''} due within 30 days</span>
                     <div className="flex gap-1.5 ml-2">
@@ -148,7 +148,7 @@ export default function ContractObligations() {
                         <Card key={ob.id} onClick={() => setSelected(sel ? null : ob)} className={cn(`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`)} style={{ borderLeftColor: cfg.color }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                             <div className="flex justify-between items-start mb-0.5">
                                 <div>
-                                    <span className="text-[13px] font-bold text-gray-900">{ob.title}</span>
+                                    <span className="text-[13px] font-bold text-gray-900 dark:text-gray-200">{ob.title}</span>
                                     <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 font-semibold">{ob.obligation_type}</span>
                                 </div>
                                 <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: cfg.bg, color: cfg.color }}>{ob.status}</span>

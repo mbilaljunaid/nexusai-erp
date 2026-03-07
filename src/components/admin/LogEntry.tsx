@@ -21,22 +21,22 @@ export default function LogEntry({ log }: LogEntryProps) {
     const getLevelColor = () => {
         switch (log.level) {
             case 'error':
-                return 'text-red-600 bg-red-50';
+                return 'text-red-600 bg-red-500/10';
             case 'warn':
-                return 'text-yellow-600 bg-yellow-50';
+                return 'text-yellow-600 bg-yellow-500/10';
             case 'info':
-                return 'text-blue-600 bg-blue-50';
+                return 'text-blue-600 bg-blue-500/10';
             case 'debug':
-                return 'text-gray-600 bg-gray-50';
+                return 'text-gray-600 bg-gray-500/10';
             default:
-                return 'text-gray-600 bg-gray-50';
+                return 'text-gray-600 bg-gray-500/10';
         }
     };
 
     const hasMetadata = log.metadata && Object.keys(log.metadata).length > 0;
 
     return (
-        <div className="px-4 py-3 hover:bg-gray-50">
+        <div className="px-4 py-3 hover:bg-gray-500/10">
             <div role="button" tabIndex={0}
                 className={cn(`flex items-start gap-3 ${hasMetadata ? 'cursor-pointer' : ''}`)}
                 onClick={() => hasMetadata && setExpanded(!expanded)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
@@ -59,7 +59,7 @@ export default function LogEntry({ log }: LogEntryProps) {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900 font-mono break-words">
+                    <p className="text-sm text-gray-900 dark:text-gray-200 font-mono break-words">
                         {log.message}
                     </p>
                     <div className="mt-1 flex items-center gap-4 text-xs text-gray-500">

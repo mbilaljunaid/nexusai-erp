@@ -42,7 +42,7 @@ export function ArInvoiceList() {
         {
             header: "Total Amount",
             cell: (inv) => (
-                <div className="font-mono font-bold text-emerald-900">
+                <div className="font-mono font-bold text-emerald-900 dark:text-emerald-200">
                     <span className="text-[10px] font-normal text-muted-foreground mr-0.5">$</span>
                     {parseFloat(String(inv.totalAmount || 0)).toLocaleString()}
                 </div>

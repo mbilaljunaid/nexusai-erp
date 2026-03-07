@@ -63,7 +63,7 @@ export function ProjectToGLForm({ project, onClose }: { project: Project; onClos
         <p className="text-sm text-muted-foreground mt-1">Record project costs in general ledger for financial reporting</p>
       </div>
 
-      <Card className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800">
+      <Card className="bg-purple-500/10 dark:bg-purple-950 border border-purple-200 dark:border-purple-800">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -117,7 +117,7 @@ export function ProjectToGLForm({ project, onClose }: { project: Project; onClos
             </div>
           </div>
 
-          <Card className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800">
+          <Card className="bg-yellow-500/10 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800">
             <CardContent className="pt-4">
               <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">
                 This creates a debit entry in GL account {accountCode} for project cost tracking and profit analysis. Links bidirectionally to project.

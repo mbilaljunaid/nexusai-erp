@@ -250,7 +250,7 @@ export default function ShipmentTrackingDashboard() {
                                         {activeShipments.slice(0, 10).map((shipment) => (
                                             <TableRow
                                                 key={shipment.shipmentId}
-                                                className="cursor-pointer hover:bg-slate-50"
+                                                className="cursor-pointer hover:bg-slate-500/10"
                                                 onClick={() => setSelectedShipment(shipment.shipmentId)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 {shipmentColumns.map((col) => (
@@ -337,7 +337,7 @@ export default function ShipmentTrackingDashboard() {
                                         {activeShipments.map((shipment) => (
                                             <TableRow
                                                 key={shipment.shipmentId}
-                                                className="cursor-pointer hover:bg-slate-50"
+                                                className="cursor-pointer hover:bg-slate-500/10"
                                                 onClick={() => setSelectedShipment(shipment.shipmentId)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 {shipmentColumns.map((col) => (

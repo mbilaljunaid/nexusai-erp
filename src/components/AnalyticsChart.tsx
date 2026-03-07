@@ -90,7 +90,7 @@ export function AnalyticsChart({
             </Select>
           )}
           {showExport && (
-            <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-export-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+            <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`button-export-${title.toLowerCase().replace(/\s+/g, '-')}`} aria-label="Download">
               <Download className="h-4 w-4" />
             </Button>
           )}

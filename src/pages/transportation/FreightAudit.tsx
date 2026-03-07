@@ -176,7 +176,7 @@ export default function FreightAudit() {
                                         </h3>
                                         <div className="space-y-2">
                                             {selectedInvoice.discrepancies.map((disc: any, i: number) => (
-                                                <div key={i} className="border rounded-lg p-3 bg-orange-50">
+                                                <div key={i} className="border rounded-lg p-3 bg-orange-500/10">
                                                     <div className="font-medium">{disc.type}</div>
                                                     <div className="text-sm text-muted-foreground">{disc.description}</div>
                                                     <div className="text-sm mt-1">

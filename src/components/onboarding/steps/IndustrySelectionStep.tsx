@@ -14,26 +14,26 @@ interface IndustrySelectionStepProps {
 
 const INDUSTRIES = [
     // Core Industries (11)
-    { id: "healthcare", name: "Healthcare", icon: Heart, color: "text-red-500", bgColor: "bg-red-50", description: "Patient & Clinical Management" },
-    { id: "retail", name: "Retail & Commerce", icon: ShoppingBag, color: "text-green-500", bgColor: "bg-green-50", description: "POS & Omnichannel" },
-    { id: "telecom", name: "Telecommunications", icon: Wifi, color: "text-blue-500", bgColor: "bg-blue-50", description: "Network & Billing" },
-    { id: "hospitality", name: "Hospitality", icon: Hotel, color: "text-purple-500", bgColor: "bg-purple-50", description: "Reservations & Guest CRM" },
-    { id: "logistics", name: "Logistics", icon: Boxes, color: "text-orange-500", bgColor: "bg-orange-50", description: "Shipping & Supply Chain" },
-    { id: "automotive", name: "Automotive", icon: Car, color: "text-slate-500", bgColor: "bg-slate-50", description: "Production & Sales" },
-    { id: "banking", name: "Banking & Finance", icon: Landmark, color: "text-yellow-500", bgColor: "bg-yellow-50", description: "Core Banking & Loans" },
-    { id: "insurance", name: "Insurance", icon: Shield, color: "text-indigo-500", bgColor: "bg-indigo-50", description: "Policies & Claims" },
-    { id: "government", name: "Government", icon: Landmark, color: "text-teal-500", bgColor: "bg-teal-50", description: "Citizen Services" },
-    { id: "education", name: "Education", icon: GraduationCap, color: "text-violet-500", bgColor: "bg-violet-50", description: "Admissions & Faculty" },
-    { id: "energy", name: "Energy & Utilities", icon: Flame, color: "text-red-600", bgColor: "bg-red-50", description: "Grid Ops & Trading" },
+    { id: "healthcare", name: "Healthcare", icon: Heart, color: "text-red-500", bgColor: "bg-red-500/10", description: "Patient & Clinical Management" },
+    { id: "retail", name: "Retail & Commerce", icon: ShoppingBag, color: "text-green-500", bgColor: "bg-green-500/10", description: "POS & Omnichannel" },
+    { id: "telecom", name: "Telecommunications", icon: Wifi, color: "text-blue-500", bgColor: "bg-blue-500/10", description: "Network & Billing" },
+    { id: "hospitality", name: "Hospitality", icon: Hotel, color: "text-purple-500", bgColor: "bg-purple-500/10", description: "Reservations & Guest CRM" },
+    { id: "logistics", name: "Logistics", icon: Boxes, color: "text-orange-500", bgColor: "bg-orange-500/10", description: "Shipping & Supply Chain" },
+    { id: "automotive", name: "Automotive", icon: Car, color: "text-slate-500", bgColor: "bg-slate-500/10", description: "Production & Sales" },
+    { id: "banking", name: "Banking & Finance", icon: Landmark, color: "text-yellow-500", bgColor: "bg-yellow-500/10", description: "Core Banking & Loans" },
+    { id: "insurance", name: "Insurance", icon: Shield, color: "text-indigo-500", bgColor: "bg-indigo-500/10", description: "Policies & Claims" },
+    { id: "government", name: "Government", icon: Landmark, color: "text-teal-500", bgColor: "bg-teal-500/10", description: "Citizen Services" },
+    { id: "education", name: "Education", icon: GraduationCap, color: "text-violet-500", bgColor: "bg-violet-500/10", description: "Admissions & Faculty" },
+    { id: "energy", name: "Energy & Utilities", icon: Flame, color: "text-red-600", bgColor: "bg-red-500/10", description: "Grid Ops & Trading" },
     // Phase 5 Additions (4)
-    { id: "real_estate", name: "Real Estate", icon: Hotel, color: "text-emerald-500", bgColor: "bg-emerald-50", description: "Property & Leasing" },
-    { id: "construction", name: "Construction", icon: Boxes, color: "text-amber-500", bgColor: "bg-amber-50", description: "Project & Site Mgmt" },
-    { id: "saas", name: "SaaS", icon: Wifi, color: "text-sky-500", bgColor: "bg-sky-50", description: "Subscriptions & CS" },
-    { id: "ecommerce", name: "E-commerce", icon: ShoppingBag, color: "text-pink-500", bgColor: "bg-pink-50", description: "Online Store" },
+    { id: "real_estate", name: "Real Estate", icon: Hotel, color: "text-emerald-500", bgColor: "bg-emerald-500/10", description: "Property & Leasing" },
+    { id: "construction", name: "Construction", icon: Boxes, color: "text-amber-500", bgColor: "bg-amber-500/10", description: "Project & Site Mgmt" },
+    { id: "saas", name: "SaaS", icon: Wifi, color: "text-sky-500", bgColor: "bg-sky-500/10", description: "Subscriptions & CS" },
+    { id: "ecommerce", name: "E-commerce", icon: ShoppingBag, color: "text-pink-500", bgColor: "bg-pink-500/10", description: "Online Store" },
     // From industryConfig.ts (3)
-    { id: "manufacturing", name: "Manufacturing", icon: Boxes, color: "text-gray-500", bgColor: "bg-gray-50", description: "Production & MRP" },
-    { id: "financial_services", name: "Financial Services", icon: Landmark, color: "text-green-600", bgColor: "bg-green-50", description: "Investment & Wealth" },
-    { id: "technology", name: "Technology", icon: Wifi, color: "text-indigo-600", bgColor: "bg-indigo-50", description: "Software & IT" },
+    { id: "manufacturing", name: "Manufacturing", icon: Boxes, color: "text-gray-500", bgColor: "bg-gray-500/10", description: "Production & MRP" },
+    { id: "financial_services", name: "Financial Services", icon: Landmark, color: "text-green-600", bgColor: "bg-green-500/10", description: "Investment & Wealth" },
+    { id: "technology", name: "Technology", icon: Wifi, color: "text-indigo-600", bgColor: "bg-indigo-500/10", description: "Software & IT" },
 ];
 
 export function IndustrySelectionStep({ data, onNext, onBack }: IndustrySelectionStepProps) {
@@ -52,7 +52,6 @@ export function IndustrySelectionStep({ data, onNext, onBack }: IndustrySelectio
                 industryId: selectedIndustry || undefined,
             });
         } catch (error) {
-            console.error("Failed to save industry selection:", error);
         } finally {
             setIsLoading(false);
         }

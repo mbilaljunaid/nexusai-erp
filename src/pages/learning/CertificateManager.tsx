@@ -86,7 +86,7 @@ export default function CertificateManager() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {activeCerts.map((cert: Certificate) => (
-                            <Card key={cert.id} className="border-green-200 bg-green-50/30">
+                            <Card key={cert.id} className="border-green-200 bg-green-500/10">
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
@@ -136,7 +136,7 @@ export default function CertificateManager() {
                     <h2 className="text-xl font-semibold">Expired Certificates</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {expiredCerts.map((cert: Certificate) => (
-                            <Card key={cert.id} className="border-red-200 bg-red-50/30">
+                            <Card key={cert.id} className="border-red-200 bg-red-500/10">
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">

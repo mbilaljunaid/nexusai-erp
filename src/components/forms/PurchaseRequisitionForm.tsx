@@ -180,7 +180,7 @@ export function PurchaseRequisitionForm() {
                 <Label className="text-xs">Total</Label>
                 <div className="h-9 flex items-center font-semibold">${line.total.toFixed(2)}</div>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => removeLine(line.id)} data-testid={`button-delete-${line.id}`}>
+              <Button size="icon" variant="ghost" onClick={() => removeLine(line.id)} data-testid={`button-delete-${line.id}`} aria-label="Delete">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>

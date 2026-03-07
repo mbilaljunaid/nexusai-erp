@@ -79,7 +79,6 @@ export function QuoteForm({ opportunityId }: QuoteFormProps) {
             });
         },
         onError: (err) => {
-            console.error(err);
             toast({ title: "Error", description: "Failed to create quote", variant: "destructive" });
         }
     });

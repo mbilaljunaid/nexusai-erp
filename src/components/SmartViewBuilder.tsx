@@ -107,7 +107,7 @@ export function SmartViewBuilder({ formId, onViewSelect }: SmartViewBuilderProps
                   size="icon"
                   variant="ghost"
                   onClick={() => deleteViewMutation.mutate(view.id)}
-                  data-testid={`button-delete-smartview-${view.id}`}
+                  data-testid={`button-delete-smartview-${view.id}`} aria-label="Delete"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

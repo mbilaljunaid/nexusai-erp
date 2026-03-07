@@ -257,10 +257,10 @@ export default function FundsCheckInterface() {
                                 </div>
 
                                 {!checkResult.available && checkResult.overrunAmount && (
-                                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <div className="p-3 bg-red-500/10 border border-red-200 rounded-lg">
                                         <div className="flex items-center gap-2 mb-1">
                                             <AlertTriangle className="h-4 w-4 text-red-600" />
-                                            <span className="text-sm font-bold text-red-900">Budget Overrun</span>
+                                            <span className="text-sm font-bold text-red-900 dark:text-red-200">Budget Overrun</span>
                                         </div>
                                         <p className="text-sm text-red-700">
                                             This transaction would exceed the budget by {formatCurrency(checkResult.overrunAmount)}

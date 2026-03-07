@@ -16,7 +16,7 @@ export default function PurchaseOrdersDetail() {
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Link to="/erp">
-          <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="icon" aria-label="Go back"><ArrowLeft className="h-4 w-4" /></Button>
         </Link>
         <div>
           <h1 className="text-3xl font-semibold">Purchase Orders</h1>

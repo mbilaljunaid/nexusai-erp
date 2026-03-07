@@ -99,7 +99,7 @@ export function AuditDetailsSideSheet({ entry, isOpen, onOpenChange }: AuditDeta
                             {entry.changes && Object.keys(entry.changes).length > 0 ? (
                                 <AuditDiffViewer changes={entry.changes} />
                             ) : (
-                                <div className="bg-slate-50 rounded-lg border p-6 text-center italic text-muted-foreground text-sm">
+                                <div className="bg-slate-500/10 rounded-lg border p-6 text-center italic text-muted-foreground text-sm">
                                     No granular property changes recorded for this entry.
                                 </div>
                             )}
@@ -109,7 +109,7 @@ export function AuditDetailsSideSheet({ entry, isOpen, onOpenChange }: AuditDeta
                     {entry.metadata && (
                         <div className="space-y-2">
                             <h4 className="text-sm font-bold">Extended Metadata</h4>
-                            <div className="bg-slate-50 rounded-lg border p-4 font-mono text-xs overflow-auto">
+                            <div className="bg-slate-500/10 rounded-lg border p-4 font-mono text-xs overflow-auto">
                                 <pre>{JSON.stringify(entry.metadata, null, 2)}</pre>
                             </div>
                         </div>

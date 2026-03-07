@@ -164,7 +164,7 @@ export default function BenefitsProgramSetup() {
         return (
             <div key={node.id} className="ml-4">
                 <div role="button" tabIndex={0}
-                    className={cn(`flex items-center gap-2 py-1.5 px-2 rounded-md cursor-pointer group transition-colors ${isSelected ? 'bg-zinc-100 dark:bg-zinc-800' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`)}
+                    className={cn(`flex items-center gap-2 py-1.5 px-2 rounded-md cursor-pointer group transition-colors ${isSelected ? 'bg-zinc-100 dark:bg-zinc-800' : 'hover:bg-zinc-500/10 dark:hover:bg-zinc-800/50'}`)}
                     onClick={() => setSelectedNodeId(node.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 >
                     <div className="w-4 h-4 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100" onClick={(e) => { e.stopPropagation(); toggleNode(node); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
@@ -219,10 +219,10 @@ export default function BenefitsProgramSetup() {
                     {/* Left Panel: Tree Navigator */}
                     <div className="lg:col-span-4 space-y-4">
                         <Card className="h-[700px] flex flex-col shadow-sm">
-                            <CardHeader className="py-4 border-b bg-zinc-50/50 dark:bg-zinc-900/20">
+                            <CardHeader className="py-4 border-b bg-slate-500/10 dark:bg-zinc-900/20">
                                 <CardTitle className="text-base flex items-center justify-between">
                                     <span>P-PT-P-O Navigator</span>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7"><Plus className="h-4 w-4" /></Button>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Add"><Plus className="h-4 w-4" /></Button>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-4 flex-1 overflow-auto -ml-4">
@@ -244,7 +244,7 @@ export default function BenefitsProgramSetup() {
                                         </div>
                                         <div className="flex gap-2">
                                             <Button variant="outline" size="sm"><Settings2 className="h-4 w-4 mr-2" /> Design Rules</Button>
-                                            <Button variant="destructive" size="sm" className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200">
+                                            <Button variant="destructive" size="sm" className="bg-red-500/10 text-red-600 hover:bg-red-500/15 border border-red-200">
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>

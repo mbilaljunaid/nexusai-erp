@@ -106,15 +106,15 @@ export default function BudgetReconciliation() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Items</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{totalItems}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{totalItems}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <CheckCircle2 className="h-3 w-3" />
@@ -122,11 +122,11 @@ export default function BudgetReconciliation() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{matchedCount}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{matchedCount}</div>
                             <div className="text-xs text-green-600">{matchRate}% match rate</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <AlertTriangle className="h-3 w-3" />
@@ -134,10 +134,10 @@ export default function BudgetReconciliation() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{unmatchedCount}</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{unmatchedCount}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase flex items-center gap-1">
                                 <XCircle className="h-3 w-3" />
@@ -145,7 +145,7 @@ export default function BudgetReconciliation() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{exceptionCount}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{exceptionCount}</div>
                         </CardContent>
                     </Card>
                 </div>

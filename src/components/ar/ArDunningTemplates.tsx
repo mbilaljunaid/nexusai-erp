@@ -112,7 +112,7 @@ export function ArDunningTemplates() {
                             </div>
                             <div className="space-y-4">
                                 <label className="text-sm font-medium">Template Preview</label>
-                                <div className="h-48 p-4 rounded-md border border-slate-200 bg-slate-50 overflow-y-auto text-sm whitespace-pre-wrap">
+                                <div className="h-48 p-4 rounded-md border border-slate-200 bg-slate-500/10 overflow-y-auto text-sm whitespace-pre-wrap">
                                     <div className="font-bold border-b pb-2 mb-2">Subject: {formData.subject || "(No Subject)"}</div>
                                     {formData.content || "(No Content)"}
                                 </div>

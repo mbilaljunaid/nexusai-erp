@@ -49,7 +49,7 @@ export default function LeaseComplianceDashboard() {
             title="Lease Compliance Dashboard"
             description="IFRS 16 and ASC 842 financial disclosure overview"
             actions={
-                <div className="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 rounded-full border border-green-200 dark:border-green-900">
+                <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 dark:bg-green-950/20 text-green-700 dark:text-green-400 rounded-full border border-green-200 dark:border-green-900">
                     <ShieldCheck className="h-4 w-4" />
                     <span className="text-sm font-semibold">Audit Compliant - Period Q1 2026</span>
                 </div>

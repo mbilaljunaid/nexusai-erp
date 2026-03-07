@@ -250,7 +250,7 @@ export function RiskDashboard({ projectId }: RiskDashboardProps) {
             {/* AI Insights */}
             <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
                 <CardHeader>
-                    <CardTitle className="text-sm flex items-center gap-2 text-blue-900">
+                    <CardTitle className="text-sm flex items-center gap-2 text-blue-900 dark:text-blue-200">
                         <Zap className="h-4 w-4" />
                         AI-Powered Insights
                     </CardTitle>

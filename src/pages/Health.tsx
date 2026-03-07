@@ -138,7 +138,7 @@ export default function Health() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-md bg-green-500/10">
+              <div className="p-2 rounded-md bg-/15">
                 <Shield className="h-4 w-4 text-green-500" />
               </div>
               <div>
@@ -151,7 +151,7 @@ export default function Health() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-md bg-blue-500/10">
+              <div className="p-2 rounded-md bg-/15">
                 <Clock className="h-4 w-4 text-blue-500" />
               </div>
               <div>
@@ -241,7 +241,7 @@ export default function Health() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-3 rounded-md bg-green-500/10 border border-green-500/20">
+              <div className="p-3 rounded-md bg-/15 border border-green-500/20">
                 <p className="text-sm font-medium">Auto-recovery enabled</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   System will automatically attempt to recover from transient failures.

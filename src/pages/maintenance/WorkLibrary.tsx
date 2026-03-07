@@ -76,7 +76,6 @@ export function WorkLibrary() {
                 setDefinitions(data);
             }
         } catch (error) {
-            console.error("Failed to load work definitions:", error);
         } finally {
             setLoading(false);
         }
@@ -96,7 +95,6 @@ export function WorkLibrary() {
                 });
             }
         } catch (error) {
-            console.error("Failed to load details:", error);
         }
     };
 
@@ -358,7 +356,7 @@ export function WorkLibrary() {
                                         <CardTitle className="text-base">Notes & Special Instructions</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="p-3 bg-yellow-50 rounded border border-yellow-200">
+                                        <div className="p-3 bg-yellow-500/10 rounded border border-yellow-200">
                                             <p className="text-sm">{selectedDefinition.notes}</p>
                                         </div>
                                     </CardContent>

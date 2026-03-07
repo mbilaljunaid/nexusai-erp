@@ -126,7 +126,7 @@ export function ArRevenueScheduleList({ invoiceId }: ArRevenueScheduleListProps)
                                 variant="ghost"
                                 className="h-8 w-8 text-primary hover:text-primary/80 hover:bg-primary/10"
                                 onClick={() => recognizeMutation.mutate(schedule.id)}
-                                disabled={recognizeMutation.isPending}
+                                disabled={recognizeMutation.isPending} aria-label="Play"
                             >
                                 <PlayCircle className="h-4 w-4" />
                             </Button>

@@ -122,7 +122,6 @@ export function MeterReadingModule() {
             const apiMeters = await meterService.getMeters();
             setMeters(apiMeters.map(mapApiMeter));
         } catch (error) {
-            console.error("Failed to load meters:", error);
             setMeters([]); // Fallback to empty array
         } finally {
             setLoading(false);
@@ -135,7 +134,6 @@ export function MeterReadingModule() {
             const apiReadings = await meterService.getMeterReadings(meterId);
             setReadings(apiReadings.map(mapApiReading));
         } catch (error) {
-            console.error("Failed to load readings:", error);
             setReadings([]); // Fallback to empty array
         }
     };
@@ -171,7 +169,6 @@ export function MeterReadingModule() {
             // Reset form
             form.reset();
         } catch (error) {
-            console.error("Failed to submit reading:", error);
             // TODO: Show error toast
         } finally {
             setSubmitting(false);

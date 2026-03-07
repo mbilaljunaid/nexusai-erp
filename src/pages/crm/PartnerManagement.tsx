@@ -98,7 +98,7 @@ export default function PartnerManagement() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-1">
                                 <Users className="h-3 w-3" />
@@ -106,11 +106,11 @@ export default function PartnerManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{partners.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{partners.length}</div>
                             <div className="text-xs text-blue-700">{activePartners.length} active</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase flex items-center gap-1">
                                 <Award className="h-3 w-3" />
@@ -118,11 +118,11 @@ export default function PartnerManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{platinumPartners.length}</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{platinumPartners.length}</div>
                             <div className="text-xs text-purple-700">Top performers</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <DollarSign className="h-3 w-3" />
@@ -130,11 +130,11 @@ export default function PartnerManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">${(totalRevenue / 1000000).toFixed(1)}M</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">${(totalRevenue / 1000000).toFixed(1)}M</div>
                             <div className="text-xs text-green-700">Total sourced</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <TrendingUp className="h-3 w-3" />
@@ -142,7 +142,7 @@ export default function PartnerManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{totalDeals}</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{totalDeals}</div>
                             <div className="text-xs text-amber-700">All time</div>
                         </CardContent>
                     </Card>
@@ -296,7 +296,7 @@ export default function PartnerManagement() {
                     <TabsContent value="platinum">
                         <div className="grid gap-4">
                             {platinumPartners.map((partner) => (
-                                <Card key={partner.id} className="border-l-4 border-l-purple-500 bg-purple-50/30">
+                                <Card key={partner.id} className="border-l-4 border-l-purple-500 bg-purple-500/10">
                                     <CardHeader>
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
@@ -320,7 +320,7 @@ export default function PartnerManagement() {
                                                 <div className="text-muted-foreground">{partner.contactEmail}</div>
                                             </div>
                                             <div className="text-right">
-                                                <div className="text-2xl font-bold text-purple-900">{partner.winRate}%</div>
+                                                <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{partner.winRate}%</div>
                                                 <div className="text-xs text-muted-foreground">Win Rate</div>
                                             </div>
                                         </div>

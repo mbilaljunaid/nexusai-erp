@@ -50,7 +50,7 @@ export function GLMetrics() {
             value: stats?.totalJournals || 0,
             icon: FileText,
             color: "text-blue-600",
-            bg: "bg-blue-50",
+            bg: "bg-blue-500/10",
             trend: "+12%",
             trendUp: true
         },
@@ -59,7 +59,7 @@ export function GLMetrics() {
             value: stats?.postedJournals || 0,
             icon: CheckCircle2,
             color: "text-emerald-600",
-            bg: "bg-emerald-50",
+            bg: "bg-emerald-500/10",
             trend: "94%",
             trendUp: true
         },
@@ -68,7 +68,7 @@ export function GLMetrics() {
             value: stats?.unpostedJournals || 0,
             icon: AlertCircle,
             color: "text-amber-600",
-            bg: "bg-amber-50",
+            bg: "bg-amber-500/10",
             trend: "Active",
             trendUp: false
         },
@@ -77,7 +77,7 @@ export function GLMetrics() {
             value: stats?.openPeriods || 0,
             icon: Calendar,
             color: "text-indigo-600",
-            bg: "bg-indigo-50",
+            bg: "bg-indigo-500/10",
             trend: "Q1 2024",
             trendUp: true
         }
@@ -93,14 +93,14 @@ export function GLMetrics() {
                             <div className={cn(`p-2 rounded-xl ${card.bg}`)}>
                                 <card.icon className={cn(`h-5 w-5 ${card.color}`)} />
                             </div>
-                            <div className={cn(`flex items-center text-[10px] font-bold px-2 py-1 rounded-full ${card.trendUp ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`)}>
+                            <div className={cn(`flex items-center text-[10px] font-bold px-2 py-1 rounded-full ${card.trendUp ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-100 text-slate-500'}`)}>
                                 {card.trendUp ? <ArrowUpRight className="h-3 w-3 mr-0.5" /> : null}
                                 {card.trend}
                             </div>
                         </div>
                         <div className="space-y-1">
                             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{card.title}</p>
-                            <h3 className="text-2xl font-bold text-slate-900 tracking-tight">{card.value}</h3>
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-200 tracking-tight">{card.value}</h3>
                         </div>
                         <div className="mt-4">
                             <Progress

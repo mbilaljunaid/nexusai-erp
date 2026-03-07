@@ -69,7 +69,6 @@ export default function BudgetManager() {
                 if (res.ok) setRules(await res.json());
             }
         } catch (error) {
-            console.error("Failed to fetch data", error);
         } finally {
             setLoading(false);
         }

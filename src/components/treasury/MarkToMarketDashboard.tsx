@@ -223,9 +223,9 @@ export function MarkToMarketDashboard() {
             cell: (item) => {
                 const colors: Record<string, string> = {
                     DRAFT: "bg-slate-100 text-slate-700",
-                    CONFIRMED: "bg-blue-50 text-blue-700",
-                    ACTIVE: "bg-emerald-50 text-emerald-700",
-                    SETTLED: "bg-purple-50 text-purple-700",
+                    CONFIRMED: "bg-blue-500/10 text-blue-700",
+                    ACTIVE: "bg-emerald-500/10 text-emerald-700",
+                    SETTLED: "bg-purple-500/10 text-purple-700",
                 };
                 return (
                     <Badge className={colors[item.status || "DRAFT"] || colors.DRAFT}>
@@ -439,7 +439,7 @@ export function MarkToMarketDashboard() {
             </div>
 
             {/* GL Integration Preview */}
-            <Card className="bg-amber-50/50 border-amber-200">
+            <Card className="bg-amber-500/10 border-amber-200">
                 <CardHeader>
                     <CardTitle className="text-sm flex items-center gap-2">
                         <AlertCircle className="w-4 h-4 text-amber-600" />

@@ -227,40 +227,40 @@ export default function EliminationRuleBuilder() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Rules</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{rules.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{rules.length}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Enabled</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                                 {rules.filter(r => r.enabled !== false).length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Disabled</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">
                                 {rules.filter(r => r.enabled === false).length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Ledger Sets</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">
                                 {new Set(rules.map(r => r.ledgerSetId)).size}
                             </div>
                         </CardContent>

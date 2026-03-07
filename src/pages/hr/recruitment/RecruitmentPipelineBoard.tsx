@@ -163,12 +163,12 @@ export default function RecruitmentPipelineBoard() {
                                                         <div className="flex justify-between items-start">
                                                             <div className="flex gap-3">
                                                                 <Avatar className="h-9 w-9 border-2 border-white shadow-sm ring-1 ring-slate-100">
-                                                                    <AvatarFallback className="bg-blue-50 text-blue-700 font-bold text-xs">
+                                                                    <AvatarFallback className="bg-blue-500/10 text-blue-700 font-bold text-xs">
                                                                         {app.candidate.firstName[0]}{app.candidate.lastName[0]}
                                                                     </AvatarFallback>
                                                                 </Avatar>
                                                                 <div>
-                                                                    <p className="font-bold text-sm tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                                    <p className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-200 group-hover:text-blue-600 transition-colors">
                                                                         {app.candidate.firstName} {app.candidate.lastName}
                                                                     </p>
                                                                     <p className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mt-0.5">
@@ -177,7 +177,7 @@ export default function RecruitmentPipelineBoard() {
                                                                     </p>
                                                                 </div>
                                                             </div>
-                                                            <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Next">
                                                                 <ChevronRight className="h-4 w-4" />
                                                             </Button>
                                                         </div>
@@ -199,10 +199,10 @@ export default function RecruitmentPipelineBoard() {
 
                                                         <div className="flex items-center justify-between pt-2 border-t border-slate-50">
                                                             <div className="flex gap-1.5">
-                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-slate-200">
+                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-slate-200" aria-label="Email">
                                                                     <Mail className="h-3.5 w-3.5 text-slate-500" />
                                                                 </Button>
-                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-slate-200">
+                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-slate-200" aria-label="Calendar">
                                                                     <Calendar className="h-3.5 w-3.5 text-slate-500" />
                                                                 </Button>
                                                             </div>
@@ -210,7 +210,7 @@ export default function RecruitmentPipelineBoard() {
                                                                 <Button
                                                                     size="sm"
                                                                     variant="ghost"
-                                                                    className="h-7 px-2 text-[10px] font-bold uppercase text-blue-600 hover:text-blue-700 hover:bg-blue-50 gap-1.5"
+                                                                    className="h-7 px-2 text-[10px] font-bold uppercase text-blue-600 hover:text-blue-700 hover:bg-blue-500/10 gap-1.5"
                                                                     onClick={() => handleMove(app.id, stage)}
                                                                 >
                                                                     Move Forward

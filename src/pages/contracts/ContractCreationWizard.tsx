@@ -245,7 +245,7 @@ export default function ContractCreationWizard() {
                                 {formData.description && (
                                     <div className="text-sm">
                                         <span className="text-muted-foreground">Description:</span>
-                                        <p className="mt-1 p-3 bg-slate-50 rounded border">{formData.description}</p>
+                                        <p className="mt-1 p-3 bg-slate-500/10 rounded border">{formData.description}</p>
                                     </div>
                                 )}
                             </div>

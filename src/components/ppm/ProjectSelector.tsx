@@ -65,7 +65,7 @@ export function ProjectSelector({ value, onChange }: ProjectSelectorProps) {
                         </div>
                         <div className="flex flex-col items-start gap-0.5">
                             <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Project</span>
-                            <span className="font-semibold text-slate-900 truncate max-w-44">
+                            <span className="font-semibold text-slate-900 dark:text-slate-200 truncate max-w-44">
                                 {isLoading ? "Loading..." : selectedProject ? selectedProject.name : "Select Project..."}
                             </span>
                         </div>

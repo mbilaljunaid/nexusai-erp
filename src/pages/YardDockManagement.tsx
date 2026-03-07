@@ -97,7 +97,7 @@ export default function YardDockManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={a.status === "completed" ? "default" : "secondary"} className="text-xs">{a.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${a.id}`} className="h-7 w-7" onClick={() => deleteMutation.mutate(a.id)}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${a.id}`} className="h-7 w-7" onClick={() => deleteMutation.mutate(a.id)} aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

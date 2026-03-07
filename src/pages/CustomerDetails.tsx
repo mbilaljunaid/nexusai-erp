@@ -33,7 +33,7 @@ export default function CustomerDetails() {
     >
             <div className="flex items-center gap-4">
                 <Link href="/finance/accounts-receivable">
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" aria-label="Go back">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                 </Link>

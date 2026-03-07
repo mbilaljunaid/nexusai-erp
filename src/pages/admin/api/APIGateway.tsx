@@ -111,7 +111,7 @@ export default function APIGateway() {
                       variant="ghost"
                       onClick={() => toggleSecret(key.id)}
                       data-testid={`button-toggle-${key.id}`}
-                      className="h-8 w-8"
+                      className="h-8 w-8" aria-label="Toggle secret visibility"
                     >
                       {showSecrets.includes(key.id) ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </Button>
@@ -120,7 +120,7 @@ export default function APIGateway() {
                       variant="ghost"
                       onClick={() => copyToClipboard(key.key)}
                       data-testid={`button-copy-${key.id}`}
-                      className="h-8 w-8"
+                      className="h-8 w-8" aria-label="Copy"
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
@@ -141,7 +141,7 @@ export default function APIGateway() {
                     onClick={() => deleteMutation.mutate(key.id)}
                     disabled={deleteMutation.isPending}
                     data-testid={`button-delete-${key.id}`}
-                    className="h-8 w-8 text-red-500"
+                    className="h-8 w-8 text-red-500" aria-label="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

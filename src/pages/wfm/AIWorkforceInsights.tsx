@@ -101,7 +101,7 @@ export default function AIWorkforceInsights() {
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
-                        <div className="mt-4 p-4 bg-slate-50 rounded-lg dark:bg-slate-900 border">
+                        <div className="mt-4 p-4 bg-slate-500/10 rounded-lg dark:bg-slate-900 border">
                             <div className="flex justify-between items-center">
                                 <span className="text-sm font-medium">Prediction for {format(date, "MMM dd")}</span>
                                 <span className="text-2xl font-bold text-blue-600">
@@ -131,7 +131,7 @@ export default function AIWorkforceInsights() {
                         ) : (
                             <div className="space-y-4">
                                 {riskScan?.status === "SAFE" ? (
-                                    <Alert className="bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300">
+                                    <Alert className="bg-green-500/10 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300">
                                         <CheckCircle className="h-4 w-4" />
                                         <AlertTitle>All Clear</AlertTitle>
                                         <AlertDescription>No immediate fatigue risks detected for selected group.</AlertDescription>
@@ -150,11 +150,11 @@ export default function AIWorkforceInsights() {
                                 <div className="mt-4">
                                     <h4 className="text-sm font-semibold mb-2">Recent Scans</h4>
                                     <div className="space-y-2">
-                                        <div className="flex justify-between text-sm p-2 border rounded hover:bg-slate-50 dark:hover:bg-slate-900">
+                                        <div className="flex justify-between text-sm p-2 border rounded hover:bg-slate-500/10 dark:hover:bg-slate-900">
                                             <span>Engineering Dept</span>
                                             <span className="text-green-600">Safe</span>
                                         </div>
-                                        <div className="flex justify-between text-sm p-2 border rounded hover:bg-slate-50 dark:hover:bg-slate-900">
+                                        <div className="flex justify-between text-sm p-2 border rounded hover:bg-slate-500/10 dark:hover:bg-slate-900">
                                             <span>Support Team</span>
                                             <span className="text-green-600">Safe</span>
                                         </div>

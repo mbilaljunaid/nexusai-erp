@@ -96,7 +96,7 @@ export default function ShoppingCartCheckout() {
                 <p className="font-semibold">{item.productId}</p>
                 <p className="text-xs text-muted-foreground">{item.quantity} x ${item.price} = ${(item.quantity * item.price).toFixed(2)}</p>
               </div>
-              <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`} className="h-7 w-7">
+              <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`} className="h-7 w-7" aria-label="Delete">
                 <Trash2 className="w-3 h-3" />
               </Button>
             </div>

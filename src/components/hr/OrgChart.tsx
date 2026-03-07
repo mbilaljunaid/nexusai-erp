@@ -32,7 +32,7 @@ const OrgTreeNode: React.FC<{ node: OrgNode; level: number }> = ({ node, level }
     return (
         <div className="space-y-2">
             <div
-                className={cn(`flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-background hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors max-w-md ml-${level * 8}`)}
+                className={cn(`flex items-center gap-4 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-background hover:bg-zinc-500/10 dark:hover:bg-zinc-900 transition-colors max-w-md ml-${level * 8}`)}
                 style={{ marginLeft: `${level * 2}rem` }}
             >
                 <Avatar className="h-10 w-10">
@@ -45,7 +45,7 @@ const OrgTreeNode: React.FC<{ node: OrgNode; level: number }> = ({ node, level }
                 {hasChildren && (
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500"
+                        className="p-1 hover:bg-zinc-500/15 dark:hover:bg-zinc-800 rounded-lg text-zinc-500"
                     >
                         {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     </button>

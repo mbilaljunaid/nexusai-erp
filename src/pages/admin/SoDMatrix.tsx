@@ -155,8 +155,8 @@ export default function SoDMatrix() {
                         <CardHeader className="pb-2">
                             <div className="flex justify-between items-start">
                                 <Badge variant="outline" className={
-                                    rule.riskLevel === 'CRITICAL' ? 'text-red-600 border-red-200 bg-red-50' :
-                                        'text-amber-600 border-amber-200 bg-amber-50'
+                                    rule.riskLevel === 'CRITICAL' ? 'text-red-600 border-red-200 bg-red-500/10' :
+                                        'text-amber-600 border-amber-200 bg-amber-500/10'
                                 }>
                                     {rule.riskLevel} RISK
                                 </Badge>
@@ -164,7 +164,7 @@ export default function SoDMatrix() {
                                     variant="ghost"
                                     size="icon"
                                     className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-600"
-                                    onClick={() => deleteRule.mutate(rule.id)}
+                                    onClick={() => deleteRule.mutate(rule.id)} aria-label="Delete"
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </Button>

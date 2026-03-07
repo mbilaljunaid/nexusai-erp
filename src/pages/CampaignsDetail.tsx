@@ -45,7 +45,7 @@ export default function CampaignsDetail() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pb-4 border-b">
         <div className="flex items-center gap-2">
           <Link href="/crm">
-            <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors"><ArrowLeft className="h-4 w-4" /></Button>
+            <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors" aria-label="Go back"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Marketing Campaigns</h1>
@@ -146,7 +146,7 @@ export default function CampaignsDetail() {
                 <div className={cn(`h-1.5 w-full ${campaign.status ==='In Progress' ?'bg-gradient-to-r from-purple-500 to-pink-600' :'bg-muted'}`)} />
                 <CardContent className="p-5 flex flex-col flex-1">
                   <div className="flex justify-between items-start mb-4">
-                    <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${campaign.status ==='In Progress' ?'bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300' :'bg-muted text-muted-foreground'}`)}>
+                    <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${campaign.status ==='In Progress' ?'bg-purple-500/10 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300' :'bg-muted text-muted-foreground'}`)}>
                       <Megaphone className="h-6 w-6" />
                     </div>
                     <Badge variant={campaign.status ==="In Progress" ?"default" :"secondary"} className="font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider">

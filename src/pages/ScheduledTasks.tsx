@@ -83,7 +83,7 @@ export default function ScheduledTasks() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <StatusBadge status={task.status} />
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${task.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${task.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

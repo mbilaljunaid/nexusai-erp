@@ -73,7 +73,7 @@ export default function SupplierPortal() {
             description="Welcome back, Acme Corp. View your orders, submit invoices, and track payments."
             actions={
                 <>
-                    <Button variant="outline" size="icon">
+                    <Button variant="outline" size="icon" aria-label="Notifications">
                         <Bell className="h-4 w-4" />
                     </Button>
                     <Button>

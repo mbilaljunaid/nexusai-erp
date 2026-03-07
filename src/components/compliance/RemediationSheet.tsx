@@ -92,7 +92,7 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
 
                     <div className="space-y-1">
                         <Label className="text-xs uppercase text-muted-foreground font-semibold">Description</Label>
-                        <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-lg border italic">
+                        <p className="text-sm text-slate-600 bg-slate-500/10 p-3 rounded-lg border italic">
                             "{violation.description}"
                         </p>
                     </div>
@@ -136,7 +136,7 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
 
                 {/* Workflow Visualizer */}
                 {violation.status !== "resolved" && (
-                    <div className="bg-slate-50 p-4 rounded-lg border mb-4">
+                    <div className="bg-slate-500/10 p-4 rounded-lg border mb-4">
                         <div className="text-xs font-semibold uppercase text-slate-500 mb-2">Remediation Workflow</div>
                         <div className="flex items-center gap-2 text-sm">
                             <Badge variant={violation.status === 'open' ? 'default' : 'outline'}>Step 1: Manager</Badge>

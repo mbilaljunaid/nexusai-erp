@@ -73,10 +73,10 @@ export default function BudgetBalanceDrillDown() {
     };
 
     const getStatusColor = (variancePct: number) => {
-        if (variancePct <= -10) return "text-red-600 bg-red-50";
-        if (variancePct <= -5) return "text-amber-600 bg-amber-50";
-        if (variancePct >= 10) return "text-green-600 bg-green-50";
-        return "text-gray-600 bg-gray-50";
+        if (variancePct <= -10) return "text-red-600 bg-red-500/10";
+        if (variancePct <= -5) return "text-amber-600 bg-amber-500/10";
+        if (variancePct >= 10) return "text-green-600 bg-green-500/10";
+        return "text-gray-600 bg-gray-500/10";
     };
 
     const getStatusBadge = (variancePct: number) => {
@@ -103,31 +103,31 @@ export default function BudgetBalanceDrillDown() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Budgeted</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">${(totalBudgeted / 1000000).toFixed(1)}M</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">${(totalBudgeted / 1000000).toFixed(1)}M</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Actual Spend</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">${(totalActual / 1000000).toFixed(1)}M</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">${(totalActual / 1000000).toFixed(1)}M</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Remaining</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">${(totalRemaining / 1000000).toFixed(1)}M</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">${(totalRemaining / 1000000).toFixed(1)}M</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase flex items-center gap-1">
                                 <AlertCircle className="h-3 w-3" />
@@ -135,7 +135,7 @@ export default function BudgetBalanceDrillDown() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{overBudgetCount}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{overBudgetCount}</div>
                         </CardContent>
                     </Card>
                 </div>

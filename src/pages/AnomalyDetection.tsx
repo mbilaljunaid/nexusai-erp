@@ -119,7 +119,7 @@ export default function AnomalyDetection() {
                 <h3 className="font-semibold">{r.metric}</h3>
                 <p className="text-sm text-muted-foreground">Threshold: {r.threshold}% • Frequency: {r.frequency}</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`}>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(r.id)} data-testid={`button-delete-${r.id}`} aria-label="Delete">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>

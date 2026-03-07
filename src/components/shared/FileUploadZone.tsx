@@ -154,9 +154,9 @@ export function FileUploadZone({
             ) : (
                 <div className={cn(
                     "border rounded-lg p-4",
-                    uploadStatus === "success" && "border-green-500 bg-green-50 dark:bg-green-950/20",
-                    uploadStatus === "error" && "border-red-500 bg-red-50 dark:bg-red-950/20",
-                    uploadStatus === "uploading" && "border-blue-500 bg-blue-50 dark:bg-blue-950/20"
+                    uploadStatus === "success" && "border-green-500 bg-green-500/10 dark:bg-green-950/20",
+                    uploadStatus === "error" && "border-red-500 bg-red-500/10 dark:bg-red-950/20",
+                    uploadStatus === "uploading" && "border-blue-500 bg-blue-500/10 dark:bg-blue-950/20"
                 )}>
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1">
@@ -200,7 +200,7 @@ export function FileUploadZone({
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 flex-shrink-0"
-                                onClick={onFileRemove}
+                                onClick={onFileRemove} aria-label="Close"
                             >
                                 <X className="h-4 w-4" />
                             </Button>

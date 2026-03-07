@@ -139,39 +139,39 @@ export default function FreightSettlementConsole() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="border-none shadow-premium bg-emerald-50/50">
+                <Card className="border-none shadow-premium bg-emerald-500/10">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-emerald-900 flex items-center gap-2">
+                        <CardTitle className="text-sm font-medium text-emerald-900 dark:text-emerald-200 flex items-center gap-2">
                             <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                             Ready for Payment
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-black text-emerald-900">$142,500.00</div>
+                        <div className="text-2xl font-black text-emerald-900 dark:text-emerald-200">$142,500.00</div>
                         <p className="text-xs text-emerald-700/70 mt-1">12 Invoices validated vs agreements</p>
                     </CardContent>
                 </Card>
-                <Card className="border-none shadow-premium bg-amber-50/50">
+                <Card className="border-none shadow-premium bg-amber-500/10">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-amber-900 flex items-center gap-2">
+                        <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-200 flex items-center gap-2">
                             <AlertCircle className="h-4 w-4 text-amber-600" />
                             Exceptions & Disputes
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-black text-amber-900">$6,840.00</div>
+                        <div className="text-2xl font-black text-amber-900 dark:text-amber-200">$6,840.00</div>
                         <p className="text-xs text-amber-700/70 mt-1">3 variances exceeding 5% tolerance</p>
                     </CardContent>
                 </Card>
-                <Card className="border-none shadow-premium bg-indigo-50/10 backdrop-blur-sm border border-indigo-100">
+                <Card className="border-none shadow-premium bg-indigo-500/10 backdrop-blur-sm border border-indigo-100">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-indigo-900 flex items-center gap-2">
+                        <CardTitle className="text-sm font-medium text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
                             <Receipt className="h-4 w-4 text-indigo-600" />
                             Accrued Freight Liability
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-black text-indigo-900">
+                        <div className="text-2xl font-black text-indigo-900 dark:text-indigo-200">
                             ${(accruals?.total || 45800).toLocaleString()}.00
                         </div>
                         <p className="text-xs text-indigo-700/70 mt-1">Estimated cost of in-transit shipments</p>

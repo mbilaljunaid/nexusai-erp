@@ -211,7 +211,7 @@ export default function ConstructionClaimsManager({ contractId }: Props) {
                                         Settle
                                     </Button>
                                 )}
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="View file">
                                     <FileText className="h-3.5 w-3.5" />
                                 </Button>
                             </div>

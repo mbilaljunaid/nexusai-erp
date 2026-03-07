@@ -107,7 +107,7 @@ export default function ManufacturingDashboard() {
         >
             <div className="flex justify-between items-center mb-4">
                 {inventoryOrgId && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-violet-50 border border-violet-200 text-violet-800 text-sm">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-violet-500/10 border border-violet-200 text-violet-800 text-sm">
                         <Building2 className="h-4 w-4 flex-shrink-0" />
                         <span>Manufacturing scoped to Inventory Org: <strong>{inventoryOrgId}</strong></span>
                     </div>
@@ -118,46 +118,46 @@ export default function ManufacturingDashboard() {
                 </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <Card className="ai-card bg-blue-50/30">
+                <Card className="ai-card bg-blue-500/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-blue-700">Active Work Orders</CardTitle>
                         <Activity className="h-4 w-4 text-blue-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-blue-900">{stats.activeWorkOrders}</div>
+                        <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{stats.activeWorkOrders}</div>
                         <p className="text-xs text-blue-600 mt-1">Orders currently on shop floor</p>
                     </CardContent>
                 </Card>
 
-                <Card className="ai-card bg-green-50/30">
+                <Card className="ai-card bg-green-500/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-green-700">Completed (Today)</CardTitle>
                         <CheckCircle2 className="h-4 w-4 text-green-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-900">{stats.completedToday}</div>
+                        <div className="text-2xl font-bold text-green-900 dark:text-green-200">{stats.completedToday}</div>
                         <p className="text-xs text-green-600 mt-1">Finished goods output</p>
                     </CardContent>
                 </Card>
 
-                <Card className="ai-card bg-amber-50/30">
+                <Card className="ai-card bg-amber-500/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-amber-700">Pending Quality</CardTitle>
                         <ClipboardList className="h-4 w-4 text-amber-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-amber-900">{stats.pendingQuality}</div>
+                        <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{stats.pendingQuality}</div>
                         <p className="text-xs text-amber-600 mt-1">Inspections awaiting review</p>
                     </CardContent>
                 </Card>
 
-                <Card className="ai-card bg-indigo-50/30">
+                <Card className="ai-card bg-indigo-500/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-indigo-700">OEE Performance</CardTitle>
                         <Settings2 className="h-4 w-4 text-indigo-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-indigo-900">{stats.averageEfficiency}%</div>
+                        <div className="text-2xl font-bold text-indigo-900 dark:text-indigo-200">{stats.averageEfficiency}%</div>
                         <p className="text-xs text-indigo-600 mt-1">Global efficiency rating</p>
                     </CardContent>
                 </Card>

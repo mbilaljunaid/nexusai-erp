@@ -122,7 +122,7 @@ export default function PredictiveModeling() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={m.status === "active" ? "default" : m.status === "training" ? "secondary" : "outline"}>{m.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

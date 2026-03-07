@@ -234,25 +234,25 @@ export default function CarrierScorecardDashboard() {
                                     <div className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg border border-emerald-200">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Truck className="h-4 w-4 text-emerald-600" />
-                                            <span className="text-xs font-medium text-emerald-900">On-Time Delivery</span>
+                                            <span className="text-xs font-medium text-emerald-900 dark:text-emerald-200">On-Time Delivery</span>
                                         </div>
-                                        <div className="text-2xl font-bold text-emerald-900">{scorecard.onTimePercent.toFixed(1)}%</div>
+                                        <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-200">{scorecard.onTimePercent.toFixed(1)}%</div>
                                     </div>
 
                                     <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
                                         <div className="flex items-center gap-2 mb-2">
                                             <DollarSign className="h-4 w-4 text-blue-600" />
-                                            <span className="text-xs font-medium text-blue-900">Total Shipments</span>
+                                            <span className="text-xs font-medium text-blue-900 dark:text-blue-200">Total Shipments</span>
                                         </div>
-                                        <div className="text-2xl font-bold text-blue-900">{scorecard.totalShipments.toLocaleString()}</div>
+                                        <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{scorecard.totalShipments.toLocaleString()}</div>
                                     </div>
 
                                     <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg border border-amber-200">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Star className="h-4 w-4 text-amber-600" />
-                                            <span className="text-xs font-medium text-amber-900">Average Rating</span>
+                                            <span className="text-xs font-medium text-amber-900 dark:text-amber-200">Average Rating</span>
                                         </div>
-                                        <div className="text-2xl font-bold text-amber-900 flex items-center gap-1">
+                                        <div className="text-2xl font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1">
                                             {scorecard.avgRating.toFixed(1)}
                                             <Star className="h-5 w-5 fill-amber-500 text-amber-500" />
                                         </div>
@@ -261,9 +261,9 @@ export default function CarrierScorecardDashboard() {
                                     <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Clock className="h-4 w-4 text-purple-600" />
-                                            <span className="text-xs font-medium text-purple-900">Avg Lead Time</span>
+                                            <span className="text-xs font-medium text-purple-900 dark:text-purple-200">Avg Lead Time</span>
                                         </div>
-                                        <div className="text-2xl font-bold text-purple-900">
+                                        <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">
                                             {(2 + Math.random() * 2).toFixed(1)} days
                                         </div>
                                     </div>
@@ -339,7 +339,7 @@ export default function CarrierScorecardDashboard() {
                                     {topPerformers.map((carrier, index) => (
                                         <div role="button" tabIndex={0}
                                             key={carrier.id}
-                                            className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer"
+                                            className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-lg hover:bg-emerald-500/15 transition-colors cursor-pointer"
                                             onClick={() => setSelectedCarrier(carrier.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-2">
@@ -347,7 +347,7 @@ export default function CarrierScorecardDashboard() {
                                                     <span className="flex items-center justify-center h-6 w-6 rounded-full bg-emerald-600 text-white text-xs font-bold">
                                                         {index + 1}
                                                     </span>
-                                                    <span className="font-semibold text-emerald-900">{carrier.name}</span>
+                                                    <span className="font-semibold text-emerald-900 dark:text-emerald-200">{carrier.name}</span>
                                                 </div>
                                                 <div className="flex items-center gap-1 text-amber-600">
                                                     <Star className="h-4 w-4 fill-amber-500" />
@@ -386,11 +386,11 @@ export default function CarrierScorecardDashboard() {
                                     {underPerformers.map((carrier) => (
                                         <div role="button" tabIndex={0}
                                             key={carrier.id}
-                                            className="p-3 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition-colors cursor-pointer"
+                                            className="p-3 bg-rose-500/10 border border-rose-200 rounded-lg hover:bg-rose-500/15 transition-colors cursor-pointer"
                                             onClick={() => setSelectedCarrier(carrier.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <div className="flex justify-between items-start mb-2">
-                                                <span className="font-semibold text-rose-900">{carrier.name}</span>
+                                                <span className="font-semibold text-rose-900 dark:text-rose-200">{carrier.name}</span>
                                                 <div className="flex items-center gap-1 text-rose-600">
                                                     <Star className="h-4 w-4" />
                                                     <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>

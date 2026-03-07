@@ -51,9 +51,9 @@ export default function AuditTrails() {
           <Badge
             variant="outline"
             className={
-              l.action === 'CREATE' ? 'border-green-200 bg-green-50 text-green-700' :
-                l.action === 'DELETE' ? 'border-red-200 bg-red-50 text-red-700' :
-                  'border-blue-200 bg-blue-50 text-blue-700'
+              l.action === 'CREATE' ? 'border-green-200 bg-green-500/10 text-green-700' :
+                l.action === 'DELETE' ? 'border-red-200 bg-red-500/10 text-red-700' :
+                  'border-blue-200 bg-blue-500/10 text-blue-700'
             }
           >
             {l.action}

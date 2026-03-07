@@ -84,7 +84,7 @@ export default function CandidateMatchingView() {
                             <div role="button" tabIndex={0}
                                 key={c.id}
                                 onClick={() => setSelectedCandidate(c.id)}
-                                className={cn(`p-4 border-b cursor-pointer transition-colors hover:bg-slate-50 ${selectedCandidate === c.id ? "bg-indigo-50 border-l-4 border-l-indigo-600" : ""}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+                                className={cn(`p-4 border-b cursor-pointer transition-colors hover:bg-slate-500/10 ${selectedCandidate === c.id ? "bg-indigo-500/10 border-l-4 border-l-indigo-600" : ""}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="space-y-0.5">
@@ -110,7 +110,7 @@ export default function CandidateMatchingView() {
                 <Card className="lg:col-span-2">
                     {selectedCandidate ? (
                         <>
-                            <CardHeader className="flex flex-row items-center justify-between border-b bg-slate-50/30">
+                            <CardHeader className="flex flex-row items-center justify-between border-b bg-slate-500/10">
                                 <div>
                                     <CardTitle>AI Suitability Analysis</CardTitle>
                                     <CardDescription>Matching: {matches.find(c => c.id === selectedCandidate)?.name}</CardDescription>
@@ -139,7 +139,7 @@ export default function CandidateMatchingView() {
 
                                     <div className="space-y-4">
                                         <p className="text-xs font-semibold uppercase text-muted-foreground">Sentiment Analysis</p>
-                                        <div className="p-3 bg-green-50 rounded-lg border border-green-100 flex items-center gap-3">
+                                        <div className="p-3 bg-green-500/10 rounded-lg border border-green-100 flex items-center gap-3">
                                             <MessageSquare className="w-5 h-5 text-green-600" />
                                             <div>
                                                 <p className="text-xs font-bold text-green-800">Highly Positive Engagement</p>
@@ -154,7 +154,7 @@ export default function CandidateMatchingView() {
                                         <Star className="w-4 h-4 text-indigo-600" /> Key Skill Match & Gaps
                                     </h4>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                        <div className="p-4 bg-slate-500/10 rounded-xl border border-slate-100">
                                             <p className="text-[10px] font-bold uppercase text-slate-500 mb-3">Matching Skills</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {matches.find(c => c.id === selectedCandidate)?.skills.map((s: string) => (

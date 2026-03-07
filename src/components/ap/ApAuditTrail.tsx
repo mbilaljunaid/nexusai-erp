@@ -105,7 +105,7 @@ export default function ApAuditTrail() {
                                                 </div>
                                             </div>
                                             {log.details && (
-                                                <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-md border border-blue-100 dark:border-blue-900/30">
+                                                <div className="mt-4 p-3 bg-blue-500/10 dark:bg-blue-900/10 rounded-md border border-blue-100 dark:border-blue-900/30">
                                                     <p className="text-xs text-blue-700 dark:text-blue-400">
                                                         <strong>System Notes:</strong> {log.details}
                                                     </p>

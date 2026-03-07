@@ -119,15 +119,15 @@ export default function CrmQuotaManagement() {
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: "Avg Attainment", value: "84.2%", icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-50" },
-                    { label: "Total Quota", value: "$4.2M", icon: DollarSign, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Top Performer", value: "8 Candidates", icon: Trophy, color: "text-amber-600", bg: "bg-amber-50" },
+                    { label: "Avg Attainment", value: "84.2%", icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-500/10" },
+                    { label: "Total Quota", value: "$4.2M", icon: DollarSign, color: "text-indigo-600", bg: "bg-indigo-500/10" },
+                    { label: "Top Performer", value: "8 Candidates", icon: Trophy, color: "text-amber-600", bg: "bg-amber-500/10" },
                 ].map((stat, i) => (
                     <Card key={i} className="border-none shadow-sm ring-1 ring-slate-200 rounded-2xl overflow-hidden hover:ring-slate-300 transition-all">
                         <CardContent className="p-6 flex items-center justify-between">
                             <div className="space-y-1">
                                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{stat.label}</p>
-                                <p className="text-2xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
+                                <p className="text-2xl font-black text-slate-900 dark:text-slate-200 tracking-tighter">{stat.value}</p>
                             </div>
                             <div className={cn(`${stat.bg} p-3 rounded-2xl`)}>
                                 <stat.icon className={cn(`h-6 w-6 ${stat.color}`)} />
@@ -181,7 +181,7 @@ export default function CrmQuotaManagement() {
                                                     </AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <div className="font-bold text-sm text-slate-900 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{user.name}</div>
+                                                    <div className="font-bold text-sm text-slate-900 dark:text-slate-200 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{user.name}</div>
                                                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">T-1 Territory A</div>
                                                 </div>
                                             </div>
@@ -196,7 +196,7 @@ export default function CrmQuotaManagement() {
                                             <div className="font-bold text-sm text-slate-600 tracking-tight">${Number(perf.quota).toLocaleString()}</div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="font-bold text-sm text-slate-900 tracking-tight">${Number(perf.actual).toLocaleString()}</div>
+                                            <div className="font-bold text-sm text-slate-900 dark:text-slate-200 tracking-tight">${Number(perf.actual).toLocaleString()}</div>
                                         </TableCell>
                                         <TableCell className="px-8">
                                             <div className="space-y-2">

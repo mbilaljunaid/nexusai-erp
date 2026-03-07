@@ -119,7 +119,7 @@ export default function WebsiteManagement() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={p.status === "published" ? "default" : "secondary"}>{p.status}</Badge>
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${p.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

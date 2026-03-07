@@ -144,7 +144,7 @@ export default function CasesDetail() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" aria-label="Filter">
                     <Filter className="h-4 w-4" />
                 </Button>
                 <div className="border rounded-md flex p-1 bg-muted/20">

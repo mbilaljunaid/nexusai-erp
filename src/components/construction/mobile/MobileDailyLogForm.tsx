@@ -150,7 +150,7 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel}: MobileDaily
                             <p className="text-sm opacity-90">{formatDate(new Date())}</p>
                         </div>
                         {onCancel && (
-                            <Button variant="ghost" size="icon" onClick={onCancel} className="text-primary-foreground">
+                            <Button variant="ghost" size="icon" onClick={onCancel} className="text-primary-foreground" aria-label="Close">
                                 <X className="h-5 w-5" />
                             </Button>
                         )}
@@ -356,7 +356,7 @@ export function MobileDailyLogForm({ projectId, onSubmit, onCancel}: MobileDaily
                                 variant="outline"
                                 className={cn(
                                    "h-14 text-base",
-                                    location &&"bg-green-50 border-green-500"
+                                    location &&"bg-green-500/10 border-green-500"
                                 )}
                                 onClick={handleGetLocation}
                             >

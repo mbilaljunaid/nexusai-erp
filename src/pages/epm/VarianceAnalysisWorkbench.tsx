@@ -83,32 +83,32 @@ export default function VarianceAnalysisWorkbench() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Total Variance</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={cn(`text-2xl font-bold flex items-center gap-2 ${totalVariance >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
+                            <div className={cn(`text-2xl font-bold flex items-center gap-2 ${totalVariance >= 0 ? 'text-green-900 dark:text-green-200' : 'text-red-900'}`)}>
                                 {totalVariance >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
                                 ${(Math.abs(totalVariance) / 1000).toFixed(0)}K
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Significant Increases</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{significantIncreases}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{significantIncreases}</div>
                             <div className="text-xs text-green-600">Accounts &gt;5% increase</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase">Significant Decreases</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{significantDecreases}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{significantDecreases}</div>
                             <div className="text-xs text-red-600">Accounts &lt;-5% decrease</div>
                         </CardContent>
                     </Card>
@@ -261,8 +261,8 @@ export default function VarianceAnalysisWorkbench() {
                                     ))}
                                 </ul>
                             </div>
-                            <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                                <h4 className="font-semibold text-blue-900 mb-1">Recommendation</h4>
+                            <div className="p-3 bg-blue-500/10 border border-blue-100 rounded-lg">
+                                <h4 className="font-semibold text-blue-900 dark:text-blue-200 mb-1">Recommendation</h4>
                                 <p className="text-sm text-blue-800">{aiExplanation.recommendation}</p>
                             </div>
                         </CardContent>

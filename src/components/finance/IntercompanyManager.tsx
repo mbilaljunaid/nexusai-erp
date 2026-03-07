@@ -202,7 +202,7 @@ export function IntercompanyManager() {
                                             )}
                                         </TableCell>
                                         <TableCell className="py-4 text-right">
-                                            <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all">
+                                            <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all" aria-label="Delete">
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </TableCell>

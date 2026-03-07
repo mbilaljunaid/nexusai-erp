@@ -243,7 +243,7 @@ export function DocumentUpload({
                                             variant="ghost"
                                             size="icon"
                                             className="flex-shrink-0"
-                                            onClick={() => removeUpload(upload.file.name)}
+                                            onClick={() => removeUpload(upload.file.name)} aria-label="Close"
                                         >
                                             <X className="h-4 w-4" />
                                         </Button>

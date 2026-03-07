@@ -182,7 +182,7 @@ export function BudgetEntryForm() {
           </div>
 
           {showAISuggestion && (
-            <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-900">
+            <Alert className="border-blue-200 bg-blue-500/10 dark:bg-blue-950 dark:border-blue-900">
               <Sparkles className="h-4 w-4 text-blue-600" />
               <AlertDescription className="text-sm text-blue-900 dark:text-blue-100 ml-2 space-y-1">
                 <p><strong>AI Budget Recommendation:</strong></p>
@@ -225,7 +225,7 @@ export function BudgetEntryForm() {
                   </div>
                 ))}
               </div>
-              <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+              <div className="p-3 bg-green-500/10 dark:bg-green-950 rounded-lg">
                 <p className="text-sm font-semibold text-green-900 dark:text-green-100" data-testid="text-monthly-total">
                   Total: ${calculateTotal()}
                 </p>
@@ -246,7 +246,7 @@ export function BudgetEntryForm() {
       </Tabs>
 
       {successMessage && (
-        <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+        <Alert className="border-green-200 bg-green-500/10 dark:bg-green-950 dark:border-green-900">
           <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
           <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
             {successMessage}

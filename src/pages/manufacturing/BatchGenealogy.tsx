@@ -165,11 +165,11 @@ export default function BatchGenealogy() {
                                         ))}
 
                                         {/* Target Lot */}
-                                        <div className="p-6 bg-indigo-50 border-2 border-indigo-600 rounded-xl shadow-md w-56 text-center scale-110 relative animate-in fade-in zoom-in duration-300">
+                                        <div className="p-6 bg-indigo-500/10 border-2 border-indigo-600 rounded-xl shadow-md w-56 text-center scale-110 relative animate-in fade-in zoom-in duration-300">
                                             <Badge className="absolute -top-3 -right-3" variant="default">Active Target</Badge>
                                             <FlaskConical className="h-10 w-10 mx-auto mb-2 text-indigo-600" />
                                             <div className="text-xs font-mono mb-1 text-indigo-700">ACTIVE TRACE</div>
-                                            <div className="text-lg font-bold text-indigo-900">{activeLot}</div>
+                                            <div className="text-lg font-bold text-indigo-900 dark:text-indigo-200">{activeLot}</div>
                                         </div>
 
                                         {/* Forwards (Children) */}
@@ -224,7 +224,7 @@ export default function BatchGenealogy() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="border-red-100 bg-red-50/30">
+                            <Card className="border-red-100 bg-red-500/10">
                                 <CardHeader className="pb-2">
                                     <CardTitle className="text-sm flex items-center gap-2 text-red-600">
                                         <AlertCircle className="h-4 w-4" /> Recall Risk Analysis

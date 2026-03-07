@@ -146,7 +146,7 @@ export default function RetroEventGroupSetup() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-800">
+                        <Card className="bg-indigo-500/10 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-800">
                             <CardContent className="p-4 py-5">
                                 <div className="flex items-start gap-3">
                                     <Activity className="h-5 w-5 text-indigo-600 mt-0.5" />
@@ -175,7 +175,7 @@ export default function RetroEventGroupSetup() {
                             </CardHeader>
                             <CardContent className="p-0 flex-1 overflow-auto">
                                 <Table>
-                                    <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50">
+                                    <TableHeader className="bg-zinc-500/10 dark:bg-zinc-900/50">
                                         <TableRow>
                                             <TableHead className="w-44">Database Entity</TableHead>
                                             <TableHead className="w-44">Attribute (Column)</TableHead>
@@ -218,7 +218,7 @@ export default function RetroEventGroupSetup() {
                                                     <Checkbox checked={field.triggerProration} onCheckedChange={(v) => updateField(field.id, 'triggerProration', !!v)} />
                                                 </TableCell>
                                                 <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => removeField(field.id)}>
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => removeField(field.id)} aria-label="Delete">
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </TableCell>

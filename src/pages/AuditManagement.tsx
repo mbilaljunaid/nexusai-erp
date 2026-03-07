@@ -65,7 +65,7 @@ export default function AuditManagement() {
     >
       <DashboardWidget title="Total Audits" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-blue-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Clipboard className="h-4 w-4 text-blue-600" />
           </div>
           <div>
@@ -77,7 +77,7 @@ export default function AuditManagement() {
 
       <DashboardWidget title="Closed" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-emerald-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <CheckCircle2 className="h-4 w-4 text-emerald-600" />
           </div>
           <div>
@@ -89,7 +89,7 @@ export default function AuditManagement() {
 
       <DashboardWidget title="In Progress" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-indigo-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Timer className="h-4 w-4 text-indigo-600" />
           </div>
           <div>
@@ -101,7 +101,7 @@ export default function AuditManagement() {
 
       <DashboardWidget title="Open" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-red-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <AlertCircle className="h-4 w-4 text-red-600" />
           </div>
           <div>

@@ -25,7 +25,7 @@ export function PaymentTransmissionHub() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="bg-emerald-500/5 border-emerald-500/20">
+                <Card className="bg-emerald-500/100/5 border-emerald-500/20">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
@@ -36,7 +36,7 @@ export function PaymentTransmissionHub() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-blue-500/5 border-blue-500/20">
+                <Card className="bg-blue-500/100/5 border-blue-500/20">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>

@@ -83,7 +83,7 @@ export default function PerformanceReviews() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge>{rev.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${rev.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${rev.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

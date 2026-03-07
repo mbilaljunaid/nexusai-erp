@@ -116,7 +116,7 @@ export default function DealRegistration() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -124,11 +124,11 @@ export default function DealRegistration() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{pendingDeals.length}</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{pendingDeals.length}</div>
                             <div className="text-xs text-amber-700">Awaiting approval</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <CheckCircle className="h-3 w-3" />
@@ -136,11 +136,11 @@ export default function DealRegistration() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{approvedDeals.length}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{approvedDeals.length}</div>
                             <div className="text-xs text-green-700">Deals protected</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-1">
                                 <DollarSign className="h-3 w-3" />
@@ -148,11 +148,11 @@ export default function DealRegistration() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">${formatNumber(totalValue / 1000, 0)}K</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">${formatNumber(totalValue / 1000, 0)}K</div>
                             <div className="text-xs text-blue-700">Pending deals</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase flex items-center gap-1">
                                 <XCircle className="h-3 w-3" />
@@ -160,7 +160,7 @@ export default function DealRegistration() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{rejectedDeals.length}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{rejectedDeals.length}</div>
                             <div className="text-xs text-red-700">Not approved</div>
                         </CardContent>
                     </Card>
@@ -255,7 +255,7 @@ export default function DealRegistration() {
                                                     size="sm"
                                                     variant="outline"
                                                     onClick={() => rejectDealMutation.mutate({ id: deal.id, reason: "Duplicate registration" })}
-                                                    className="text-red-600 border-red-200 hover:bg-red-50"
+                                                    className="text-red-600 border-red-200 hover:bg-red-500/10"
                                                 >
                                                     <XCircle className="h-4 w-4 mr-1" />
                                                     Reject
@@ -318,7 +318,7 @@ export default function DealRegistration() {
                     <TabsContent value="rejected">
                         <div className="grid gap-4">
                             {rejectedDeals.map((deal) => (
-                                <Card key={deal.id} className="border-l-4 border-l-red-500 bg-red-50/30">
+                                <Card key={deal.id} className="border-l-4 border-l-red-500 bg-red-500/10">
                                     <CardHeader>
                                         <div className="flex items-start justify-between">
                                             <div>
@@ -339,8 +339,8 @@ export default function DealRegistration() {
                                                 <span className="font-medium">${formatNumber(deal.estimatedValue / 1000, 0)}K</span>
                                             </div>
                                             {deal.rejectionReason && (
-                                                <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded">
-                                                    <div className="font-medium text-red-900 mb-1">Rejection Reason:</div>
+                                                <div className="mt-3 p-3 bg-red-500/10 border border-red-100 rounded">
+                                                    <div className="font-medium text-red-900 dark:text-red-200 mb-1">Rejection Reason:</div>
                                                     <div className="text-red-800">{deal.rejectionReason}</div>
                                                 </div>
                                             )}

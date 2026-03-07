@@ -62,7 +62,7 @@ export default function ScenarioManager() {
                                             <Eye className="h-4 w-4" />
                                         </Button>
                                         {scenario.type === 'Pending' && (
-                                            <Button variant="outline" size="sm" className="text-green-600 border-green-200 hover:bg-green-50">
+                                            <Button variant="outline" size="sm" className="text-green-600 border-green-200 hover:bg-green-500/10">
                                                 <Check className="mr-1 h-3 w-3" /> Publish
                                             </Button>
                                         )}

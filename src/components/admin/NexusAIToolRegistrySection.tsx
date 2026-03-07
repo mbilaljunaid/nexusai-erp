@@ -78,7 +78,7 @@ export default function NexusAIToolRegistrySection() {
                 <Card className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 border-violet-500/20">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-xl bg-violet-500/20 text-violet-600">
+                            <div className="p-3 rounded-xl bg-/15 text-violet-600">
                                 <Brain className="h-6 w-6" />
                             </div>
                             <div>
@@ -91,7 +91,7 @@ export default function NexusAIToolRegistrySection() {
                 <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-xl bg-blue-500/20 text-blue-600">
+                            <div className="p-3 rounded-xl bg-/15 text-blue-600">
                                 <Box className="h-6 w-6" />
                             </div>
                             <div>
@@ -104,7 +104,7 @@ export default function NexusAIToolRegistrySection() {
                 <Card className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border-emerald-500/20">
                     <CardContent className="p-6">
                         <div className="flex items-center gap-4">
-                            <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-600">
+                            <div className="p-3 rounded-xl bg-/15 text-emerald-600">
                                 <Shield className="h-6 w-6" />
                             </div>
                             <div>

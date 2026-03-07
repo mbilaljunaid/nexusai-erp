@@ -152,7 +152,7 @@ export function GLEntryForm() {
 
           {/* AI Validation Check */}
           {showAICheck && (
-            <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-900">
+            <Alert className="border-blue-200 bg-blue-500/10 dark:bg-blue-950 dark:border-blue-900">
               <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               <AlertDescription className="text-sm text-blue-900 dark:text-blue-100 ml-2 space-y-1">
                 <p><strong>GL Entry Validation:</strong></p>
@@ -243,7 +243,7 @@ export function GLEntryForm() {
               </div>
 
               {/* Balance Status */}
-              <div className={cn(`p-3 rounded-lg border-2 ${isBalanced ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-900' : 'bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-900'}`)}>
+              <div className={cn(`p-3 rounded-lg border-2 ${isBalanced ? 'bg-green-500/10 dark:bg-green-950 border-green-200 dark:border-green-900' : 'bg-red-500/10 dark:bg-red-950 border-red-200 dark:border-red-900'}`)}>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className={cn(`text-sm font-semibold ${isBalanced ? 'text-green-900 dark:text-green-100' : 'text-red-900 dark:text-red-100'}`)}>
@@ -386,7 +386,7 @@ export function GLEntryForm() {
               </Button>
 
               {!isTableBalanced && (
-                <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-950 dark:border-orange-900">
+                <Alert className="border-orange-200 bg-orange-500/10 dark:bg-orange-950 dark:border-orange-900">
                   <AlertTriangle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                   <AlertDescription className="text-sm text-orange-900 dark:text-orange-100 ml-2">
                     Journal out of balance: ${Math.abs(totalDebit - totalCredit).toFixed(2)}
@@ -406,7 +406,7 @@ export function GLEntryForm() {
               </div>
               
               {successMessage && (
-                <Alert className="border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-900">
+                <Alert className="border-green-200 bg-green-500/10 dark:bg-green-950 dark:border-green-900">
                   <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                   <AlertDescription className="text-sm text-green-900 dark:text-green-100 ml-2">
                     {successMessage}

@@ -70,7 +70,7 @@ export function AuditLogViewer() {
                                             {formatDateTime(log.timestamp)}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="outline" className="font-mono text-xs bg-slate-50">
+                                            <Badge variant="outline" className="font-mono text-xs bg-slate-500/10">
                                                 {log.action}
                                             </Badge>
                                         </TableCell>

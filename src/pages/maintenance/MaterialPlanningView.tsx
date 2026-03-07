@@ -96,7 +96,6 @@ export function MaterialPlanningView() {
             setPurchaseReqs(apiPRs);
             setReservations(apiReservations);
         } catch (error) {
-            console.error("Failed to load material data:", error);
             // Fallback to empty arrays
             setMaterials([]);
             setPurchaseReqs([]);
@@ -116,7 +115,6 @@ export function MaterialPlanningView() {
 
             // TODO: Show success toast
         } catch (error) {
-            console.error("Failed to generate PR:", error);
             // TODO: Show error toast
         }
     };
@@ -131,7 +129,6 @@ export function MaterialPlanningView() {
 
             // TODO: Show success toast
         } catch (error) {
-            console.error("Failed to submit PR:", error);
             // TODO: Show error toast
         }
     };

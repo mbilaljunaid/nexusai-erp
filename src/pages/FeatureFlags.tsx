@@ -242,7 +242,7 @@ export default function FeatureFlags() {
                             className={
                               flag.enabled
                                 ? "bg-green-100 text-green-800"
-                                : "bg-red-50 text-red-700"
+                                : "bg-red-500/10 text-red-700"
                             }
                           >
                             {flag.enabled ? "On" : "Off"}

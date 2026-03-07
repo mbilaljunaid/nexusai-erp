@@ -108,7 +108,7 @@ export default function TaxReportingDashboard() {
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {reporting.alerts.map((alert: any, i: number) => (
-                                <div key={i} className="border rounded-lg p-3 bg-orange-50">
+                                <div key={i} className="border rounded-lg p-3 bg-orange-500/10">
                                     <div className="font-medium">{alert.title}</div>
                                     <div className="text-sm text-muted-foreground">{alert.description}</div>
                                     <Badge variant="destructive" className="mt-2">

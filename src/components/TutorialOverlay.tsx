@@ -185,7 +185,7 @@ export function TutorialOverlay({
         size="icon"
         onClick={handleStartTour}
         className="fixed bottom-4 right-4 rounded-full shadow-lg"
-        data-testid="button-start-tutorial"
+        data-testid="button-start-tutorial" aria-label="Help"
       >
         <HelpCircle className="w-5 h-5" />
       </Button>
@@ -262,7 +262,7 @@ export function TutorialOverlay({
                       size="icon"
                       onClick={handleSkip}
                       className="h-8 w-8"
-                      data-testid="button-skip-tutorial"
+                      data-testid="button-skip-tutorial" aria-label="Close"
                     >
                       <X className="w-4 h-4" />
                     </Button>

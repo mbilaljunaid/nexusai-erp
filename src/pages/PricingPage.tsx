@@ -277,7 +277,7 @@ export default function PricingPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              <Card className="p-8 border-green-200 bg-green-50/50 dark:bg-green-900/10 dark:border-green-900">
+              <Card className="p-8 border-green-200 bg-green-500/10 dark:bg-green-900/10 dark:border-green-900">
                 <div className="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center mb-6">
                   <Github className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
@@ -300,13 +300,13 @@ export default function PricingPage() {
                   </div>
                 </div>
                 <Link to="/docs/implementation">
-                  <Button className="w-full border-green-200 hover:bg-green-50 text-green-700" variant="outline">
+                  <Button className="w-full border-green-200 hover:bg-green-500/10 text-green-700" variant="outline">
                     Read Documentation
                   </Button>
                 </Link>
               </Card>
 
-              <Card className="p-8 border-blue-200 bg-blue-50/50 dark:bg-blue-900/10 dark:border-blue-900">
+              <Card className="p-8 border-blue-200 bg-blue-500/10 dark:bg-blue-900/10 dark:border-blue-900">
                 <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-6">
                   <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
@@ -514,7 +514,7 @@ export default function PricingPage() {
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
                 <Button
                   onClick={() => handleSponsor(10)}
-                  className="w-full bg-white text-orange-600 hover:bg-slate-100"
+                  className="w-full bg-white text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-10"
                 >
@@ -532,7 +532,7 @@ export default function PricingPage() {
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
                 <Button
                   onClick={() => handleSponsor(25)}
-                  className="w-full bg-white text-orange-600 hover:bg-slate-100"
+                  className="w-full bg-white text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-25"
                 >
@@ -550,7 +550,7 @@ export default function PricingPage() {
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
                 <Button
                   onClick={() => handleSponsor(50)}
-                  className="w-full bg-white text-orange-600 hover:bg-slate-100"
+                  className="w-full bg-white text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-50"
                 >
@@ -579,7 +579,7 @@ export default function PricingPage() {
                 </div>
                 <Button
                   onClick={handleCustomSponsor}
-                  className="bg-white text-orange-600 hover:bg-slate-100"
+                  className="bg-white text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-custom"
                 >

@@ -58,19 +58,19 @@ export default function OfferManagementWorkbench() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Card className="bg-blue-50/50">
+                <Card className="bg-blue-500/10">
                     <CardHeader className="p-4 pb-2"><CardTitle className="text-xs font-semibold uppercase text-blue-600">Total Offers</CardTitle></CardHeader>
                     <CardContent className="p-4 pt-0 text-2xl font-bold">12</CardContent>
                 </Card>
-                <Card className="bg-orange-50/50">
+                <Card className="bg-orange-500/10">
                     <CardHeader className="p-4 pb-2"><CardTitle className="text-xs font-semibold uppercase text-orange-600">Pending Approval</CardTitle></CardHeader>
                     <CardContent className="p-4 pt-0 text-2xl font-bold">4</CardContent>
                 </Card>
-                <Card className="bg-green-50/50">
+                <Card className="bg-green-500/10">
                     <CardHeader className="p-4 pb-2"><CardTitle className="text-xs font-semibold uppercase text-green-600">Accepted</CardTitle></CardHeader>
                     <CardContent className="p-4 pt-0 text-2xl font-bold">6</CardContent>
                 </Card>
-                <Card className="bg-slate-50/50">
+                <Card className="bg-slate-500/10">
                     <CardHeader className="p-4 pb-2"><CardTitle className="text-xs font-semibold uppercase text-slate-600">Drafts</CardTitle></CardHeader>
                     <CardContent className="p-4 pt-0 text-2xl font-bold">2</CardContent>
                 </Card>
@@ -110,9 +110,9 @@ export default function OfferManagementWorkbench() {
                                     <div className="flex items-center gap-3">
                                         <Badge
                                             className={
-                                                offer.status === "APPROVED" ? "bg-green-100 text-green-700 hover:bg-green-100" :
-                                                    offer.status === "PENDING_APPROVAL" ? "bg-orange-100 text-orange-700 hover:bg-orange-100" :
-                                                        "bg-slate-100 text-slate-700 hover:bg-slate-100"
+                                                offer.status === "APPROVED" ? "bg-green-100 text-green-700 hover:bg-green-500/15" :
+                                                    offer.status === "PENDING_APPROVAL" ? "bg-orange-100 text-orange-700 hover:bg-orange-500/15" :
+                                                        "bg-slate-100 text-slate-700 hover:bg-slate-500/15"
                                             }
                                         >
                                             {offer.status.replace("_", " ")}
@@ -124,7 +124,7 @@ export default function OfferManagementWorkbench() {
                                             {offer.status === "APPROVED" && (
                                                 <Button size="sm" variant="outline"><Send className="w-3 h-3 mr-2" /> Send to Candidate</Button>
                                             )}
-                                            <Button size="icon" variant="ghost" className="h-8 w-8"><MoreHorizontal className="w-4 h-4" /></Button>
+                                            <Button size="icon" variant="ghost" className="h-8 w-8" aria-label="More options"><MoreHorizontal className="w-4 h-4" /></Button>
                                         </div>
                                     </div>
                                 </div>

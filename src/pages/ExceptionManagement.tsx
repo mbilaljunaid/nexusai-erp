@@ -123,7 +123,7 @@ export default function ExceptionManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={e.severity === "critical" ? "destructive" : e.severity === "high" ? "secondary" : "default"}>{e.severity}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(e.id)} data-testid={`button-delete-${e.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(e.id)} data-testid={`button-delete-${e.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

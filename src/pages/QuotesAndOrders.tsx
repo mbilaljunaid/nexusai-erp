@@ -99,7 +99,7 @@ export default function QuotesAndOrders() {
                 <div className="flex gap-2 items-center">
                   <Badge variant="outline">{item.type}</Badge>
                   <Badge variant={item.status === "approved" ? "default" : "secondary"}>{item.status}</Badge>
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${item.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

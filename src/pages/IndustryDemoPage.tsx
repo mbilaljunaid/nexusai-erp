@@ -59,7 +59,6 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
         });
       }
     } catch (e) {
-      console.error(e);
       toast({ variant: 'destructive', description: "Failed to request demo" });
     } finally {
       setLoading(false);

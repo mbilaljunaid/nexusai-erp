@@ -109,7 +109,7 @@ export default function StockIssue() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="secondary">{i.reason}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

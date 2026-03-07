@@ -508,7 +508,7 @@ export default function FeaturesPage() {
                         <CardDescription className="mt-1">{module.description}</CardDescription>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" data-testid={`button-toggle-${module.id}`}>
+                    <Button variant="ghost" size="icon" data-testid={`button-toggle-${module.id}`} aria-label="Toggle section">
                       {expandedModules.includes(module.id) ? (
                         <ChevronUp className="h-5 w-5" />
                       ) : (

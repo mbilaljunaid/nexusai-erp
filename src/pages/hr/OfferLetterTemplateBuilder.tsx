@@ -150,7 +150,7 @@ The NexusAI Talent Team`);
                         </Card>
 
                         <Card className="border-emerald-200/50 dark:border-emerald-800/50 shadow-sm flex flex-col h-[500px]">
-                            <CardHeader className="pb-3 border-b bg-emerald-50/50 dark:bg-emerald-900/10 shrink-0">
+                            <CardHeader className="pb-3 border-b bg-emerald-500/10 dark:bg-emerald-900/10 shrink-0">
                                 <CardTitle className="text-sm flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
                                     <Variable className="h-4 w-4" /> Data Tokens
                                 </CardTitle>
@@ -166,7 +166,7 @@ The NexusAI Talent Team`);
                                                 <button
                                                     key={token.id}
                                                     onClick={() => insertToken(token.id)}
-                                                    className="w-full text-left px-3 py-2 rounded-md text-sm border hover:bg-emerald-50 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800 transition-colors flex justify-between items-center group"
+                                                    className="w-full text-left px-3 py-2 rounded-md text-sm border hover:bg-emerald-500/10 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800 transition-colors flex justify-between items-center group"
                                                 >
                                                     <span className="font-medium text-foreground group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{token.label}</span>
                                                     <span className="text-[10px] font-mono text-muted-foreground opacity-50 group-hover:opacity-100">[[{token.id}]]</span>
@@ -186,23 +186,23 @@ The NexusAI Talent Team`);
 
                             {/* Rich Text Toolbar */}
                             <div className="border-b bg-muted/40 p-2 flex flex-wrap gap-1 shrink-0">
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><Bold className="h-4 w-4" /></Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><Italic className="h-4 w-4" /></Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><Underline className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Bold"><Bold className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Italic"><Italic className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Underline"><Underline className="h-4 w-4" /></Button>
                                 <div className="w-px h-6 bg-border mx-1 my-auto" />
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><AlignLeft className="h-4 w-4" /></Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><AlignCenter className="h-4 w-4" /></Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><AlignRight className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Align left"><AlignLeft className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Align center"><AlignCenter className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Align right"><AlignRight className="h-4 w-4" /></Button>
                                 <div className="w-px h-6 bg-border mx-1 my-auto" />
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><List className="h-4 w-4" /></Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><Link className="h-4 w-4" /></Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><ImageIcon className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="List view"><List className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Copy link"><Link className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Image"><ImageIcon className="h-4 w-4" /></Button>
                                 <div className="flex-1" />
                                 <Button variant="outline" size="sm" className="h-8 text-xs bg-white dark:bg-zinc-950">Add E-Signature Block</Button>
                             </div>
 
                             {/* Editor Area */}
-                            <div className="flex-1 bg-zinc-50 dark:bg-zinc-900/50 p-6">
+                            <div className="flex-1 bg-zinc-500/10 dark:bg-zinc-900/50 p-6">
                                 <div className="bg-white dark:bg-zinc-950 shadow-sm border h-full rounded-md p-0 overflow-hidden min-h-[600px]">
                                     <Textarea
                                         className="w-full h-full p-8 resize-none border-none font-serif text-base text-zinc-800 dark:text-zinc-200 leading-relaxed focus-visible:ring-0"

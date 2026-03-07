@@ -82,7 +82,7 @@ export default function ApPeriodClose() {
                                 <TableCell>
                                     <Badge
                                         variant={period.apStatus === "OPEN" ? "outline" : "secondary"}
-                                        className={period.apStatus === "OPEN" ? "bg-green-50 text-green-700 border-green-200" : "bg-slate-100 text-slate-700"}
+                                        className={period.apStatus === "OPEN" ? "bg-green-500/10 text-green-700 border-green-200" : "bg-slate-100 text-slate-700"}
                                     >
                                         <div className="flex items-center gap-1.5 uppercase text-[10px] tracking-wider font-bold">
                                             {period.apStatus === "OPEN" ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
@@ -95,7 +95,7 @@ export default function ApPeriodClose() {
                                         <Button
                                             size="sm"
                                             variant="outline"
-                                            className="hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                                            className="hover:bg-red-500/10 hover:text-red-600 hover:border-red-200 transition-colors"
                                             onClick={() => closeMutation.mutate(period.id)}
                                             disabled={closeMutation.isPending}
                                         >

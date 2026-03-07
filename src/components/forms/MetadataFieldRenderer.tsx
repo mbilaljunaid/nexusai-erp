@@ -144,7 +144,7 @@ export function MetadataFieldRenderer({
             )}
 
             {field.type === "calculated" && (
-              <div className="bg-gray-50 p-3 rounded text-sm text-gray-600 border" data-testid={`calculated-${field.name}`}>
+              <div className="bg-gray-500/10 p-3 rounded text-sm text-gray-600 border" data-testid={`calculated-${field.name}`}>
                 {logicEngine.calculateFormulaValue(field.formula || "", formData) || "—"}
               </div>
             )}
@@ -276,7 +276,7 @@ export function MetadataFieldRenderer({
             )}
 
             {field.type === "nested" && (
-              <div className="border rounded p-3 space-y-3 bg-gray-50" data-testid={`nested-${field.name}`}>
+              <div className="border rounded p-3 space-y-3 bg-gray-500/10" data-testid={`nested-${field.name}`}>
                 <p className="text-xs text-muted-foreground">Nested field group</p>
                 {field.nestedFields?.map((nestedField) => (
                   <div key={nestedField.name} className="space-y-1">

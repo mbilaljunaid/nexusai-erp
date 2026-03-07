@@ -124,14 +124,14 @@ export default function TimeRuleBuilder() {
 
                         {/* Conditions Builder (IF) */}
                         <Card className="border-indigo-500/20 shadow-sm overflow-hidden">
-                            <CardHeader className="bg-indigo-500/5 border-b pb-4 flex flex-row items-center justify-between">
+                            <CardHeader className="bg-indigo-500/100/5 border-b pb-4 flex flex-row items-center justify-between">
                                 <div>
                                     <CardTitle className="text-lg text-indigo-700 dark:text-indigo-400 flex items-center gap-2">
                                         <Settings2 className="h-5 w-5" /> IF (Conditions)
                                     </CardTitle>
                                     <CardDescription>All conditions below must be true for the rule to apply.</CardDescription>
                                 </div>
-                                <Button size="sm" variant="outline" className="text-indigo-700 border-indigo-200 hover:bg-indigo-50 dark:text-indigo-300 dark:border-indigo-800 dark:hover:bg-indigo-900/50" onClick={addCondition}>
+                                <Button size="sm" variant="outline" className="text-indigo-700 border-indigo-200 hover:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-800 dark:hover:bg-indigo-900/50" onClick={addCondition}>
                                     <Plus className="h-4 w-4 mr-1" /> Add Condition
                                 </Button>
                             </CardHeader>
@@ -181,7 +181,7 @@ export default function TimeRuleBuilder() {
                                             }}
                                         />
 
-                                        <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-500" onClick={() => removeCondition(condition.id)}>
+                                        <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-500" onClick={() => removeCondition(condition.id)} aria-label="Delete">
                                             <Trash2 className="h-4 w-4" />
                                         </Button>
                                     </div>
@@ -196,14 +196,14 @@ export default function TimeRuleBuilder() {
 
                         {/* Outcomes Builder (THEN) */}
                         <Card className="border-teal-500/20 shadow-sm overflow-hidden">
-                            <CardHeader className="bg-teal-500/5 border-b pb-4 flex flex-row items-center justify-between">
+                            <CardHeader className="bg-teal-500/100/5 border-b pb-4 flex flex-row items-center justify-between">
                                 <div>
                                     <CardTitle className="text-lg text-teal-700 dark:text-teal-400 flex items-center gap-2">
                                         <Clock className="h-5 w-5" /> THEN (Outcomes)
                                     </CardTitle>
                                     <CardDescription>If conditions are met, apply these time allocations or premiums.</CardDescription>
                                 </div>
-                                <Button size="sm" variant="outline" className="text-teal-700 border-teal-200 hover:bg-teal-50 dark:text-teal-300 dark:border-teal-800 dark:hover:bg-teal-900/50" onClick={addOutcome}>
+                                <Button size="sm" variant="outline" className="text-teal-700 border-teal-200 hover:bg-teal-500/10 dark:text-teal-300 dark:border-teal-800 dark:hover:bg-teal-900/50" onClick={addOutcome}>
                                     <Plus className="h-4 w-4 mr-1" /> Add Outcome
                                 </Button>
                             </CardHeader>
@@ -241,7 +241,7 @@ export default function TimeRuleBuilder() {
                                         </div>
 
                                         <div className="pt-5">
-                                            <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-500" onClick={() => removeOutcome(outcome.id)}>
+                                            <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-500" onClick={() => removeOutcome(outcome.id)} aria-label="Delete">
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
@@ -253,7 +253,7 @@ export default function TimeRuleBuilder() {
 
                     {/* Right Sidebar */}
                     <div className="space-y-6">
-                        <Card className="border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20 shadow-sm">
+                        <Card className="border-amber-500/30 bg-amber-500/10 dark:bg-amber-950/20 shadow-sm">
                             <CardContent className="p-4 flex items-start gap-3">
                                 <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
                                 <div className="text-sm">
@@ -271,11 +271,11 @@ export default function TimeRuleBuilder() {
                             </CardHeader>
                             <CardContent className="p-0">
                                 <div className="divide-y divide-zinc-100 dark:divide-zinc-800 text-sm">
-                                    <div className="p-4 flex justify-between items-center hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <div className="p-4 flex justify-between items-center hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50">
                                         <span className="font-medium">US West Coast (Hourly)</span>
                                         <Badge>850 Emp</Badge>
                                     </div>
-                                    <div className="p-4 flex justify-between items-center hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <div className="p-4 flex justify-between items-center hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50">
                                         <span className="font-medium">California Tech Hub</span>
                                         <Badge>395 Emp</Badge>
                                     </div>

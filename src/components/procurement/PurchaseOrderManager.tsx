@@ -127,7 +127,7 @@ export function PurchaseOrderManager() {
                         {newPO.lines.map((line, idx) => (
                             <div key={idx} className="flex justify-between items-center text-sm p-2 border-b last:border-0">
                                 <span>{line.description} ({line.quantity} x ${line.unitPrice})</span>
-                                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => removeLine(idx)}>
+                                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => removeLine(idx)} aria-label="Delete">
                                     <Trash2 className="w-3 h-3" />
                                 </Button>
                             </div>
@@ -171,7 +171,7 @@ export function PurchaseOrderManager() {
                                         Open
                                     </Button>
                                 )}
-                                <Button size="icon" variant="ghost" onClick={() => deletePOMutation.mutate(po.id)} data-testid={`button-delete-${po.id}`}>
+                                <Button size="icon" variant="ghost" onClick={() => deletePOMutation.mutate(po.id)} data-testid={`button-delete-${po.id}`} aria-label="Delete">
                                     <Trash2 className="w-4 h-4" />
                                 </Button>
                             </div>

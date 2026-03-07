@@ -116,7 +116,6 @@ export default function APInvoiceEntry() {
                     }
                 }
             } catch (err) {
-                console.error("Failed to fetch PO lines", err);
             }
         }
     };
@@ -309,7 +308,7 @@ export default function APInvoiceEntry() {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Input className="h-9 bg-slate-50 font-medium text-slate-700" type="number" step="0.01" value={line.amount} readOnly onChange={e => updateRow("amount", e.target.value)} placeholder="0.00" />
+                            <Input className="h-9 bg-slate-500/10 font-medium text-slate-700" type="number" step="0.01" value={line.amount} readOnly onChange={e => updateRow("amount", e.target.value)} placeholder="0.00" />
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Auto-calculated from Qty * Price. Override manually if needed.</p>
@@ -334,7 +333,7 @@ export default function APInvoiceEntry() {
                         </SelectContent>
                     </Select>
                     {line.lineType === 'ITEM' && (
-                        <label className="flex items-center gap-2 text-xs text-slate-600 px-1 hover:text-slate-900 cursor-pointer">
+                        <label className="flex items-center gap-2 text-xs text-slate-600 px-1 hover:text-slate-900 dark:text-slate-200 cursor-pointer">
                             <Checkbox className="rounded text-primary focus:ring-primary h-3.5 w-3.5 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" checked={line.trackAsAssetFlag} onCheckedChange={c => updateRow("trackAsAssetFlag", !!c)} />
                             Track as Asset
                         </label>
@@ -379,10 +378,10 @@ export default function APInvoiceEntry() {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-slate-900" onClick={(e) => {
+                                <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:text-slate-900 dark:text-slate-200" onClick={(e) => {
                                     e.preventDefault();
                                     setSelectedLineForDistributions(selectedLineForDistributions === index ? null : index);
-                                }}>
+                                }} aria-label="Network">
                                     <Network className="h-4 w-4" />
                                 </Button>
                             </TooltipTrigger>
@@ -391,7 +390,7 @@ export default function APInvoiceEntry() {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-red-700 hover:bg-red-50" onClick={() => removeLine(index)} disabled={lines.length === 1}>
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-400 hover:text-red-700 hover:bg-red-500/10" onClick={() => removeLine(index)} disabled={lines.length === 1} aria-label="Delete">
                         <Trash2 className="h-4 w-4" />
                     </Button>
 

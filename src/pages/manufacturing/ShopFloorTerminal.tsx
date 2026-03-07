@@ -220,9 +220,9 @@ export default function ShopFloorTerminal() {
                     </Card>
                 ))}
                 {activeOrders.length === 0 && !isLoading && (
-                    <div className="col-span-full py-20 text-center bg-gray-50 rounded-lg border-2 border-dashed">
+                    <div className="col-span-full py-20 text-center bg-gray-500/10 rounded-lg border-2 border-dashed">
                         <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900">No active work orders</h3>
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200">No active work orders</h3>
                         <p className="text-muted-foreground">Check planning to release new orders to the shop floor.</p>
                     </div>
                 )}

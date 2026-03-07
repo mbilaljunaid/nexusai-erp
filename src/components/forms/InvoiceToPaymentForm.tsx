@@ -89,7 +89,7 @@ export function InvoiceToPaymentForm({ invoice, onClose }: { invoice: Invoice; o
         <p className="text-sm text-muted-foreground mt-1">Record payment and update AR with GL entries</p>
       </div>
 
-      <Card className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800">
+      <Card className="bg-green-500/10 dark:bg-green-950 border border-green-200 dark:border-green-800">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -152,7 +152,7 @@ export function InvoiceToPaymentForm({ invoice, onClose }: { invoice: Invoice; o
             </div>
           </div>
 
-          <Card className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800">
+          <Card className="bg-yellow-500/10 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800">
             <CardContent className="pt-4">
               <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">
                 Creates payment record + GL entries for Cash (1000) and AR (1200) with full audit trail.

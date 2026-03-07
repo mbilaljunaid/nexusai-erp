@@ -386,7 +386,7 @@ export default function FreightSettlementWorkbench() {
                             ) : (
                                 <div className="space-y-3">
                                     {charges.filter(c => c.status === "DISPUTED").map((charge) => (
-                                        <div key={charge.id} className="p-4 border border-rose-200 bg-rose-50 rounded-lg">
+                                        <div key={charge.id} className="p-4 border border-rose-200 bg-rose-500/10 rounded-lg">
                                             <div className="flex justify-between items-start">
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2">
@@ -431,10 +431,10 @@ export default function FreightSettlementWorkbench() {
                                 <EmptyState compact title="No charges ready for AP interface" />
                             ) : (
                                 <>
-                                    <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                    <div className="mb-4 p-4 bg-emerald-500/10 border border-emerald-200 rounded-lg">
                                         <div className="flex justify-between items-center">
                                             <div>
-                                                <h4 className="font-semibold text-emerald-900">Batch Interface to AP</h4>
+                                                <h4 className="font-semibold text-emerald-900 dark:text-emerald-200">Batch Interface to AP</h4>
                                                 <p className="text-sm text-emerald-700 mt-1">
                                                     {readyForAP.length} matched {readyForAP.length === 1 ? "charge" : "charges"} ready to create AP invoices
                                                 </p>
@@ -580,7 +580,7 @@ export default function FreightSettlementWorkbench() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
-                        <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-lg">
+                        <div className="grid grid-cols-2 gap-4 p-4 bg-slate-500/10 rounded-lg">
                             <div>
                                 <p className="text-xs text-muted-foreground mb-1">Planned Amount</p>
                                 <p className="text-lg font-semibold font-mono">
@@ -606,9 +606,9 @@ export default function FreightSettlementWorkbench() {
                         </div>
 
                         {invoiceAmount && selectedCharge && (
-                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="p-4 bg-blue-500/10 border border-blue-200 rounded-lg">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-blue-900">Variance</span>
+                                    <span className="text-sm font-medium text-blue-900 dark:text-blue-200">Variance</span>
                                     <span className={cn(`font-mono font-semibold ${parseFloat(invoiceAmount) - parseFloat(selectedCharge.plannedAmount) > 0
                                         ? "text-rose-600"
                                         : "text-emerald-600"

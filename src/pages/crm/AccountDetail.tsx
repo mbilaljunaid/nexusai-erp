@@ -62,7 +62,7 @@ export default function AccountDetail() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
                     <div className="flex items-center gap-4">
                         <Link href="/crm">
-                            <Button variant="outline" size="icon" className="rounded-full">
+                            <Button variant="outline" size="icon" className="rounded-full" aria-label="Go back">
                                 <ArrowLeft className="h-4 w-4" />
                             </Button>
                         </Link>

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 import React from"react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription} from"@/components/ui/card";
 import { Button} from"@/components/ui/button";
@@ -100,7 +101,6 @@ export default function MSSDashboard() {
                actionType={actionType}
                employeeName={selectedEmployeeName}
                onComplete={(data) => {
-                  console.log("Action Wizard Completed:", data);
                   // Here you would typically invalidate queries or show a success toast
               }}
             />
@@ -167,7 +167,7 @@ export default function MSSDashboard() {
                                           </div>
                                           <DropdownMenu>
                                              <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
+                                                <Button variant="ghost" size="icon" aria-label="More options">
                                                    <MoreHorizontal className="h-5 w-5 text-zinc-400" />
                                                 </Button>
                                              </DropdownMenuTrigger>
@@ -245,7 +245,7 @@ export default function MSSDashboard() {
                            <CardContent>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                  {teamDocs?.map((perf: any) => (
-                                    <div key={perf.personId} className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
+                                    <div key={perf.personId} className="p-4 rounded-xl bg-zinc-500/10 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
                                        <div className="flex justify-between items-start mb-4">
                                           <div>
                                              <p className="font-semibold">{perf.name}</p>
@@ -259,7 +259,7 @@ export default function MSSDashboard() {
                                              <span>{perf.goalsCompletion}%</span>
                                           </div>
                                           <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                                             <div className="bg-teal-500 h-full transition-all duration-500" style={{ width:`${perf.goalsCompletion}%`}} />
+                                             <div className="bg-teal-500 h-full transition-all duration-500" style={{ width:`${perf.goalsCompletion}%`}} /* AG: migrate to <Progress value={perf.goalsCompletion} /> */ />
                                           </div>
                                        </div>
                                     </div>

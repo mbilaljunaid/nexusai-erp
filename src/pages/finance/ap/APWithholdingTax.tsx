@@ -267,7 +267,7 @@ export default function APWithholdingTax() {
                                 </TableBody>
                             </Table>
                         ) : (
-                            <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-50 border rounded-md">
+                            <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-500/10 border rounded-md">
                                 <p className="text-muted-foreground">Select a tax group on the left to manage its rates.</p>
                             </div>
                         )}

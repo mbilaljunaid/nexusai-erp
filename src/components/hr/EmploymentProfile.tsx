@@ -69,7 +69,7 @@ export function EmploymentProfile({ personId }: EmploymentProfileProps) {
                         <span className="text-sm">{person.email}</span>
                         {person.nationalId && (
                             person.nationalId.includes('*') ? (
-                                <Badge variant="outline" className="gap-1 bg-yellow-50 text-yellow-700 border-yellow-200">
+                                <Badge variant="outline" className="gap-1 bg-yellow-500/10 text-yellow-700 border-yellow-200">
                                     <Shield className="h-3 w-3" /> Confidential
                                 </Badge>
                             ) : (

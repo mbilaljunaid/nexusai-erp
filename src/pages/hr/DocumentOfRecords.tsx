@@ -127,7 +127,7 @@ export default function DocumentOfRecords() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-200/50 dark:border-indigo-800/50">
+                        <Card className="bg-indigo-500/10 dark:bg-indigo-900/10 border-indigo-200/50 dark:border-indigo-800/50">
                             <CardContent className="pt-6 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <Label className="text-sm font-medium">Global Retention Policy</Label>
@@ -164,7 +164,7 @@ export default function DocumentOfRecords() {
                                             <div className="flex-1 space-y-3 min-w-72">
                                                 <div className="flex items-center justify-between">
                                                     <Badge variant="outline" className="bg-background text-[10px] tracking-wider font-semibold text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900">{doc.category}</Badge>
-                                                    <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-red-600 xl:hidden" onClick={() => removeDocumentType(doc.id)}>
+                                                    <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-red-600 xl:hidden" onClick={() => removeDocumentType(doc.id)} aria-label="Delete">
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -193,7 +193,7 @@ export default function DocumentOfRecords() {
                                             </div>
 
                                             {/* Expiry Tracking Config */}
-                                            <div className="w-full xl:w-72 border rounded-lg p-3 bg-zinc-50 dark:bg-zinc-900/50 shrink-0">
+                                            <div className="w-full xl:w-72 border rounded-lg p-3 bg-zinc-500/10 dark:bg-zinc-900/50 shrink-0">
                                                 <div className="flex items-center justify-between mb-3">
                                                     <Label className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5"><Clock className="h-3 w-3" /> Expiry Tracking</Label>
                                                     <Switch checked={doc.trackExpiry} onCheckedChange={(val) => updateDocType(doc.id, 'trackExpiry', val)} />
@@ -221,7 +221,7 @@ export default function DocumentOfRecords() {
 
                                             {/* Actions */}
                                             <div className="hidden xl:flex items-center h-full pt-10 px-2 shrink-0">
-                                                <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => removeDocumentType(doc.id)}>
+                                                <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-red-600 hover:bg-red-500/10 dark:hover:bg-red-900/20" onClick={() => removeDocumentType(doc.id)} aria-label="Delete">
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>

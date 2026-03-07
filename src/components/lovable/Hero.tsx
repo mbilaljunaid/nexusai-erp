@@ -108,7 +108,7 @@ export function PremiumHero({
                                 <Button
                                     size="lg"
                                     onClick={(primaryCTA as any).onClick}
-                                    className="bg-white text-gray-900 hover:bg-gray-100 text-lg px-8"
+                                    className="bg-white text-gray-900 dark:text-gray-200 hover:bg-gray-500/15 text-lg px-8"
                                 >
                                     {(primaryCTA as any).label}
                                 </Button>

@@ -165,7 +165,7 @@ export default function PartRequirementList({ workOrderId }: PartRequirementList
                                     <TableCell className="text-center">{mat.plannedQuantity}</TableCell>
                                     <TableCell className="text-center">
                                         {mat.actualQuantity > 0 ? (
-                                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                            <Badge variant="outline" className="bg-green-500/10 text-green-700 border-green-200">
                                                 {mat.actualQuantity} Issued
                                             </Badge>
                                         ) : (

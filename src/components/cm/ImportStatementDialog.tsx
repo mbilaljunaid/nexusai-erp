@@ -122,7 +122,7 @@ export default function ImportStatementDialog({ open, onClose, accountId }: Prop
                         <Label>Statement File</Label>
                         <div role="button" tabIndex={0}
                             className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors
-                                ${file ? 'border-blue-500 bg-blue-50' : 'border-slate-300 hover:border-slate-400'}`)}
+                                ${file ? 'border-blue-500 bg-blue-500/10' : 'border-slate-300 hover:border-slate-400'}`)}
                             onClick={() => fileInputRef.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         >
                             <input
@@ -138,7 +138,7 @@ export default function ImportStatementDialog({ open, onClose, accountId }: Prop
                             {file ? (
                                 <>
                                     <FileText className="w-8 h-8 text-blue-500 mb-2" />
-                                    <p className="text-sm font-medium text-slate-900">{file.name}</p>
+                                    <p className="text-sm font-medium text-slate-900 dark:text-slate-200">{file.name}</p>
                                     <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(1)} KB</p>
                                     <Button variant="ghost" size="sm" className="mt-2 h-6 text-xs" onClick={(e) => { e.stopPropagation(); setFile(null); }}>
                                         Change File
@@ -147,7 +147,7 @@ export default function ImportStatementDialog({ open, onClose, accountId }: Prop
                             ) : (
                                 <>
                                     <Upload className="w-8 h-8 text-slate-400 mb-2" />
-                                    <p className="text-sm font-medium text-slate-900">Click to upload</p>
+                                    <p className="text-sm font-medium text-slate-900 dark:text-slate-200">Click to upload</p>
                                     <p className="text-xs text-slate-500">Supported: {format}</p>
                                 </>
                             )}

@@ -324,7 +324,7 @@ export default function CompetencyManagement() {
                                             <Button
                                                 size="icon"
                                                 variant="ghost"
-                                                onClick={() => removeSkillMutation.mutate(skill.id)}
+                                                onClick={() => removeSkillMutation.mutate(skill.id)} aria-label="Delete"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>

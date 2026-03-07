@@ -59,7 +59,7 @@ export default function ViolationDashboard() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                     {violations?.recent?.map((violation: any) => (
-                        <div key={violation.id} className="border rounded-lg p-3 bg-red-50">
+                        <div key={violation.id} className="border rounded-lg p-3 bg-red-500/10">
                             <div className="flex justify-between items-start">
                                 <div className="flex items-start gap-2">
                                     <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />

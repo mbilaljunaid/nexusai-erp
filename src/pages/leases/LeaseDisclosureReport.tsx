@@ -80,7 +80,7 @@ export default function LeaseDisclosureReport() {
                                     <TableCell className="text-right">${row.amount.toLocaleString()}</TableCell>
                                 </TableRow>
                             ))}
-                            <TableRow className="bg-slate-50 font-bold">
+                            <TableRow className="bg-slate-500/10 font-bold">
                                 <TableCell>Total Undiscounted Liabilities</TableCell>
                                 <TableCell className="text-right">${(2450000).toLocaleString()}</TableCell>
                             </TableRow>

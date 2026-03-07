@@ -40,7 +40,7 @@ export default function LeadDetail() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" data-testid="button-back">
+          <Button variant="ghost" size="icon" data-testid="button-back" aria-label="Go back">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
@@ -49,8 +49,8 @@ export default function LeadDetail() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" data-testid="button-favorite"><Heart className="h-5 w-5" /></Button>
-          <Button variant="ghost" size="icon" data-testid="button-share"><Share2 className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" data-testid="button-favorite" aria-label="Like"><Heart className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" data-testid="button-share" aria-label="Share"><Share2 className="h-5 w-5" /></Button>
           <Button data-testid="button-edit"><Edit2 className="h-4 w-4 mr-2" />Edit</Button>
         </div>
       </div>

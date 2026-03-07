@@ -216,11 +216,11 @@ export default function ConstructionResourceWorkbench() {
                             actions={(item) => (
                                 <div className="flex items-center gap-1">
                                     {item.type === "EQUIPMENT" && (
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600" onClick={() => setTelemetryResource(item)}>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600" onClick={() => setTelemetryResource(item)} aria-label="Activity">
                                             <Activity className="h-3.5 w-3.5" />
                                         </Button>
                                     )}
-                                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Settings">
                                         <Settings2 className="h-3.5 w-3.5" />
                                     </Button>
                                 </div>
@@ -317,7 +317,7 @@ export default function ConstructionResourceWorkbench() {
                             </div>
 
                             {telemetry.alerts.length > 0 && (
-                                <div className="p-3 bg-red-50 border border-red-200 rounded-md space-y-1">
+                                <div className="p-3 bg-red-500/10 border border-red-200 rounded-md space-y-1">
                                     {telemetry.alerts.map((alert: string, i: number) => (
                                         <div key={i} className="flex items-center gap-2 text-xs text-red-700 font-medium">
                                             <AlertTriangle className="h-3 w-3" />

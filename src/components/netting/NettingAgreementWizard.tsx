@@ -334,7 +334,7 @@ export function NettingAgreementWizard({ isOpen, onClose, onSuccess }: Agreement
                                             <p className="font-medium">{paymentTerms}</p>
                                         </div>
                                     </div>
-                                    <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded text-sm">
+                                    <div className="mt-4 p-3 bg-blue-500/10 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded text-sm">
                                         <p className="text-blue-900 dark:text-blue-400">
                                             This agreement will enable automatic netting between selected entities
                                             on a {frequency.toLowerCase()} basis.

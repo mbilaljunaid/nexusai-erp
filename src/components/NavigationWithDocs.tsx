@@ -42,7 +42,7 @@ export function Header() {
               >
                 {/* Process Flows */}
                 <Link href="/docs/process-flows" className="block">
-                  <div className="px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
+                  <div className="px-4 py-3 hover:bg-slate-500/15 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
                     <Compass className="w-4 h-4 text-blue-600" />
                     <div>
                       <div className="font-semibold text-foreground text-sm">Process Flows</div>
@@ -53,7 +53,7 @@ export function Header() {
 
                 {/* Training Guides */}
                 <Link href="/docs/training-guides" className="block">
-                  <div className="px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
+                  <div className="px-4 py-3 hover:bg-slate-500/15 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
                     <BookOpen className="w-4 h-4 text-green-600" />
                     <div>
                       <div className="font-semibold text-foreground text-sm">Training Guides</div>
@@ -64,7 +64,7 @@ export function Header() {
 
                 {/* Technical Documentation */}
                 <Link href="/docs/technical" className="block">
-                  <div className="px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
+                  <div className="px-4 py-3 hover:bg-slate-500/15 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
                     <Code2 className="w-4 h-4 text-purple-600" />
                     <div>
                       <div className="font-semibold text-foreground text-sm">Technical Docs</div>
@@ -75,7 +75,7 @@ export function Header() {
 
                 {/* Implementation Guidelines */}
                 <Link href="/docs/implementation" className="block">
-                  <div className="px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
+                  <div className="px-4 py-3 hover:bg-slate-500/15 dark:hover:bg-slate-700 transition-colors flex items-center gap-3 group/item">
                     <Zap className="w-4 h-4 text-orange-600" />
                     <div>
                       <div className="font-semibold text-foreground text-sm">Implementation</div>

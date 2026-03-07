@@ -86,12 +86,12 @@ export default function JournalApprovalHub() {
             ]}
         >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <Card className="bg-orange-50/50 border-orange-100">
+                <Card className="bg-orange-500/10 border-orange-100">
                     <CardContent className="pt-6">
                         <div className="flex justify-between items-center">
                             <div>
                                 <p className="text-sm font-medium text-orange-800">Pending My Action</p>
-                                <h3 className="text-2xl font-bold text-orange-900">{pendingApprovals?.length || 0}</h3>
+                                <h3 className="text-2xl font-bold text-orange-900 dark:text-orange-200">{pendingApprovals?.length || 0}</h3>
                             </div>
                             <Clock className="h-8 w-8 text-orange-300" />
                         </div>
@@ -133,7 +133,7 @@ export default function JournalApprovalHub() {
                                     <TableCell>{item.requester || "Unknown"}</TableCell>
                                     <TableCell>{formatDate(item.submittedDate)}</TableCell>
                                     <TableCell className="text-right space-x-2">
-                                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 hover:bg-red-500/10"
                                             onClick={() => openAction('reject', item.journalId)}>
                                             <XCircle className="h-4 w-4 mr-1" /> Reject
                                         </Button>

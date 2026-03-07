@@ -117,7 +117,7 @@ export default function TeamSchedule() {
                                 {assignment.shift.code}
                             </div>
                         ) : (
-                            <div className="h-full w-full rounded hover:bg-slate-100 min-h-6"></div>
+                            <div className="h-full w-full rounded hover:bg-slate-500/15 min-h-6"></div>
                         )}
                     </div>
                 );

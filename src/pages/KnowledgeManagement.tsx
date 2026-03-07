@@ -26,7 +26,7 @@ export default function KnowledgeManagement() {
     >
       <DashboardWidget title="Articles" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-blue-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <BookMarked className="h-4 w-4 text-blue-600" />
           </div>
           <div>
@@ -38,7 +38,7 @@ export default function KnowledgeManagement() {
 
       <DashboardWidget title="Total Views" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-emerald-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Eye className="h-4 w-4 text-emerald-600" />
           </div>
           <div>
@@ -50,7 +50,7 @@ export default function KnowledgeManagement() {
 
       <DashboardWidget title="Comments" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-purple-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <MessageCircle className="h-4 w-4 text-purple-600" />
           </div>
           <div>
@@ -62,7 +62,7 @@ export default function KnowledgeManagement() {
 
       <DashboardWidget title="Activity Score" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-amber-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Activity className="h-4 w-4 text-amber-600" />
           </div>
           <div>

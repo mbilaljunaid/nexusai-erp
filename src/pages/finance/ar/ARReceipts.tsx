@@ -202,7 +202,7 @@ export default function ARReceipts() {
 
             {selectedReceipt && (
                 <Card className="mt-6 border-orange-200">
-                    <CardHeader className="bg-orange-50"><CardTitle>Applications for {selectedReceipt.transactionId}</CardTitle></CardHeader>
+                    <CardHeader className="bg-orange-500/10"><CardTitle>Applications for {selectedReceipt.transactionId}</CardTitle></CardHeader>
                     <CardContent className="pt-4">
                         <ReceiptApplications receiptId={selectedReceipt.id} />
                     </CardContent>

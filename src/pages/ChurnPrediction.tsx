@@ -42,12 +42,12 @@ export default function ChurnPrediction() {
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="h-6 w-6 text-indigo-600 hover:bg-indigo-50"
+                    className="h-6 w-6 text-indigo-600 hover:bg-indigo-500/10"
                     onClick={() => {
                       open();
                       sendMessage(`Analyze churn risk factors for customer ${pred.customerId}. Current risk score is ${pred.riskScore}%. Provide a detailed retention plan.`);
                     }}
-                    title="Analyze with NexusAI"
+                    title="Analyze with NexusAI" aria-label="AI"
                   >
                     <Sparkles className="h-3 w-3" />
                   </Button>

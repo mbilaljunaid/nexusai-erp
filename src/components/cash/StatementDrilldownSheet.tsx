@@ -50,7 +50,7 @@ export function StatementDrilldownSheet({ accountId, accountName, isOpen, onClos
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
-                    <Button variant="outline" size="icon">
+                    <Button variant="outline" size="icon" aria-label="Filter">
                         <Filter className="h-4 w-4" />
                     </Button>
                 </div>

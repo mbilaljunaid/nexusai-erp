@@ -106,38 +106,38 @@ export default function BurdenRuleBuilder() {
         >
             <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Rules</CardTitle>
                         </CardHeader>
-                        <CardContent><div className="text-2xl font-bold text-blue-900">{rules.length}</div></CardContent>
+                        <CardContent><div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{rules.length}</div></CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Active</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                                 {rules.filter(r => r.status === "ACTIVE").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Draft</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">
                                 {rules.filter(r => r.status === "DRAFT").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Avg Tiers</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">
                                 {rules.length > 0 ? (rules.reduce((sum, r) => sum + r.tiers.length, 0) / rules.length).toFixed(1) : 0}
                             </div>
                         </CardContent>
@@ -155,7 +155,7 @@ export default function BurdenRuleBuilder() {
                                 </div>
                                 <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                                     <DialogTrigger asChild>
-                                        <Button size="icon" variant="ghost">
+                                        <Button size="icon" variant="ghost" aria-label="Add">
                                             <Plus className="h-4 w-4" />
                                         </Button>
                                     </DialogTrigger>
@@ -191,7 +191,7 @@ export default function BurdenRuleBuilder() {
                                     {rules.map((rule) => (
                                         <TableRow
                                             key={rule.id}
-                                            className={selectedRuleId === rule.id ? "bg-blue-50 border-l-4 border-l-blue-600" : "cursor-pointer"}
+                                            className={selectedRuleId === rule.id ? "bg-blue-500/10 border-l-4 border-l-blue-600" : "cursor-pointer"}
                                             onClick={() => setSelectedRuleId(rule.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <TableCell className="font-medium p-4 py-3">

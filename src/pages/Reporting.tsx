@@ -78,7 +78,7 @@ export default function Reporting() {
               </div>
               <div className="flex gap-2">
                 <Badge variant="outline">{report.schedule}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-download-${report.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-download-${report.id}`} aria-label="Download">
                   <Download className="h-4 w-4" />
                 </Button>
               </div>

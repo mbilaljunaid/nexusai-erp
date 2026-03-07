@@ -101,7 +101,7 @@ export default function ECOManagement() {
 
             {/* New ECO form */}
             {showNew && (
-                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm border-gray-200">
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-gray-200">
                     <div className="text-[13px] font-bold mb-2.5">Create ECO</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         {(
@@ -159,7 +159,7 @@ export default function ECOManagement() {
                         </div>
                         <div className="text-[11px] text-gray-700 mb-2.5">{selected.title}</div>
                         <div className="text-[10px] text-gray-500 mb-2.5">
-                            <div>Type: <strong className="font-bold text-gray-900">{selected.change_type}</strong></div>
+                            <div>Type: <strong className="font-bold text-gray-900 dark:text-gray-200">{selected.change_type}</strong></div>
                             <div>Approved by: {selected.approved_by ?? '—'}</div>
                             <div>Effective: {selected.effective_date ?? '—'}</div>
                         </div>
@@ -167,7 +167,7 @@ export default function ECOManagement() {
                             <>
                                 <div className="text-[10px] font-bold mb-1">Affected Items</div>
                                 {selected.affected_items.map((item: any, i: number) => (
-                                    <div key={i} className="text-[10px] bg-gray-50 rounded px-1.5 py-0.5 mb-0.5">{item.itemNumber} Rev {item.revision}</div>
+                                    <div key={i} className="text-[10px] bg-gray-500/10 rounded px-1.5 py-0.5 mb-0.5">{item.itemNumber} Rev {item.revision}</div>
                                 ))}
                             </>
                         )}

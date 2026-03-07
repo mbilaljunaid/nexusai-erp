@@ -267,7 +267,7 @@ export default function ConstructionBillingWorkbench() {
                         <CardTitle className="text-base">Applications</CardTitle>
                         <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                             <SheetTrigger asChild>
-                                <Button size="icon" variant="ghost"><Plus className="h-4 w-4" /></Button>
+                                <Button size="icon" variant="ghost" aria-label="Add"><Plus className="h-4 w-4" /></Button>
                             </SheetTrigger>
                             <SheetContent side="right">
                                 <SheetHeader>

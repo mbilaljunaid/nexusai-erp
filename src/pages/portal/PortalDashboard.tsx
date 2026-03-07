@@ -47,7 +47,7 @@ export default function PortalDashboard() {
 
             {/* Overdue Alert Banner */}
             {hasOverdue && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <div className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-md">
                     <div className="flex items-start gap-3">
                         <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                         <div className="flex-1">
@@ -57,7 +57,7 @@ export default function PortalDashboard() {
                                 Please make a payment to avoid service interruption.
                             </p>
                             <Link href="/portal/invoices">
-                                <Button size="sm" variant="outline" className="mt-3 border-red-300 text-red-700 hover:bg-red-100">
+                                <Button size="sm" variant="outline" className="mt-3 border-red-300 text-red-700 hover:bg-red-500/15">
                                     View Overdue Invoices <ArrowRight className="ml-2 h-4 w-4" />
                                 </Button>
                             </Link>
@@ -73,21 +73,21 @@ export default function PortalDashboard() {
                     value={`$${stats.outstanding?.toLocaleString() || "0.00"}`}
                     icon={DollarSign}
                     color="text-blue-600"
-                    bg="bg-blue-50"
+                    bg="bg-blue-500/10"
                 />
                 <StatCard
                     title="Overdue Amount"
                     value={`$${stats.overdue?.toLocaleString() || "0.00"}`}
                     icon={AlertCircle}
                     color={hasOverdue ? "text-red-600" : "text-gray-400"}
-                    bg={hasOverdue ? "bg-red-50" : "bg-gray-50"}
+                    bg={hasOverdue ? "bg-red-500/10" : "bg-gray-500/10"}
                 />
                 <StatCard
                     title="Open Invoices"
                     value={stats.openInvoiceCount || 0}
                     icon={FileText}
                     color="text-emerald-600"
-                    bg="bg-emerald-50"
+                    bg="bg-emerald-500/10"
                 />
             </div>
 
@@ -112,7 +112,7 @@ export default function PortalDashboard() {
                         ) : recentPayments && recentPayments.length > 0 ? (
                             <div className="space-y-3">
                                 {recentPayments.map((payment: any) => (
-                                    <div key={payment.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <div key={payment.id} className="flex items-center justify-between p-3 bg-slate-500/10 rounded-lg">
                                         <div className="flex items-center gap-3">
                                             <div className="h-10 w-10 bg-emerald-100 rounded-full flex items-center justify-center">
                                                 <CheckCircle className="h-5 w-5 text-emerald-600" />

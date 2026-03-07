@@ -524,10 +524,10 @@ export default function JournalEntry() {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Button variant="ghost" size="icon" onClick={() => handleEditLine(line)}>
+                                            <Button variant="ghost" size="icon" onClick={() => handleEditLine(line)} aria-label="More options">
                                                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" onClick={() => removeLine(line.id)}>
+                                            <Button variant="ghost" size="icon" onClick={() => removeLine(line.id)} aria-label="Delete">
                                                 <Trash2 className="h-4 w-4 text-red-500/70 hover:text-red-600" />
                                             </Button>
                                         </div>

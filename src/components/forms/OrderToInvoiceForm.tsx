@@ -88,7 +88,7 @@ export function OrderToInvoiceForm({ order, onClose }: { order: Order; onClose: 
         <p className="text-sm text-muted-foreground mt-1">Create invoice from fulfilled order with AR + Revenue GL entries</p>
       </div>
 
-      <Card className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800">
+      <Card className="bg-green-500/10 dark:bg-green-950 border border-green-200 dark:border-green-800">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -145,7 +145,7 @@ export function OrderToInvoiceForm({ order, onClose }: { order: Order; onClose: 
             </div>
           </div>
 
-          <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+          <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
             <CardContent className="pt-4">
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Creates invoice + AR GL entry (1200) + Revenue GL entry (4000) for complete order-to-cash visibility.

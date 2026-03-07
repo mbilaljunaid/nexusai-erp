@@ -68,7 +68,7 @@ EMP001,John,Doe,john.doe@example.com,1990-01-01,123456,1,EMPLOYEE,2024-01-01,DEV
                         <CardDescription>Paste CSV data below. Header row is required.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="text-xs text-muted-foreground bg-slate-50 p-2 rounded border font-mono whitespace-pre-wrap">
+                        <div className="text-xs text-muted-foreground bg-slate-500/10 p-2 rounded border font-mono whitespace-pre-wrap">
                             Template:<br />
                             {template}
                         </div>

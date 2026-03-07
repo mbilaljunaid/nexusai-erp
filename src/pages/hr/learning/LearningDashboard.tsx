@@ -264,7 +264,7 @@ export default function LearningManagement() {
               </p>
             </div>
             <Button
-              className="whitespace-nowrap bg-white text-indigo-600 hover:bg-slate-100 font-black shadow-xl h-12 px-8"
+              className="whitespace-nowrap bg-white text-indigo-600 hover:bg-slate-500/15 font-black shadow-xl h-12 px-8"
               onClick={() => {
                 open();
                 sendMessage("I need AI-powered course recommendations based on my career goals and current skill set.");

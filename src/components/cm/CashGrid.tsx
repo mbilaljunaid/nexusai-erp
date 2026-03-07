@@ -87,10 +87,10 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
                         {transactions?.map((row) => (
                             <tr
                                 key={row.id}
-                                className="hover:bg-slate-50 transition-colors cursor-pointer"
+                                className="hover:bg-slate-500/10 transition-colors cursor-pointer"
                                 onClick={() => onEditTransaction && onEditTransaction(row)}
                             >
-                                <td className="px-4 py-2 text-slate-900">
+                                <td className="px-4 py-2 text-slate-900 dark:text-slate-200">
                                     {formatDate(row.transactionDate)}
                                 </td>
                                 <td className="px-4 py-2 text-slate-600 font-mono text-xs">{row.reference || '-'}</td>

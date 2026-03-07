@@ -119,7 +119,7 @@ export default function WIPTracking() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={w.status === "completed" ? "default" : "secondary"}>{w.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${w.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${w.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

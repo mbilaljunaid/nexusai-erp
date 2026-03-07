@@ -206,9 +206,9 @@ export function ROUAssetCreatorModal({
                     </Card>
 
                     {/* Info */}
-                    <div className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                    <div className="flex items-start gap-2 p-3 bg-blue-500/10 border border-blue-200 rounded text-sm">
                         <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5" />
-                        <div className="text-blue-900">
+                        <div className="text-blue-900 dark:text-blue-200">
                             <p className="font-medium">Integration Note</p>
                             <p className="text-xs mt-1">
                                 This will create a Fixed Asset record linked to this lease.

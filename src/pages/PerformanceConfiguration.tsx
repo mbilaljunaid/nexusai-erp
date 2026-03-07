@@ -53,7 +53,7 @@ export default function PerformanceConfiguration() {
                                 <p className="text-sm text-muted-foreground">{t.description}</p>
                             </div>
                             <div className="flex gap-2">
-                                <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-red-500" /></Button>
+                                <Button variant="ghost" size="icon" aria-label="Delete"><Trash2 className="w-4 h-4 text-red-500" /></Button>
                             </div>
                         </CardContent>
                     </Card>

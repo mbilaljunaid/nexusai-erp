@@ -90,7 +90,7 @@ export function VarianceAnalysisWidget({ currentPeriodId, onClose }: VarianceAna
                                         </span>
                                     </div>
                                 </div>
-                                <p className="text-sm text-muted-foreground bg-slate-50 dark:bg-slate-900 p-2 rounded">
+                                <p className="text-sm text-muted-foreground bg-slate-500/10 dark:bg-slate-900 p-2 rounded">
                                     <span className="font-semibold text-blue-600">AI Insight: </span>
                                     {item.explanation}
                                 </p>

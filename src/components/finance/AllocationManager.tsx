@@ -215,7 +215,7 @@ export function AllocationManager() {
                                             >
                                                 <Play className="h-3 w-3 mr-1 fill-emerald-400" /> Run
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-white">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-white" aria-label="Settings">
                                                 <Settings2 className="h-4 w-4" />
                                             </Button>
                                         </div>

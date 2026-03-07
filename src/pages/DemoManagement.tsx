@@ -31,7 +31,6 @@ export default function DemoManagement() {
       const data = await res.json();
       setIndustries(Array.isArray(data) ? data : []);
     } catch (e) {
-      console.error(e);
       setIndustries([]);
     }
   };
@@ -44,7 +43,6 @@ export default function DemoManagement() {
       const data = await res.json();
       setDemos(Array.isArray(data) ? data : []);
     } catch (e) {
-      console.error(e);
       setDemos([]);
     }
   };
@@ -64,7 +62,6 @@ export default function DemoManagement() {
           headers: { "x-user-role": "admin" },
         });
         const seedData = await seedRes.json();
-        console.log(`Seeded ${seedData.recordsSeeded} records for ${selectedIndustry}`);
       }
 
       const res = await fetch("/api/demos/request", {
@@ -96,7 +93,6 @@ export default function DemoManagement() {
         setEmail("");
       }
     } catch (e) {
-      console.error(e);
       toast({ variant: 'destructive', description: "Failed to create demo" });
     } finally {
       setLoading(false);
@@ -112,7 +108,6 @@ export default function DemoManagement() {
       });
       fetchDemos();
     } catch (e) {
-      console.error(e);
     }
   };
 

@@ -103,7 +103,7 @@ export default function ProcessAnalytics() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={k.status === "on-track" ? "default" : k.status === "warning" ? "secondary" : "destructive"}>{k.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${k.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${k.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

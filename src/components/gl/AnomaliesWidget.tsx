@@ -48,14 +48,14 @@ export function AnomaliesWidget() {
     const count = anomalies?.length || 0;
 
     return (
-        <Card className="h-full border-orange-200 bg-orange-50/30 dark:bg-orange-950/10 dark:border-orange-900">
+        <Card className="h-full border-orange-200 bg-orange-500/10 dark:bg-orange-950/10 dark:border-orange-900">
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-base flex items-center gap-2">
                         <AlertTriangle className="h-4 w-4 text-orange-500" />
                         AI Anomaly Detector
                     </CardTitle>
-                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => refetch()}>
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => refetch()} aria-label="Refresh">
                         <RefreshCcw className="h-3 w-3" />
                     </Button>
                 </div>

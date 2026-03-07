@@ -85,7 +85,7 @@ export default function OpportunityList() {
       width: "100px",
       cell: (opp: any) => (
         <div className="px-2 h-full flex items-center">
-          <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(opp.id); }}>
+          <Button size="icon" variant="ghost" onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(opp.id); }} aria-label="Delete">
             <Trash2 className="w-4 h-4 text-red-500" />
           </Button>
         </div>

@@ -120,7 +120,7 @@ export default function CommunicationCenter() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={c.status === "sent" ? "default" : "secondary"}>{c.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`}>
+                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

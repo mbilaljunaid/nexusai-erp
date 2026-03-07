@@ -65,7 +65,7 @@ export default function PermitToWork() {
 
             {/* Expiring alert banner */}
             {expiring.length > 0 && (
-                <div className="bg-amber-50 border border-amber-300 rounded-lg px-3 py-2 mb-2.5 flex items-center gap-2 text-[11px]">
+                <div className="bg-amber-500/10 border border-amber-300 rounded-lg px-3 py-2 mb-2.5 flex items-center gap-2 text-[11px]">
                     <Clock size={12} color="#d97706" />
                     <strong>{expiring.length} permit(s) expiring within 24 hours:</strong> {expiring.map(p => p.permit_number).join(', ')}
                 </div>
@@ -73,14 +73,14 @@ export default function PermitToWork() {
 
             {/* CBM alerts */}
             {cbmAlerts.length > 0 && (
-                <div className="bg-red-50 border border-red-300 rounded-lg px-3 py-2 mb-2.5 flex gap-3 flex-wrap text-[10px]">
+                <div className="bg-red-500/10 border border-red-300 rounded-lg px-3 py-2 mb-2.5 flex gap-3 flex-wrap text-[10px]">
                     <AlertTriangle size={12} color="#dc2626" className="shrink-0" />
                     {cbmAlerts.map((a, i) => <span key={i} className="bg-red-100 text-red-600 px-1.5 py-0.5 rounded">{a.asset_id} · {a.parameter_name}: {Number(a.reading_value).toFixed(2)}</span>)}
                 </div>
             )}
 
             {showNew && (
-                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm border-gray-200">
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-gray-200">
                     <div className="font-bold text-xs mb-2">Create Permit</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         <div className="flex flex-col gap-0.5">
@@ -139,7 +139,7 @@ export default function PermitToWork() {
                                 <div className="text-[9px] text-gray-400">By: {p.requested_by} {p.contractor ? `· Contractor: ${p.contractor}` : ''} {hrs !== null && p.status === 'Active' ? `· ${hrs}h remaining` : ''}</div>
                                 {(ACTIONS[p.status] ?? []).length > 0 && (
                                     <div className="flex gap-1 mt-1.5">
-                                        {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={cn(`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-600'}`)}>{a}</button>)}
+                                        {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={cn(`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-500/10 text-blue-700' : 'bg-red-500/10 text-red-600'}`)}>{a}</button>)}
                                     </div>
                                 )}
                             </Card>

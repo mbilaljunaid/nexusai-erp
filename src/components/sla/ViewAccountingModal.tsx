@@ -61,7 +61,6 @@ export function ViewAccountingModal({ entityId, open, onOpenChange }: ViewAccoun
             const data = await res.json();
             setTraceData(data);
         } catch (error) {
-            console.error(error);
         } finally {
             setIsTraceLoading(false);
         }

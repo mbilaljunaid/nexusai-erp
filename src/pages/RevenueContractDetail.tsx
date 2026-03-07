@@ -144,13 +144,13 @@ export default function RevenueContractDetail() {
                 <div>
                     <div className="flex items-center gap-2 mb-1">
                         <Link href="/revenue/contracts">
-                            <Button variant="ghost" size="sm" className="-ml-3 text-muted-foreground hover:text-slate-900">
+                            <Button variant="ghost" size="sm" className="-ml-3 text-muted-foreground hover:text-slate-900 dark:text-slate-200">
                                 ← Back
                             </Button>
                         </Link>
                     </div>
                     <div className="flex items-center gap-2 mb-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900">{contract.contractNumber}</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200">{contract.contractNumber}</h1>
                         <Badge variant="secondary">{contract.status}</Badge>
                     </div>
                     <p className="text-muted-foreground">Contract Details & Revenue Lifecycle</p>

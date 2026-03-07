@@ -236,7 +236,7 @@ export default function HRPredictiveAnalytics() {
                                     <div className="w-full bg-muted rounded-full h-3">
                                         <div
                                             className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600"
-                                            style={{ width: `${(gap.currentCount / gap.requiredCount) * 100}%` }}
+                                            style={{ width: `${(gap.currentCount / gap.requiredCount) * 100}%`}}
                                         />
                                     </div>
                                 </div>

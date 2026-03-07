@@ -105,7 +105,7 @@ export default function GuidedJourneyWorkerTransfer() {
             <div className="max-w-4xl mx-auto pb-12">
 
                 {/* Context Header */}
-                <Card className="mb-8 border-indigo-100 dark:border-indigo-900/50 shadow-sm bg-indigo-50/30 dark:bg-indigo-900/10">
+                <Card className="mb-8 border-indigo-100 dark:border-indigo-900/50 shadow-sm bg-indigo-500/10 dark:bg-indigo-900/10">
                     <CardContent className="p-6">
                         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
                             <div className="space-y-4 flex-1 w-full">
@@ -162,7 +162,7 @@ export default function GuidedJourneyWorkerTransfer() {
                     {/* Step 1: Assignment */}
                     {currentStep === 1 && (
                         <>
-                            <div className="bg-zinc-50 dark:bg-white/5 border-b p-4 px-6">
+                            <div className="bg-zinc-500/10 dark:bg-white/5 border-b p-4 px-6">
                                 <div className="flex gap-2 items-center">
                                     <Briefcase className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                     <h3 className="font-semibold text-lg">Assignment Details</h3>
@@ -170,7 +170,7 @@ export default function GuidedJourneyWorkerTransfer() {
                                 <p className="text-sm text-muted-foreground">Update the worker's organizational placement.</p>
                             </div>
                             <CardContent className="p-6 space-y-6">
-                                <Alert className="bg-amber-50 dark:bg-amber-900/20 text-amber-900 dark:text-amber-200 border-amber-200 dark:border-amber-800">
+                                <Alert className="bg-amber-500/10 dark:bg-amber-900/20 text-amber-900 dark:text-amber-200 border-amber-200 dark:border-amber-800">
                                     <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                                     <AlertTitle>Current Assignment</AlertTitle>
                                     <AlertDescription className="text-sm mt-1">
@@ -232,7 +232,7 @@ export default function GuidedJourneyWorkerTransfer() {
                     {/* Step 2: Compensation */}
                     {currentStep === 2 && (
                         <>
-                            <div className="bg-zinc-50 dark:bg-white/5 border-b p-4 px-6">
+                            <div className="bg-zinc-500/10 dark:bg-white/5 border-b p-4 px-6">
                                 <div className="flex gap-2 items-center">
                                     <DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                                     <h3 className="font-semibold text-lg">Compensation Setup</h3>
@@ -296,7 +296,7 @@ export default function GuidedJourneyWorkerTransfer() {
                     {/* Step 3: Review */}
                     {currentStep === 3 && (
                         <>
-                            <div className="bg-zinc-50 dark:bg-white/5 border-b p-4 px-6">
+                            <div className="bg-zinc-500/10 dark:bg-white/5 border-b p-4 px-6">
                                 <div className="flex gap-2 items-center">
                                     <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                     <h3 className="font-semibold text-lg">Review & Submit</h3>
@@ -367,7 +367,7 @@ export default function GuidedJourneyWorkerTransfer() {
                         </>
                     )}
 
-                    <CardFooter className="px-6 py-4 border-t bg-zinc-50/50 dark:bg-zinc-900/50 flex justify-between items-center">
+                    <CardFooter className="px-6 py-4 border-t bg-slate-500/10 dark:bg-zinc-900/50 flex justify-between items-center">
                         <Button
                             variant="outline"
                             onClick={handleBack}

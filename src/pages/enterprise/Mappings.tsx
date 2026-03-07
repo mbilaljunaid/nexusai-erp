@@ -104,7 +104,7 @@ export default function EnterpriseMappings() {
                         <CardDescription>Assign operational business units to statutory legal entities.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-50">
+                        <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-500/10">
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">Legal Group</label>
                                 <Select value={selectedLegalGroup} onValueChange={setSelectedLegalGroup}>
@@ -170,7 +170,7 @@ export default function EnterpriseMappings() {
                         <CardDescription>Assign financial tracking ledgers to operational business units.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-50">
+                        <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-500/10">
                             <div className="flex-1 space-y-2">
                                 <label className="text-sm font-medium">Business Unit</label>
                                 <div className="pb-1 min-h-10 flex flex-col justify-end">

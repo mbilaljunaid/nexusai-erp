@@ -69,7 +69,7 @@ export default function APPeriodClose() {
         <StandardPage title="AP Period Close" description="Manage Accounts Payable accounting periods and validate subledger readiness.">
             {/* Ledger Context Banner */}
             {legalEntityId && (
-                <div className="flex items-center gap-2 px-4 py-2 mb-4 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg text-sm">
+                <div className="flex items-center gap-2 px-4 py-2 mb-4 bg-blue-500/10 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg text-sm">
                     <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span className="text-blue-700 dark:text-blue-300 font-medium">
                         Period close scoped to Legal Entity: {legalEntityId}

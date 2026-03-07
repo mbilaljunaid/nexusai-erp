@@ -109,7 +109,7 @@ export function ZbaManager() {
             </div>
 
             {pendingStructures.length > 0 && (
-                <Card className="border-orange-200 bg-orange-50/20">
+                <Card className="border-orange-200 bg-orange-500/10">
                     <CardHeader>
                         <CardTitle className="text-sm flex items-center gap-2 text-orange-700">
                             <ShieldCheck className="h-4 w-4" />
@@ -244,10 +244,10 @@ export function ZbaManager() {
                 </Card>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-4 items-start">
+            <div className="bg-blue-500/10 border border-blue-200 rounded-lg p-4 flex gap-4 items-start">
                 <Building2 className="h-5 w-5 text-blue-600 mt-0.5" />
                 <div className="text-xs">
-                    <p className="font-semibold text-blue-900 uppercase tracking-tight">Treasury Policy Note</p>
+                    <p className="font-semibold text-blue-900 dark:text-blue-200 uppercase tracking-tight">Treasury Policy Note</p>
                     <p className="text-blue-800 mt-1">
                         Sweeps are performed as internal GL transfers between cash clearing accounts.
                         Matching bank statement lines for the actual bank-side transfer will be automatically reconciled against these sweep transactions.

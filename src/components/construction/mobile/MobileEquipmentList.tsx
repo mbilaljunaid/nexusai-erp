@@ -93,10 +93,10 @@ export function MobileEquipmentCard({ equipment, onSelect}: MobileEquipmentCardP
 
                     {/* Alerts - Always Visible if Present */}
                     {equipment.alerts && equipment.alerts.length > 0 && (
-                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-2">
+                        <div className="bg-orange-500/10 border border-orange-200 rounded-lg p-2">
                             <div className="flex items-start gap-2">
                                 <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                                <div className="text-xs text-orange-900">
+                                <div className="text-xs text-orange-900 dark:text-orange-200">
                                     {equipment.alerts[0]}
                                     {equipment.alerts.length > 1 && (
                                         <span className="ml-1 font-semibold">+{equipment.alerts.length - 1} more</span>
@@ -145,7 +145,7 @@ export function MobileEquipmentCard({ equipment, onSelect}: MobileEquipmentCardP
                                 <div className="space-y-2">
                                     <div className="text-sm font-medium">All Alerts:</div>
                                     {equipment.alerts.map((alert, index) => (
-                                        <div key={index} className="bg-orange-50 border border-orange-200 rounded p-2 text-xs text-orange-900">
+                                        <div key={index} className="bg-orange-500/10 border border-orange-200 rounded p-2 text-xs text-orange-900 dark:text-orange-200">
                                             • {alert}
                                         </div>
                                     ))}

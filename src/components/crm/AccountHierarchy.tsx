@@ -118,7 +118,7 @@ export function AccountHierarchy({ accountId}: { accountId: string}) {
                                                     <p className="text-xs text-muted-foreground">{child.industry}</p>
                                                 </div>
                                                 <Link href={`/crm/accounts/${child.id}`}>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8"><ArrowRight className="h-3 w-3" /></Button>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Go forward"><ArrowRight className="h-3 w-3" /></Button>
                                                 </Link>
                                             </div>
                                         </div>

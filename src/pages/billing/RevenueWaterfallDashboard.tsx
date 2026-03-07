@@ -83,7 +83,7 @@ export default function RevenueWaterfallDashboard() {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="bg-amber-500/5 border-amber-500/20">
+                <Card className="bg-amber-500/100/5 border-amber-500/20">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-amber-600">Deferred Revenue</CardTitle>
                         <Clock className="h-4 w-4 text-amber-600" />
@@ -96,7 +96,7 @@ export default function RevenueWaterfallDashboard() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-green-500/5 border-green-500/20">
+                <Card className="bg-green-500/100/5 border-green-500/20">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-green-600">Recognized MTD</CardTitle>
                         <TrendingUp className="h-4 w-4 text-green-600" />

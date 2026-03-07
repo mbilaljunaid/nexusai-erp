@@ -61,7 +61,7 @@ export function SupplierManager() {
                     <Button size="sm" variant="outline" onClick={() => setSelectedSupplier(row)}>
                         Manage Sites
                     </Button>
-                    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteSupplierMutation.mutate(row.id)}>
+                    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteSupplierMutation.mutate(row.id)} aria-label="Delete">
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>

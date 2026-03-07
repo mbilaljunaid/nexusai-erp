@@ -98,7 +98,7 @@ export default function ChartOfAccounts() {
                         <Badge variant={account.isActive ? "default" : "secondary"}>
                           {account.isActive ? "Active" : "Inactive"}
                         </Badge>
-                        <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(account.id)} data-testid={`button-delete-${account.id}`}>
+                        <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(account.id)} data-testid={`button-delete-${account.id}`} aria-label="Delete">
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>

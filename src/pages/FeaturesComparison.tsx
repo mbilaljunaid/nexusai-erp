@@ -45,11 +45,11 @@ export default function FeaturesComparison() {
   ];
 
   const companies = [
-    { name: "NexusAIFirst", color: "bg-blue-50 dark:bg-blue-950", strength: "AI-First, Industry-Ready, Fast" },
-    { name: "Oracle", color: "bg-red-50 dark:bg-red-950", strength: "Enterprise Scale, Legacy Support" },
-    { name: "Salesforce", color: "bg-green-50 dark:bg-green-950", strength: "CRM Excellence, Cloud Native" },
-    { name: "Odoo", color: "bg-purple-50 dark:bg-purple-950", strength: "Open Source, Affordable" },
-    { name: "SAP", color: "bg-amber-50 dark:bg-amber-950", strength: "Complex Operations, Global Scale" },
+    { name: "NexusAIFirst", color: "bg-blue-500/10 dark:bg-blue-950", strength: "AI-First, Industry-Ready, Fast" },
+    { name: "Oracle", color: "bg-red-500/10 dark:bg-red-950", strength: "Enterprise Scale, Legacy Support" },
+    { name: "Salesforce", color: "bg-green-500/10 dark:bg-green-950", strength: "CRM Excellence, Cloud Native" },
+    { name: "Odoo", color: "bg-purple-500/10 dark:bg-purple-950", strength: "Open Source, Affordable" },
+    { name: "SAP", color: "bg-amber-500/10 dark:bg-amber-950", strength: "Complex Operations, Global Scale" },
   ];
 
   const compColumns: SpreadsheetColumn<any>[] = [

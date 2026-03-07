@@ -132,7 +132,7 @@ export default function AdvancedAnalytics() {
                     <Button size="sm" className="flex-1" data-testid={`button-open-dashboard-${dash.id}`}>
                       Open Dashboard
                     </Button>
-                    <Button size="icon" variant="ghost" onClick={() => deleteDashMutation.mutate(dash.id)} data-testid={`button-delete-${dash.id}`}>
+                    <Button size="icon" variant="ghost" onClick={() => deleteDashMutation.mutate(dash.id)} data-testid={`button-delete-${dash.id}`} aria-label="Delete">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

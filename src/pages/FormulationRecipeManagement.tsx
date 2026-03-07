@@ -99,7 +99,7 @@ export default function FormulationRecipeManagement() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={f.status === "approved" ? "default" : "secondary"} className="text-xs">{f.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(f.id)} data-testid={`button-delete-${f.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

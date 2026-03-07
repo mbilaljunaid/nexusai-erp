@@ -231,7 +231,7 @@ export default function SupplierOrders() {
                                 <CheckCircle className="h-4 w-4" />
                                 Acknowledge ({selectedOrders.size})
                             </Button>
-                            <Button onClick={() => setSelectedOrders(new Set())} variant="ghost" size="icon">
+                            <Button onClick={() => setSelectedOrders(new Set())} variant="ghost" size="icon" aria-label="Close">
                                 <X className="h-4 w-4" />
                             </Button>
                         </>
@@ -374,7 +374,7 @@ export default function SupplierOrders() {
                                 </TableRow>
                             ) : (
                                 filteredOrders.map((po: any) => (
-                                    <TableRow key={po.id} className={selectedOrders.has(po.id) ? 'bg-blue-50' : ''}>
+                                    <TableRow key={po.id} className={selectedOrders.has(po.id) ? 'bg-blue-500/10' : ''}>
                                         <TableCell>
                                             <Checkbox
                                                 checked={selectedOrders.has(po.id)}

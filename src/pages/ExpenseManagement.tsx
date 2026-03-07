@@ -317,7 +317,7 @@ export default function ExpenseManagement() {
           <CardContent>
             <div className="space-y-3">
               {violations?.violations?.slice(0, 3).map((viol: any, idx: number) => (
-                <div key={idx} className="flex items-start justify-between gap-2 p-2 bg-yellow-50 border border-yellow-100 rounded">
+                <div key={idx} className="flex items-start justify-between gap-2 p-2 bg-yellow-500/10 border border-yellow-100 rounded">
                   <div className="flex-1">
                     <p className="text-sm font-medium text-yellow-900">{viol.violation}</p>
                     <p className="text-xs text-yellow-700">Report: {viol.reportNumber}</p>
@@ -326,7 +326,7 @@ export default function ExpenseManagement() {
                 </div>
               ))}
               {(violations?.totalViolations === 0 || !violations) && (
-                <div className="flex items-center gap-2 text-green-600 p-3 bg-green-50 border border-green-100 rounded">
+                <div className="flex items-center gap-2 text-green-600 p-3 bg-green-500/10 border border-green-100 rounded">
                   <CheckCircle className="h-4 w-4" />
                   <p className="text-sm font-medium">No policy violations detected</p>
                 </div>

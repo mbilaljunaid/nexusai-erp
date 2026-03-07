@@ -32,7 +32,7 @@ export default function AllocationSideSheet({ tradeOpId, isOpen, onClose }: { tr
                 </SheetHeader>
 
                 <div className="py-6 space-y-6">
-                    <div className="flex justify-between items-center bg-slate-50 p-4 rounded-lg">
+                    <div className="flex justify-between items-center bg-slate-500/10 p-4 rounded-lg">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Total Allocated Cost</p>
                             <p className="text-2xl font-bold">${totalAllocated.toFixed(2)}</p>

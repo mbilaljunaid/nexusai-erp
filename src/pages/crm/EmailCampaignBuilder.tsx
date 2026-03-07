@@ -131,7 +131,7 @@ export default function EmailCampaignBuilder() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase flex items-center gap-1">
                                 <Mail className="h-3 w-3" />
@@ -139,11 +139,11 @@ export default function EmailCampaignBuilder() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">{campaigns.length}</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{campaigns.length}</div>
                             <div className="text-xs text-purple-700">{draftCampaigns.length} drafts</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
@@ -151,11 +151,11 @@ export default function EmailCampaignBuilder() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{scheduledCampaigns.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{scheduledCampaigns.length}</div>
                             <div className="text-xs text-blue-700">Ready to send</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <Send className="h-3 w-3" />
@@ -163,11 +163,11 @@ export default function EmailCampaignBuilder() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{sentCampaigns.length}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{sentCampaigns.length}</div>
                             <div className="text-xs text-green-700">Completed</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <Users className="h-3 w-3" />
@@ -175,7 +175,7 @@ export default function EmailCampaignBuilder() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{segments.length}</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{segments.length}</div>
                             <div className="text-xs text-amber-700">Target audiences</div>
                         </CardContent>
                     </Card>

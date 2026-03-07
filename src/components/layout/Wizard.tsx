@@ -49,7 +49,6 @@ export function Wizard({ steps, onComplete, title, className }: WizardProps) {
                 setCurrentStepIndex((prev) => prev + 1);
             }
         } catch (error) {
-            console.error("Wizard step validation failed", error);
         } finally {
             setIsLoading(false);
         }

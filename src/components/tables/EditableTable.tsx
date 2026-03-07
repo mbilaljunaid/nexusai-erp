@@ -49,7 +49,6 @@ export function EditableTable({
       setEditingRowIndex(null);
       setEditingData(null);
     } catch (error) {
-      console.error("Failed to update row:", error);
     } finally {
       setIsUpdating(false);
     }
@@ -62,7 +61,6 @@ export function EditableTable({
       setIsUpdating(true);
       await onRowDelete(rowIndex);
     } catch (error) {
-      console.error("Failed to delete row:", error);
     } finally {
       setIsUpdating(false);
     }

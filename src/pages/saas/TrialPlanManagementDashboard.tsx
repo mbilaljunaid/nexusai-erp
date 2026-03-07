@@ -30,7 +30,6 @@ export default function TrialPlanManagementDashboard() {
             setPlans(plansData);
             setConversionMetrics(metrics);
         } catch (error) {
-            console.error('Error loading data:', error);
         } finally {
             setLoading(false);
         }

@@ -93,7 +93,7 @@ export function BankAccountList() {
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setAccountDialog({ isOpen: true, account });
-                                        }}
+                                        }} aria-label="Edit"
                                     >
                                         <Edit3 className="h-3 w-3" />
                                     </Button>

@@ -79,7 +79,7 @@ export default function TeamLearningDashboard() {
 
             {/* Compliance Alerts */}
             {complianceAlerts.length > 0 && (
-                <Card className="border-red-200 bg-red-50/30">
+                <Card className="border-red-200 bg-red-500/10">
                     <CardHeader>
                         <div className="flex items-center gap-2">
                             <AlertCircle className="w-5 h-5 text-red-600" />

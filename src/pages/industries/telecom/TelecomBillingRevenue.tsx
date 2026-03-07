@@ -122,7 +122,7 @@ export default function TelecomBillingRevenue() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={i.status === "paid" ? "default" : "secondary"} className="text-xs">{i.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

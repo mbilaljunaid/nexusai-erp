@@ -114,7 +114,7 @@ export default function MaintenanceScheduling() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={m.status === "completed" ? "default" : m.status === "overdue" ? "destructive" : "secondary"} className="text-xs">{m.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${m.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

@@ -37,7 +37,6 @@ export default function AssetBOMEditor({ assetId }: AssetBOMEditorProps) {
     // 2. Add Part Mutation (Mock)
     const addMutation = useMutation({
         mutationFn: async (data: any) => {
-            console.log("Adding BOM Item", data);
             // await fetch...
             return { success: true };
         },
@@ -114,7 +113,7 @@ export default function AssetBOMEditor({ assetId }: AssetBOMEditorProps) {
                                     )}
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" aria-label="Delete">
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
                                 </TableCell>

@@ -120,17 +120,17 @@ export default function Asset360View() {
                         <Card>
                             <CardHeader><CardTitle>AI Insights</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="p-3 border rounded-lg bg-yellow-50 border-yellow-200">
+                                <div className="p-3 border rounded-lg bg-yellow-500/10 border-yellow-200">
                                     <div className="flex items-center gap-2 font-semibold text-yellow-800 mb-1">
                                         <AlertTriangle className="h-4 w-4" /> Anomaly Detected
                                     </div>
                                     <p className="text-sm text-yellow-700">Vibration spike detected at 14:00. 85% probability of bearing wear.</p>
                                     <div className="flex flex-col gap-2 mt-2">
-                                        <Button size="sm" variant="outline" className="w-full border-yellow-300 text-yellow-800 hover:bg-yellow-100">Schedule Inspection</Button>
+                                        <Button size="sm" variant="outline" className="w-full border-yellow-300 text-yellow-800 hover:bg-yellow-500/15">Schedule Inspection</Button>
                                         <Button
                                             size="sm"
                                             variant="ghost"
-                                            className="w-full text-yellow-900 hover:bg-yellow-100 gap-2 font-bold"
+                                            className="w-full text-yellow-900 hover:bg-yellow-500/15 gap-2 font-bold"
                                             onClick={() => {
                                                 open();
                                                 sendMessage(`Analyze asset telemetry for ${asset?.assetNumber || assetId}. A vibration spike (0.6 mm/s) was detected at 14:00. Evaluate the risk of bearing wear and provide recommended maintenance steps.`);

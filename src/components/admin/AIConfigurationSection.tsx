@@ -306,7 +306,7 @@ export default function AIConfigurationSection() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => setShowKeys(s => ({ ...s, [prov.id]: !s[prov.id] }))}
+                      onClick={() => setShowKeys(s => ({ ...s, [prov.id]: !s[prov.id] }))} aria-label="Toggle key visibility"
                     >
                       {showKeys[prov.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -336,7 +336,7 @@ export default function AIConfigurationSection() {
                       variant="ghost"
                       size="icon"
                       className="text-destructive"
-                      onClick={() => deleteMutation.mutate(prov.id)}
+                      onClick={() => deleteMutation.mutate(prov.id)} aria-label="Delete"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

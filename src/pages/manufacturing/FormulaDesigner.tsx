@@ -216,7 +216,7 @@ export default function FormulaDesigner() {
                         </SheetHeader>
 
                         <div className="space-y-6 mt-6 pb-24">
-                            <Card className="border-indigo-100 bg-indigo-50/30">
+                            <Card className="border-indigo-100 bg-indigo-500/10">
                                 <CardContent className="pt-6">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
@@ -286,7 +286,7 @@ export default function FormulaDesigner() {
                                                         <span className="absolute right-2 top-2 text-xs opacity-40">%</span>
                                                     </div>
                                                 </div>
-                                                <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-red-500" onClick={() => removeIngredient(idx)}>
+                                                <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-red-500" onClick={() => removeIngredient(idx)} aria-label="Delete">
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>

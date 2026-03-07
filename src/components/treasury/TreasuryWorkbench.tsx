@@ -126,12 +126,12 @@ export function TreasuryWorkbench() {
                             variant="ghost"
                             size="icon"
                             onClick={() => approveMutation.mutate(item.id)}
-                            disabled={approveMutation.isPending}
+                            disabled={approveMutation.isPending} aria-label="Confirm"
                         >
                             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                         </Button>
                     )}
-                    <Button variant="ghost" size="icon" onClick={() => setSelectedDeal(item.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => setSelectedDeal(item.id)} aria-label="Open">
                         <ArrowUpRight className="w-4 h-4 text-primary" />
                     </Button>
                 </div>
@@ -186,7 +186,7 @@ export function TreasuryWorkbench() {
                                 <p className="text-[10px] text-muted-foreground mt-1">Weighted Avg Rate: 5.2%</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-emerald-50/50 border-emerald-100">
+                        <Card className="bg-emerald-500/10 border-emerald-100">
                             <CardHeader className="py-3">
                                 <CardTitle className="text-xs font-bold text-emerald-600 flex items-center gap-2">
                                     <ArrowDownRight className="w-3 h-3" /> Managed Investments
@@ -197,7 +197,7 @@ export function TreasuryWorkbench() {
                                 <p className="text-[10px] text-muted-foreground mt-1">YTD Yield: 4.8%</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-amber-50/50 border-amber-100">
+                        <Card className="bg-amber-500/10 border-amber-100">
                             <CardHeader className="py-3">
                                 <CardTitle className="text-xs font-bold text-amber-600 flex items-center gap-2">
                                     <Clock className="w-3 h-3" /> Maturing in 30 Days

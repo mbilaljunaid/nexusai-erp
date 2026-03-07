@@ -129,42 +129,42 @@ export default function DraftInvoiceWorkbench() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Draft</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">
                                 {invoices.filter(i => i.status === "DRAFT").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Approved</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                                 {invoices.filter(i => i.status === "APPROVED").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Submitted</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">
                                 {invoices.filter(i => i.status === "SUBMITTED" || i.status === "RELEASED").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Total Value</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">
                                 ${invoices.reduce((sum, i) => sum + i.amount, 0).toFixed(0)}
                             </div>
                         </CardContent>
@@ -202,7 +202,7 @@ export default function DraftInvoiceWorkbench() {
                                         {invoices.map((invoice) => (
                                             <TableRow
                                                 key={invoice.id}
-                                                className={selectedInvoiceId === invoice.id ? "bg-blue-50 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
+                                                className={selectedInvoiceId === invoice.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
                                                 onClick={() => setSelectedInvoiceId(invoice.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                             >
                                                 <TableCell className="font-mono font-medium">{invoice.invoiceNumber}</TableCell>
@@ -279,20 +279,20 @@ export default function DraftInvoiceWorkbench() {
                                     </div>
 
                                     {selectedInvoice.transferStatus === "REJECTED" && selectedInvoice.transferError && (
-                                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                        <div className="p-3 bg-red-500/10 border border-red-200 rounded-lg">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <AlertCircle className="h-4 w-4 text-red-600" />
-                                                <span className="text-xs font-bold text-red-900">Transfer Error</span>
+                                                <span className="text-xs font-bold text-red-900 dark:text-red-200">Transfer Error</span>
                                             </div>
                                             <p className="text-xs text-red-700">{selectedInvoice.transferError}</p>
                                         </div>
                                     )}
 
                                     {selectedInvoice.arInvoiceId && (
-                                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                        <div className="p-3 bg-green-500/10 border border-green-200 rounded-lg">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                                <span className="text-xs font-bold text-green-900">AR Invoice Created</span>
+                                                <span className="text-xs font-bold text-green-900 dark:text-green-200">AR Invoice Created</span>
                                             </div>
                                             <p className="text-xs text-muted-foreground">Invoice ID: <span className="font-mono">{selectedInvoice.arInvoiceId}</span></p>
                                         </div>

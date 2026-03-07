@@ -114,7 +114,6 @@ export function AssetHealthDashboard() {
                 setFleetMetrics(metrics);
             }
         } catch (error) {
-            console.error("Failed to load dashboard:", error);
             setAssets([]);
             setFleetMetrics(null);
             setPredictiveAlerts([]);
@@ -127,7 +126,6 @@ export function AssetHealthDashboard() {
             const trendsData = await assetHealthService.getHealthTrends(assetId);
             setHealthTrends(trendsData);
         } catch (error) {
-            console.error("Failed to load asset history:", error);
             setHealthTrends([]);
         }
     };
@@ -465,17 +463,17 @@ export function AssetHealthDashboard() {
                                 <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={2} name="Health Score" />
                             </LineChart>
                         </ResponsiveContainer>
-                        <div className="mt-4 p-3 bg-blue-50 rounded">
+                        <div className="mt-4 p-3 bg-blue-500/10 rounded">
                             <div className="flex items-center gap-2">
                                 {selectedAsset.healthScore < healthTrends[0].score ? (
                                     <>
                                         <TrendingDown className="h-4 w-4 text-red-600" />
-                                        <span className="text-sm text-red-900">Declining trend detected - Recommend condition-based PM</span>
+                                        <span className="text-sm text-red-900 dark:text-red-200">Declining trend detected - Recommend condition-based PM</span>
                                     </>
                                 ) : (
                                     <>
                                         <TrendingUp className="h-4 w-4 text-green-600" />
-                                        <span className="text-sm text-green-900">Improving trend - Current maintenance plan effective</span>
+                                        <span className="text-sm text-green-900 dark:text-green-200">Improving trend - Current maintenance plan effective</span>
                                     </>
                                 )}
                             </div>

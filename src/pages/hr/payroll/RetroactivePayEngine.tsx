@@ -137,7 +137,7 @@ export default function RetroactivePayEngine() {
 
                         {/* Mock Employee 1 */}
                         <Card className="border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden">
-                            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 border-b flex justify-between items-center">
+                            <div className="bg-zinc-500/10 dark:bg-zinc-900/50 p-4 border-b flex justify-between items-center">
                                 <div>
                                     <h4 className="font-bold flex items-center gap-2">Sarah Jenkins <span className="text-xs font-normal text-muted-foreground font-mono">ID: N2091</span></h4>
                                     <p className="text-xs text-muted-foreground">Late Promotion Entry (Effective 01-Feb-2026)</p>
@@ -159,7 +159,7 @@ export default function RetroactivePayEngine() {
 
                         {/* Mock Employee 2 */}
                         <Card className="border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden opacity-80">
-                            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-4 border-b flex justify-between items-center">
+                            <div className="bg-zinc-500/10 dark:bg-zinc-900/50 p-4 border-b flex justify-between items-center">
                                 <div>
                                     <h4 className="font-bold flex items-center gap-2">Michael Torres <span className="text-xs font-normal text-muted-foreground font-mono">ID: N1834</span></h4>
                                     <p className="text-xs text-muted-foreground">Retroactive FSA Contribution Change</p>
@@ -180,7 +180,7 @@ export default function RetroactivePayEngine() {
                         </Card>
 
                         {/* Alerts */}
-                        <div className="bg-zinc-50 border border-zinc-200 dark:bg-zinc-900/50 dark:border-zinc-800 p-4 rounded-xl flex items-start gap-4">
+                        <div className="bg-zinc-500/10 border border-zinc-200 dark:bg-zinc-900/50 dark:border-zinc-800 p-4 rounded-xl flex items-start gap-4">
                             <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5 shrink-0" />
                             <div>
                                 <h4 className="font-semibold text-sm">Regulatory Warning</h4>

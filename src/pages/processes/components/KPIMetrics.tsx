@@ -18,9 +18,9 @@ interface KPIMetricsProps {
 }
 
 const statusStyles = {
-  good: 'bg-green-50 border-green-200',
-  warning: 'bg-yellow-50 border-yellow-200',
-  alert: 'bg-red-50 border-red-200'
+  good: 'bg-green-500/10 border-green-200',
+  warning: 'bg-yellow-500/10 border-yellow-200',
+  alert: 'bg-red-500/10 border-red-200'
 };
 
 const statusBadge = {

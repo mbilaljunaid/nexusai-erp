@@ -151,7 +151,7 @@ export default function LcmWorkbench() {
                                                         <TooltipProvider>
                                                             <Tooltip>
                                                                 <TooltipTrigger asChild>
-                                                                    <Button variant="ghost" size="icon">
+                                                                    <Button variant="ghost" size="icon" aria-label="Open link">
                                                                         <ExternalLink className="h-4 w-4" />
                                                                     </Button>
                                                                 </TooltipTrigger>

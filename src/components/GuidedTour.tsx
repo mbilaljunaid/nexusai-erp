@@ -123,7 +123,7 @@ export function GuidedTourOverlay() {
               variant="ghost"
               className="h-6 w-6 -mr-2 -mt-1"
               onClick={skipTour}
-              data-testid="tour-close"
+              data-testid="tour-close" aria-label="Close"
             >
               <X className="w-4 h-4" />
             </Button>

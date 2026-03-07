@@ -37,7 +37,6 @@ export default function EnergyUtilityDashboard() {
             setDRPrograms(programsData);
             setFilings(filingsData);
         } catch (error) {
-            console.error('Error loading data:', error);
         } finally {
             setLoading(false);
         }

@@ -59,7 +59,7 @@ function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
         <Sparkles className="h-8 w-8 text-primary" />
       </div>
       <div>
-        <h3 className="text-lg font-semibold text-slate-900">NexusAI Analysis</h3>
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200">NexusAI Analysis</h3>
         <p className="text-muted-foreground text-sm max-w-xs mx-auto mt-2">
           Use the unified NexusAI engine to analyze this deal's win probability, risks, and next best actions.
         </p>
@@ -131,12 +131,12 @@ export default function OpportunitiesDetail() {
   };
 
   const stages = [
-    { id: "qualification", label: "Qualification", color: "bg-blue-50 dark:bg-blue-950/30", borderColor: "border-blue-200 dark:border-blue-800" },
-    { id: "needs_analysis", label: "Needs Analysis", color: "bg-indigo-50 dark:bg-indigo-950/30", borderColor: "border-indigo-200 dark:border-indigo-800" },
-    { id: "proposal", label: "Proposal", color: "bg-purple-50 dark:bg-purple-950/30", borderColor: "border-purple-200 dark:border-purple-800" },
-    { id: "negotiation", label: "Negotiation", color: "bg-orange-50 dark:bg-orange-950/30", borderColor: "border-orange-200 dark:border-orange-800" },
-    { id: "closed_won", label: "Closed Won", color: "bg-green-50 dark:bg-green-950/30", borderColor: "border-green-200 dark:border-green-800" },
-    { id: "closed_lost", label: "Closed Lost", color: "bg-gray-50 dark:bg-gray-900/30", borderColor: "border-gray-200 dark:border-gray-800" },
+    { id: "qualification", label: "Qualification", color: "bg-blue-500/10 dark:bg-blue-950/30", borderColor: "border-blue-200 dark:border-blue-800" },
+    { id: "needs_analysis", label: "Needs Analysis", color: "bg-indigo-500/10 dark:bg-indigo-950/30", borderColor: "border-indigo-200 dark:border-indigo-800" },
+    { id: "proposal", label: "Proposal", color: "bg-purple-500/10 dark:bg-purple-950/30", borderColor: "border-purple-200 dark:border-purple-800" },
+    { id: "negotiation", label: "Negotiation", color: "bg-orange-500/10 dark:bg-orange-950/30", borderColor: "border-orange-200 dark:border-orange-800" },
+    { id: "closed_won", label: "Closed Won", color: "bg-green-500/10 dark:bg-green-950/30", borderColor: "border-green-200 dark:border-green-800" },
+    { id: "closed_lost", label: "Closed Lost", color: "bg-gray-500/10 dark:bg-gray-900/30", borderColor: "border-gray-200 dark:border-gray-800" },
   ];
 
   // Kanban Drag & Drop Logic
@@ -185,7 +185,6 @@ export default function OpportunitiesDetail() {
 
     } catch (err) {
       // Rollback
-      console.error("Failed to move opportunity", err);
       queryClient.setQueryData(["/api/crm/opportunities", "limit=100"], (old: any) => {
         if (!old || !old.data) return old;
         return {
@@ -208,12 +207,12 @@ export default function OpportunitiesDetail() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
         <div className="flex items-center gap-4">
           <Link href="/crm">
-            <Button variant="outline" size="icon" className="shrink-0 rounded-full">
+            <Button variant="outline" size="icon" className="shrink-0 rounded-full" aria-label="Go back">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Opportunities</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200">Opportunities</h1>
             <p className="text-muted-foreground">Manage your sales pipeline and track deal progress.</p>
           </div>
         </div>

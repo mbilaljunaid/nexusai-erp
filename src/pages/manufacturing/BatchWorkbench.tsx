@@ -200,12 +200,12 @@ export default function BatchWorkbench() {
                     </SheetHeader>
                     {selectedBatch && (
                         <div className="space-y-6 mt-6">
-                            <div className="p-4 rounded-lg bg-indigo-50 border border-indigo-100 space-y-2">
+                            <div className="p-4 rounded-lg bg-indigo-500/10 border border-indigo-100 space-y-2">
                                 <div className="flex justify-between text-xs">
                                     <span className="text-indigo-600 font-bold">BATCH {selectedBatch.batchNumber}</span>
                                     <Badge variant="outline">{selectedBatch.status.toUpperCase()}</Badge>
                                 </div>
-                                <div className="font-semibold text-indigo-900">{selectedBatch.productName}</div>
+                                <div className="font-semibold text-indigo-900 dark:text-indigo-200">{selectedBatch.productName}</div>
                                 <div className="text-xs text-indigo-700">Planned: {selectedBatch.plannedQuantity} KG</div>
                             </div>
 
@@ -229,7 +229,7 @@ export default function BatchWorkbench() {
                                 )}
 
                                 {selectedBatch.status === 'qc_pending' && (
-                                    <div className="p-4 border border-amber-200 bg-amber-50 rounded-md flex items-start gap-3">
+                                    <div className="p-4 border border-amber-200 bg-amber-500/10 rounded-md flex items-start gap-3">
                                         <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
                                         <div className="text-xs text-amber-800">
                                             Batch is currently locked for quality inspection. Lab results must be recorded before completion.

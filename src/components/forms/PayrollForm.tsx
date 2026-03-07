@@ -156,7 +156,7 @@ export default function PayrollForm({ onSubmit }: { onSubmit?: (data: PayrollFor
           </CardContent>
         </Card>
 
-        <Card className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-900">
+        <Card className="bg-green-500/10 dark:bg-green-950 border-green-200 dark:border-green-900">
           <CardHeader><CardTitle className="text-base">Net Salary</CardTitle></CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-900 dark:text-green-100" data-testid="text-net-salary">

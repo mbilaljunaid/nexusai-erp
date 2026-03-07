@@ -9,14 +9,14 @@ import { Input } from "@/components/ui/input";
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
-    'Underperformer': { bg: 'bg-red-50', border: 'border-red-300', label: 'Underperformer' },
-    'Inconsistent Player': { bg: 'bg-orange-50', border: 'border-orange-300', label: 'Inconsistent' },
-    'Enigma': { bg: 'bg-yellow-50', border: 'border-yellow-300', label: 'Enigma' },
-    'Core Player': { bg: 'bg-sky-50', border: 'border-sky-300', label: 'Core Player' },
-    'High Potential': { bg: 'bg-blue-50', border: 'border-blue-300', label: 'High Potential' },
-    'Solid Performer': { bg: 'bg-green-50', border: 'border-green-300', label: 'Solid Performer' },
+    'Underperformer': { bg: 'bg-red-500/10', border: 'border-red-300', label: 'Underperformer' },
+    'Inconsistent Player': { bg: 'bg-orange-500/10', border: 'border-orange-300', label: 'Inconsistent' },
+    'Enigma': { bg: 'bg-yellow-500/10', border: 'border-yellow-300', label: 'Enigma' },
+    'Core Player': { bg: 'bg-sky-500/10', border: 'border-sky-300', label: 'Core Player' },
+    'High Potential': { bg: 'bg-blue-500/10', border: 'border-blue-300', label: 'High Potential' },
+    'Solid Performer': { bg: 'bg-green-500/10', border: 'border-green-300', label: 'Solid Performer' },
     'High Performer': { bg: 'bg-emerald-100', border: 'border-emerald-400', label: 'High Performer' },
-    'Star': { bg: 'bg-fuchsia-50', border: 'border-fuchsia-400', label: '⭐ Star' },
+    'Star': { bg: 'bg-fuchsia-500/10', border: 'border-fuchsia-400', label: '⭐ Star' },
 };
 
 // 3×3 grid layout: potential (col) × performance (row)
@@ -48,7 +48,7 @@ export default function NineBoxGrid() {
         { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <span className="font-semibold">{row.employee_id}</span> },
         {
             id: "box_label", header: "Box", width: "150px", cell: (row) => {
-                const cfg = BOX_CONFIG[row.box_label] ?? { bg: 'bg-gray-50', border: 'border-gray-200', label: row.box_label };
+                const cfg = BOX_CONFIG[row.box_label] ?? { bg: 'bg-gray-500/10', border: 'border-gray-200', label: row.box_label };
                 return <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold border ${cfg.bg} ${cfg.border}`)}>{cfg.label}</span>
             }
         },
@@ -72,7 +72,7 @@ export default function NineBoxGrid() {
         >
 
             {showAdd && (
-                <Card className="bg-purple-50/50 border-purple-200 p-3.5 mb-4 shadow-sm">
+                <Card className="bg-purple-500/10 border-purple-200 p-3.5 mb-4 shadow-sm">
                     <div className="font-bold text-xs mb-2">New Assessment — {period}</div>
                     <div className="grid grid-cols-5 gap-2 mb-2">
                         {[['Employee ID', 'employeeId', 'text'], ['Assessed By', 'assessedBy', 'text']].map(([lbl, key, type]) => (
@@ -113,7 +113,7 @@ export default function NineBoxGrid() {
                     <div className="grid grid-cols-3 gap-2">
                         {GRID_MAP.map((cell, i) => {
                             const entries = boxEntries(cell.perf, cell.pot);
-                            const cfg = BOX_CONFIG[cell.key] ?? { bg: 'bg-gray-50', border: 'border-gray-200', label: cell.key };
+                            const cfg = BOX_CONFIG[cell.key] ?? { bg: 'bg-gray-500/10', border: 'border-gray-200', label: cell.key };
                             return (
                                 <div key={i} className={cn(`rounded-xl p-2.5 min-h-24 border-[2px] ${cfg.bg} ${cfg.border}`)}>
                                     <div className="text-[10px] font-extrabold text-gray-700 mb-1.5">{cfg.label}</div>

@@ -131,7 +131,7 @@ export default function RecruitmentCampaignBuilder() {
                                             <Button variant="secondary"><Plus className="h-4 w-4 mr-2" /> Add Selection</Button>
                                         </div>
 
-                                        <div className="border rounded-lg p-4 bg-zinc-50 dark:bg-zinc-900/50 mt-4">
+                                        <div className="border rounded-lg p-4 bg-zinc-500/10 dark:bg-zinc-900/50 mt-4">
                                             <div className="flex justify-between items-center mb-3">
                                                 <h4 className="text-sm font-semibold">Included Pools</h4>
                                             </div>
@@ -171,7 +171,7 @@ export default function RecruitmentCampaignBuilder() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="shadow-sm bg-fuchsia-50/30 dark:bg-fuchsia-900/10 border-fuchsia-100 dark:border-fuchsia-900/40 border-2">
+                            <Card className="shadow-sm bg-purple-500/10 dark:bg-fuchsia-900/10 border-fuchsia-100 dark:border-fuchsia-900/40 border-2">
                                 <CardContent className="p-6 flex flex-col items-center justify-center text-center h-full space-y-4">
                                     <div className="h-16 w-16 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center shadow-sm border border-fuchsia-200">
                                         <Target className="h-8 w-8 text-fuchsia-600" />
@@ -203,7 +203,7 @@ export default function RecruitmentCampaignBuilder() {
                                     <div className="relative">
                                         <div className="absolute -left-9 top-2 h-4 w-4 rounded-full bg-fuchsia-600 border-4 border-white dark:border-zinc-950" />
                                         <div className="border rounded-lg shadow-sm">
-                                            <div className="bg-zinc-50 dark:bg-zinc-900/50 p-3 px-4 border-b flex justify-between items-center rounded-t-lg">
+                                            <div className="bg-zinc-500/10 dark:bg-zinc-900/50 p-3 px-4 border-b flex justify-between items-center rounded-t-lg">
                                                 <span className="font-medium text-sm">Step 1: Initial Outreach</span>
                                                 <Badge variant="outline" className="bg-white dark:bg-zinc-800">Day 1 (Send immediately)</Badge>
                                             </div>
@@ -258,7 +258,7 @@ export default function RecruitmentCampaignBuilder() {
                                         <div className="space-y-4 pt-4 border-t">
                                             <Label className="text-base font-semibold">Page Content Blocks</Label>
 
-                                            <div className="border rounded-md p-4 space-y-4 bg-zinc-50 dark:bg-zinc-900/50">
+                                            <div className="border rounded-md p-4 space-y-4 bg-zinc-500/10 dark:bg-zinc-900/50">
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-sm font-medium">Hero Section</span>
                                                     <Switch defaultChecked />
@@ -273,7 +273,7 @@ export default function RecruitmentCampaignBuilder() {
                                                 </div>
                                             </div>
 
-                                            <div className="border rounded-md p-4 space-y-4 bg-zinc-50 dark:bg-zinc-900/50">
+                                            <div className="border rounded-md p-4 space-y-4 bg-zinc-500/10 dark:bg-zinc-900/50">
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-sm font-medium">Data Capture Form</span>
                                                     <Switch defaultChecked />
@@ -308,7 +308,7 @@ export default function RecruitmentCampaignBuilder() {
                                                     <Globe className="h-3 w-3" /> careers.nexusai.com/c/eng-summit-q3
                                                 </div>
                                             </div>
-                                            <div className="flex-1 overflow-auto bg-zinc-50 dark:bg-zinc-950">
+                                            <div className="flex-1 overflow-auto bg-zinc-500/10 dark:bg-zinc-950">
                                                 <div className="h-48 bg-indigo-900 flex flex-col items-center justify-center p-6 text-center text-white">
                                                     <h2 className="text-2xl font-bold">Scale Your Career with Us</h2>
                                                     <p className="mt-2 text-indigo-200 text-sm max-w-sm">Join the Engineering Leadership Summit.</p>

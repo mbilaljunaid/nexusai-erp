@@ -53,7 +53,6 @@ export function AddTaskDialog({ onAddTask, trigger }: AddTaskDialogProps) {
     });
     setOpen(false);
     setFormData({ title: "", description: "", status: "todo", priority: "medium", dueDate: "", project: "" });
-    console.log("Task added:", formData);
   };
 
   const handleAIGenerate = () => {

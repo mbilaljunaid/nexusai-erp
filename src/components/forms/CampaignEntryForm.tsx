@@ -146,7 +146,7 @@ export function CampaignEntryForm() {
       </Card>
 
       {showAI && (
-        <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950">
+        <Alert className="border-blue-200 bg-blue-500/10 dark:bg-blue-950">
           <Sparkles className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-sm text-blue-900 dark:text-blue-100 ml-2 space-y-1">
             <p><strong>AI Insights:</strong></p>

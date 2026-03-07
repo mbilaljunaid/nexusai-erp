@@ -93,7 +93,7 @@ export function VendorToInvoiceForm({ vendor, onClose }: { vendor: Vendor; onClo
         <p className="text-sm text-muted-foreground mt-1">Create supplier invoice from vendor with AP GL entry</p>
       </div>
 
-      <Card className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800">
+      <Card className="bg-purple-500/10 dark:bg-purple-950 border border-purple-200 dark:border-purple-800">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -154,7 +154,7 @@ export function VendorToInvoiceForm({ vendor, onClose }: { vendor: Vendor; onClo
             </div>
           </div>
 
-          <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+          <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
             <CardContent className="pt-4">
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
                 Creates supplier invoice with AP GL entry (2100) and expense GL entry based on vendor category for full procurement cycle tracking.

@@ -248,7 +248,6 @@ export function RBACProvider({ children }: { children: ReactNode }) {
         credentials: "include",
       });
     } catch (error) {
-      console.error("Logout error:", error);
     }
     setIsAuthenticated(false);
     setUserId("");

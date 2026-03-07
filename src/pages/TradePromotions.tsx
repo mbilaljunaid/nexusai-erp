@@ -25,7 +25,7 @@ export default function TradePromotions() {
         >
             <DashboardWidget title="Campaigns" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-blue-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Tag className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
@@ -37,7 +37,7 @@ export default function TradePromotions() {
 
             <DashboardWidget title="Active" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-emerald-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <CheckCircle className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
@@ -49,7 +49,7 @@ export default function TradePromotions() {
 
             <DashboardWidget title="Total Budget" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-indigo-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <DollarSign className="h-4 w-4 text-indigo-600" />
                     </div>
                     <div>
@@ -61,7 +61,7 @@ export default function TradePromotions() {
 
             <DashboardWidget title="Customers" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-orange-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Users className="h-4 w-4 text-orange-600" />
                     </div>
                     <div>

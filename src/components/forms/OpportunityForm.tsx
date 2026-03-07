@@ -74,7 +74,6 @@ export function OpportunityForm() {
       });
     },
     onError: (err) => {
-      console.error(err);
       toast({ title: "Error", description: "Failed to create opportunity", variant: "destructive" });
     }
   });
@@ -159,7 +158,7 @@ export function OpportunityForm() {
             </div>
           </div>
 
-          <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+          <div className="p-3 bg-blue-500/10 dark:bg-blue-950 rounded-lg">
             <p className="text-sm text-blue-900 dark:text-blue-100">
               <strong>Weighted Value:</strong> ${weightedValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
             </p>

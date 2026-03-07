@@ -142,7 +142,7 @@ export default function FinancialConsolidation() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={e.status === "consolidated" ? "default" : "secondary"}>{e.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(e.id)} data-testid={`button-delete-${e.id}`}>
+                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(e.id)} data-testid={`button-delete-${e.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

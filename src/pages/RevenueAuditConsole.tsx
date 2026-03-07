@@ -107,7 +107,7 @@ export default function RevenueAuditConsole() {
                                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     placeholder="e.g. ORDER-7712, SUB-101..."
-                                    className="pl-9 bg-slate-50 border-slate-200"
+                                    className="pl-9 bg-slate-500/10 border-slate-200"
                                     value={searchId}
                                     onChange={(e) => setSearchId(e.target.value)}
                                     onKeyDown={(e) => e.key ==='Enter' && handleSearch()}
@@ -120,7 +120,7 @@ export default function RevenueAuditConsole() {
                     </Card>
 
                     {error && (
-                        <Card className="border-red-100 bg-red-50">
+                        <Card className="border-red-100 bg-red-500/10">
                             <CardContent className="pt-6 flex items-center gap-3 text-red-700">
                                 <AlertTriangle className="h-5 w-5" />
                                 <p className="font-medium">{error}</p>
@@ -144,7 +144,7 @@ export default function RevenueAuditConsole() {
 
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 <Card className="border-none shadow-sm h-fit">
-                                    <CardHeader className="bg-slate-50/80 border-b">
+                                    <CardHeader className="bg-slate-500/10 border-b">
                                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
                                             <Database className="h-4 w-4 text-slate-500" /> Operational Context
                                         </CardTitle>
@@ -153,7 +153,7 @@ export default function RevenueAuditConsole() {
                                         <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Source:</span> <span className="font-medium italic">{auditTrace.sourceEvent.sourceSystem}</span></div>
                                         <div className="flex justify-between border-b pb-2">
                                             <span className="text-muted-foreground">Source ID:</span>
-                                            <span className="font-mono text-indigo-600 bg-indigo-50 px-2 rounded">{auditTrace.sourceEvent.sourceId}</span>
+                                            <span className="font-mono text-indigo-600 bg-indigo-500/10 px-2 rounded">{auditTrace.sourceEvent.sourceId}</span>
                                         </div>
                                         <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Type:</span> <Badge variant="outline">{auditTrace.sourceEvent.eventType}</Badge></div>
                                         <div className="flex justify-between border-b pb-2"><span className="text-muted-foreground">Event Date:</span> <span>{format(new Date(auditTrace.sourceEvent.eventDate),"MMM dd, yyyy")}</span></div>
@@ -161,8 +161,8 @@ export default function RevenueAuditConsole() {
                                     </CardContent>
                                 </Card>
 
-                                <Card className={cn(`lg:col-span-2 border-none shadow-sm ${!auditTrace.contract ?"opacity-60 bg-slate-50" :""}`)}>
-                                    <CardHeader className="bg-indigo-50/30 border-b flex flex-row items-center justify-between">
+                                <Card className={cn(`lg:col-span-2 border-none shadow-sm ${!auditTrace.contract ?"opacity-60 bg-slate-500/10" :""}`)}>
+                                    <CardHeader className="bg-indigo-500/10 border-b flex flex-row items-center justify-between">
                                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
                                             <FileText className="h-4 w-4 text-indigo-500" /> Derived Revenue Contract
                                         </CardTitle>
@@ -270,7 +270,7 @@ export default function RevenueAuditConsole() {
                             <CardTitle>Compliance Exception Desk</CardTitle>
                             <CardDescription>Items that failed automated compliance checks and require review.</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-48 flex flex-col items-center justify-center border-2 border-dashed rounded-lg bg-slate-50">
+                        <CardContent className="h-48 flex flex-col items-center justify-center border-2 border-dashed rounded-lg bg-slate-500/10">
                             <ShieldCheck className="h-12 w-12 text-indigo-200 mb-4" />
                             <p className="text-slate-500 font-medium">No active compliance violations detected.</p>
                         </CardContent>
@@ -311,9 +311,9 @@ export default function RevenueAuditConsole() {
 
 function StepNode({ icon: Icon, label, sublabel, status}: { icon: any, label: string, sublabel?: string, status:"success" |"pending" |"error"}) {
     return (
-        <div className="flex flex-col items-center gap-2 relative bg-slate-50 p-2 rounded-lg min-w-28">
+        <div className="flex flex-col items-center gap-2 relative bg-slate-500/10 p-2 rounded-lg min-w-28">
             <div className={cn(`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${status ==="success" ?'bg-white text-indigo-600 border-2 border-indigo-500 scale-110' :
-                status ==="error" ?'bg-red-50 text-red-600 border-2 border-red-500' :
+                status ==="error" ?'bg-red-500/10 text-red-600 border-2 border-red-500' :
                    'bg-slate-100 text-slate-400 border border-slate-200'
                }`)}>
                 <Icon className="h-6 w-6" />
@@ -324,7 +324,7 @@ function StepNode({ icon: Icon, label, sublabel, status}: { icon: any, label: st
                 )}
             </div>
             <div className="text-center">
-                <p className={cn(`text-[11px] font-bold uppercase tracking-wider ${status ==="success" ?"text-indigo-900" :"text-slate-400"}`)}>{label}</p>
+                <p className={cn(`text-[11px] font-bold uppercase tracking-wider ${status ==="success" ?"text-indigo-900 dark:text-indigo-200" :"text-slate-400"}`)}>{label}</p>
                 <p className="text-[10px] text-muted-foreground font-mono truncate max-w-24">{sublabel ||"..."}</p>
             </div>
         </div>

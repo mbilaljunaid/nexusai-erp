@@ -104,7 +104,7 @@ export default function EmailManagement() {
                   </div>
                   <div className="flex gap-2 items-center">
                     <Badge variant={campaign.status === "active" ? "default" : "secondary"}>{campaign.status}</Badge>
-                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(campaign.id)} data-testid={`button-delete-${campaign.id}`}>
+                    <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(campaign.id)} data-testid={`button-delete-${campaign.id}`} aria-label="Delete">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>

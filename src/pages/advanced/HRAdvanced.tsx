@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Heart, DollarSign, Users, BookOpen, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { EmptyState } from "@/components/shared/EmptyState";
 
@@ -192,9 +193,7 @@ export default function HRAdvanced() {
                     <CardContent className="pt-4 text-sm">
                       <div className="space-y-2">
                         <strong>{path.name}</strong>
-                        <div className="w-full bg-secondary h-2 rounded-full">
-                          <div className="bg-primary h-2 rounded-full" style={{ width: `${path.progressPercent}%` }}></div>
-                        </div>
+                        <Progress value={path.progressPercent} className="h-2" />
                         <div className="flex justify-between text-xs">
                           <div>Progress: {path.progressPercent}%</div>
                           <div>{path.courseIds?.length || 0} courses</div>

@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ClipboardList, CheckCircle2, AlertCircle } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -66,7 +67,7 @@ export default function PhysicalInventory() {
         { id: "status", header: "Status", width: "100px", cell: (l) => <div className="px-1"><StatusBadge status={l.count_status} /></div> },
         {
             id: "action", header: "Action", width: "100px", cell: (l) => l.count_status === 'Pending' ? (
-                <button onClick={() => { setPendingCountLineId(l.id); setCountDialogOpen(true); }} className="px-1.5 py-0.5 bg-blue-50 border-none rounded text-[9px] cursor-pointer text-blue-700">Count</button>
+                <button onClick={() => { setPendingCountLineId(l.id); setCountDialogOpen(true); }} className="px-1.5 py-0.5 bg-blue-500/10 border-none rounded text-[9px] cursor-pointer text-blue-700">Count</button>
             ) : null
         }
     ];
@@ -78,7 +79,7 @@ export default function PhysicalInventory() {
 
                 {/* New cycle form */}
                 {showNewCycle && (
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 mb-3">
+                    <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3.5 mb-3">
                         <div className="text-xs font-bold mb-2.5">Create Count Cycle</div>
                         <div className="grid grid-cols-3 gap-2 mb-2.5">
                             <div className="flex flex-col gap-0.5">
@@ -136,7 +137,7 @@ export default function PhysicalInventory() {
                                         </div>
                                         <div className="text-[10px] text-gray-500 mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {formatDate(c.count_date)} · {c.counted_lines}/{c.line_count} lines</div>
                                         <div className="bg-gray-100 rounded-full h-1">
-                                            <div className="h-full rounded-full" style={{ width: pct + '%', background: pct === 100 ? '#059669' : '#1d4ed8' }} />
+                                            <Progress value={pct} className="h-full" indicatorClassName={pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'} />
                                         </div>
                                         {c.status === 'Counting' && (
                                             <button onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 px-2.5 py-1 bg-violet-700 text-white border-none rounded text-[10px] cursor-pointer flex items-center gap-1">
@@ -168,7 +169,7 @@ export default function PhysicalInventory() {
                                 <Input value={countBy} onChange={e => setCountBy(e.target.value)} placeholder="Counted by…" className="px-2 py-1 border border-gray-300 rounded-md text-[11px] w-28" aria-label="Counted by" />
                             </div>
                             {showAddLines && (
-                                <div className="bg-gray-50 border border-gray-200 rounded-lg p-2.5 mb-2.5">
+                                <div className="bg-gray-500/10 border border-gray-200 rounded-lg p-2.5 mb-2.5">
                                     <div className="text-[10px] text-gray-500 mb-1">CSV format: ItemNumber, Location, BookQty, UnitCost (one per line)</div>
                                     <Textarea rows={4} value={linesText} onChange={e => setLinesText(e.target.value)} className="font-mono text-[10px] box-border" aria-label="CSV lines" />
                                     <button onClick={() => addLinesMut.mutate({ cycleId: selectedCycle.id, lines: parseLines() })} disabled={!linesText.trim()} className="mt-1.5 px-3 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] cursor-pointer disabled:opacity-50">Add Lines</button>

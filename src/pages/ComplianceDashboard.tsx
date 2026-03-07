@@ -139,7 +139,7 @@ export default function ComplianceDashboard() {
 
       {/* Open Violations */}
       {openViolations.length > 0 && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 bg-red-500/10">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-red-700">
               <AlertCircle className="h-5 w-5" />

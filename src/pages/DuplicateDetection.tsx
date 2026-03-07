@@ -28,7 +28,6 @@ export default function DuplicateDetection() {
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
         setLoading(false);
       });
   };
@@ -101,7 +100,7 @@ export default function DuplicateDetection() {
             {selectedSet?.parties?.map((p: any) => (
               <Card
                 key={p.partyId}
-                className={cn(`cursor-pointer transition-all border-2 ${survivorId === p.partyId ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-transparent hover:border-slate-200 bg-slate-50'}`)}
+                className={cn(`cursor-pointer transition-all border-2 ${survivorId === p.partyId ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-transparent hover:border-slate-200 bg-slate-500/10'}`)}
                 onClick={() => setSurvivorId(p.partyId)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
               >
                 <CardContent className="p-4 space-y-3">

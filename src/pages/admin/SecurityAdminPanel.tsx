@@ -47,7 +47,6 @@ export default function SecurityAdminPanel() {
         setBlacklist(blacklistData);
       }
     } catch (error) {
-      console.error('Failed to fetch IP lists:', error);
     }
   };
 
@@ -92,7 +91,6 @@ export default function SecurityAdminPanel() {
         toast({ variant: 'destructive', description: 'Failed to add IP to whitelist' });
       }
     } catch (error) {
-      console.error('Error adding to whitelist:', error);
       toast({ variant: 'destructive', description: 'Failed to add IP to whitelist' });
     } finally {
       setLoading(false);
@@ -135,7 +133,6 @@ export default function SecurityAdminPanel() {
         toast({ variant: 'destructive', description: 'Failed to add IP to blacklist' });
       }
     } catch (error) {
-      console.error('Error adding to blacklist:', error);
       toast({ variant: 'destructive', description: 'Failed to add IP to blacklist' });
     } finally {
       setLoading(false);
@@ -160,7 +157,6 @@ export default function SecurityAdminPanel() {
         toast({ variant: 'destructive', description: `Failed to remove IP from ${listType}` });
       }
     } catch (error) {
-      console.error(`Error removing from ${listType}:`, error);
       toast({ variant: 'destructive', description: `Failed to remove IP from ${listType}` });
     }
   };
@@ -173,7 +169,7 @@ export default function SecurityAdminPanel() {
       description="Manage IP whitelists and blacklists for security hardening"
     >
       {/* Warning Banner */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <div className="bg-yellow-500/10 border border-yellow-200 rounded-lg p-4">
         <div className="flex gap-3">
           <Shield className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
           <div>
@@ -187,7 +183,7 @@ export default function SecurityAdminPanel() {
 
       {/* Add IP Form */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Add IP Address</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-4">Add IP Address</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -241,7 +237,7 @@ export default function SecurityAdminPanel() {
               onClick={() => setActiveTab('whitelist')}
               className={cn(`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'whitelist'
                 ? 'border-green-600 text-green-700'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
+                : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-200'
                 }`)}
             >
               Whitelist ({whitelist.length})
@@ -266,9 +262,9 @@ export default function SecurityAdminPanel() {
             </div>
           ) : (
             currentList.map((entry) => (
-              <div key={entry.ip} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+              <div key={entry.ip} className="px-6 py-4 flex items-center justify-between hover:bg-gray-500/10">
                 <div>
-                  <p className="text-sm font-mono font-medium text-gray-900">{entry.ip}</p>
+                  <p className="text-sm font-mono font-medium text-gray-900 dark:text-gray-200">{entry.ip}</p>
                   <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
                     <span>Added by {entry.addedBy}</span>
                     <span>•</span>
@@ -283,7 +279,7 @@ export default function SecurityAdminPanel() {
                 </div>
                 <button
                   onClick={() => removeFromList(entry.ip, activeTab)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-md"
+                  className="p-2 text-red-600 hover:bg-red-500/10 rounded-md"
                   title="Remove"
                 >
                   <Trash2 className="w-4 h-4" />

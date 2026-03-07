@@ -270,7 +270,7 @@ export function ScheduleOverlay({ projectId, onHighlightElements }: ScheduleOver
                                         <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                                             <div
                                                 className="bg-blue-600 h-full transition-all"
-                                                style={{ width: `${task.progress}%` }}
+                                                style={{ width: `${task.progress}%`}}
                                             />
                                         </div>
 
@@ -309,7 +309,7 @@ export function ScheduleOverlay({ projectId, onHighlightElements }: ScheduleOver
                             {completedTasks.map(task => (
                                 <div
                                     key={task.id}
-                                    className="flex items-center justify-between p-2 rounded text-sm bg-green-50"
+                                    className="flex items-center justify-between p-2 rounded text-sm bg-green-500/10"
                                 >
                                     <span className="text-green-800">{task.name}</span>
                                     <CheckCircle2 className="h-4 w-4 text-green-600" />

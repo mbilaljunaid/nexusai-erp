@@ -201,7 +201,7 @@ export default function ManualJournalEntry() {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <Button size="icon" variant="ghost" onClick={() => removeLine(line.id)} disabled={lines.length <= 2}>
+                                            <Button size="icon" variant="ghost" onClick={() => removeLine(line.id)} disabled={lines.length <= 2} aria-label="Delete">
                                                 <Trash2 className="w-4 h-4 text-red-500" />
                                             </Button>
                                         </TableCell>

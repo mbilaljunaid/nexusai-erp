@@ -219,7 +219,7 @@ export default function RevenuePeriodClose() {
                 </CardContent>
             </Card>
 
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg flex gap-3">
+            <div className="bg-blue-500/10 border border-blue-100 p-4 rounded-lg flex gap-3">
                 <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-800">
                     <p className="font-semibold mb-1">Period Close Requirements:</p>

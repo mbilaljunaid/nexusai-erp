@@ -184,7 +184,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
         {
             id: "actions", header: "Actions", width: "80px", cell: (row) => (
                 <div className="flex justify-center w-full">
-                    <Button variant="ghost" size="sm" onClick={() => removeDistribution(row.lineNumber - 1)} disabled={distributions.length === 1} className="h-8 w-8 p-0 px-2 text-red-500 hover:text-red-700 hover:bg-red-50">
+                    <Button variant="ghost" size="sm" onClick={() => removeDistribution(row.lineNumber - 1)} disabled={distributions.length === 1} className="h-8 w-8 p-0 px-2 text-red-500 hover:text-red-700 hover:bg-red-500/10">
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </div>
@@ -215,8 +215,8 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
                         onChange={() => { }}
                         containerHeight="400px"
                     />
-                    <div className="flex justify-between items-center p-4 border-t bg-slate-50">
-                        <Button variant="outline" size="sm" onClick={addDistribution} className="text-blue-600 border-blue-200 hover:bg-blue-50">
+                    <div className="flex justify-between items-center p-4 border-t bg-slate-500/10">
+                        <Button variant="outline" size="sm" onClick={addDistribution} className="text-blue-600 border-blue-200 hover:bg-blue-500/10">
                             <Plus className="mr-2 h-4 w-4" /> Add Split
                         </Button>
                         <div className="flex gap-2">

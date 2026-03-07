@@ -115,7 +115,7 @@ export default function TelecomCustomerSupport() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={t.priority === "critical" ? "destructive" : "secondary"} className="text-xs">{t.priority}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${t.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

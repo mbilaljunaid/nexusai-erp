@@ -284,7 +284,7 @@ export default function RevenueSourceEvents() {
                                 <div className="border rounded-lg overflow-hidden">
                                     <Table>
                                         <TableHeader>
-                                            <TableRow className="bg-slate-50">
+                                            <TableRow className="bg-slate-500/10">
                                                 <TableHead>Source</TableHead>
                                                 <TableHead>Source ID</TableHead>
                                                 <TableHead>Event Type</TableHead>
@@ -297,7 +297,7 @@ export default function RevenueSourceEvents() {
                                         </TableHeader>
                                         <TableBody>
                                             {filteredEvents.map((event) => (
-                                                <TableRow key={event.id} className="hover:bg-slate-50">
+                                                <TableRow key={event.id} className="hover:bg-slate-500/10">
                                                     <TableCell>
                                                         <Badge variant="outline">{event.sourceSystem}</Badge>
                                                     </TableCell>

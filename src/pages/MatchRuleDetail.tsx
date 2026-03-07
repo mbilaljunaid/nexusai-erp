@@ -106,7 +106,7 @@ export default function MatchRuleDetail() {
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             />
                         </div>
-                        <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50">
+                        <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-500/10">
                             <Label>Active Status</Label>
                             <Switch
                                 checked={formData.activeFlag}
@@ -136,7 +136,7 @@ export default function MatchRuleDetail() {
                                 </span>
                             </div>
                         </div>
-                        <div className="p-4 border border-yellow-200 bg-yellow-50 rounded text-sm text-yellow-800">
+                        <div className="p-4 border border-yellow-200 bg-yellow-500/10 rounded text-sm text-yellow-800">
                             Warning: Lowering the threshold below 70 may generate many false positives.
                         </div>
                     </CardContent>

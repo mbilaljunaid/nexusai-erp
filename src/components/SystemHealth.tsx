@@ -104,7 +104,7 @@ export function SystemHealth({ metrics, insights, onRefresh }: SystemHealthProps
           size="icon" 
           onClick={handleRefresh}
           className={isRefreshing ? "animate-spin" : ""}
-          data-testid="button-refresh-health"
+          data-testid="button-refresh-health" aria-label="Refresh"
         >
           <RefreshCw className="h-4 w-4" />
         </Button>

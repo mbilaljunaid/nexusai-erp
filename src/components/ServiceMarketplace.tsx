@@ -403,7 +403,7 @@ export function ServiceMarketplace() {
                 variant={viewMode === "cards" ? "default" : "ghost"}
                 size="icon"
                 onClick={() => setViewMode("cards")}
-                data-testid="button-view-cards"
+                data-testid="button-view-cards" aria-label="Grid view"
               >
                 <LayoutGrid className="w-4 h-4" />
               </Button>
@@ -411,7 +411,7 @@ export function ServiceMarketplace() {
                 variant={viewMode === "rows" ? "default" : "ghost"}
                 size="icon"
                 onClick={() => setViewMode("rows")}
-                data-testid="button-view-rows"
+                data-testid="button-view-rows" aria-label="List view"
               >
                 <List className="w-4 h-4" />
               </Button>
@@ -912,7 +912,7 @@ export function ServiceMarketplace() {
                     size="icon"
                     variant="ghost"
                     onClick={() => setReviewData({ ...reviewData, rating: star })}
-                    data-testid={`button-rating-${star}`}
+                    data-testid={`button-rating-${star}`} aria-label="Favourite"
                   >
                     <Star 
                       className={cn(`w-6 h-6 ${star <= reviewData.rating ? "text-yellow-500 fill-yellow-500" : "text-muted"}`)}

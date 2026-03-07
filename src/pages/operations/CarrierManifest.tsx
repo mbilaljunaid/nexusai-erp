@@ -17,7 +17,7 @@ interface Manifest { id: string; manifest_number: string; carrier_scac: string; 
 interface ManifestPackage { id: string; tracking_number: string; customer_name: string; ship_to_city: string; ship_to_state: string; ship_to_zip: string; weight_kg: number; service_code: string; label_printed: boolean; label_zpl: string; }
 
 const STATUS_CFG: Record<string, string> = {
-    Open: 'bg-blue-50 text-blue-700',
+    Open: 'bg-blue-500/10 text-blue-700',
     Closed: 'bg-amber-100 text-amber-600',
     Tendered: 'bg-emerald-100 text-emerald-600',
     InTransit: 'bg-sky-100 text-sky-600',
@@ -58,7 +58,7 @@ export default function CarrierManifest() {
         <div className="p-6 max-w-7xl mx-auto font-sans">
             <div className="flex justify-between mb-4">
                 <div>
-                    <h1 className="text-[22px] font-bold text-gray-900 m-0">Carrier Manifest</h1>
+                    <h1 className="text-[22px] font-bold text-gray-900 dark:text-gray-200 m-0">Carrier Manifest</h1>
                     <p className="text-[13px] text-gray-500 mt-1 mb-0">Shipping manifests · ZPL label generation · Tender to carrier</p>
                 </div>
                 <button onClick={() => setShowNew(true)} className="px-4 py-2 bg-blue-700 text-white rounded-lg font-semibold cursor-pointer border-none">+ New Manifest</button>
@@ -104,7 +104,7 @@ export default function CarrierManifest() {
                     {manifests.map(m => {
                         const cfgClass = STATUS_CFG[m.status] ?? 'bg-gray-100 text-gray-500';
                         return (
-                            <div key={m.id} onClick={() => setSelected(m)} className={cn(`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-50' : 'border-gray-200 bg-white'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                            <div key={m.id} onClick={() => setSelected(m)} className={cn(`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-500/10' : 'border-gray-200 bg-white'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <div className="flex justify-between mb-1">
                                     <span className="text-[11px] font-bold font-mono">{m.manifest_number}</span>
                                     <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`)}>{m.status}</span>
@@ -134,7 +134,7 @@ export default function CarrierManifest() {
                             </div>
 
                             {showNewPkg && (
-                                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-3">
+                                <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3 mb-3">
                                     <div className="text-xs font-bold mb-2">Add Package</div>
                                     <div className="grid grid-cols-2 gap-1.5">
                                         {[['customerName', 'Customer Name', 'text'], ['address', 'Address', 'text'], ['city', 'City', 'text'], ['state', 'State', 'text'], ['zip', 'ZIP', 'text'], ['weightKg', 'Weight (kg)', 'number']].map(([k, l, t]) => (
@@ -163,7 +163,7 @@ export default function CarrierManifest() {
                             {/* Packages table */}
                             <Table className="text-[11px]">
                                 <TableHeader>
-                                    <TableRow className="bg-gray-50 hover:bg-gray-50">
+                                    <TableRow className="bg-gray-500/10 hover:bg-gray-500/10">
                                         {['Tracking #', 'Customer', 'Destination', 'Weight', 'Service', 'Label', ''].map(h => (
                                             <TableHead key={h} className="py-2 px-2.5 h-auto text-gray-700 font-semibold">{h}</TableHead>
                                         ))}

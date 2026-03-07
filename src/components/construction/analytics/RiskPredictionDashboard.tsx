@@ -129,10 +129,10 @@ export function RiskPredictionDashboard({ projectId }: RiskPredictionDashboardPr
     );
 
     const getRiskLevel = (score: number) => {
-        if (score >= 250) return { label: "Critical", color: "text-red-600", bg: "bg-red-50" };
-        if (score >= 180) return { label: "High", color: "text-orange-600", bg: "bg-orange-50" };
-        if (score >= 100) return { label: "Medium", color: "text-yellow-600", bg: "bg-yellow-50" };
-        return { label: "Low", color: "text-green-600", bg: "bg-green-50" };
+        if (score >= 250) return { label: "Critical", color: "text-red-600", bg: "bg-red-500/10" };
+        if (score >= 180) return { label: "High", color: "text-orange-600", bg: "bg-orange-500/10" };
+        if (score >= 100) return { label: "Medium", color: "text-yellow-600", bg: "bg-yellow-500/10" };
+        return { label: "Low", color: "text-green-600", bg: "bg-green-500/10" };
     };
 
     const riskLevel = getRiskLevel(overallRiskScore);

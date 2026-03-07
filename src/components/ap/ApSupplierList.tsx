@@ -64,7 +64,7 @@ export function ApSupplierList() {
                         <AlertOctagon className="h-3 w-3" /> Credit Hold
                     </span>
                 ) : (
-                    <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
+                    <span className="text-xs text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full border border-green-200">
                         Active
                     </span>
                 )

@@ -62,7 +62,6 @@ export default function SlaAIExplainability() {
             const data = await res.json();
             setSelectedTraceData(data);
         } catch (e) {
-            console.error("Failed to fetch trace", e);
         } finally {
             setIsTraceLoading(false);
         }
@@ -77,36 +76,36 @@ export default function SlaAIExplainability() {
             <div className="flex flex-col gap-8">
                 {/* Stats Summary */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">AI Traces Today</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">124</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">124</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Auto-Resolved</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">92%</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">92%</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Anomalies Detected</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">{insights.length}</div>
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">{insights.length}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Insights Generated</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{insights.length > 0 ? "Active" : "Stable"}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{insights.length > 0 ? "Active" : "Stable"}</div>
                         </CardContent>
                     </Card>
                 </div>
@@ -188,7 +187,7 @@ export default function SlaAIExplainability() {
                                                         )}
                                                     </TableCell>
                                                     <TableCell className="text-right">
-                                                        <Button variant="ghost" size="icon" className="group-hover:text-purple-600">
+                                                        <Button variant="ghost" size="icon" className="group-hover:text-purple-600" aria-label="View">
                                                             <Eye className="h-4 w-4" />
                                                         </Button>
                                                     </TableCell>
@@ -223,7 +222,7 @@ export default function SlaAIExplainability() {
                                             <Button
                                                 size="sm"
                                                 variant="secondary"
-                                                className="h-7 text-[10px] bg-white text-purple-900 hover:bg-purple-50"
+                                                className="h-7 text-[10px] bg-white text-purple-900 dark:text-purple-200 hover:bg-purple-500/10"
                                                 onClick={() => handleApplyInsight(insight)}
                                             >
                                                 {insight.actionLabel}

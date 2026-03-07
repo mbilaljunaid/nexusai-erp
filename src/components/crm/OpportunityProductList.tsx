@@ -329,7 +329,7 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                                             variant="ghost"
                                             size="icon"
                                             className="h-8 w-8 text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                                            onClick={() => deleteLineItemMutation.mutate(item.id)}
+                                            onClick={() => deleteLineItemMutation.mutate(item.id)} aria-label="Delete"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </Button>

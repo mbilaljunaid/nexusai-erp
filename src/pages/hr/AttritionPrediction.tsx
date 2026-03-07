@@ -17,10 +17,10 @@ interface Factor { factor: string; value: string | number; direction: string; we
 interface Distribution { risk_band: string; count: number; avg_score: number; }
 
 const BAND_CFG: Record<string, { bg: string; color: string; label: string; borderL: string; border: string }> = {
-    CRITICAL: { bg: 'bg-red-50', color: 'text-red-600', label: '🔴 Critical', borderL: 'border-l-red-600', border: 'border-red-200' },
-    HIGH: { bg: 'bg-amber-50', color: 'text-amber-600', label: '🟠 High', borderL: 'border-l-amber-600', border: 'border-amber-200' },
-    MEDIUM: { bg: 'bg-amber-50', color: 'text-amber-500', label: '🟡 Medium', borderL: 'border-l-amber-500', border: 'border-amber-200' },
-    LOW: { bg: 'bg-emerald-50', color: 'text-emerald-600', label: '🟢 Low', borderL: 'border-l-emerald-600', border: 'border-emerald-200' },
+    CRITICAL: { bg: 'bg-red-500/10', color: 'text-red-600', label: '🔴 Critical', borderL: 'border-l-red-600', border: 'border-red-200' },
+    HIGH: { bg: 'bg-amber-500/10', color: 'text-amber-600', label: '🟠 High', borderL: 'border-l-amber-600', border: 'border-amber-200' },
+    MEDIUM: { bg: 'bg-amber-500/10', color: 'text-amber-500', label: '🟡 Medium', borderL: 'border-l-amber-500', border: 'border-amber-200' },
+    LOW: { bg: 'bg-emerald-500/10', color: 'text-emerald-600', label: '🟢 Low', borderL: 'border-l-emerald-600', border: 'border-emerald-200' },
 };
 
 function ScoreBar({ score }: { score: number }) {
@@ -116,7 +116,7 @@ export default function AttritionPrediction() {
 
             {/* Score form */}
             {showScore && (
-                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm">
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm">
                     <div className="text-[13px] font-bold mb-2.5">Score Employee Flight Risk</div>
                     <div className="grid grid-cols-4 gap-2">
                         {[['employeeId', 'Employee ID', 'text'], ['tenureMonths', 'Tenure (months)', 'number'], ['engagementScore', 'Engagement (1-5)', 'number'], ['lastPromotionDays', 'Days Since Promo', 'number'], ['managerTenureMonths', 'Manager Tenure (mo)', 'number'], ['compaRatio', 'Compa-Ratio (0-1.5)', 'number'], ['recentAbsenceDays', 'Absence Days (30d)', 'number'], ['overdueGoals', 'Overdue Goals', 'number']].map(([k, l, t]) => (
@@ -163,7 +163,7 @@ export default function AttritionPrediction() {
                             <div className="text-[11px] font-bold mb-1.5 text-gray-700">Risk Factors (SHAP)</div>
                             <div className="flex flex-col gap-1.5">
                                 {(selected.top_factors as Factor[]).map((f, i) => (
-                                    <div key={i} className="bg-amber-50 rounded-md py-1.5 px-2.5 flex justify-between items-center">
+                                    <div key={i} className="bg-amber-500/10 rounded-md py-1.5 px-2.5 flex justify-between items-center">
                                         <div>
                                             <div className="text-[11px] font-bold">{f.factor}</div>
                                             <div className="text-[10px] text-gray-500">Value: {f.value}</div>

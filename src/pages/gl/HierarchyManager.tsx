@@ -125,7 +125,7 @@ export default function HierarchyManager() {
             description="Define parent-child relationships for account rollup and reporting."
         >
 
-            <Card className="bg-slate-50 dark:bg-slate-900">
+            <Card className="bg-slate-500/10 dark:bg-slate-900">
                 <CardHeader>
                     <CardTitle>Select Value Set</CardTitle>
                 </CardHeader>

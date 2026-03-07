@@ -53,7 +53,7 @@ export default function ComplianceExceptions() {
       width: "300px",
       cell: (v: Violation) => (
         <div className="px-2 h-full flex flex-col justify-center">
-          <span className="font-bold text-slate-900">{v.ruleName}</span>
+          <span className="font-bold text-slate-900 dark:text-slate-200">{v.ruleName}</span>
           <span className="text-xs text-muted-foreground truncate max-w-[400px]">{v.description}</span>
         </div>
       )
@@ -117,7 +117,7 @@ export default function ComplianceExceptions() {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 border-blue-200 text-blue-700 hover:bg-blue-50"
+            className="h-8 border-blue-200 text-blue-700 hover:bg-blue-500/10"
             onClick={() => setSelectedViolation(v)}
           >
             <Wrench className="h-4 w-4 mr-1" />

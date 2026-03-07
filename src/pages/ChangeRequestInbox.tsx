@@ -75,11 +75,11 @@ export default function ChangeRequestInbox() {
             width: "300px",
             cell: (row: any) => (
                 <div className="flex gap-2 items-center h-full px-2">
-                    <Button size="sm" variant="outline" className="text-green-600 border-green-200 hover:bg-green-50"
+                    <Button size="sm" variant="outline" className="text-green-600 border-green-200 hover:bg-green-500/10"
                         onClick={() => { setSelectedRequest(row); setActionType("APPROVE"); }}>
                         <Check className="w-4 h-4 mr-1" /> Approve
                     </Button>
-                    <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50"
+                    <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-500/10"
                         onClick={() => { setSelectedRequest(row); setActionType("REJECT"); }}>
                         <X className="w-4 h-4 mr-1" /> Reject
                     </Button>

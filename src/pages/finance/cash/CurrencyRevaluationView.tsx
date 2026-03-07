@@ -97,7 +97,7 @@ export default function CurrencyRevaluationView() {
             <div className="space-y-6">
 
                 {/* Info Card */}
-                <Card className="border-blue-500 bg-blue-50 dark:bg-blue-950/20">
+                <Card className="border-blue-500 bg-blue-500/10 dark:bg-blue-950/20">
                     <CardContent className="pt-6">
                         <p className="text-sm text-blue-900 dark:text-blue-100">
                             <strong>Currency Revaluation</strong> adjusts the value of foreign currency bank accounts

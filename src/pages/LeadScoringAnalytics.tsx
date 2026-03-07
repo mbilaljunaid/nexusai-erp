@@ -87,7 +87,7 @@ export default function LeadScoringAnalytics() {
                 <p className="font-semibold text-sm">{i.metric}</p>
                 <p className="text-xs text-muted-foreground">{i.value}</p>
               </div>
-              <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`}>
+              <Button size="icon" variant="ghost" data-testid={`button-delete-${i.id}`} aria-label="Delete">
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>

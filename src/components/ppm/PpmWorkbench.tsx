@@ -113,7 +113,7 @@ export function PpmWorkbench() {
             cell: (item) => (
                 <div className="flex justify-end gap-2">
                     {item.status === 'COSTED' && (
-                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => distributeMutation.mutate(item.id)}>
+                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => distributeMutation.mutate(item.id)} aria-label="Currency">
                             <DollarSign className="w-3 h-3 text-emerald-600" />
                         </Button>
                     )}
@@ -126,7 +126,7 @@ export function PpmWorkbench() {
         <div className="p-8 space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-500">
             <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-900">Project Financials</h1>
+                    <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-200">Project Financials</h1>
                     <p className="text-lg text-slate-500 mt-2">Cost Performance, Asset Capitalization, and Budget Control</p>
                 </div>
                 <div className="flex gap-4 items-center">
@@ -175,9 +175,9 @@ export function PpmWorkbench() {
                 <TabsContent value="assets">
 
                     {!projectId ? (
-                        <div className="p-12 text-center border-2 border-dashed rounded-xl bg-slate-50">
+                        <div className="p-12 text-center border-2 border-dashed rounded-xl bg-slate-500/10">
                             <Layers className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-slate-900">Select a Project</h3>
+                            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-200">Select a Project</h3>
                             <p className="text-slate-500">Please select a project to view assets.</p>
                         </div>
                     ) : (

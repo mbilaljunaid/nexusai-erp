@@ -55,7 +55,7 @@ export default function RevenueAssurance() {
         >
             <DashboardWidget title="Assurance Status" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-emerald-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
@@ -69,7 +69,7 @@ export default function RevenueAssurance() {
 
             <DashboardWidget title="Anomalies Found" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-red-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <AlertTriangle className="h-4 w-4 text-red-600" />
                     </div>
                     <div>
@@ -81,7 +81,7 @@ export default function RevenueAssurance() {
 
             <DashboardWidget title="Total Revenue" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-blue-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <DollarSign className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
@@ -95,7 +95,7 @@ export default function RevenueAssurance() {
 
             <DashboardWidget title="Deferred Balance" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-amber-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <BarChart3 className="h-4 w-4 text-amber-600" />
                     </div>
                     <div>

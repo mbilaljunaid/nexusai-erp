@@ -129,7 +129,7 @@ export default function GLAllocations() {
                     <Button
                         size="sm"
                         variant="ghost"
-                        className="text-orange-600 hover:bg-orange-50 transition-opacity"
+                        className="text-orange-600 hover:bg-orange-500/10 transition-opacity"
                         onClick={() => handleRunClick(row)}
                         disabled={!row.active}
                     >
@@ -156,12 +156,12 @@ export default function GLAllocations() {
             }
         >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
+                <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-500/10">
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start">
                             <div>
                                 <p className="text-sm font-medium text-slate-500 mb-1">Active Rules</p>
-                                <h3 className="text-3xl font-bold text-slate-900">{allocations?.filter((a) => a.active)?.length || 0}</h3>
+                                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200">{allocations?.filter((a) => a.active)?.length || 0}</h3>
                             </div>
                             <div className="p-3 bg-orange-100 rounded-full">
                                 <PieChart className="w-6 h-6 text-orange-600" />
@@ -216,7 +216,7 @@ export default function GLAllocations() {
                     <DialogHeader>
                         <DialogTitle>Run Allocation Rule</DialogTitle>
                         <DialogDescription>
-                            Execute <span className="font-bold text-slate-900">{selectedRule?.name}</span> for a specific accounting period.
+                            Execute <span className="font-bold text-slate-900 dark:text-slate-200">{selectedRule?.name}</span> for a specific accounting period.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-4">

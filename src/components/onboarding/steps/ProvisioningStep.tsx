@@ -60,7 +60,6 @@ export function ProvisioningStep({ data, onComplete }: ProvisioningStepProps) {
                 onComplete();
             }, 2000);
         } catch (error) {
-            console.error("Provisioning failed:", error);
             setCurrentTask("Setup failed. Please try again.");
         }
     };
@@ -121,8 +120,8 @@ export function ProvisioningStep({ data, onComplete }: ProvisioningStepProps) {
             {/* Success Message */}
             {status === "complete" && (
                 <div className="text-center space-y-4">
-                    <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-                        <p className="text-green-900 font-medium">
+                    <div className="p-4 rounded-lg bg-green-500/10 border border-green-200">
+                        <p className="text-green-900 dark:text-green-200 font-medium">
                             🎉 Your workspace is ready!
                         </p>
                         <p className="text-sm text-green-700 mt-1">

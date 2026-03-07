@@ -302,7 +302,7 @@ export default function BenefitsEnrollment() {
                 {/* STEP 4: REVIEW */}
                 {step === 4 && (
                     <div className="space-y-6 animate-in slide-in-from-right-8 duration-500">
-                        <Card className="border-teal-500/30 bg-teal-500/5 shadow-lg">
+                        <Card className="border-teal-500/30 bg-teal-500/100/5 shadow-lg">
                             <CardHeader>
                                 <CardTitle>Election Summary</CardTitle>
                                 <CardDescription>Review your choices for the 2026 plan year before final submission.</CardDescription>

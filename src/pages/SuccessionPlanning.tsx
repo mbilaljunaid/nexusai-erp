@@ -676,7 +676,7 @@ export default function SuccessionPlanning() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-500/10"
                             onClick={() => setAssessmentDialog({ isOpen: true, candidate: cand })}
                           >
                             Assess
@@ -684,7 +684,7 @@ export default function SuccessionPlanning() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-500/10"
                             onClick={() => setRemoveDialog({ isOpen: true, candidate: cand })}
                           >
                             Remove

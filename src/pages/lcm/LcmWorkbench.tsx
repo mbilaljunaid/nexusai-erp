@@ -129,7 +129,7 @@ export default function LcmWorkbench() {
         >
             <div className="space-y-6">
                 {inventoryOrgId && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-teal-50 border border-teal-200 text-teal-800 text-sm">
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-teal-500/10 border border-teal-200 text-teal-800 text-sm">
                         <Building2 className="h-4 w-4 flex-shrink-0" />
                         <span>LCM scoped to Inventory Org: <strong>{inventoryOrgId}</strong></span>
                     </div>

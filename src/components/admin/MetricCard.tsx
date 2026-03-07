@@ -29,13 +29,13 @@ export default function MetricCard({ title, value, status, message, responseTime
     const getStatusColor = () => {
         switch (status) {
             case 'healthy':
-                return 'border-green-200 bg-green-50';
+                return 'border-green-200 bg-green-500/10';
             case 'degraded':
-                return 'border-yellow-200 bg-yellow-50';
+                return 'border-yellow-200 bg-yellow-500/10';
             case 'unhealthy':
-                return 'border-red-200 bg-red-50';
+                return 'border-red-200 bg-red-500/10';
             default:
-                return 'border-gray-200 bg-gray-50';
+                return 'border-gray-200 bg-gray-500/10';
         }
     };
 
@@ -47,7 +47,7 @@ export default function MetricCard({ title, value, status, message, responseTime
                         {Icon && <Icon className="w-4 h-4 text-gray-600" />}
                         <p className="text-sm font-medium text-gray-600">{title}</p>
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-gray-900 capitalize">{value}</p>
+                    <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-200 capitalize">{value}</p>
                     {message && (
                         <p className="mt-1 text-xs text-gray-500">{message}</p>
                     )}

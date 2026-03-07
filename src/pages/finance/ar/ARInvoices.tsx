@@ -209,12 +209,12 @@ export default function ARInvoices() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-indigo-600 hover:bg-indigo-50"
+            className="h-8 w-8 text-indigo-600 hover:bg-indigo-500/10"
             onClick={() => {
               open();
               sendMessage(`Generate a professional collection email for invoice ${inv.invoiceNumber} (Customer: ${inv.customerId}, Amount: $${inv.totalAmount}).`);
             }}
-            title="Generate AI Collection Email"
+            title="Generate AI Collection Email" aria-label="AI"
           >
             <Sparkles className="h-4 w-4" />
           </Button>
@@ -226,7 +226,7 @@ export default function ARInvoices() {
               setSelectedEntityId(inv.id);
               setAccountingModalOpen(true);
             }}
-            title="View Accounting"
+            title="View Accounting" aria-label="View file"
           >
             <FileText className="h-4 w-4 text-muted-foreground hover:text-primary" />
           </Button>
@@ -240,7 +240,7 @@ export default function ARInvoices() {
               <AlertTriangle className="w-4 h-4 mr-1" /> Credit
             </Button>
           )}
-          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteMutation.mutate(inv.id)} data-testid={`button-delete-${inv.id}`}>
+          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => deleteMutation.mutate(inv.id)} data-testid={`button-delete-${inv.id}`} aria-label="Delete">
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>

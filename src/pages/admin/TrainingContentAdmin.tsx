@@ -138,7 +138,7 @@ export default function TrainingContentAdmin() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/admin/platform">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" aria-label="Go back">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
@@ -260,7 +260,7 @@ export default function TrainingContentAdmin() {
                               
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="icon">
+                                  <Button variant="ghost" size="icon" aria-label="More options">
                                     <MoreVertical className="w-4 h-4" />
                                   </Button>
                                 </DropdownMenuTrigger>

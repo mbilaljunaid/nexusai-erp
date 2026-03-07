@@ -15,6 +15,7 @@ import { MarkToMarketDashboard } from "@/components/treasury/MarkToMarketDashboa
 import { HedgeAccountingWorkbench } from "@/components/treasury/HedgeAccountingWorkbench";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Wallet, ArrowRightLeft, ShieldCheck, Settings2, Lock, Landmark, LayoutDashboard, AlertCircle, RefreshCcw, ShieldAlert, Globe, TrendingUp, BarChart3, Shield } from "lucide-react";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
@@ -146,12 +147,7 @@ export default function TreasuryCommandCenter() {
                         <span>{r.name}</span>
                         <span>{r.pct}%</span>
                       </div>
-                      <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
-                        <div
-                          className={cn("h-full", r.color)}
-                          style={{ width: `${r.pct}%` }}
-                        />
-                      </div>
+                      <Progress value={r.pct} className="h-1" indicatorClassName={r.color} />
                     </div>
                   ))}
                 </div>

@@ -80,7 +80,7 @@ export function OpportunityQuoteList({ opportunityId }: OpportunityQuoteListProp
                                     <Badge variant={quote.status === "Accepted" ? "default" : "secondary"}>
                                         {quote.status}
                                     </Badge>
-                                    <Button variant="ghost" size="icon" onClick={() => setLocation?.(`/crm/quotes`)}>
+                                    <Button variant="ghost" size="icon" onClick={() => setLocation?.(`/crm/quotes`)} aria-label="Open link">
                                         <ExternalLink className="h-4 w-4" />
                                     </Button>
                                 </div>

@@ -95,7 +95,7 @@ export default function AdvancedFeatures() {
       </div>
 
       {/* Quick Access */}
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-blue-200 bg-blue-500/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-blue-600" />

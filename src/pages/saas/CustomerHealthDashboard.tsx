@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Calendar, User, Loader2 } from "lucide-react";
 import CustomerSuccessService, { CustomerHealthScore, RenewalForecast } from '@/services/customerSuccessService';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { format } from "date-fns";
 
@@ -45,7 +46,6 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                 setRenewalPipeline(renewals);
             }
         } catch (error) {
-            console.error('Error loading dashboard data:', error);
         } finally {
             setLoading(false);
         }
@@ -58,19 +58,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
         return 'bg-red-100 text-red-800';
     };
 
-    const getWidthClass = (val: number) => {
-        if (val >= 100) return "w-full";
-        if (val >= 90) return "w-[90%]";
-        if (val >= 80) return "w-[80%]";
-        if (val >= 70) return "w-[70%]";
-        if (val >= 60) return "w-[60%]";
-        if (val >= 50) return "w-[50%]";
-        if (val >= 40) return "w-[40%]";
-        if (val >= 30) return "w-[30%]";
-        if (val >= 20) return "w-[20%]";
-        if (val >= 10) return "w-[10%]";
-        return "w-[5%]";
-    };
+    // AG: getWidthClass replaced — use value directly in <Progress value={val} />
 
     const getTrendIcon = (trend: string) => {
         switch (trend) {

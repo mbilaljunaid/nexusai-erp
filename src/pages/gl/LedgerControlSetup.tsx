@@ -148,7 +148,7 @@ export default function LedgerControlSetup() {
                 </div>
 
                 <div className="space-y-6">
-                    <Card className="bg-slate-50 border-slate-200">
+                    <Card className="bg-slate-500/10 border-slate-200">
                         <CardHeader>
                             <CardTitle className="text-lg flex items-center gap-2">
                                 <Shield className="h-5 w-5 text-primary" />
@@ -168,11 +168,11 @@ export default function LedgerControlSetup() {
                         </CardContent>
                     </Card>
 
-                    <Card className="border-amber-200 bg-amber-50/50">
+                    <Card className="border-amber-200 bg-amber-500/10">
                         <CardContent className="p-4 flex gap-3">
                             <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
                             <div>
-                                <h4 className="text-sm font-bold text-amber-900">Caution</h4>
+                                <h4 className="text-sm font-bold text-amber-900 dark:text-amber-200">Caution</h4>
                                 <p className="text-xs text-amber-800">
                                     Enabling Suspense Posting is generally discouraged for final tax reporting ledgers as it may obscure reconciliation issues.
                                 </p>

@@ -83,7 +83,6 @@ export function CompanyProfileStep({ data, onNext, onBack }: CompanyProfileStepP
                 companyProfile: formData,
             });
         } catch (error) {
-            console.error("Failed to save company profile:", error);
             setErrors({ submit: "Failed to save company profile. Please try again." });
         } finally {
             setIsLoading(false);

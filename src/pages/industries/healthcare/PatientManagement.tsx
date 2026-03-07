@@ -98,7 +98,7 @@ export default function PatientManagement() {
             variant="ghost"
             className="h-8 w-8 text-destructive"
             onClick={() => deleteMutation.mutate(item.id)}
-            disabled={deleteMutation.isPending}
+            disabled={deleteMutation.isPending} aria-label="Delete"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

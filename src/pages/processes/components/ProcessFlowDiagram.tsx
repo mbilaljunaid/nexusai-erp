@@ -22,11 +22,11 @@ const stepIcons = {
 };
 
 const stepColors = {
-  input: 'bg-blue-50 border-blue-200 text-blue-900',
-  approval: 'bg-green-50 border-green-200 text-green-900',
-  posting: 'bg-purple-50 border-purple-200 text-purple-900',
-  notification: 'bg-yellow-50 border-yellow-200 text-yellow-900',
-  completion: 'bg-indigo-50 border-indigo-200 text-indigo-900'
+  input: 'bg-blue-500/10 border-blue-200 text-blue-900 dark:text-blue-200',
+  approval: 'bg-green-500/10 border-green-200 text-green-900',
+  posting: 'bg-purple-500/10 border-purple-200 text-purple-900',
+  notification: 'bg-yellow-500/10 border-yellow-200 text-yellow-900',
+  completion: 'bg-indigo-500/10 border-indigo-200 text-indigo-900'
 };
 
 export function ProcessFlowDiagram({ steps, title = "Process Flow" }: ProcessFlowDiagramProps) {

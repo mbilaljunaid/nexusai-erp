@@ -157,7 +157,7 @@ export function PublicProcessPageTemplate({
                 <h2 className="text-2xl font-bold mb-6 text-foreground">Key Benefits & KPIs</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {keyBenefits.map((benefit, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-950 rounded">
+                    <div key={idx} className="flex items-start gap-3 p-4 bg-green-500/10 dark:bg-green-950 rounded">
                       <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                       <span className="text-sm text-foreground">{benefit}</span>
                     </div>

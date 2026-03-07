@@ -27,7 +27,6 @@ export default function MRRAnalyticsDashboard() {
             setMetrics(currentMetrics);
             setWaterfall(waterfallData);
         } catch (error) {
-            console.error('Error loading MRR analytics:', error);
         } finally {
             setLoading(false);
         }

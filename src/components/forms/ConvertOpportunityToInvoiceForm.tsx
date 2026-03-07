@@ -79,7 +79,7 @@ export function ConvertOpportunityToInvoiceForm({ opportunity, onClose }: { oppo
         <p className="text-sm text-muted-foreground mt-1">Convert won opportunity to revenue invoice and GL entry</p>
       </div>
 
-      <Card className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800">
+      <Card className="bg-green-500/10 dark:bg-green-950 border border-green-200 dark:border-green-800">
         <CardContent className="pt-6">
           <div className="space-y-3">
             <div className="flex items-center justify-between">

@@ -106,7 +106,7 @@ export default function ConsolidationEngine() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge variant={con.status === "completed" ? "default" : "secondary"}>{con.status}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(con.id)} data-testid={`button-delete-${con.id}`}>
+                  <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(con.id)} data-testid={`button-delete-${con.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

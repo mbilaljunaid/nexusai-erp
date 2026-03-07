@@ -200,7 +200,7 @@ export default function DispatchConsole() {
 
                             <Separator className="my-6" />
 
-                            <div className="rounded-lg bg-slate-50 p-4 border">
+                            <div className="rounded-lg bg-slate-500/10 p-4 border">
                                 <h4 className="font-medium text-sm mb-2 flex items-center"><Clock className="w-4 h-4 mr-2" /> Shift Overview</h4>
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-xs">

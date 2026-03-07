@@ -35,12 +35,12 @@ interface StageConfig {
 }
 
 const STAGES: StageConfig[] = [
-    { id: "DISCOVERY", label: "Discovery", color: "text-blue-700", bgColor: "bg-blue-50 border-blue-200" },
-    { id: "QUALIFICATION", label: "Qualification", color: "text-purple-700", bgColor: "bg-purple-50 border-purple-200" },
-    { id: "PROPOSAL", label: "Proposal", color: "text-amber-700", bgColor: "bg-amber-50 border-amber-200" },
-    { id: "NEGOTIATION", label: "Negotiation", color: "text-orange-700", bgColor: "bg-orange-50 border-orange-200" },
-    { id: "CLOSED_WON", label: "Closed Won", color: "text-green-700", bgColor: "bg-green-50 border-green-200" },
-    { id: "CLOSED_LOST", label: "Closed Lost", color: "text-red-700", bgColor: "bg-red-50 border-red-200" }
+    { id: "DISCOVERY", label: "Discovery", color: "text-blue-700", bgColor: "bg-blue-500/10 border-blue-200" },
+    { id: "QUALIFICATION", label: "Qualification", color: "text-purple-700", bgColor: "bg-purple-500/10 border-purple-200" },
+    { id: "PROPOSAL", label: "Proposal", color: "text-amber-700", bgColor: "bg-amber-500/10 border-amber-200" },
+    { id: "NEGOTIATION", label: "Negotiation", color: "text-orange-700", bgColor: "bg-orange-500/10 border-orange-200" },
+    { id: "CLOSED_WON", label: "Closed Won", color: "text-green-700", bgColor: "bg-green-500/10 border-green-200" },
+    { id: "CLOSED_LOST", label: "Closed Lost", color: "text-red-700", bgColor: "bg-red-500/10 border-red-200" }
 ];
 
 export default function OpportunityPipeline() {
@@ -269,7 +269,7 @@ export default function OpportunityPipeline() {
                                 </div>
 
                                 {aiAnalysis && (
-                                    <Card className="bg-purple-50 border-purple-200">
+                                    <Card className="bg-purple-500/10 border-purple-200">
                                         <CardHeader>
                                             <CardTitle className="text-sm flex items-center gap-2">
                                                 <Sparkles className="h-4 w-4" />

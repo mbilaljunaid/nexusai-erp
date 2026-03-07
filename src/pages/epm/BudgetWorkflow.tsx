@@ -128,7 +128,7 @@ export default function BudgetWorkflow() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-amber-50 border-amber-100">
+                    <Card className="bg-amber-500/10 border-amber-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-amber-800 uppercase flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -136,10 +136,10 @@ export default function BudgetWorkflow() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-amber-900">{pendingCount}</div>
+                            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">{pendingCount}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase flex items-center gap-1">
                                 <CheckCircle className="h-3 w-3" />
@@ -147,10 +147,10 @@ export default function BudgetWorkflow() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">{approvedCount}</div>
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">{approvedCount}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-red-50 border-red-100">
+                    <Card className="bg-red-500/10 border-red-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-red-800 uppercase flex items-center gap-1">
                                 <XCircle className="h-3 w-3" />
@@ -158,15 +158,15 @@ export default function BudgetWorkflow() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-900">{rejectedCount}</div>
+                            <div className="text-2xl font-bold text-red-900 dark:text-red-200">{rejectedCount}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Submissions</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{submissions.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{submissions.length}</div>
                         </CardContent>
                     </Card>
                 </div>

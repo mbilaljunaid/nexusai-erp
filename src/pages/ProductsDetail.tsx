@@ -46,7 +46,7 @@ export default function ProductsDetail() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pb-4 border-b">
                 <div className="flex items-center gap-2">
                     <Link href="/crm">
-                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors"><ArrowLeft className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="hover:bg-primary/10 transition-colors" aria-label="Go back"><ArrowLeft className="h-4 w-4" /></Button>
                     </Link>
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Product Catalog</h1>
@@ -148,7 +148,7 @@ export default function ProductsDetail() {
                                     <div className={cn(`h-1.5 w-full ${product.isActive ?'bg-gradient-to-r from-blue-500 to-indigo-600' :'bg-muted'}`)} />
                                     <CardContent className="p-5 flex flex-col flex-1">
                                         <div className="flex justify-between items-start mb-4">
-                                            <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${product.isActive ?'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 group-hover:bg-blue-100' :'bg-muted text-muted-foreground'}`)}>
+                                            <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${product.isActive ?'bg-blue-500/10 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 group-hover:bg-blue-500/15' :'bg-muted text-muted-foreground'}`)}>
                                                 <Package className="h-6 w-6" />
                                             </div>
                                             <Badge variant={product.isActive ?"default" :"secondary"} className={cn(`${product.isActive ?'bg-green-500/10 text-green-600 border-green-500/20' :''} font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider`)}>

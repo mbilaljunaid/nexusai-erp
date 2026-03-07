@@ -65,7 +65,7 @@ export default function CustomerJourneyMap() {
                   <h3 className="font-semibold">{s.stage}</h3>
                   <p className="text-sm text-muted-foreground">{s.count} leads • {s.conversion}% conversion</p>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-${s.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

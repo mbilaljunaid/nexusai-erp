@@ -142,7 +142,7 @@ export function CashForecastWidget() {
                         <CardTitle className="flex items-center gap-2">
                             5-Day Liquidity Forecast
                             {scenario !== 'BASELINE' && (
-                                <Badge variant="secondary" className={scenario === 'OPTIMISTIC' ? 'bg-green-100 text-green-700 hover:bg-green-100' : 'bg-red-100 text-red-700 hover:bg-red-100'}>
+                                <Badge variant="secondary" className={scenario === 'OPTIMISTIC' ? 'bg-green-100 text-green-700 hover:bg-green-500/15' : 'bg-red-100 text-red-700 hover:bg-red-500/15'}>
                                     {scenario} SCENARIO
                                 </Badge>
                             )}

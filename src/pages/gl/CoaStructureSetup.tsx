@@ -131,7 +131,7 @@ function SegmentManager({ structureId, structureName }: { structureId: string, s
 
     return (
         <div className="space-y-4 pt-4 h-[600px] flex flex-col">
-            <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 border px-4 py-2 rounded-t-md">
+            <div className="flex justify-between items-center bg-slate-500/10 dark:bg-slate-900 border px-4 py-2 rounded-t-md">
                 <Button variant="outline" size="sm" onClick={handleAddRow}>
                     <Plus className="w-4 h-4 mr-2" /> Add Segment
                 </Button>

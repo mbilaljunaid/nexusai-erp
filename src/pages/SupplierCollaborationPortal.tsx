@@ -183,7 +183,7 @@ export default function SupplierCollaborationPortal() {
                           <Badge variant={i.status === "completed" ? "default" : "secondary"} className="text-[10px] h-5">
                             {i.status}
                           </Badge>
-                          <Button size="icon" variant="ghost" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => deleteMutation.mutate(i.id)}>
+                          <Button size="icon" variant="ghost" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => deleteMutation.mutate(i.id)} aria-label="Delete">
                             <Trash2 className="w-3 h-3 text-destructive" />
                           </Button>
                         </div>

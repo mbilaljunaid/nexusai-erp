@@ -19,12 +19,12 @@ export function GenericModuleDashboard() {
     return (
         <ModuleLayout>
             <div className="mb-6">
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900">{title}</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200">{title}</h1>
                 <p className="text-gray-500 mt-2">{title} functionality is part of the NexusAI Enterprise Platform.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card className="col-span-1 md:col-span-2 lg:col-span-3 border-dashed border-2 bg-slate-50/50">
+                <Card className="col-span-1 md:col-span-2 lg:col-span-3 border-dashed border-2 bg-slate-500/10">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-primary">
                             <Wrench className="h-5 w-5" />
@@ -40,7 +40,7 @@ export function GenericModuleDashboard() {
                             The NexusAI team is actively building out full functional capabilities for this domain, including advanced analytics, automated workflows, and AI-driven insights.
                         </p>
                         <div className="flex items-center gap-4 pt-4">
-                            <div className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                            <div className="flex items-center gap-2 bg-blue-500/10 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
                                 <Sparkles className="h-4 w-4" />
                                 AI Copilot Support Planned
                             </div>

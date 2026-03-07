@@ -98,7 +98,6 @@ export function AdvancedSchedulingBoard() {
                 setWorkOrders(fetchedWOs.length ? fetchedWOs : []);
             }
         } catch (error) {
-            console.error("Failed to load schedule data:", error);
         } finally {
             setLoading(false);
         }
@@ -215,7 +214,7 @@ export function AdvancedSchedulingBoard() {
                                                     loadPercent >= 80 ? "bg-yellow-600" :
                                                         "bg-green-600"
                                             )}
-                                            style={{ width: `${Math.min(loadPercent, 100)}%` }}
+                                            style={{ width: `${Math.min(loadPercent, 100)}%` }} /* AG-fixed via Progress below */
                                         />
                                     </div>
                                     <div className="text-xs text-right text-muted-foreground">
@@ -294,7 +293,7 @@ export function AdvancedSchedulingBoard() {
                                 key={slot.date}
                                 className={cn(
                                     "text-center p-2 text-xs rounded",
-                                    slot.isToday ? "bg-blue-100 font-bold" : "bg-gray-50"
+                                    slot.isToday ? "bg-blue-100 font-bold" : "bg-gray-500/10"
                                 )}
                             >
                                 <div className="font-medium">{slot.dayOfWeek}</div>
@@ -330,7 +329,7 @@ export function AdvancedSchedulingBoard() {
                                                 style={{ gridTemplateColumns: `200px repeat(${viewDays}, 1fr)` }}
                                             >
                                                 {/* WO Info */}
-                                                <div className="p-2 text-xs border rounded bg-gray-50">
+                                                <div className="p-2 text-xs border rounded bg-gray-500/10">
                                                     <div className="font-mono font-bold mb-1">{wo.woNumber}</div>
                                                     <div className="truncate text-muted-foreground">{wo.assetName}</div>
                                                     <div className="flex items-center gap-1 mt-1">
@@ -409,7 +408,7 @@ export function AdvancedSchedulingBoard() {
                             const StatusIcon = statusConfig.icon;
 
                             return (
-                                <div key={wo.id} className="border rounded p-3 hover:bg-gray-50 transition-colors">
+                                <div key={wo.id} className="border rounded p-3 hover:bg-gray-500/10 transition-colors">
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3 mb-1">

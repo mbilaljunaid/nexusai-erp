@@ -386,7 +386,7 @@ export default function ModulesPage() {
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link to="/demo">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-100" data-testid="button-schedule-demo">
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-500/15" data-testid="button-schedule-demo">
                   Schedule a Demo <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>

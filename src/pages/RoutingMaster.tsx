@@ -109,7 +109,7 @@ export default function RoutingMaster() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant="default">{r.status}</Badge>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${r.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

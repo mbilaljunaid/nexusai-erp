@@ -154,7 +154,7 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                                     )}
                                     {lease.status === 'Pending Approval' && (
                                         <>
-                                            <Button size="sm" variant="outline" className="border-red-500 text-red-600 hover:bg-red-50">
+                                            <Button size="sm" variant="outline" className="border-red-500 text-red-600 hover:bg-red-500/10">
                                                 Reject
                                             </Button>
                                             <Button size="sm" className="bg-green-600 hover:bg-green-700">

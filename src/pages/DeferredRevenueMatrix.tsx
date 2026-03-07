@@ -260,7 +260,7 @@ export default function DeferredRevenueMatrix() {
                                 <div className="border rounded-lg overflow-hidden">
                                     <Table>
                                         <TableHeader>
-                                            <TableRow className="bg-slate-50">
+                                            <TableRow className="bg-slate-500/10">
                                                 <TableHead>Contract</TableHead>
                                                 <TableHead>Customer</TableHead>
                                                 <TableHead>Performance Obligation</TableHead>
@@ -273,7 +273,7 @@ export default function DeferredRevenueMatrix() {
                                         </TableHeader>
                                         <TableBody>
                                             {filteredItems.map((item, idx) => (
-                                                <TableRow key={idx} className="hover:bg-slate-50">
+                                                <TableRow key={idx} className="hover:bg-slate-500/10">
                                                     <TableCell className="font-mono text-sm">
                                                         {item.contractNumber}
                                                     </TableCell>

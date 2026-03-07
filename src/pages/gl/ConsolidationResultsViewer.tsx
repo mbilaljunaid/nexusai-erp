@@ -106,30 +106,30 @@ export default function ConsolidationResultsViewer() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Consolidated Total</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{formatCurrency(totalConsolidated)}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{formatCurrency(totalConsolidated)}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Eliminations</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">{formatCurrency(totalEliminations)}</div>
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">{formatCurrency(totalEliminations)}</div>
                         </CardContent>
                     </Card>
-                    <Card className={cn(`${totalFxImpact >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`)}>
+                    <Card className={cn(`${totalFxImpact >= 0 ? 'bg-green-500/10 border-green-100' : 'bg-red-500/10 border-red-100'}`)}>
                         <CardHeader className="pb-2">
                             <CardTitle className={cn(`text-xs font-bold uppercase ${totalFxImpact >= 0 ? 'text-green-800' : 'text-red-800'}`)}>
                                 FX Gain/Loss
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className={cn(`text-2xl font-bold ${totalFxImpact >= 0 ? 'text-green-900' : 'text-red-900'}`)}>
+                            <div className={cn(`text-2xl font-bold ${totalFxImpact >= 0 ? 'text-green-900 dark:text-green-200' : 'text-red-900'}`)}>
                                 {totalFxImpact >= 0 ? '+' : ''}{formatCurrency(Math.abs(totalFxImpact))}
                             </div>
                         </CardContent>

@@ -220,7 +220,7 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
                         size="icon"
                         variant="ghost"
                         onClick={() => setFields(fields.filter((f) => f.id !== field.id))}
-                        data-testid={`button-remove-field-${field.id}`}
+                        data-testid={`button-remove-field-${field.id}`} aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -303,7 +303,7 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
                       size="icon"
                       variant="ghost"
                       onClick={() => deleteReportMutation.mutate(report.id)}
-                      data-testid={`button-delete-report-${report.id}`}
+                      data-testid={`button-delete-report-${report.id}`} aria-label="Delete"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

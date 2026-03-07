@@ -19,7 +19,7 @@ function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 const SEV_CFG: Record<string, { bg: string; color: string; border: string; borderLeft: string; iconColor: string; icon: React.ElementType }> = {
     Critical: { bg: 'bg-red-100', color: 'text-red-600', border: 'border-red-600/30', borderLeft: 'border-l-red-600', iconColor: '#dc2626', icon: AlertOctagon },
     Warning: { bg: 'bg-amber-100', color: 'text-amber-600', border: 'border-amber-600/30', borderLeft: 'border-l-amber-600', iconColor: '#d97706', icon: Bell },
-    Info: { bg: 'bg-blue-50', color: 'text-blue-700', border: 'border-blue-700/30', borderLeft: 'border-l-blue-700', iconColor: '#1d4ed8', icon: Bell },
+    Info: { bg: 'bg-blue-500/10', color: 'text-blue-700', border: 'border-blue-700/30', borderLeft: 'border-l-blue-700', iconColor: '#1d4ed8', icon: Bell },
 };
 
 export default function CommitmentDashboard() {
@@ -126,7 +126,7 @@ export default function CommitmentDashboard() {
                                         <div>
                                             <div className="flex items-center gap-1.5 mb-0.5">
                                                 <Icon size={13} color={cfg.iconColor} />
-                                                <span className="text-xs font-bold text-gray-900">{a.alert_type.replace(/_/g, ' ')}</span>
+                                                <span className="text-xs font-bold text-gray-900 dark:text-gray-200">{a.alert_type.replace(/_/g, ' ')}</span>
                                                 <span className={cn(`text-[10px] font-bold ${cfg.color}`)}>{a.severity}</span>
                                             </div>
                                             <div className="text-[11px] text-gray-700">{a.description}</div>

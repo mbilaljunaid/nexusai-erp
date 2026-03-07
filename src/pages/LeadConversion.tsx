@@ -83,7 +83,7 @@ export default function LeadConversion() {
                 </div>
                 <div className="flex gap-2 items-center">
                   <Badge>{lead.status}</Badge>
-                  <Button size="icon" variant="ghost" data-testid={`button-delete-${lead.id}`}>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${lead.id}`} aria-label="Delete">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

@@ -88,7 +88,7 @@ export function DataQualityDashboard() {
                                         <div
                                             className="h-full bg-primary"
                                             // eslint-disable-next-line react-dom/no-unsafe-styles
-                                            style={{ width: `${(dept.count / totalWorkers) * 100}%` }}
+                                            style={{ width: `${(dept.count / totalWorkers) * 100}%`}}
                                         />
                                     </div>
                                 </div>

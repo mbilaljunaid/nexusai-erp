@@ -200,11 +200,11 @@ export default function VarianceAnalysis() {
                 </Card>
             </div>
 
-            <Card className="border-red-200 bg-red-50/20 mt-6">
+            <Card className="border-red-200 bg-red-500/10 mt-6">
                 <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                         <AlertCircle className="h-5 w-5 text-red-600" />
-                        <CardTitle className="text-red-900">Critical Yield Alerts</CardTitle>
+                        <CardTitle className="text-red-900 dark:text-red-200">Critical Yield Alerts</CardTitle>
                     </div>
                 </CardHeader>
                 <CardContent>

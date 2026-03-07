@@ -84,7 +84,7 @@ export function CreateCreditMemoDialog({ invoiceId, invoiceNumber, maxAmount }: 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-full h-7 px-3 text-xs">
+                <Button variant="outline" size="sm" className="text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 rounded-full h-7 px-3 text-xs">
                     <Undo2 className="mr-1 h-3 w-3" />
                     Credit Memo
                 </Button>

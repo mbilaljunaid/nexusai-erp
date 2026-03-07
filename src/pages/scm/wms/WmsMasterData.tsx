@@ -63,8 +63,8 @@ export default function WmsMasterData() {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <StatusBadge status={zone.status} />
-                                            <Button variant="ghost" size="icon"><Edit2 className="w-4 h-4" /></Button>
-                                            <Button variant="ghost" size="icon" className="text-red-400"><Trash2 className="w-4 h-4" /></Button>
+                                            <Button variant="ghost" size="icon" aria-label="Edit"><Edit2 className="w-4 h-4" /></Button>
+                                            <Button variant="ghost" size="icon" className="text-red-400" aria-label="Delete"><Trash2 className="w-4 h-4" /></Button>
                                         </div>
                                     </div>
                                 ))}

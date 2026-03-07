@@ -80,7 +80,7 @@ export function MappingSetEditor({ setId, onBack }: { setId: string, onBack: () 
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={onBack}>
+                    <Button variant="ghost" size="icon" onClick={onBack} aria-label="Go back">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
@@ -119,7 +119,7 @@ export function MappingSetEditor({ setId, onBack }: { setId: string, onBack: () 
                     <Button variant="outline" size="sm" className="gap-2" onClick={() => document.getElementById('csv-import')?.click()}>
                         <FileUp className="h-4 w-4" /> Import CSV
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2 text-purple-600 border-purple-200 bg-purple-50 hover:bg-purple-100 transition-colors">
+                    <Button variant="outline" size="sm" className="gap-2 text-purple-600 border-purple-200 bg-purple-500/10 hover:bg-purple-500/15 transition-colors">
                         <Sparkles className="h-4 w-4" /> AI Suggest
                     </Button>
                     <Button size="sm" className="gap-2" onClick={() => saveMutation.mutate(localValues)} disabled={saveMutation.isPending}>
@@ -173,7 +173,7 @@ export function MappingSetEditor({ setId, onBack }: { setId: string, onBack: () 
                                         />
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-50" onClick={() => removeRow(idx)}>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:text-red-600 hover:bg-red-500/10" onClick={() => removeRow(idx)} aria-label="Delete">
                                             <Trash2 className="h-4 w-4" />
                                         </Button>
                                     </TableCell>

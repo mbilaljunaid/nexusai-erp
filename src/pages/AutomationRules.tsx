@@ -115,7 +115,7 @@ export default function AutomationRules() {
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary">P{rule.priority}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(rule.id)} data-testid={`button-delete-${rule.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(rule.id)} data-testid={`button-delete-${rule.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

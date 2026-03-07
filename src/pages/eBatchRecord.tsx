@@ -25,7 +25,7 @@ export default function eBatchRecord() {
         >
             <DashboardWidget title="Total Batches" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-blue-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <ClipboardList className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
@@ -37,7 +37,7 @@ export default function eBatchRecord() {
 
             <DashboardWidget title="In Progress" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-indigo-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <Timer className="h-4 w-4 text-indigo-600" />
                     </div>
                     <div>
@@ -49,7 +49,7 @@ export default function eBatchRecord() {
 
             <DashboardWidget title="On Hold" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-amber-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <AlertTriangle className="h-4 w-4 text-amber-600" />
                     </div>
                     <div>
@@ -61,7 +61,7 @@ export default function eBatchRecord() {
 
             <DashboardWidget title="Completed" colSpan={1}>
                 <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-full bg-emerald-100/50">
+                    <div className="p-2 rounded-full bg-/15">
                         <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>

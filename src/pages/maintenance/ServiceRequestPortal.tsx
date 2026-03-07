@@ -118,7 +118,6 @@ export function ServiceRequestPortal() {
             const mappedRequests = apiRequests.map(mapServiceRequest);
             setRequests(mappedRequests);
         } catch (error) {
-            console.error("Failed to load service requests:", error);
             // Fallback: keep empty array on error
             setRequests([]);
         } finally {
@@ -143,7 +142,6 @@ export function ServiceRequestPortal() {
             setShowForm(false);
             form.reset();
         } catch (error) {
-            console.error("Failed to submit service request:", error);
             // TODO: Show error toast to user
         }
     };
@@ -161,7 +159,6 @@ export function ServiceRequestPortal() {
 
             // TODO: Show success toast with WO number
         } catch (error) {
-            console.error("Failed to convert SR to WO:", error);
             // TODO: Show error toast to user
         }
     };

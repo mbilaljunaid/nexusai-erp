@@ -80,7 +80,7 @@ export function IndustriesWidget() {
             className="h-8 w-8"
             onClick={handlePrev}
             disabled={scrollIndex === 0}
-            data-testid="button-industries-prev"
+            data-testid="button-industries-prev" aria-label="Previous"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -90,7 +90,7 @@ export function IndustriesWidget() {
             className="h-8 w-8"
             onClick={handleNext}
             disabled={scrollIndex >= maxIndex}
-            data-testid="button-industries-next"
+            data-testid="button-industries-next" aria-label="Next"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>

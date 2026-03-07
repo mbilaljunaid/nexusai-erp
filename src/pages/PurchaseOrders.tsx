@@ -145,19 +145,19 @@ export default function PurchaseOrders() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-4 gap-4">
-              <div className="p-4 bg-blue-50 rounded">
+              <div className="p-4 bg-blue-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Total POs</p>
                 <p className="text-2xl font-bold">{pos.length}</p>
               </div>
-              <div className="p-4 bg-amber-50 rounded">
+              <div className="p-4 bg-amber-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Draft</p>
                 <p className="text-2xl font-bold">{pos.filter((p: any) => p.status === "draft").length}</p>
               </div>
-              <div className="p-4 bg-yellow-50 rounded">
+              <div className="p-4 bg-yellow-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Approved</p>
                 <p className="text-2xl font-bold">{pos.filter((p: any) => p.status === "approved").length}</p>
               </div>
-              <div className="p-4 bg-green-50 rounded">
+              <div className="p-4 bg-green-500/10 rounded">
                 <p className="text-muted-foreground text-sm">Received</p>
                 <p className="text-2xl font-bold">{pos.filter((p: any) => p.status === "received").length}</p>
               </div>

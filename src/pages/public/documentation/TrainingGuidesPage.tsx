@@ -361,7 +361,7 @@ export default function TrainingGuidesPage() {
               Start your training journey today and unlock the full potential of NexusAIFirst ERP.
             </p>
             <Link to="/docs/training-guides/crm">
-              <Button size="lg" className="bg-white text-orange-600 hover:bg-slate-100" data-testid="button-begin-training">
+              <Button size="lg" className="bg-white text-orange-600 hover:bg-slate-500/15" data-testid="button-begin-training">
                 Begin Training <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>

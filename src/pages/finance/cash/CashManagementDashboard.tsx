@@ -136,7 +136,7 @@ export default function CashManagementDashboard() {
             <div className="space-y-6">
                 {/* Alert Banner for Unreconciled Items */}
                 {cashPosition && cashPosition.unreconciledItems > 0 && (
-                    <Card className="border-orange-500 bg-orange-50 dark:bg-orange-950/20">
+                    <Card className="border-orange-500 bg-orange-500/10 dark:bg-orange-950/20">
                         <CardContent className="pt-6">
                             <div className="flex items-center gap-3">
                                 <AlertCircle className="h-5 w-5 text-orange-600" />

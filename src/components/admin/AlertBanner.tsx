@@ -19,16 +19,16 @@ export default function AlertBanner({ alert }: AlertBannerProps) {
             case 'error':
                 return {
                     icon: AlertCircle,
-                    bgColor: 'bg-red-50',
+                    bgColor: 'bg-red-500/10',
                     borderColor: 'border-red-200',
                     iconColor: 'text-red-600',
-                    textColor: 'text-red-900',
+                    textColor: 'text-red-900 dark:text-red-200',
                     metaColor: 'text-red-700',
                 };
             case 'warning':
                 return {
                     icon: AlertTriangle,
-                    bgColor: 'bg-yellow-50',
+                    bgColor: 'bg-yellow-500/10',
                     borderColor: 'border-yellow-200',
                     iconColor: 'text-yellow-600',
                     textColor: 'text-yellow-900',
@@ -38,7 +38,7 @@ export default function AlertBanner({ alert }: AlertBannerProps) {
             default:
                 return {
                     icon: Info,
-                    bgColor: 'bg-blue-50',
+                    bgColor: 'bg-blue-500/10',
                     borderColor: 'border-blue-200',
                     iconColor: 'text-blue-600',
                     textColor: 'text-blue-900',

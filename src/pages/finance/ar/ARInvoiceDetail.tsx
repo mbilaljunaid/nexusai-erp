@@ -159,7 +159,7 @@ export default function ARInvoiceDetail() {
                     <Button variant="outline" onClick={() => setAccountingModalOpen(true)}>
                         <FileText className="mr-2 h-4 w-4 text-muted-foreground hover:text-primary" /> View Accounting
                     </Button>
-                    <Button variant="outline" className="text-indigo-600 border-indigo-200 bg-indigo-50">
+                    <Button variant="outline" className="text-indigo-600 border-indigo-200 bg-indigo-500/10">
                         <Sparkles className="mr-2 h-4 w-4" /> AI Summary
                     </Button>
                     {status === 'DRAFT' && (
@@ -236,7 +236,7 @@ export default function ARInvoiceDetail() {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="flex bg-slate-50 border border-dashed rounded-lg p-8 items-center justify-center text-muted-foreground">
+                                <div className="flex bg-slate-500/10 border border-dashed rounded-lg p-8 items-center justify-center text-muted-foreground">
                                     Invoice lines have not been fully modeled for this entity yet.
                                 </div>
                             )}
@@ -252,7 +252,7 @@ export default function ARInvoiceDetail() {
                                             {lines.map((l: any) => (
                                                 <div role="button" tabIndex={0}
                                                     key={l.id}
-                                                    className={cn(`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-50'}`)}
+                                                    className={cn(`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-500/10'}`)}
                                                     onClick={() => {
                                                         setSelectedLineId(l.id);
                                                         form.setValue("amount", l.amount);
@@ -306,7 +306,7 @@ export default function ARInvoiceDetail() {
                                                 )}
                                             </div>
                                         ) : (
-                                            <div className="h-full flex items-center justify-center text-muted-foreground border rounded-md border-dashed bg-slate-50">
+                                            <div className="h-full flex items-center justify-center text-muted-foreground border rounded-md border-dashed bg-slate-500/10">
                                                 Select a line to view or manage sales revenue credits.
                                             </div>
                                         )}

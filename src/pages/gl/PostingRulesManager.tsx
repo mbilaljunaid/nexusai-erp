@@ -51,7 +51,6 @@ export function PostingRulesManager() {
                 setRules(data);
             }
         } catch (err) {
-            console.error(err);
         } finally {
             setIsLoading(false);
         }
@@ -90,7 +89,6 @@ export function PostingRulesManager() {
             await fetch(`/api/gl/posting-rules/${id}`, { method: "DELETE" });
             fetchRules();
         } catch (err) {
-            console.error(err);
         }
     };
 
@@ -171,7 +169,7 @@ export function PostingRulesManager() {
                 </CardContent>
             </Card>
 
-            <div className="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-md border border-yellow-200 dark:border-yellow-900">
+            <div className="bg-yellow-500/10 dark:bg-yellow-900/10 p-4 rounded-md border border-yellow-200 dark:border-yellow-900">
                 <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Note on Processing</h4>
                 <p className="text-sm text-yellow-700 dark:text-yellow-300">
                     Auto-posting runs securely in the background. Rules are evaluated whenever a journal batch is approved.

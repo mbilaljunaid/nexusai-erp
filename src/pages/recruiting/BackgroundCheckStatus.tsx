@@ -114,7 +114,7 @@ export default function BackgroundCheckStatus() {
 
             {/* New order form */}
             {showNew && (
-                <Card className="p-3.5 mb-3 bg-slate-50/50 shadow-sm border-gray-200">
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-gray-200">
                     <div className="text-[13px] font-bold mb-2.5">Initiate Background Check</div>
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-0.5">
@@ -173,7 +173,7 @@ export default function BackgroundCheckStatus() {
                         <div className="text-[11px] font-bold mb-1.5 text-gray-700">Component Results</div>
                         <div className="flex flex-col gap-1 mb-3">
                             {selectedOrder.components.map(c => (
-                                <div key={c.component_type} className="flex justify-between px-2 py-1 bg-gray-50 rounded-md">
+                                <div key={c.component_type} className="flex justify-between px-2 py-1 bg-gray-500/10 rounded-md">
                                     <span className="text-[10px]">{c.component_type}</span>
                                     <span className={cn(`text-[10px] font-bold ${c.result ? (RESULT_CLR[c.result] ?? 'text-gray-500') : 'text-gray-400'}`)}>{c.result ?? c.status}</span>
                                 </div>
@@ -182,7 +182,7 @@ export default function BackgroundCheckStatus() {
 
                         {/* Update component */}
                         {selectedOrder.status === 'In_Progress' && (
-                            <div className="bg-green-50 border border-green-200 rounded-lg p-2.5 mb-2.5">
+                            <div className="bg-green-500/10 border border-green-200 rounded-lg p-2.5 mb-2.5">
                                 <div className="text-[10px] font-bold mb-1.5">Record Component Result</div>
                                 <div className="flex flex-col gap-1.5">
                                     <Select value={componentForm.componentType} onValueChange={v => setComponentForm(p => ({ ...p, componentType: v }))}>
@@ -201,7 +201,7 @@ export default function BackgroundCheckStatus() {
 
                         {/* Adverse action */}
                         {selectedOrder.status === 'Complete' && selectedOrder.adjudication === 'Consider' && (
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-2.5 mb-2.5">
+                            <div className="bg-red-500/10 border border-red-200 rounded-lg p-2.5 mb-2.5">
                                 <div className="text-[10px] font-bold text-red-600 mb-1">Adverse Adjudication</div>
                                 <button onClick={() => adverseMut.mutate(selectedOrder.id)} className="w-full p-1.5 bg-red-600 text-white border-none rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1">
                                     <ShieldAlert size={10} /> Initiate Adverse Action
@@ -211,7 +211,7 @@ export default function BackgroundCheckStatus() {
 
                         {/* Final decision */}
                         {(selectedOrder.status === 'Complete' || selectedOrder.status === 'Adverse_Action') && !selectedOrder.final_decision && (
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2.5">
+                            <div className="bg-blue-500/10 border border-blue-200 rounded-lg p-2.5">
                                 <div className="text-[10px] font-bold mb-1.5">Final Decision</div>
                                 <Select value={decisionForm.decision} onValueChange={v => setDecisionForm(p => ({ ...p, decision: v as any }))}>
                                     <SelectTrigger className="px-1.5 py-1 text-[10px] w-full mb-1" aria-label="Decision"><SelectValue /></SelectTrigger>

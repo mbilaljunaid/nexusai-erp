@@ -181,7 +181,7 @@ export default function CrmSettings() {
                                 <Label className="text-xs text-muted-foreground">Points</Label>
                                 <Input type="number" value={rule.points} onChange={(e) => updateRule(index, 'points', Number(e.target.value))} />
                             </div>
-                            <Button variant="ghost" size="icon" className="mt-4 text-destructive">
+                            <Button variant="ghost" size="icon" className="mt-4 text-destructive" aria-label="Delete">
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>

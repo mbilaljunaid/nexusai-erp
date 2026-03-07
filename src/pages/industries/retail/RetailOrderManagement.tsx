@@ -29,7 +29,7 @@ export default function Page() {
         
         <Button data-testid="button-new"><Plus className="w-4 h-4 mr-2" />New Order</Button>
       </div>
-      <Card className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+      <Card className="bg-blue-500/10 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
         <CardContent className="pt-6">
           <p className="text-sm text-blue-900 dark:text-blue-100">
             Click "Convert to Invoice" on fulfilled orders to automatically create invoices with AR and Revenue GL entries for complete order-to-cash tracking.

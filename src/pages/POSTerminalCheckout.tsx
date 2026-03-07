@@ -50,7 +50,7 @@ export default function POSTerminalCheckout() {
     >
       <DashboardWidget title="Total Transactions" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-blue-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Receipt className="h-4 w-4 text-blue-600" />
           </div>
           <div>
@@ -62,7 +62,7 @@ export default function POSTerminalCheckout() {
 
       <DashboardWidget title="Gross Sales" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-emerald-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <BadgeDollarSign className="h-4 w-4 text-emerald-600" />
           </div>
           <div>
@@ -74,7 +74,7 @@ export default function POSTerminalCheckout() {
 
       <DashboardWidget title="Card Volume" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-indigo-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <CreditCard className="h-4 w-4 text-indigo-600" />
           </div>
           <div>
@@ -86,7 +86,7 @@ export default function POSTerminalCheckout() {
 
       <DashboardWidget title="AOV" colSpan={1}>
         <div className="flex items-center gap-4">
-          <div className="p-2 rounded-full bg-amber-100/50">
+          <div className="p-2 rounded-full bg-/15">
             <Wallet className="h-4 w-4 text-amber-600" />
           </div>
           <div>
@@ -150,7 +150,7 @@ export default function POSTerminalCheckout() {
                     <p className="text-xs font-bold font-mono tracking-tighter">#{t.id.substring(0, 8)}</p>
                     <p className="text-[10px] text-muted-foreground uppercase font-medium">Terminal {t.terminalId}</p>
                   </div>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-void-${t.id}`}>
+                  <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteMutation.mutate(t.id)} data-testid={`button-void-${t.id}`} aria-label="Delete">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>

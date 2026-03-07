@@ -160,7 +160,7 @@ function QuickTipPopup({ tip, onDismiss, onDisableAll}: QuickTipPopupProps) {
                 size="icon"
                 className="h-6 w-6 shrink-0"
                 onClick={onDismiss}
-                data-testid="button-dismiss-tip"
+                data-testid="button-dismiss-tip" aria-label="Close"
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -200,7 +200,7 @@ export function TipsToggle() {
       size="icon"
       onClick={tipsEnabled ? disableTips : enableTips}
       title={tipsEnabled ?"Disable quick tips" :"Enable quick tips"}
-      data-testid="button-toggle-tips"
+      data-testid="button-toggle-tips" aria-label="Insights"
     >
       <Lightbulb className={cn(`h-4 w-4 ${tipsEnabled ?"text-yellow-500" :"text-muted-foreground"}`)} />
     </Button>

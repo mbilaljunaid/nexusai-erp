@@ -53,7 +53,6 @@ export function ReportSpreadsheet({ data = [], columns = [] }: ReportSpreadsheet
   }, [selectedCells, tableData]);
 
   const toast = ({ title }: { title: string }) => {
-    console.log(title);
   };
 
   const copySelectedCells = () => {

@@ -135,7 +135,7 @@ export function BillingWorkbench() {
         <div className="p-8 space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-500">
             <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-900">Project Billing</h1>
+                    <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-200">Project Billing</h1>
                     <p className="text-lg text-slate-500 mt-2">Manage Contract Billing, Invoices, and Revenue Recognition</p>
                 </div>
                 <div className="flex gap-2">

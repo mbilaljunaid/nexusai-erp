@@ -113,7 +113,7 @@ export default function EDIMarketplaceConnectors() {
               </div>
               <div className="flex gap-2 items-center">
                 <Badge variant={c.status === "active" ? "default" : "secondary"} className="text-xs">{c.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`} className="h-7 w-7">
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-${c.id}`} className="h-7 w-7" aria-label="Delete">
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>

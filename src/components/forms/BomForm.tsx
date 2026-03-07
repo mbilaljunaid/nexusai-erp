@@ -250,7 +250,7 @@ export function BomForm() {
                         size="icon"
                         variant="ghost"
                         onClick={() => removeBomLine(index)}
-                        data-testid={`button-remove-line-${index}`}
+                        data-testid={`button-remove-line-${index}`} aria-label="Close"
                       >
                         <X className="w-4 h-4" />
                       </Button>

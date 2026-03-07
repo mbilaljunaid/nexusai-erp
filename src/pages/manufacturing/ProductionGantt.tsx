@@ -100,7 +100,7 @@ export default function ProductionGantt() {
                             {workCenters.map(wc => (
                                 <div key={wc.id} className="flex min-h-24 hover:bg-muted/5 transition-colors">
                                     <div className="w-64 p-4 border-r flex flex-col justify-center">
-                                        <div className="font-semibold text-gray-900">{wc.name}</div>
+                                        <div className="font-semibold text-gray-900 dark:text-gray-200">{wc.name}</div>
                                         <div className="text-xs text-muted-foreground">Capacity: 100%</div>
                                     </div>
                                     <div className="flex-1 flex">

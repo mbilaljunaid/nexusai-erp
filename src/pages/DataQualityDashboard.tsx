@@ -144,7 +144,7 @@ export default function DataQualityDashboard() {
                         ) : (
                             <div className="space-y-4">
                                 {stats?.anomalies?.slice(0, 5).map((anomaly, i) => (
-                                    <div key={i} className="flex items-start gap-4 p-3 border rounded-lg bg-red-50 dark:bg-red-900/20">
+                                    <div key={i} className="flex items-start gap-4 p-3 border rounded-lg bg-red-500/10 dark:bg-red-900/20">
                                         <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
                                         <div>
                                             <p className="font-medium text-sm text-red-700 dark:text-red-400">

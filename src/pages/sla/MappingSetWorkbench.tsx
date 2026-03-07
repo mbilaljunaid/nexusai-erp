@@ -50,7 +50,7 @@ export default function MappingSetWorkbench() {
                 </Card>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card className="bg-blue-50/50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader>
                             <CardTitle className="text-sm font-bold text-blue-800 uppercase flex items-center gap-2">
                                 <Settings className="h-4 w-4" />
@@ -65,7 +65,7 @@ export default function MappingSetWorkbench() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-purple-50/50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader>
                             <CardTitle className="text-sm font-bold text-purple-800 uppercase flex items-center gap-2">
                                 <Plus className="h-4 w-4" />
@@ -76,7 +76,7 @@ export default function MappingSetWorkbench() {
                             <p className="text-sm text-purple-700 mb-4">
                                 Importing mapping values from CSV or Excel? Use the bulk uploader in the set details view.
                             </p>
-                            <Button variant="outline" size="sm" className="bg-white border-purple-200 text-purple-700 hover:bg-purple-100">
+                            <Button variant="outline" size="sm" className="bg-white border-purple-200 text-purple-700 hover:bg-purple-500/15">
                                 Import Master Data
                             </Button>
                         </CardContent>

@@ -380,19 +380,19 @@ export default function SourcingWorkbench() {
                             ) : (
                                 <div className="space-y-6">
                                     <div className="grid grid-cols-4 gap-4">
-                                        <Card className="bg-blue-50/50 border-blue-100">
+                                        <Card className="bg-blue-500/10 border-blue-100">
                                             <CardContent className="p-4">
                                                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Lowest Bid</p>
                                                 <p className="text-2xl font-bold text-blue-700">${rfqAnalysis.lowestBid.toLocaleString()}</p>
                                             </CardContent>
                                         </Card>
-                                        <Card className="bg-indigo-50/50 border-indigo-100">
+                                        <Card className="bg-indigo-500/10 border-indigo-100">
                                             <CardContent className="p-4">
                                                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Average Bid</p>
                                                 <p className="text-2xl font-bold text-indigo-700">${rfqAnalysis.averageBid.toLocaleString()}</p>
                                             </CardContent>
                                         </Card>
-                                        <Card className="bg-amber-50/50 border-amber-100">
+                                        <Card className="bg-amber-500/10 border-amber-100">
                                             <CardContent className="p-4">
                                                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Price Variance</p>
                                                 <p className="text-2xl font-bold text-amber-700">
@@ -400,7 +400,7 @@ export default function SourcingWorkbench() {
                                                 </p>
                                             </CardContent>
                                         </Card>
-                                        <Card className="bg-purple-50/50 border-purple-100">
+                                        <Card className="bg-purple-500/10 border-purple-100">
                                             <CardContent className="p-4">
                                                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Est. Savings</p>
                                                 <p className="text-2xl font-bold text-purple-700">
@@ -412,7 +412,7 @@ export default function SourcingWorkbench() {
 
                                     <div className="grid grid-cols-2 gap-6">
                                         <Card className="border-red-100 shadow-sm">
-                                            <CardHeader className="pb-2 bg-red-50/30">
+                                            <CardHeader className="pb-2 bg-red-500/10">
                                                 <CardTitle className="text-sm font-bold flex items-center gap-2 text-red-700">
                                                     <AlertTriangle className="w-4 h-4" /> Risk Analysis
                                                 </CardTitle>
@@ -456,7 +456,7 @@ export default function SourcingWorkbench() {
                                         </Card>
 
                                         <Card className="border-green-100 shadow-sm">
-                                            <CardHeader className="pb-2 bg-green-50/30">
+                                            <CardHeader className="pb-2 bg-green-500/10">
                                                 <CardTitle className="text-sm font-bold flex items-center gap-2 text-green-700">
                                                     <CheckCircle2 className="w-4 h-4" /> AI Recommendation
                                                 </CardTitle>

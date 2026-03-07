@@ -191,13 +191,13 @@ export default function AdvancedMatchWorkbench() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <h3 className="font-semibold mb-2">Master Record</h3>
-                                        <div className="border rounded-lg p-4 bg-blue-50">
+                                        <div className="border rounded-lg p-4 bg-blue-500/10">
                                             <div className="text-sm">ID: {selectedMatch.masterRecordId}</div>
                                         </div>
                                     </div>
                                     <div>
                                         <h3 className="font-semibold mb-2">Candidate Record</h3>
-                                        <div className="border rounded-lg p-4 bg-green-50">
+                                        <div className="border rounded-lg p-4 bg-green-500/10">
                                             <div className="text-sm">ID: {selectedMatch.candidateRecordId}</div>
                                         </div>
                                     </div>

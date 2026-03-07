@@ -79,7 +79,7 @@ export default function ReportBuilder() {
                   <h3 className="font-semibold">{rep.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{rep.type} • {rep.frequency}</p>
                 </div>
-                <Button size="icon" variant="ghost" data-testid={`button-delete-${rep.id}`}>
+                <Button size="icon" variant="ghost" data-testid={`button-delete-${rep.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

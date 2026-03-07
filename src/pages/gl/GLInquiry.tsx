@@ -103,26 +103,26 @@ export default function GLInquiry() {
             {hasSearched && (
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/20">
+                        <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-500/10">
                             <CardContent className="p-6">
                                 <p className="text-sm font-medium text-slate-500 mb-1">Total Period Debits</p>
-                                <h3 className="text-3xl font-bold text-slate-900 font-mono">
+                                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200 font-mono">
                                     {totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h3>
                             </CardContent>
                         </Card>
-                        <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/20">
+                        <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-500/10">
                             <CardContent className="p-6">
                                 <p className="text-sm font-medium text-slate-500 mb-1">Total Period Credits</p>
-                                <h3 className="text-3xl font-bold text-slate-900 font-mono">
+                                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200 font-mono">
                                     {totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h3>
                             </CardContent>
                         </Card>
-                        <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
+                        <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-500/10">
                             <CardContent className="p-6">
                                 <p className="text-sm font-medium text-indigo-700 mb-1">Net Period Change</p>
-                                <h3 className="text-3xl font-bold text-indigo-900 font-mono">
+                                <h3 className="text-3xl font-bold text-indigo-900 dark:text-indigo-200 font-mono">
                                     {netChange.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h3>
                             </CardContent>

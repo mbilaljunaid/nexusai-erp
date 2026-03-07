@@ -187,7 +187,7 @@ export default function JournalImport() {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                                                    className="text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-700"
                                                     onClick={() => processMutation.mutate(job.id)}
                                                     disabled={processMutation.isPending}
                                                 >

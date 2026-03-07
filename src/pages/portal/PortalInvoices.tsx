@@ -48,7 +48,7 @@ export default function PortalInvoices() {
                     <Card key={inv.id} className="group hover:border-emerald-300 transition-colors">
                         <CardContent className="p-6 flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
+                                <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-emerald-500/10 transition-colors">
                                     <FileText className="h-5 w-5 text-slate-500 group-hover:text-emerald-600" />
                                 </div>
                                 <div>
@@ -61,7 +61,7 @@ export default function PortalInvoices() {
 
                             <div className="flex items-center gap-6">
                                 <div className="text-right">
-                                    <div className="text-xl font-bold text-slate-900">${Number(inv.totalAmount).toLocaleString()}</div>
+                                    <div className="text-xl font-bold text-slate-900 dark:text-slate-200">${Number(inv.totalAmount).toLocaleString()}</div>
                                     <Badge variant={inv.status === "Paid" ? "default" : inv.status === "Overdue" ? "destructive" : "secondary"}>
                                         {inv.status}
                                     </Badge>

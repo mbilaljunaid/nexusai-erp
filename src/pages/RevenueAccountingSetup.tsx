@@ -290,7 +290,7 @@ export default function RevenueAccountingSetup() {
                         </CardContent>
                     </Card>
 
-                    <Card className="max-w-3xl border-indigo-100 bg-indigo-50/30">
+                    <Card className="max-w-3xl border-indigo-100 bg-indigo-500/10">
                         <CardContent className="pt-6 flex gap-3 text-indigo-700 text-sm">
                             <Info className="h-5 w-5 shrink-0" />
                             <p>These accounts will be used as the default for all revenue contracts in the <b>{ledgerId}</b> ledger unless overridden by specific identification rules.</p>
@@ -322,7 +322,7 @@ export default function RevenueAccountingSetup() {
                                             <div className="px-2 h-full flex items-center gap-1 text-xs">
                                                 <span className="text-slate-400 font-mono italic">{info.attributeName}</span>
                                                 <span className="px-1 bg-slate-100 border text-slate-600">EQUALS</span>
-                                                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded">"{info.attributeValue}"</span>
+                                                <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-700 font-bold rounded">"{info.attributeValue}"</span>
                                             </div>
                                         )
                                     },
@@ -379,7 +379,7 @@ export default function RevenueAccountingSetup() {
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="p-4 bg-slate-50 rounded-lg flex flex-wrap gap-4 items-center">
+                                    <div className="p-4 bg-slate-500/10 rounded-lg flex flex-wrap gap-4 items-center">
                                         <span className="text-xs font-bold text-slate-500 uppercase">Group orders by:</span>
                                         {rule.groupingCriteria.map((crit: string) => (
                                             <div key={crit} className="flex items-center gap-2 bg-white px-3 py-1.5 border rounded-md shadow-sm">

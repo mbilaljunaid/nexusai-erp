@@ -75,7 +75,7 @@ export default function ChurnRiskAnalysis() {
               </div>
               <div className="flex gap-2 items-center">
                 <StatusBadge status={item.risk} />
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`}>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(item.id)} data-testid={`button-delete-${item.id}`} aria-label="Delete">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

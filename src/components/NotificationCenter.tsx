@@ -260,7 +260,7 @@ export function NotificationCenter() {
                   className="h-7 w-7"
                   onClick={() => markAsRead(notif.id)}
                   title="Mark as read"
-                  data-testid={`button-mark-read-${notif.id}`}
+                  data-testid={`button-mark-read-${notif.id}`} aria-label="Confirm all"
                 >
                   <CheckCheck className="h-3.5 w-3.5" />
                 </Button>
@@ -271,7 +271,7 @@ export function NotificationCenter() {
                 className="h-7 w-7"
                 onClick={() => dismissNotification(notif.id)}
                 title="Dismiss"
-                data-testid={`button-dismiss-notification-${notif.id}`}
+                data-testid={`button-dismiss-notification-${notif.id}`} aria-label="Close"
               >
                 <X className="h-3.5 w-3.5" />
               </Button>
@@ -289,7 +289,7 @@ export function NotificationCenter() {
         variant="ghost"
         onClick={() => setOpen(!open)}
         data-testid="button-notifications"
-        className="relative"
+        className="relative" aria-label="Notifications"
       >
         <Bell className="h-4 w-4" />
         {isHydrated && unreadCount > 0 && (
@@ -339,7 +339,7 @@ export function NotificationCenter() {
                       className="h-7 w-7"
                       onClick={clearAll}
                       title="Clear all"
-                      data-testid="button-clear-all-notifications"
+                      data-testid="button-clear-all-notifications" aria-label="Delete"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </Button>

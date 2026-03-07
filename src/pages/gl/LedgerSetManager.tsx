@@ -157,40 +157,40 @@ export default function LedgerSetManager() {
             <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-blue-50 border-blue-100">
+                    <Card className="bg-blue-500/10 border-blue-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-blue-800 uppercase">Total Sets</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-blue-900">{ledgerSets.length}</div>
+                            <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{ledgerSets.length}</div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-green-50 border-green-100">
+                    <Card className="bg-green-500/10 border-green-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-green-800 uppercase">Active Sets</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-900">
+                            <div className="text-2xl font-bold text-green-900 dark:text-green-200">
                                 {ledgerSets.filter(s => s.status === "ACTIVE").length}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-purple-50 border-purple-100">
+                    <Card className="bg-purple-500/10 border-purple-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-purple-800 uppercase">Total Ledgers</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900">
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">
                                 {ledgerSets.reduce((sum, s) => sum + s.assignedLedgers, 0)}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="bg-orange-50 border-orange-100">
+                    <Card className="bg-orange-500/10 border-orange-100">
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xs font-bold text-orange-800 uppercase">Currencies</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-orange-900">{uniqueCurrencies.size}</div>
+                            <div className="text-2xl font-bold text-orange-900 dark:text-orange-200">{uniqueCurrencies.size}</div>
                         </CardContent>
                     </Card>
                 </div>
@@ -282,7 +282,7 @@ export default function LedgerSetManager() {
                                     {ledgerSets.map((set) => (
                                         <TableRow
                                             key={set.id}
-                                            className={selectedSetId === set.id ? "bg-blue-50" : "cursor-pointer hover:bg-muted/50"}
+                                            className={selectedSetId === set.id ? "bg-blue-500/10" : "cursor-pointer hover:bg-muted/50"}
                                             onClick={() => setSelectedSetId(set.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                                         >
                                             <TableCell className="font-medium">
@@ -302,10 +302,10 @@ export default function LedgerSetManager() {
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex gap-1">
-                                                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }}>
+                                                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }} aria-label="Edit">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }}>
+                                                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }} aria-label="Delete">
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>

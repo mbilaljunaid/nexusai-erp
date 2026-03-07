@@ -151,7 +151,7 @@ export default function ComplianceGovernance() {
       width: "250px",
       cell: (r: any) => (
         <div className="flex flex-col p-2">
-          <span className="font-medium text-slate-900">{r.name}</span>
+          <span className="font-medium text-slate-900 dark:text-slate-200">{r.name}</span>
           <span className="text-xs text-muted-foreground font-mono">{r.id.substring(0, 8)}</span>
         </div>
       )
@@ -160,7 +160,7 @@ export default function ComplianceGovernance() {
       id: "legislationCode",
       header: "Legislation",
       width: "150px",
-      cell: (r: any) => <div className="p-2"><Badge variant="outline" className="bg-slate-50">{r.legislationCode}</Badge></div>
+      cell: (r: any) => <div className="p-2"><Badge variant="outline" className="bg-slate-500/10">{r.legislationCode}</Badge></div>
     },
     {
       id: "severity",
@@ -198,7 +198,7 @@ export default function ComplianceGovernance() {
       width: "100px",
       cell: (r: any) => (
         <div className="flex gap-2 p-2">
-          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteMutation.mutate(r.id)}>
+          <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteMutation.mutate(r.id)} aria-label="Delete">
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -213,7 +213,7 @@ export default function ComplianceGovernance() {
       width: "300px",
       cell: (v: any) => (
         <div className="flex flex-col p-2">
-          <span className="font-medium text-slate-900">{v.ruleName}</span>
+          <span className="font-medium text-slate-900 dark:text-slate-200">{v.ruleName}</span>
           <span className="text-xs text-muted-foreground truncate max-w-72">{v.description}</span>
         </div>
       )
@@ -259,9 +259,9 @@ export default function ComplianceGovernance() {
         <div className="p-2">
           <Badge
             className={
-              v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-100' :
-                v.status === 'dismissed' ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-100' :
-                  'bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-100'
+              v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-500/15' :
+                v.status === 'dismissed' ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-500/15' :
+                  'bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-500/15'
             }
           >
             {v.status.toUpperCase()}
@@ -278,14 +278,14 @@ export default function ComplianceGovernance() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            className="h-8 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-500/10"
             onClick={() => setSelectedViolation(v)}
           >
             <Wrench className="h-4 w-4 mr-1" />
             Remediate
           </Button>
           <Link href={`/hr/persons/${v.entityId}`}>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-slate-900">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-slate-900 dark:text-slate-200">
               <ExternalLink className="h-4 w-4" />
             </Button>
           </Link>
@@ -432,7 +432,7 @@ export default function ComplianceGovernance() {
                       </div>
 
                       <div className="space-y-4">
-                        <Label className="text-sm font-extrabold text-slate-900 italic">Rule Configuration</Label>
+                        <Label className="text-sm font-extrabold text-slate-900 dark:text-slate-200 italic">Rule Configuration</Label>
                         <RuleBuilder
                           legislationCode={newRule.legislationCode}
                           onSave={(logic) => {
@@ -496,7 +496,7 @@ export default function ComplianceGovernance() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
                 <h4 className="font-semibold text-sm text-slate-500 uppercase">Tenure & Stability</h4>
-                <div className="p-4 border rounded-lg bg-slate-50 space-y-4">
+                <div className="p-4 border rounded-lg bg-slate-500/10 space-y-4">
                   <div className="flex justify-between items-center">
                     <Label>High Frequency Job Hopping</Label>
                     <Input type="number" defaultValue={30} className="w-20 text-right" disabled />
@@ -507,7 +507,7 @@ export default function ComplianceGovernance() {
 
               <div className="space-y-4">
                 <h4 className="font-semibold text-sm text-slate-500 uppercase">Role & Access</h4>
-                <div className="p-4 border rounded-lg bg-slate-50 space-y-4">
+                <div className="p-4 border rounded-lg bg-slate-500/10 space-y-4">
                   <div className="flex justify-between items-center">
                     <Label>Sensitive Role Keywords</Label>
                     <Input type="number" defaultValue={20} className="w-20 text-right" disabled />
@@ -518,7 +518,7 @@ export default function ComplianceGovernance() {
 
               <div className="space-y-4">
                 <h4 className="font-semibold text-sm text-slate-500 uppercase">Transaction Timing</h4>
-                <div className="p-4 border rounded-lg bg-slate-50 space-y-4">
+                <div className="p-4 border rounded-lg bg-slate-500/10 space-y-4">
                   <div className="flex justify-between items-center">
                     <Label>Off-Hours Activity</Label>
                     <Input type="number" defaultValue={15} className="w-20 text-right" disabled />

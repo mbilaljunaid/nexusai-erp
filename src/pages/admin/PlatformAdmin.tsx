@@ -202,7 +202,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
               variant="ghost"
               size="icon"
               onClick={() => window.open(item.website!, '_blank')}
-              data-testid={`button-website-${item.id}`}
+              data-testid={`button-website-${item.id}`} aria-label="Open link"
             >
               <ExternalLink className="h-4 w-4" />
             </Button>
@@ -212,7 +212,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
             size="icon"
             onClick={() => handleReject(item)}
             disabled={deletePartnerMutation.isPending}
-            data-testid={`button-delete-${item.id}`}
+            data-testid={`button-delete-${item.id}`} aria-label="Delete"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -232,7 +232,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
   return (
     <div className="space-y-6">
       {pendingPartners.length > 0 && (
-        <Card className="border-amber-500/30 bg-amber-500/5">
+        <Card className="border-amber-500/30 bg-amber-500/100/5">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-amber-500" />
@@ -267,7 +267,7 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
                         variant="ghost"
                         size="icon"
                         onClick={() => window.open(partner.website!, '_blank')}
-                        data-testid={`button-view-website-${partner.id}`}
+                        data-testid={`button-view-website-${partner.id}`} aria-label="Open link"
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Button>
@@ -483,7 +483,7 @@ export default function PlatformAdmin() {
     {
       id: "actions", header: "Actions", width: 100, cell: (item) => (
         <div className="flex justify-end pr-2 w-full">
-          <Button variant="ghost" size="icon" data-testid={`button-tenant-actions-${item.id}`}>
+          <Button variant="ghost" size="icon" data-testid={`button-tenant-actions-${item.id}`} aria-label="More options">
             <MoreVertical className="h-4 w-4" />
           </Button>
         </div>
@@ -506,7 +506,7 @@ export default function PlatformAdmin() {
     {
       id: "actions", header: "Actions", width: 100, cell: () => (
         <div className="flex justify-end pr-2 w-full">
-          <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="icon" aria-label="Edit"><Edit className="h-4 w-4" /></Button>
         </div>
       )
     }
@@ -527,7 +527,7 @@ export default function PlatformAdmin() {
     {
       id: "actions", header: "Actions", width: 100, cell: () => (
         <div className="flex justify-end pr-2 w-full">
-          <Button variant="ghost" size="icon"><Edit className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="icon" aria-label="Edit"><Edit className="h-4 w-4" /></Button>
         </div>
       )
     }
@@ -548,7 +548,7 @@ export default function PlatformAdmin() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md bg-blue-500/10">
+                  <div className="p-2 rounded-md bg-/15">
                     <Building2 className="h-4 w-4 text-blue-500" />
                   </div>
                   <div>
@@ -561,7 +561,7 @@ export default function PlatformAdmin() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md bg-green-500/10">
+                  <div className="p-2 rounded-md bg-/15">
                     <Users className="h-4 w-4 text-green-500" />
                   </div>
                   <div>
@@ -574,7 +574,7 @@ export default function PlatformAdmin() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md bg-purple-500/10">
+                  <div className="p-2 rounded-md bg-/15">
                     <Zap className="h-4 w-4 text-purple-500" />
                   </div>
                   <div>
@@ -796,7 +796,7 @@ export default function PlatformAdmin() {
                       }))}
                       data-testid="input-smtp-password"
                     />
-                    <Button variant="outline" size="icon" onClick={() => toggleShowKey("smtpPass")}>
+                    <Button variant="outline" size="icon" onClick={() => toggleShowKey("smtpPass")} aria-label="Toggle password visibility">
                       {showApiKeys.smtpPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
@@ -906,7 +906,7 @@ export default function PlatformAdmin() {
                       }))}
                       data-testid="input-imap-password"
                     />
-                    <Button variant="outline" size="icon" onClick={() => toggleShowKey("imapPass")}>
+                    <Button variant="outline" size="icon" onClick={() => toggleShowKey("imapPass")} aria-label="Toggle password visibility">
                       {showApiKeys.imapPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
@@ -927,7 +927,7 @@ export default function PlatformAdmin() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md bg-green-500/10">
+                  <div className="p-2 rounded-md bg-/15">
                     <Receipt className="h-4 w-4 text-green-500" />
                   </div>
                   <div>
@@ -940,7 +940,7 @@ export default function PlatformAdmin() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md bg-blue-500/10">
+                  <div className="p-2 rounded-md bg-/15">
                     <Users className="h-4 w-4 text-blue-500" />
                   </div>
                   <div>
@@ -953,7 +953,7 @@ export default function PlatformAdmin() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-md bg-orange-500/10">
+                  <div className="p-2 rounded-md bg-/15">
                     <AlertTriangle className="h-4 w-4 text-orange-500" />
                   </div>
                   <div>
@@ -1142,7 +1142,7 @@ export default function PlatformAdmin() {
                     variant="outline"
                     size="icon"
                     onClick={() => toggleShowKey("lsApiKey")}
-                    data-testid="button-toggle-ls-api-key"
+                    data-testid="button-toggle-ls-api-key" aria-label="Toggle key visibility"
                   >
                     {showApiKeys.lsApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
@@ -1192,7 +1192,7 @@ export default function PlatformAdmin() {
                     variant="outline"
                     size="icon"
                     onClick={() => toggleShowKey("lsWebhook")}
-                    data-testid="button-toggle-ls-webhook"
+                    data-testid="button-toggle-ls-webhook" aria-label="Toggle key visibility"
                   >
                     {showApiKeys.lsWebhook ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
@@ -1228,7 +1228,7 @@ export default function PlatformAdmin() {
                     variant="outline"
                     size="icon"
                     onClick={() => toggleShowKey("stripeSecret")}
-                    data-testid="button-toggle-stripe-secret"
+                    data-testid="button-toggle-stripe-secret" aria-label="Toggle key visibility"
                   >
                     {showApiKeys.stripeSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
@@ -1265,7 +1265,7 @@ export default function PlatformAdmin() {
                     variant="outline"
                     size="icon"
                     onClick={() => toggleShowKey("stripeWebhook")}
-                    data-testid="button-toggle-stripe-webhook"
+                    data-testid="button-toggle-stripe-webhook" aria-label="Toggle key visibility"
                   >
                     {showApiKeys.stripeWebhook ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
@@ -1275,7 +1275,7 @@ export default function PlatformAdmin() {
             </CardContent>
           </Card>
 
-          <Card className="border-amber-500/20 bg-amber-500/5">
+          <Card className="border-amber-500/20 bg-amber-500/100/5">
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />

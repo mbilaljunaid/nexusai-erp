@@ -322,7 +322,7 @@ export function BulkTimeEntryModal({
                                                                 size="icon"
                                                                 className="h-8 w-8"
                                                                 onClick={() => copyForward(dayIndex, key)}
-                                                                title="Copy forward"
+                                                                title="Copy forward" aria-label="Copy"
                                                             >
                                                                 <Copy className="h-3 w-3" />
                                                             </Button>
@@ -365,7 +365,7 @@ export function BulkTimeEntryModal({
                     )}
 
                     {hasValidationErrors && (
-                        <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded text-sm text-red-800 dark:text-red-400">
+                        <div className="flex items-center gap-2 p-3 bg-red-500/10 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded text-sm text-red-800 dark:text-red-400">
                             <AlertCircle className="h-4 w-4" />
                             <span>Some days exceed 24 hours. Please adjust before saving.</span>
                         </div>

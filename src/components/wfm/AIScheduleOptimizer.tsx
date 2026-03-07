@@ -366,7 +366,7 @@ export function AIScheduleOptimizer({
                         </Card>
 
                         {/* AI Insights */}
-                        <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950/20 dark:border-purple-900">
+                        <Card className="border-purple-200 bg-purple-500/10 dark:bg-purple-950/20 dark:border-purple-900">
                             <CardHeader>
                                 <CardTitle className="text-base flex items-center gap-2">
                                     <Sparkles className="h-4 w-4 text-purple-600" />
