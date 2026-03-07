@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatNumber } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 interface OvertimeRule {
     id: string;
@@ -111,7 +112,7 @@ export default function OvertimeComplianceDashboard() {
                 <div className="panel">
                     <div className="panel-row">
                         <div className="pf">
-                            <label className="pl">Week Starting</label>
+                            <Label className="pl">Week Starting</Label>
                             <DatePicker className="pi" value={weekDate} onChange={v => setWeekDate(v)} aria-label="Week start date" />
                         </div>
                         <button className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw size={14} /></button>
@@ -136,9 +137,9 @@ export default function OvertimeComplianceDashboard() {
                 <div className="panel tc-form">
                     <h3 className="tf-title">Log Timecard Punch</h3>
                     <div className="tf-grid">
-                        <div className="ff"><label className="fl">Employee ID</label><Input className="fi" placeholder="UUID or emp code" value={tc.employeeId} onChange={e => setTc(p => ({ ...p, employeeId: e.target.value }))} aria-label="Employee ID" /></div>
+                        <div className="ff"><Label className="fl">Employee ID</Label><Input className="fi" placeholder="UUID or emp code" value={tc.employeeId} onChange={e => setTc(p => ({ ...p, employeeId: e.target.value }))} aria-label="Employee ID" /></div>
                         <div className="ff">
-                            <label className="fl">Rule</label>
+                            <Label className="fl">Rule</Label>
                             <Select value={tc.ruleCode} onValueChange={v => setTc(p => ({ ...p, ruleCode: v }))}>
                                 <SelectTrigger className="fi" aria-label="Overtime rule"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -147,9 +148,9 @@ export default function OvertimeComplianceDashboard() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="ff"><label className="fl">Clock In</label><Input className="fi" type="datetime-local" value={tc.clockIn} onChange={e => setTc(p => ({ ...p, clockIn: e.target.value }))} aria-label="Clock in time" /></div>
-                        <div className="ff"><label className="fl">Clock Out</label><Input className="fi" type="datetime-local" value={tc.clockOut} onChange={e => setTc(p => ({ ...p, clockOut: e.target.value }))} aria-label="Clock out time" /></div>
-                        <div className="ff"><label className="fl">Hourly Rate ($)</label><Input className="fi" type="number" value={tc.hourlyRate} onChange={e => setTc(p => ({ ...p, hourlyRate: parseFloat(e.target.value) || 0 }))} aria-label="Hourly rate" /></div>
+                        <div className="ff"><Label className="fl">Clock In</Label><Input className="fi" type="datetime-local" value={tc.clockIn} onChange={e => setTc(p => ({ ...p, clockIn: e.target.value }))} aria-label="Clock in time" /></div>
+                        <div className="ff"><Label className="fl">Clock Out</Label><Input className="fi" type="datetime-local" value={tc.clockOut} onChange={e => setTc(p => ({ ...p, clockOut: e.target.value }))} aria-label="Clock out time" /></div>
+                        <div className="ff"><Label className="fl">Hourly Rate ($)</Label><Input className="fi" type="number" value={tc.hourlyRate} onChange={e => setTc(p => ({ ...p, hourlyRate: parseFloat(e.target.value) || 0 }))} aria-label="Hourly rate" /></div>
                     </div>
                     <button className="calc-btn" disabled={!tc.employeeId || tcMutation.isPending}
                         onClick={() => tcMutation.mutate(tc)} aria-label="Calculate overtime">

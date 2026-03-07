@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Package, Search, Box } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Label } from "@/components/ui/label";
 
 interface LpnContent {
     id: string;
@@ -133,7 +134,7 @@ export const PackingStation: React.FC = () => {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium">Warehouse ID (Temp)</label>
+                            <Label className="text-sm font-medium">Warehouse ID (Temp)</Label>
                             <Input
                                 value={warehouseIdInput}
                                 onChange={(e) => setWarehouseIdInput(e.target.value)}
@@ -142,7 +143,7 @@ export const PackingStation: React.FC = () => {
                         </div>
                         <div className="flex gap-2">
                             <div className="flex-1">
-                                <label className="text-sm font-medium">LPN #</label>
+                                <Label className="text-sm font-medium">LPN #</Label>
                                 <Input
                                     value={lpnInput}
                                     onChange={(e) => setLpnInput(e.target.value)}
@@ -157,7 +158,7 @@ export const PackingStation: React.FC = () => {
 
                         <div className="pt-4 border-t space-y-4">
                             <div>
-                                <label className="text-sm font-medium">Item ID / SKU</label>
+                                <Label className="text-sm font-medium">Item ID / SKU</Label>
                                 <Input
                                     value={itemInput}
                                     onChange={(e) => setItemInput(e.target.value)}
@@ -165,7 +166,7 @@ export const PackingStation: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Quantity</label>
+                                <Label className="text-sm font-medium">Quantity</Label>
                                 <Input
                                     type="number"
                                     value={qtyInput}

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { JournalLineRuleTable } from "@/components/sla/JournalLineRuleTable";
 import { Settings, ShieldCheck, Database, GitBranch, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 
 interface EventClass {
     id: string;
@@ -100,7 +101,7 @@ export default function SlaRules() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-muted-foreground uppercase">Event Class</label>
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase">Event Class</Label>
                                     <Select value={selectedClassId} onValueChange={setSelectedClassId}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Event Class" />

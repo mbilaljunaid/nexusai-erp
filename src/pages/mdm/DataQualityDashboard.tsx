@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, AlertTriangle, CheckCircle, Database, FileSearch } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function DataQualityDashboard() {
@@ -37,7 +38,7 @@ export default function DataQualityDashboard() {
                     <CardContent>
                         <div className="flex items-center justify-between">
                             <div className="text-3xl font-bold">
-                                {stats?.recordsManaged?.toLocaleString() || 0}
+                                {formatNumber(stats?.recordsManaged) || 0}
                             </div>
                             <Database className="w-8 h-8 text-muted-foreground" />
                         </div>

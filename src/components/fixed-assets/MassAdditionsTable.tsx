@@ -23,6 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { formatNumber } from '@/lib/formatters';
 
 const postMassAdditionSchema = z.object({
     assetNumber: z.string().min(1, "Asset number is required"),
@@ -129,7 +130,7 @@ export function MassAdditionsTable() {
                                 <TableCell>{item.vendorName}</TableCell>
                                 <TableCell>{formatDate(item.date)}</TableCell>
                                 <TableCell className="text-right font-medium text-blue-600">
-                                    ${Number(item.amount).toLocaleString()}
+                                    ${formatNumber(Number(item.amount))}
                                 </TableCell>
                                 <TableCell>
                                     <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800">

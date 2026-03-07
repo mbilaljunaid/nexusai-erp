@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, FileEdit } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 interface ChangeRequest {
@@ -188,9 +189,9 @@ export default function ChangeRequestWorkbench() {
                                             {/* Comments */}
                                             {selectedRequest.status === "PENDING" && (
                                                 <div>
-                                                    <label className="block text-sm font-medium mb-2">
+                                                    <Label className="block text-sm font-medium mb-2">
                                                         Review Comments
-                                                    </label>
+                                                    </Label>
                                                     <Textarea
                                                         value={reviewComments}
                                                         onChange={(e) => setReviewComments(e.target.value)}

@@ -18,6 +18,7 @@ import { SettlementExecutionModal } from "@/components/netting/SettlementExecuti
 import { NettingAgreementWizard } from "@/components/netting/NettingAgreementWizard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function NettingWorkbench() {
@@ -113,7 +114,7 @@ export default function NettingWorkbench() {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Party A (Provider/Receiver)</label>
+                                    <Label className="text-sm font-medium">Party A (Provider/Receiver)</Label>
                                     <Select value={orgId1} onValueChange={setOrgId1}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select Organization" />
@@ -126,7 +127,7 @@ export default function NettingWorkbench() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Party B (Provider/Receiver)</label>
+                                    <Label className="text-sm font-medium">Party B (Provider/Receiver)</Label>
                                     <Select value={orgId2} onValueChange={setOrgId2}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select Organization" />
@@ -139,7 +140,7 @@ export default function NettingWorkbench() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Currency</label>
+                                    <Label className="text-sm font-medium">Currency</Label>
                                     <Select value={currency} onValueChange={setCurrency}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select Currency" />

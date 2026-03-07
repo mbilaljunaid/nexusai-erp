@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { formatNumber } from '@/lib/formatters';
 
 export function ApMetricCards() {
     const { data: invoices, isLoading: isLoadingInvoices } = useQuery({
@@ -53,7 +54,7 @@ export function ApMetricCards() {
         },
         {
             title: "Projected Outflow",
-            value: `$${cashOutflow.toLocaleString()}`,
+            value: `$${formatNumber(cashOutflow)}`,
             subtext: "Next 30 Days",
             icon: DollarSign,
             color: "text-emerald-600",

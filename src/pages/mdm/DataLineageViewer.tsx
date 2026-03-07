@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { GitBranch, Database, FileText, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function DataLineageViewer() {
@@ -43,7 +44,7 @@ export default function DataLineageViewer() {
 
             <div className="grid grid-cols-4 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Entity Type</label>
+                    <Label className="text-sm font-medium">Entity Type</Label>
                     <Select value={entityType} onValueChange={setEntityType}>
                         <SelectTrigger>
                             <SelectValue />
@@ -57,7 +58,7 @@ export default function DataLineageViewer() {
                     </Select>
                 </div>
                 <div>
-                    <label className="text-sm font-medium">Record ID</label>
+                    <Label className="text-sm font-medium">Record ID</Label>
                     <Input
                         value={recordId}
                         onChange={(e) => setRecordId(e.target.value)}
@@ -65,7 +66,7 @@ export default function DataLineageViewer() {
                     />
                 </div>
                 <div>
-                    <label className="text-sm font-medium">View Type</label>
+                    <Label className="text-sm font-medium">View Type</Label>
                     <Select value={viewType} onValueChange={(v: any) => setViewType(v)}>
                         <SelectTrigger>
                             <SelectValue />

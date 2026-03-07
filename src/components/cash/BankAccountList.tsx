@@ -16,6 +16,7 @@ import { RevaluationDialog } from "./RevaluationDialog";
 import { BankAccountDialog } from "./BankAccountDialog";
 import { StatementDrilldownSheet } from "./StatementDrilldownSheet";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export function BankAccountList() {
     const { legalEntityId } = useEnterpriseStore();
@@ -56,7 +57,7 @@ export function BankAccountList() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold tracking-tight">
-                            ${position?.totalBalance?.toLocaleString(undefined, { minimumFractionDigits: 2 }) ?? "0.00"}
+                            ${formatNumber(position?.totalBalance?, 2) ?? "0.00"}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1 text-green-600 flex items-center">
                             <ArrowUpRight className="h-3 w-3 mr-1" />
@@ -112,7 +113,7 @@ export function BankAccountList() {
                                 <span className="text-muted-foreground text-xs uppercase tracking-wider">Available Balance</span>
                                 <div className="text-2xl font-bold flex items-baseline">
                                     <span className="text-sm mr-1 text-muted-foreground">{account.currency}</span>
-                                    {Number(account.currentBalance).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {formatNumber(Number(account.currentBalance), 2)}
                                 </div>
                             </div>
 

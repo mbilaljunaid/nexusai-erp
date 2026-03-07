@@ -289,11 +289,11 @@ export default function BenefitsProgramSetup() {
                                             <div className="space-y-4">
                                                 <div className="flex items-center space-x-2">
                                                     <Checkbox id="default" defaultChecked />
-                                                    <label htmlFor="default" className="text-sm font-medium leading-none">Treat as Default Enrollment Program</label>
+                                                    <Label htmlFor="default" className="text-sm font-medium leading-none">Treat as Default Enrollment Program</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <Checkbox id="waive" defaultChecked />
-                                                    <label htmlFor="waive" className="text-sm font-medium leading-none">Allow Waiving Program (Opt-Out)</label>
+                                                    <Label htmlFor="waive" className="text-sm font-medium leading-none">Allow Waiving Program (Opt-Out)</Label>
                                                 </div>
                                                 <div className="space-y-2 pt-2">
                                                     <Label>Program Year Cycle</Label>

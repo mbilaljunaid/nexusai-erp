@@ -10,6 +10,7 @@ import { addDays, format, startOfWeek, endOfWeek } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export default function PlanningBoard() {
     const { toast } = useToast();
@@ -100,9 +101,9 @@ export default function PlanningBoard() {
                             onCheckedChange={(checked: boolean) => setShowForecast(checked)}
                             className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                         />
-                        <label htmlFor="showForecast" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        <Label htmlFor="showForecast" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                             Show PM Forecast
-                        </label>
+                        </Label>
                     </div>
                 </div>
 

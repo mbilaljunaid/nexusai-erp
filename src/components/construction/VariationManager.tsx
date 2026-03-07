@@ -20,6 +20,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, CheckCircle, XCircle, AlertCircle, Clock } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 interface Variation {
     id: string;
@@ -187,7 +188,7 @@ export default function VariationManager({ contractId }: VariationManagerProps) 
                                         <div className="text-xs text-muted-foreground truncate max-w-48">{v.description}</div>
                                     </TableCell>
                                     <TableCell className="text-right font-mono">
-                                        ${Number(v.amount).toLocaleString()}
+                                        ${formatNumber(Number(v.amount))}
                                     </TableCell>
                                     <TableCell className="text-center">{v.scheduleImpactDays}d</TableCell>
                                     <TableCell>{getStatusBadge(v.status)}</TableCell>

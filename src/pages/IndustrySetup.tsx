@@ -282,7 +282,7 @@ export default function IndustrySetup() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Select Tenant</label>
+              <Label className="block text-sm font-medium mb-2">Select Tenant</Label>
               <Select value={selectedTenant} onValueChange={setSelectedTenant}>
                 <SelectTrigger data-testid="select-tenant">
                   <SelectValue placeholder="Choose a tenant..." />
@@ -298,7 +298,7 @@ export default function IndustrySetup() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Select Industry</label>
+              <Label className="block text-sm font-medium mb-2">Select Industry</Label>
               <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
                 <SelectTrigger data-testid="select-industry">
                   <SelectValue placeholder="Choose an industry..." />

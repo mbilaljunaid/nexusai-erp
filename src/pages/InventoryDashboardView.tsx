@@ -10,6 +10,7 @@ import { AnalyticsChart } from '@/components/AnalyticsChart';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatNumber } from '@/lib/formatters';
 
 const InventoryDashboard = () => {
   // Mock Data (Simulating API Responses)
@@ -104,7 +105,7 @@ const InventoryDashboard = () => {
             <TrendingUp className="h-6 w-6" />
           </div>
           <div>
-            <div className="text-2xl font-bold">${stats?.totalValuation.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${formatNumber(stats?.totalValuation)}</div>
             <p className="text-xs text-muted-foreground">+5% from last month</p>
           </div>
         </div>

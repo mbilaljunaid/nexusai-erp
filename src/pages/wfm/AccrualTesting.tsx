@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -124,7 +125,7 @@ export default function AccrualTesting() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Leave Type</label>
+                            <Label className="text-sm font-medium">Leave Type</Label>
                             <Select value={accrualForm.leaveType} onValueChange={v => setAccrualForm({ ...accrualForm, leaveType: v })}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -137,7 +138,7 @@ export default function AccrualTesting() {
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Hours to Add</label>
+                            <Label className="text-sm font-medium">Hours to Add</Label>
                             <Input
                                 type="number"
                                 value={accrualForm.hours}

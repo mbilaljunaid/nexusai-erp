@@ -6,7 +6,7 @@ import { CheckCircle, Clock, AlertTriangle, XCircle, FileText, ChevronUp, Chevro
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { formatNumber } from "@/lib/formatters";
+import { formatNumber } from '@/lib/formatters';
 
 interface Certification {
     id: string;
@@ -143,7 +143,7 @@ export default function AccountCertPortal() {
                     </div>
                     <div className="kpi-card">
                         <div className="kpi-value kpi-red">
-                            ${formatNumber(totalVariance)}
+                            ${formatNumber(totalVariance, 0)}
                         </div>
                         <div className="kpi-label">Total Variance</div>
                     </div>

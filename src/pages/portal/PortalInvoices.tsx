@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { FileText, Download, CreditCard, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function PortalInvoices() {
@@ -61,7 +62,7 @@ export default function PortalInvoices() {
 
                             <div className="flex items-center gap-6">
                                 <div className="text-right">
-                                    <div className="text-xl font-bold text-slate-900 dark:text-slate-200">${Number(inv.totalAmount).toLocaleString()}</div>
+                                    <div className="text-xl font-bold text-slate-900 dark:text-slate-200">${formatNumber(Number(inv.totalAmount))}</div>
                                     <Badge variant={inv.status === "Paid" ? "default" : inv.status === "Overdue" ? "destructive" : "secondary"}>
                                         {inv.status}
                                     </Badge>

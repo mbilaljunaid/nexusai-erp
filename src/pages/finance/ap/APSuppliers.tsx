@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { formatNumber } from '@/lib/formatters';
 
 export default function APSuppliers() {
     const [page, setPage] = useState(1);
@@ -66,7 +67,7 @@ export default function APSuppliers() {
         {
             header: "Outstanding Balance",
             id: "totalBalance", width: "150px",
-            cell: (row) => <span className="font-semibold text-primary">${parseFloat(row.totalBalance || 0).toLocaleString()}</span>
+            cell: (row) => <span className="font-semibold text-primary">${formatNumber(parseFloat(row.totalBalance || 0))}</span>
         },
         {
             header: "Status",

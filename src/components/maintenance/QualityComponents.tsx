@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FileWarning, CheckSquare, Plus, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 // --- Permits Section ---
 export function PermitsSection({ workOrderId }: { workOrderId: string }) {
@@ -61,7 +62,7 @@ export function PermitsSection({ workOrderId }: { workOrderId: string }) {
                 <DialogContent>
                     <DialogHeader><DialogTitle>Generate Safety Permit</DialogTitle></DialogHeader>
                     <div className="space-y-4 py-4">
-                        <label className="text-sm font-medium">Permit Type</label>
+                        <Label className="text-sm font-medium">Permit Type</Label>
                         <Select value={permitType} onValueChange={setPermitType}>
                             <SelectTrigger><SelectValue /></SelectTrigger>
                             <SelectContent>
@@ -179,16 +180,16 @@ export function InspectionsSection({ workOrderId }: { workOrderId: string }) {
                     <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
                         {activeInspection?.definition?.questions?.map((q: any) => (
                             <div key={q.id} className="space-y-2 pb-2 border-b">
-                                <label className="text-sm font-medium">{q.text}</label>
+                                <Label className="text-sm font-medium">{q.text}</Label>
                                 {q.type === "YES_NO" && (
                                     <RadioGroup className="flex gap-4">
                                         <div className="flex items-center gap-2">
                                             <RadioGroupItem value="yes" id={`${q.id}-yes`} />
-                                            <label htmlFor={`${q.id}-yes`} className="text-sm">Yes</label>
+                                            <Label htmlFor={`${q.id}-yes`} className="text-sm">Yes</Label>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <RadioGroupItem value="no" id={`${q.id}-no`} />
-                                            <label htmlFor={`${q.id}-no`} className="text-sm">No</label>
+                                            <Label htmlFor={`${q.id}-no`} className="text-sm">No</Label>
                                         </div>
                                     </RadioGroup>
                                 )}

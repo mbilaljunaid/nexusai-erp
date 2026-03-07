@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, AlertCircle, CheckCircle2, TrendingUp } from "lucide-react";
 import { buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { formatNumber } from '@/lib/formatters';
 
 export function ArMetricCards({ buId }: { buId?: string }) {
     const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
@@ -37,7 +38,7 @@ export function ArMetricCards({ buId }: { buId?: string }) {
     const cards = [
         {
             title: "Total Outstanding",
-            value: `$${metrics.totalOutstanding.toLocaleString()}`,
+            value: `$${formatNumber(metrics.totalOutstanding)}`,
             icon: DollarSign,
             color: "text-emerald-600",
             bg: "bg-emerald-500/10",
@@ -45,7 +46,7 @@ export function ArMetricCards({ buId }: { buId?: string }) {
         },
         {
             title: "Overdue Amount",
-            value: `$${metrics.overdue.toLocaleString()}`,
+            value: `$${formatNumber(metrics.overdue)}`,
             icon: AlertCircle,
             color: "text-rose-600",
             bg: "bg-rose-500/10",
@@ -53,7 +54,7 @@ export function ArMetricCards({ buId }: { buId?: string }) {
         },
         {
             title: "Collected (MTD)",
-            value: `$${metrics.paidThisMonth.toLocaleString()}`,
+            value: `$${formatNumber(metrics.paidThisMonth)}`,
             icon: CheckCircle2,
             color: "text-blue-600",
             bg: "bg-blue-500/10",

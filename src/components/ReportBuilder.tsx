@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ReportSpreadsheet } from "./ReportSpreadsheet";
+import { Label } from "@/components/ui/label";
 
 interface ReportBuilderProps {
   module: string;
@@ -177,7 +178,7 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
 
               {templates.length > 0 && (
                 <div>
-                  <label className="text-sm font-medium">Select Template</label>
+                  <Label className="text-sm font-medium">Select Template</Label>
                   <div className="grid gap-2 mt-2">
                     {templates.map((t: any) => (
                       <Card
@@ -204,7 +205,7 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
               )}
 
               <div>
-                <label className="text-sm font-medium">Report Columns</label>
+                <Label className="text-sm font-medium">Report Columns</Label>
                 <div className="space-y-2 mt-2 max-h-60 overflow-y-auto">
                   {fields.map((field) => (
                     <div

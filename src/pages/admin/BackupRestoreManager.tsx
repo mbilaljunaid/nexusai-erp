@@ -6,6 +6,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
+import { formatNumber } from '@/lib/formatters';
 
 interface RestorePoint {
     id: string;
@@ -108,7 +109,7 @@ export default function BackupRestoreManager() {
         { id: "timestamp", header: "Timestamp", width: 200, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{formatDateTime(item.timestamp)}</span> },
         { id: "type", header: "Type", width: 150, cell: (item) => <span className="text-sm capitalize">{item.type}</span> },
         { id: "dataSize", header: "Size", width: 120, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{item.dataSize}</span> },
-        { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{item.itemCount.toLocaleString()}</span> },
+        { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{formatNumber(item.itemCount)}</span> },
         { id: "status", header: "Status", width: 150, cell: (item) => <StatusBadge status={item.status} /> },
         { id: "lastVerified", header: "Last Verified", width: 200, cell: (item) => <span className="text-sm text-gray-500">{item.lastVerified ? formatDateTime(item.lastVerified) : 'Never'}</span> },
         {

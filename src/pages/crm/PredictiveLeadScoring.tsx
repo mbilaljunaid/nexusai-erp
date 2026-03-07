@@ -10,6 +10,7 @@ import { TrendingUp, Target, Star, Users, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 export default function PredictiveLeadScoring() {
     const [filterStatus, setFilterStatus] = useState("ALL");
@@ -83,7 +84,7 @@ export default function PredictiveLeadScoring() {
 
             <div className="grid grid-cols-3 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Status Filter</label>
+                    <Label className="text-sm font-medium">Status Filter</Label>
                     <Select value={filterStatus} onValueChange={setFilterStatus}>
                         <SelectTrigger>
                             <SelectValue />
@@ -97,7 +98,7 @@ export default function PredictiveLeadScoring() {
                     </Select>
                 </div>
                 <div>
-                    <label className="text-sm font-medium">Min Score</label>
+                    <Label className="text-sm font-medium">Min Score</Label>
                     <Input
                         type="number"
                         value={minScore}

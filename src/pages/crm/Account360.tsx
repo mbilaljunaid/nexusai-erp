@@ -18,6 +18,7 @@ import {
     TableRow
 } from "@/components/ui/table";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function Account360() {
     const params = useParams() as { id?: string };
@@ -201,11 +202,11 @@ export default function Account360() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {opportunities.map(opp => (
+                                        {formatNumber(opportunities.map(opp => (
                                             <TableRow key={opp.id}>
                                                 <TableCell className="font-medium">{opp.name}</TableCell>
                                                 <TableCell><Badge variant="outline">{opp.stage}</Badge></TableCell>
-                                                <TableCell>${Number(opp.amount).toLocaleString()}</TableCell>
+                                                <TableCell>${Number(opp.amount))}</TableCell>
                                                 <TableCell>{formatDate(opp.closeDate!)}</TableCell>
                                             </TableRow>
                                         ))}

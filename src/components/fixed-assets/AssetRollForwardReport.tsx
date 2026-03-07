@@ -12,6 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Loader2, FileBarChart } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface RollForwardRow {
     major_category: string;
@@ -35,7 +37,7 @@ export function AssetRollForwardReport() {
         <div className="space-y-4">
             <div className="flex gap-4 items-end bg-muted/30 p-4 rounded-lg">
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Asset Book</label>
+                    <Label className="text-sm font-medium">Asset Book</Label>
                     <Select value={bookId} onValueChange={setBookId}>
                         <SelectTrigger className="w-48">
                             <SelectValue placeholder="Select Book" />
@@ -48,7 +50,7 @@ export function AssetRollForwardReport() {
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Period</label>
+                    <Label className="text-sm font-medium">Period</Label>
                     <Select value={period} onValueChange={setPeriod}>
                         <SelectTrigger className="w-36">
                             <SelectValue placeholder="Select Period" />
@@ -91,7 +93,7 @@ export function AssetRollForwardReport() {
                                             {row.major_category} {row.minor_category ? `/ ${row.minor_category}` : ''}
                                         </TableCell>
                                         <TableCell className="text-right text-green-600">
-                                            +${Number(row.additions).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            +${formatNumber(Number(row.additions), 2)}
                                         </TableCell>
                                         <TableCell className="text-right text-red-600">
                                             -${Math.abs(Number(row.retirements)).toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -100,7 +102,7 @@ export function AssetRollForwardReport() {
                                             -${Math.abs(Number(row.depr_expense)).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                         </TableCell>
                                         <TableCell className="text-right font-bold text-blue-600">
-                                            ${Number(row.net_movement).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            ${formatNumber(Number(row.net_movement), 2)}
                                         </TableCell>
                                     </TableRow>
                                 ))}

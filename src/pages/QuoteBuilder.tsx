@@ -6,6 +6,7 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { Plus, FileText, DollarSign, Send, CheckCircle2, BarChart3 } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { formatNumber } from '@/lib/formatters';
 
 interface Quote {
   id: string;
@@ -60,7 +61,7 @@ export default function QuoteBuilder() {
       {(activeNav === "all" || activeNav === "sent") && (
         <div className="space-y-3">
           {((activeNav === "sent" ? (quotes || []).filter(q => q.status === "sent") : quotes) || []).map((quote: any) => (
-            <Card key={quote.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">Quote for {quote.opportunityId}</p><p className="text-sm text-muted-foreground">Valid until: {quote.validUntil}</p></div><Badge>${parseFloat(quote.total).toLocaleString()}</Badge></div></CardContent></Card>
+            <Card key={quote.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">Quote for {quote.opportunityId}</p><p className="text-sm text-muted-foreground">Valid until: {quote.validUntil}</p></div><Badge>${formatNumber(parseFloat(quote.total))}</Badge></div></CardContent></Card>
           ))}
         </div>
       )}

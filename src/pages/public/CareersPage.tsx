@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { useToast } from "@/hooks/use-toast";
 import { Search, Briefcase, MapPin, Upload } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function CareersPage() {
@@ -118,20 +119,20 @@ export default function CareersPage() {
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">First Name</label>
+                <Label className="text-sm font-medium">First Name</Label>
                 <Input value={formData.firstName} onChange={e => setFormData({ ...formData, firstName: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Last Name</label>
+                <Label className="text-sm font-medium">Last Name</Label>
                 <Input value={formData.lastName} onChange={e => setFormData({ ...formData, lastName: e.target.value })} />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Email</label>
+              <Label className="text-sm font-medium">Email</Label>
               <Input value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Resume Content (Paste Text)</label>
+              <Label className="text-sm font-medium">Resume Content (Paste Text)</Label>
               <Textarea
                 placeholder="Paste resume text here (Skills, Experience, etc.) - Our AI will parse this!"
                 className="h-40"

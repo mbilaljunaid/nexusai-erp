@@ -6,6 +6,7 @@ import { PageSkeleton } from "@/components/shared/PageSkeleton";
 import { Loader2, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatNumber } from '@/lib/formatters';
 
 export default function LeaseDisclosureReport() {
     // In a real app, this would be a dedicated aggregated endpoint.
@@ -56,7 +57,7 @@ export default function LeaseDisclosureReport() {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm">Total Lease Liability</CardTitle></CardHeader>
-                    <CardContent><div className="text-3xl font-bold text-slate-700">${totalLiability.toLocaleString()}</div></CardContent>
+                    <CardContent><div className="text-3xl font-bold text-slate-700">${formatNumber(totalLiability)}</div></CardContent>
                 </Card>
             </div>
 
@@ -77,7 +78,7 @@ export default function LeaseDisclosureReport() {
                             {maturityAnalysis.map((row) => (
                                 <TableRow key={row.year}>
                                     <TableCell className="font-medium">{row.year}</TableCell>
-                                    <TableCell className="text-right">${row.amount.toLocaleString()}</TableCell>
+                                    <TableCell className="text-right">${formatNumber(row.amount)}</TableCell>
                                 </TableRow>
                             ))}
                             <TableRow className="bg-slate-500/10 font-bold">

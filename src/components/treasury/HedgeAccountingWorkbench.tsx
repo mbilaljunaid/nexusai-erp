@@ -40,6 +40,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { TreasuryFxDeal } from "@/types/erp-types";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface HedgeRelationship {
     id: string;
@@ -175,7 +176,7 @@ export function HedgeAccountingWorkbench() {
                 <div className="flex flex-col">
                     <span className="font-mono font-bold text-primary">{item.dealNumber}</span>
                     <span className="text-[10px] text-muted-foreground">
-                        {item.buyCurrency}/{item.sellCurrency} • ${Number(item.buyAmount || 0).toLocaleString()}
+                        {item.buyCurrency}/{item.sellCurrency} • ${formatNumber(Number(item.buyAmount || 0))}
                     </span>
                 </div>
             ),
@@ -335,7 +336,7 @@ export function HedgeAccountingWorkbench() {
                                                 .map((deal) => (
                                                     <SelectItem key={deal.id} value={deal.id}>
                                                         {deal.dealNumber} - {deal.buyCurrency}/{deal.sellCurrency} ($
-                                                        {Number(deal.buyAmount).toLocaleString()})
+                                                        {formatNumber(Number(deal.buyAmount))})
                                                     </SelectItem>
                                                 ))}
                                         </SelectContent>
@@ -501,7 +502,7 @@ export function HedgeAccountingWorkbench() {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className="font-bold text-sm">
-                                            ${Number(deal.buyAmount).toLocaleString()}
+                                            ${formatNumber(Number(deal.buyAmount))}
                                         </span>
                                         <Button
                                             size="sm"

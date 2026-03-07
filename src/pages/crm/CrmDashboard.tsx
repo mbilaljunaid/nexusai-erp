@@ -9,6 +9,7 @@ import {
     MessageSquare, Ship, Zap, CheckCircle, AlertCircle, Clock
 } from "lucide-react";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { formatNumber } from '@/lib/formatters';
 
 export default function CrmDashboard() {
     const [buId, setBuId] = useState<string | undefined>();
@@ -29,7 +30,7 @@ export default function CrmDashboard() {
     const avgDealSize = pipelineStats?.avgDealSize ?? null;
 
     const fmt = (n: number | null, prefix = "") =>
-        n == null ? "—" : `${prefix}${n >= 1_000_000 ? (n / 1_000_000).toFixed(1) + "M" : n >= 1_000 ? (n / 1_000).toFixed(0) + "K" : n.toLocaleString()}`;
+        n == null ? "—" : `${prefix}${n >= 1_000_000 ? (n / 1_000_000).toFixed(1) + "M" : n >= 1_000 ? (n / 1_000).toFixed(0) + "K" : formatNumber(n)}`;
 
     return (
         <StandardPage
@@ -84,7 +85,7 @@ export default function CrmDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-3xl font-bold text-purple-900 dark:text-purple-200">
-                                {activeLeads != null ? activeLeads.toLocaleString() : "342"}
+                                {activeLeads != null ? formatNumber(activeLeads) : "342"}
                             </div>
                             <div className="text-xs text-purple-700 mt-1 flex items-center gap-1">
                                 <Users className="h-3 w-3" />

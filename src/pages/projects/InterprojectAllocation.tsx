@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { formatNumber } from '@/lib/formatters';
 
 interface AllocationRule {
     id?: number;
@@ -204,7 +205,7 @@ export default function InterprojectAllocation() {
             cell: (row) => (
                 <div className="px-2 text-right text-muted-foreground">
                     {preview?.allocations?.find((a: any) => a.projectId === row.projectId)
-                        ? `$${preview.allocations.find((a: any) => a.projectId === row.projectId).amount.toLocaleString()}`
+                        ? `$${formatNumber(preview.allocations.find((a: any) => a.projectId === row.projectId)?.amount)}`
                         : "-"}
                 </div>
             )
@@ -420,7 +421,7 @@ export default function InterprojectAllocation() {
                                         {calculateTotalPercentage().toFixed(2)}%
                                     </div>
                                     <div className="font-bold text-right w-36">
-                                        {preview?.totalAmount ? `$${preview.totalAmount.toLocaleString()}` : "-"}
+                                        {preview?.totalAmount ? `$${formatNumber(preview.totalAmount)}` : "-"}
                                     </div>
                                 </div>
                             </div>
@@ -437,13 +438,13 @@ export default function InterprojectAllocation() {
                                     <Card>
                                         <CardContent className="pt-4">
                                             <div className="text-sm text-muted-foreground">Source Amount</div>
-                                            <div className="text-2xl font-bold mt-1">${preview.sourceAmount?.toLocaleString()}</div>
+                                            <div className="text-2xl font-bold mt-1">${formatNumber(preview.sourceAmount)}</div>
                                         </CardContent>
                                     </Card>
                                     <Card>
                                         <CardContent className="pt-4">
                                             <div className="text-sm text-muted-foreground">Total Allocated</div>
-                                            <div className="text-2xl font-bold mt-1">${preview.totalAmount?.toLocaleString()}</div>
+                                            <div className="text-2xl font-bold mt-1">${formatNumber(preview.totalAmount)}</div>
                                         </CardContent>
                                     </Card>
                                     <Card>

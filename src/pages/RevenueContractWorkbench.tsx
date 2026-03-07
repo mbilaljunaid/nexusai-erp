@@ -1,5 +1,5 @@
 import { formatDate } from "@/lib/dateUtils";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
@@ -41,7 +41,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { formatCurrency } from "@/lib/formatters";
 
 export default function RevenueContractWorkbench() {
     const [page, setPage] = useState(1);
@@ -69,7 +68,7 @@ export default function RevenueContractWorkbench() {
     const contracts = result?.data || [];
     const meta = result?.meta;
 
-    const columns: SpreadsheetColumn<RevenueContract>[] = useMemo(() => [
+    const columns: SpreadsheetColumn<RevenueContract>[] = [
         {
             header: "Contract #",
             id: "contractNumber", width: "150px",
@@ -126,12 +125,12 @@ export default function RevenueContractWorkbench() {
         {
             header: "Total Price",
             id: "totalTransactionPrice", width: "150px",
-            cell: (item) => formatCurrency(Number(item.totalTransactionPrice || 0))
+            cell: (item) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(item.totalTransactionPrice || 0))
         },
         {
             header: "Allocated",
             id: "totalAllocatedPrice", width: "150px",
-            cell: (item) => formatCurrency(Number(item.totalAllocatedPrice || 0))
+            cell: (item) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(item.totalAllocatedPrice || 0))
         },
         {
             header: "Created",
@@ -149,7 +148,7 @@ export default function RevenueContractWorkbench() {
                 </Link>
             )
         }
-    ], []);
+    ];
 
     if (isLoading) {
         return <div className="p-8 space-y-4"><Skeleton className="h-12 w-full" /><Skeleton className="h-64 w-full" /></div>;
@@ -233,7 +232,7 @@ export default function RevenueContractWorkbench() {
                         <DollarSign className="h-4 w-4 text-blue-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{formatCurrency(totalValue)}</div>
+                        <div className="text-2xl font-bold">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalValue)}</div>
                     </CardContent>
                 </Card>
                 <Card>

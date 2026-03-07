@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { PropertyManagementService, LeaseManagementService, ListingPortalService } from '@/services/realEstateService';
 import { Building, FileText, Globe, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function RealEstateDashboard() {
@@ -163,7 +164,7 @@ export default function RealEstateDashboard() {
                                                 {listing.properties?.city}, {listing.properties?.state}
                                             </div>
                                             <div className="text-lg font-bold mt-2">
-                                                ${listing.list_price?.toLocaleString()}/mo
+                                                ${formatNumber(listing.list_price)}/mo
                                             </div>
                                             <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
                                                 <span>{listing.property_units?.bedrooms} bed</span>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { formatCurrency } from '@/lib/formatters';
 
 interface BankAccount {
     id: string;
@@ -28,7 +29,7 @@ export default function BankAccountSideSheet({ open, account, onClose }: Props) 
                     <p><strong>Name:</strong> {account.name}</p>
                     <p><strong>IBAN:</strong> {account.iban}</p>
                     <p><strong>SWIFT:</strong> {account.swiftCode}</p>
-                    <p><strong>Balance:</strong> {account.balance.toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</p>
+                    <p><strong>Balance:</strong> {formatCurrency(account.balance)}</p>
                 </div>
             </DialogContent>
         </Dialog>

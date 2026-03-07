@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, ArrowUpDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { formatNumber } from '@/lib/formatters';
 
 interface JournalGridProps {
     data: any[];
@@ -67,7 +68,7 @@ export function JournalGrid({ data, onRowClick, loading }: JournalGridProps) {
                                 </TableCell>
                                 <TableCell className="max-w-72 truncate">{journal.description}</TableCell>
                                 <TableCell className="text-right font-mono">
-                                    {Number(journal.totalDebit).toLocaleString(undefined, { minimumFractionDigits: 2 })} {journal.currencyCode}
+                                    {formatNumber(Number(journal.totalDebit), 2)} {journal.currencyCode}
                                 </TableCell>
                                 <TableCell className="text-center">
                                     <Badge variant={

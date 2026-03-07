@@ -15,6 +15,7 @@ interface InvoiceSideSheetProps {
 }
 
 import { ViewAccountingModal } from "../sla/ViewAccountingModal";
+import { formatNumber } from '@/lib/formatters';
 
 export function InvoiceSideSheet({ invoiceId, onClose }: InvoiceSideSheetProps) {
     const { toast } = useToast();
@@ -74,7 +75,7 @@ export function InvoiceSideSheet({ invoiceId, onClose }: InvoiceSideSheetProps) 
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
                                 <span className="text-muted-foreground">Amount:</span>
-                                <div className="font-medium text-lg">${Number(invoice?.amount).toLocaleString()}</div>
+                                <div className="font-medium text-lg">${formatNumber(Number(invoice?.amount))}</div>
                             </div>
                             <div>
                                 <span className="text-muted-foreground">Currency:</span>
@@ -117,11 +118,11 @@ export function InvoiceSideSheet({ invoiceId, onClose }: InvoiceSideSheetProps) 
                             {/* Summary View (Mock) - Full details in Modal */}
                             <div className="flex justify-between">
                                 <span>Dr. Expense Distribution</span>
-                                <span>${Number(invoice?.amount).toLocaleString()}</span>
+                                <span>${formatNumber(Number(invoice?.amount))}</span>
                             </div>
                             <div className="flex justify-between text-muted-foreground">
                                 <span>Cr. Liability</span>
-                                <span>${Number(invoice?.amount).toLocaleString()}</span>
+                                <span>${formatNumber(Number(invoice?.amount))}</span>
                             </div>
                         </div>
                     </div>

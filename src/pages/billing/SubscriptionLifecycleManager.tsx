@@ -59,6 +59,7 @@ import { SubscriptionDetailSheet } from "./components/SubscriptionDetailSheet";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface SubscriptionFormData {
     contractNumber: string;
@@ -238,7 +239,7 @@ export default function SubscriptionLifecycleManager() {
                         <DollarSign className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-primary">${metrics.totalMrr.toLocaleString()}</div>
+                        <div className="text-2xl font-bold text-primary">${formatNumber(metrics.totalMrr)}</div>
                         <p className="text-xs text-muted-foreground">Monthly recurring revenue</p>
                     </CardContent>
                 </Card>
@@ -249,7 +250,7 @@ export default function SubscriptionLifecycleManager() {
                         <TrendingUp className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${metrics.avgContractValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
+                        <div className="text-2xl font-bold">${formatNumber(metrics.avgContractValue, 0)}</div>
                         <p className="text-xs text-muted-foreground">Per customer</p>
                     </CardContent>
                 </Card>
@@ -308,7 +309,7 @@ export default function SubscriptionLifecycleManager() {
                             },
                             {
                                 id: "totalMrr", header: "MRR", width: "150px",
-                                cell: (item: any) => <div className="p-2">${parseFloat(item.totalMrr || "0").toLocaleString()}</div>,
+                                cell: (item: any) => <div className="p-2">${formatNumber(parseFloat(item.totalMrr || "0"))}</div>,
                             },
                             {
                                 id: "startDate", header: "Start Date", width: "150px",

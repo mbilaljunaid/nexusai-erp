@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function PredictiveMaintenance() {
@@ -39,7 +40,7 @@ export default function PredictiveMaintenance() {
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Select Asset</label>
+                    <Label className="text-sm font-medium">Select Asset</Label>
                     <Select value={assetId} onValueChange={setAssetId}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select asset" />

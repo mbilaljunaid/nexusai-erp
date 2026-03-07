@@ -27,6 +27,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 export default function GuidedJourneyWorkerTransfer() {
     const { toast } = useToast();
@@ -247,7 +248,7 @@ export default function GuidedJourneyWorkerTransfer() {
                                     </div>
                                     <div className="flex-1 border-l pl-4 border-emerald-200 dark:border-emerald-800">
                                         <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">New Proposed Salary</p>
-                                        <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1">${parseInt(newSalary).toLocaleString()} <span className="text-sm font-normal text-muted-foreground">/ {salaryBasis}</span></p>
+                                        <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1">${formatNumber(parseInt(newSalary))} <span className="text-sm font-normal text-muted-foreground">/ {salaryBasis}</span></p>
                                         <p className="text-xs text-emerald-600 mt-1 font-medium">+8.6% Increase</p>
                                     </div>
                                 </div>
@@ -344,7 +345,7 @@ export default function GuidedJourneyWorkerTransfer() {
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm text-muted-foreground">Base Salary</span>
                                                 <div className="text-right">
-                                                    <span className="text-sm font-medium block">${parseInt(newSalary).toLocaleString()} / {salaryBasis}</span>
+                                                    <span className="text-sm font-medium block">${formatNumber(parseInt(newSalary))} / {salaryBasis}</span>
                                                     <span className="text-[10px] text-emerald-600 font-medium">Was: $115,000</span>
                                                 </div>
                                             </div>

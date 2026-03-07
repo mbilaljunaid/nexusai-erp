@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Plus, Edit, Trash2, CheckCircle2, AlertCircle, Clock } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface Subscription {
   id: string;
@@ -158,7 +160,7 @@ export default function SubscriptionManagement() {
         </Card>
         <Card className="p-4">
           <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-          <p className="text-2xl font-bold text-blue-600">${stats.revenue.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-blue-600">${formatNumber(stats.revenue)}</p>
         </Card>
         <Card className="p-4">
           <p className="text-sm text-muted-foreground">Expiring Soon</p>
@@ -170,7 +172,7 @@ export default function SubscriptionManagement() {
       <Card className="p-4">
         <div className="flex gap-4 flex-wrap">
           <div>
-            <label className="block text-sm font-medium mb-2">Status</label>
+            <Label className="block text-sm font-medium mb-2">Status</Label>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-32" data-testid="select-status-filter">
                 <SelectValue />
@@ -185,7 +187,7 @@ export default function SubscriptionManagement() {
             </Select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Plan</label>
+            <Label className="block text-sm font-medium mb-2">Plan</Label>
             <Select value={filterPlan} onValueChange={setFilterPlan}>
               <SelectTrigger className="w-32" data-testid="select-plan-filter">
                 <SelectValue />
@@ -245,7 +247,7 @@ export default function SubscriptionManagement() {
                 <div className="space-y-3">
                   <div className="bg-muted/50 p-3 rounded">
                     <p className="text-xs text-muted-foreground mb-1">Amount</p>
-                    <p className="text-2xl font-bold">${sub.amount.toLocaleString()}</p>
+                    <p className="text-2xl font-bold">${formatNumber(sub.amount)}</p>
                     <p className="text-xs text-muted-foreground mt-2">per month</p>
                   </div>
 

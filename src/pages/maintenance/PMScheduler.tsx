@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format, addDays, isBefore, isAfter } from "date-fns";
+import { Label } from "@/components/ui/label";
 
 // Using PMDefinition type from service layer (imported as PMDefinitionType above)
 
@@ -193,7 +194,7 @@ export function PMScheduler() {
                 <CardContent className="pt-6">
                     <div className="grid md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label className="text-sm font-medium mb-2 block">Start Date</label>
+                            <Label className="text-sm font-medium mb-2 block">Start Date</Label>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button variant="outline" className="w-full justify-start">
@@ -212,7 +213,7 @@ export function PMScheduler() {
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium mb-2 block">Period (Days)</label>
+                            <Label className="text-sm font-medium mb-2 block">Period (Days)</Label>
                             <Input
                                 type="number"
                                 value={generatePeriod}

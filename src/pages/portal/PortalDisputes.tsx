@@ -23,6 +23,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatNumber } from '@/lib/formatters';
 
 const disputeSchema = z.object({
     invoiceId: z.string().min(1, "Invoice ID is required"),
@@ -151,7 +152,7 @@ export default function PortalDisputes() {
                                                 <SelectContent>
                                                     {invoices?.filter((inv: any) => inv.status !== "Paid").map((inv: any) => (
                                                         <SelectItem key={inv.id} value={inv.id}>
-                                                            {inv.invoiceNumber} - ${Number(inv.totalAmount).toLocaleString()} ({inv.status})
+                                                            {inv.invoiceNumber} - ${formatNumber(Number(inv.totalAmount))} ({inv.status})
                                                         </SelectItem>
                                                     ))}
                                                 </SelectContent>
@@ -269,7 +270,7 @@ export default function PortalDisputes() {
                                     <div className="flex-1">
                                         <h3 className="font-semibold">{dispute.disputeReason}</h3>
                                         <p className="text-sm text-muted-foreground">
-                                            Invoice: {dispute.invoiceNumber} • ${Number(dispute.disputedAmount || 0).toLocaleString()}
+                                            Invoice: {dispute.invoiceNumber} • ${formatNumber(Number(dispute.disputedAmount || 0))}
                                         </p>
                                         <p className="text-xs text-muted-foreground mt-1">
                                             Created {format(new Date(dispute.createdAt), "MMM dd, yyyy")} • {dispute.attachmentCount} attachment(s)

@@ -27,6 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VariationManager from "@/components/construction/VariationManager";
 import { StandardTable, Column } from "../tables/StandardTable";
 import type { CostCode } from "@/types/erp-types";
+import { formatNumber } from '@/lib/formatters';
 
 interface Project {
     id: string;
@@ -311,8 +312,8 @@ export default function ConstructionContractWorkbench() {
                                         </div>
                                         <p className="text-sm font-medium truncate mb-2">{contract.subject}</p>
                                         <div className="text-xs text-muted-foreground flex justify-between">
-                                            <span>Orig: ${Number(contract.originalAmount).toLocaleString()}</span>
-                                            <span className="font-bold text-primary">Rev: ${Number(contract.revisedAmount).toLocaleString()}</span>
+                                            <span>Orig: ${formatNumber(Number(contract.originalAmount))}</span>
+                                            <span className="font-bold text-primary">Rev: ${formatNumber(Number(contract.revisedAmount))}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -346,7 +347,7 @@ export default function ConstructionContractWorkbench() {
                                     <div className="text-right">
                                         <p className="text-sm text-muted-foreground">Current Contract Value</p>
                                         <p className="text-2xl font-bold font-mono">
-                                            ${Number(activeContract.revisedAmount).toLocaleString()}
+                                            ${formatNumber(Number(activeContract.revisedAmount))}
                                         </p>
                                     </div>
                                 </div>
@@ -469,7 +470,7 @@ export default function ConstructionContractWorkbench() {
                                                 {
                                                     header: "Scheduled Value",
                                                     accessorKey: "scheduledValue",
-                                                    cell: (item: ContractLine) => `$${Number(item.scheduledValue).toLocaleString()}`,
+                                                    cell: (item: ContractLine) => `$${formatNumber(Number(item.scheduledValue))}`,
                                                     sortable: true
                                                 },
                                                 {

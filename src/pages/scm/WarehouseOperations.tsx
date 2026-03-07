@@ -14,6 +14,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { DashboardWidget } from "@/components/layout/StandardDashboard";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { formatNumber } from '@/lib/formatters';
 
 export default function WarehouseOperations() {
     const { toast } = useToast();
@@ -92,7 +93,7 @@ export default function WarehouseOperations() {
             )
         },
         { id: "orderNumber", header: "Order Number", width: "150px", cell: (row) => <span className="font-mono text-blue-400">{row.orderNumber}</span> },
-        { id: "totalAmount", header: "Total Amount", width: "150px", cell: (row) => <span className="font-medium">${Number(row.totalAmount).toLocaleString()}</span> },
+        { id: "totalAmount", header: "Total Amount", width: "150px", cell: (row) => <span className="font-medium">${formatNumber(Number(row.totalAmount))}</span> },
         { id: "priority", header: "Priority", width: "150px", cell: (row) => <StatusBadge status="high" /> },
         { id: "status", header: "Status", width: "150px", cell: (row) => <Badge className="bg-slate-800 text-slate-300 border-slate-700">{row.status}</Badge> }
     ];

@@ -12,6 +12,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatNumber } from '@/lib/formatters';
 
 export default function ProjectBudgetManagement() {
   const { toast } = useToast();
@@ -78,19 +79,19 @@ export default function ProjectBudgetManagement() {
           <Card className="p-3">
             <CardContent className="pt-0">
               <p className="text-xs text-muted-foreground">Total Allocated</p>
-              <p className="text-2xl font-bold">${totalAllocated.toLocaleString()}</p>
+              <p className="text-2xl font-bold">${formatNumber(totalAllocated)}</p>
             </CardContent>
           </Card>
           <Card className="p-3">
             <CardContent className="pt-0">
               <p className="text-xs text-muted-foreground">Total Spent</p>
-              <p className="text-2xl font-bold">${totalActual.toLocaleString()}</p>
+              <p className="text-2xl font-bold">${formatNumber(totalActual)}</p>
             </CardContent>
           </Card>
           <Card className="p-3">
             <CardContent className="pt-0">
               <p className="text-xs text-muted-foreground">Remaining</p>
-              <p className={cn(`text-2xl font-bold ${remaining >= 0 ? "text-green-600" : "text-red-600"}`)}>${remaining.toLocaleString()}</p>
+              <p className={cn(`text-2xl font-bold ${remaining >= 0 ? "text-green-600" : "text-red-600"}`)}>${formatNumber(remaining)}</p>
             </CardContent>
           </Card>
           <Card className="p-3">

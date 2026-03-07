@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { formatNumber } from '@/lib/formatters';
 
 interface PurchaseOrder {
     id: number | string;
@@ -66,7 +67,7 @@ export default function PurchaseOrderList() {
         {
             id: "totalAmount", width: "150px",
             header: "Amount",
-            cell: (item) => <span>${Number(item.totalAmount).toLocaleString()}</span>
+            cell: (item) => <span>${formatNumber(Number(item.totalAmount))}</span>
         },
         {
             id: "status", width: "150px",

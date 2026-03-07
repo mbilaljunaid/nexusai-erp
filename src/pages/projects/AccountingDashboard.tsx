@@ -5,6 +5,7 @@ import { DollarSign, PieChart, TrendingUp, AlertTriangle, ArrowUpRight, ArrowDow
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function AccountingDashboard() {
@@ -54,7 +55,7 @@ export default function AccountingDashboard() {
                         <Activity className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${summary.cipBalance.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(summary.cipBalance)}</div>
                         <p className="text-xs text-muted-foreground">+2.5% from last month</p>
                     </CardContent>
                 </Card>
@@ -64,7 +65,7 @@ export default function AccountingDashboard() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${summary.revenueRecognized.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(summary.revenueRecognized)}</div>
                         <p className="text-xs text-muted-foreground">Inception to Date</p>
                     </CardContent>
                 </Card>

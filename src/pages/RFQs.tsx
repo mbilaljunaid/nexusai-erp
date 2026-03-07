@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, FileText } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { Label } from "@/components/ui/label";
 
 export default function RFQs() {
   const [activeNav, setActiveNav] = useState("list");
@@ -87,15 +88,15 @@ export default function RFQs() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-semibold mb-1 block">RFQ Number</label>
+              <Label className="text-sm font-semibold mb-1 block">RFQ Number</Label>
               <Input value={newRfq.rfqNumber} onChange={(e) => setNewRfq({ ...newRfq, rfqNumber: e.target.value })} placeholder="RFQ-2024-001" />
             </div>
             <div>
-              <label className="text-sm font-semibold mb-1 block">Title</label>
+              <Label className="text-sm font-semibold mb-1 block">Title</Label>
               <Input value={newRfq.title} onChange={(e) => setNewRfq({ ...newRfq, title: e.target.value })} placeholder="Office Equipment" />
             </div>
             <div>
-              <label className="text-sm font-semibold mb-1 block">Description</label>
+              <Label className="text-sm font-semibold mb-1 block">Description</Label>
               <Textarea rows={4} value={newRfq.description} onChange={(e) => setNewRfq({ ...newRfq, description: e.target.value })} placeholder="Detailed requirements..." />
             </div>
             <Button disabled={!newRfq.rfqNumber || !newRfq.title} className="w-full">

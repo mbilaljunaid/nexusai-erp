@@ -121,29 +121,29 @@ export function EmploymentProfile({ personId }: EmploymentProfileProps) {
                         </CardHeader>
                         <CardContent className="grid grid-cols-2 gap-y-4 gap-x-8">
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Job</label>
+                                <Label className="text-sm font-medium text-muted-foreground">Job</Label>
                                 <p className="text-base font-medium">{displayAssignment?.jobId || "N/A"}</p>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Department</label>
+                                <Label className="text-sm font-medium text-muted-foreground">Department</Label>
                                 <p className="text-base font-medium">{displayAssignment?.departmentId || "N/A"}</p>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Legal Employer</label>
+                                <Label className="text-sm font-medium text-muted-foreground">Legal Employer</Label>
                                 <p className="text-base font-medium">{relationship?.legalEmployerId || "N/A"}</p>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Worker Type</label>
+                                <Label className="text-sm font-medium text-muted-foreground">Worker Type</Label>
                                 <p className="text-base font-medium">{relationship?.workerType}</p>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Effective Start Date</label>
+                                <Label className="text-sm font-medium text-muted-foreground">Effective Start Date</Label>
                                 <p className="text-base font-medium">
                                     {displayAssignment?.effectiveStartDate ? format(new Date(displayAssignment.effectiveStartDate), "PP") : "-"}
                                 </p>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Location</label>
+                                <Label className="text-sm font-medium text-muted-foreground">Location</Label>
                                 <p className="text-base font-medium">{displayAssignment?.locationId || "Remote"}</p>
                             </div>
                         </CardContent>
@@ -159,7 +159,7 @@ export function EmploymentProfile({ personId }: EmploymentProfileProps) {
                         <CardContent>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm text-muted-foreground">Date of Birth</label>
+                                    <Label className="text-sm text-muted-foreground">Date of Birth</Label>
                                     <p>
                                         {person.dateOfBirth === '1900-01-01' ? (
                                             <span className="flex items-center gap-1 text-xs text-muted-foreground italic">
@@ -171,7 +171,7 @@ export function EmploymentProfile({ personId }: EmploymentProfileProps) {
                                     </p>
                                 </div>
                                 <div>
-                                    <label className="text-sm text-muted-foreground">Phone</label>
+                                    <Label className="text-sm text-muted-foreground">Phone</Label>
                                     <p>{person.phone || "N/A"}</p>
                                 </div>
                             </div>
@@ -426,12 +426,12 @@ function AllocatedChecklist({ allocation }: { allocation: any }) {
                             checked={task.status === 'DONE'}
                             onCheckedChange={() => toggleTask(task.id, task.status)}
                         />
-                        <label
+                        <Label
                             htmlFor={task.id}
                             className={cn(`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${task.status === 'DONE' ? 'line-through text-muted-foreground' : ''}`)}
                         >
                             {task.taskName}
-                        </label>
+                        </Label>
                     </div>
                 ))}
             </div>

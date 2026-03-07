@@ -8,6 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface BGCOrder {
     id: string; applicant_id: string; candidate_name: string; package_type: string;
@@ -118,7 +119,7 @@ export default function BackgroundCheckStatus() {
                     <div className="text-[13px] font-bold mb-2.5">Initiate Background Check</div>
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-0.5">
-                            <label className="text-[10px] font-semibold">Package</label>
+                            <Label className="text-[10px] font-semibold">Package</Label>
                             <Select value={form.packageType} onValueChange={v => setForm(p => ({ ...p, packageType: v }))}>
                                 <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Package"><SelectValue /></SelectTrigger>
                                 <SelectContent>{['BASIC', 'STANDARD', 'COMPREHENSIVE', 'EXECUTIVE', 'INTERNATIONAL'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
@@ -126,7 +127,7 @@ export default function BackgroundCheckStatus() {
                         </div>
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Email', 'email']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-semibold">{l}</label>
+                                <Label className="text-[10px] font-semibold">{l}</Label>
                                 <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="h-8 text-[11px]" aria-label={l} />
                             </div>
                         ))}

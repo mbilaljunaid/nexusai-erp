@@ -6,6 +6,7 @@ import { FileText, CheckCircle2, XCircle, PenLine, Eye } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface EsigDoc {
     id: string; document_type: string; applicant_id: string; candidate_name: string;
@@ -133,7 +134,7 @@ export default function OfferLetterSign() {
                     <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Create New Document</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Document Type</label>
+                            <Label style={{ fontSize: 10, fontWeight: 700 }}>Document Type</Label>
                             <Select value={form.documentType} onValueChange={v => setForm(p => ({ ...p, documentType: v }))}>
                                 <SelectTrigger style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Document type"><SelectValue /></SelectTrigger>
                                 <SelectContent>{['OFFER_LETTER', 'NDA', 'EMPLOYMENT_AGREEMENT', 'POLICY_ACK', 'BACKGROUND_CONSENT'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
@@ -141,12 +142,12 @@ export default function OfferLetterSign() {
                         </div>
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Candidate Email', 'email'], ['expiresInDays', 'Expires In (days)', 'number']].map(([k, l, t]) => (
                             <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>{l}</label>
+                                <Label style={{ fontSize: 10, fontWeight: 700 }}>{l}</Label>
                                 <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="h-9 text-xs" aria-label={l} />
                             </div>
                         ))}
                         <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <label style={{ fontSize: 10, fontWeight: 700 }}>Document Content (HTML)</label>
+                            <Label style={{ fontSize: 10, fontWeight: 700 }}>Document Content (HTML)</Label>
                             <Textarea rows={4} value={form.htmlContent} onChange={e => setForm(p => ({ ...p, htmlContent: e.target.value }))} placeholder="<p>Dear Candidate, we are delighted to offer you...</p>" className="font-mono text-xs resize-y" aria-label="Document content" />
                         </div>
                     </div>
@@ -170,7 +171,7 @@ export default function OfferLetterSign() {
                         <>
                             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>Sign Document</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
-                                <label style={{ fontSize: 10, fontWeight: 700 }}>Document ID</label>
+                                <Label style={{ fontSize: 10, fontWeight: 700 }}>Document ID</Label>
                                 <Input value={signDocId} onChange={e => setSignDocId(e.target.value)} placeholder="Paste document ID or use Send → Sign from list" className="h-9 text-xs" aria-label="Document ID" />
                             </div>
                             <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 6, color: '#374151', display: 'flex', alignItems: 'center', gap: 4 }}>

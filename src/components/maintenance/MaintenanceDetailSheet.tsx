@@ -18,6 +18,7 @@ import { PermitsSection, InspectionsSection } from "./QualityComponents";
 
 
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 interface Props {
     workOrderId: string | null;
@@ -467,7 +468,7 @@ function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, o
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-3">
                     <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Problem</label>
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Problem</Label>
                         <Select
                             value={workOrder.failureProblemId || ""}
                             onValueChange={(val) => updateFailureMutation.mutate({ problemId: val, causeId: null, remedyId: null })}
@@ -484,7 +485,7 @@ function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, o
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Cause</label>
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Cause</Label>
                         <Select
                             value={workOrder.failureCauseId || ""}
                             onValueChange={(val) => updateFailureMutation.mutate({ causeId: val, remedyId: null })}
@@ -502,7 +503,7 @@ function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, o
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Remedy</label>
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Failure Remedy</Label>
                         <Select
                             value={workOrder.failureRemedyId || ""}
                             onValueChange={(val) => updateFailureMutation.mutate({ remedyId: val })}

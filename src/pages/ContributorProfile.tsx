@@ -13,6 +13,7 @@ import {
   Shield, TrendingUp, Clock, CheckCircle, ExternalLink
 } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { formatNumber } from '@/lib/formatters';
 
 interface ContributorProfileData {
   user: {
@@ -171,7 +172,7 @@ export default function ContributorProfile() {
               {trust && (
                 <div className="flex items-center gap-3 text-sm">
                   <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                  <span>{trust.total_reputation.toLocaleString()} reputation</span>
+                  <span>{formatNumber(trust.total_reputation)} reputation</span>
                 </div>
               )}
             </div>
@@ -252,7 +253,7 @@ export default function ContributorProfile() {
                           </div>
                           <div className="text-right">
                             <div className="text-lg font-bold text-primary">
-                              ${parseFloat(service.price).toLocaleString()}
+                              ${formatNumber(parseFloat(service.price))}
                             </div>
                             <StatusBadge status={service.status} />
                           </div>
@@ -298,7 +299,7 @@ export default function ContributorProfile() {
                           </div>
                           <div className="text-right">
                             <div className="text-lg font-bold text-primary">
-                              ${parseFloat(job.budget_min).toLocaleString()} - ${parseFloat(job.budget_max).toLocaleString()}
+                              ${formatNumber(parseFloat(job.budget_min))} - ${formatNumber(parseFloat(job.budget_max))}
                             </div>
                             <StatusBadge status={job.status} />
                           </div>

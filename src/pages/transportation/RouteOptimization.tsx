@@ -9,6 +9,8 @@ import { MapPin, Navigation, TrendingDown, Clock, Download } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function RouteOptimization() {
@@ -98,7 +100,7 @@ export default function RouteOptimization() {
 
             <div className="grid grid-cols-3 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Region</label>
+                    <Label className="text-sm font-medium">Region</Label>
                     <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select region" />
@@ -113,7 +115,7 @@ export default function RouteOptimization() {
                     </Select>
                 </div>
                 <div>
-                    <label className="text-sm font-medium">Optimization Mode</label>
+                    <Label className="text-sm font-medium">Optimization Mode</Label>
                     <Select value={optimizationMode} onValueChange={(v: any) => setOptimizationMode(v)}>
                         <SelectTrigger>
                             <SelectValue />
@@ -139,7 +141,7 @@ export default function RouteOptimization() {
                         <Card>
                             <CardContent className="pt-6">
                                 <div className="text-sm text-muted-foreground">Total Miles</div>
-                                <div className="text-3xl font-bold mt-1">{routes.totalMiles?.toLocaleString()}</div>
+                                <div className="text-3xl font-bold mt-1">{formatNumber(routes.totalMiles)}</div>
                             </CardContent>
                         </Card>
                         <Card>

@@ -39,6 +39,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Label } from "@/components/ui/label";
 
 export default function ExpensesDetail() {
   const [, params] = useRoute("/finance/expenses/:id");
@@ -558,11 +559,11 @@ export default function ExpensesDetail() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Date</label>
+              <Label className="text-sm font-medium mb-2 block">Date</Label>
               <DatePicker onChange={() => { }} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Category</label>
+              <Label className="text-sm font-medium mb-2 block">Category</Label>
               <Select value={lineCategory} onValueChange={setLineCategory}>
                 <SelectTrigger id="lineCategory" aria-label="Expense Category">
                   <SelectValue />
@@ -579,15 +580,15 @@ export default function ExpensesDetail() {
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Merchant</label>
+              <Label className="text-sm font-medium mb-2 block">Merchant</Label>
               <Input type="text" id="lineMerchant" placeholder="e.g., Hotel Grand" />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Amount</label>
+              <Label className="text-sm font-medium mb-2 block">Amount</Label>
               <Input type="number" id="lineAmount" placeholder="0.00" step="0.01" />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Description</label>
+              <Label className="text-sm font-medium mb-2 block">Description</Label>
               <Textarea id="lineDescription" placeholder="Purpose of expense..." />
             </div>
           </div>
@@ -670,7 +671,7 @@ export default function ExpensesDetail() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">File Name</label>
+              <Label className="text-sm font-medium mb-2 block">File Name</Label>
               <Input
                 type="text"
                 id="receiptFileName"
@@ -678,7 +679,7 @@ export default function ExpensesDetail() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">File URL (Optional)</label>
+              <Label className="text-sm font-medium mb-2 block">File URL (Optional)</Label>
               <Input
                 type="text"
                 id="receiptFileUrl"
@@ -686,7 +687,7 @@ export default function ExpensesDetail() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Link to Expense Line (Optional)</label>
+              <Label className="text-sm font-medium mb-2 block">Link to Expense Line (Optional)</Label>
               <Select value={receiptLineId} onValueChange={setReceiptLineId}>
                 <SelectTrigger id="receiptLineId" aria-label="Link to Expense Line">
                   <SelectValue placeholder="No line selected" />

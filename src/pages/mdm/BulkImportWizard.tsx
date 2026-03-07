@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Upload, FileText, CheckCircle, AlertTriangle, ArrowRight } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 import {
     Select,
@@ -142,9 +143,9 @@ export default function BulkImportWizard() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label htmlFor="importType" className="block text-sm font-medium mb-2">
+                            <Label htmlFor="importType" className="block text-sm font-medium mb-2">
                                 Import Type
-                            </label>
+                            </Label>
                             <Select value={importType} onValueChange={(v: "party" | "item") => setImportType(v)}>
                                 <SelectTrigger id="importType">
                                     <SelectValue />
@@ -165,11 +166,11 @@ export default function BulkImportWizard() {
                                 className="hidden"
                                 id="file-upload"
                             />
-                            <label htmlFor="file-upload" className="cursor-pointer">
+                            <Label htmlFor="file-upload" className="cursor-pointer">
                                 <Button variant="outline" asChild>
                                     <span>Choose CSV File</span>
                                 </Button>
-                            </label>
+                            </Label>
                             <p className="text-sm text-muted-foreground mt-2">
                                 Upload a CSV file with master data
                             </p>
@@ -195,7 +196,7 @@ export default function BulkImportWizard() {
                         <div className="space-y-3">
                             {["name", "email", "phone", "address"].map((field) => (
                                 <div key={field} className="grid grid-cols-2 gap-4 items-center">
-                                    <label className="text-sm font-medium capitalize">{field}</label>
+                                    <Label className="text-sm font-medium capitalize">{field}</Label>
                                     <Select
                                         value={fieldMapping[field] || ""}
                                         onValueChange={(v) => setFieldMapping({ ...fieldMapping, [field]: v })}

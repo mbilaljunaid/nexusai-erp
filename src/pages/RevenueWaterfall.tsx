@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 export default function RevenueWaterfall() {
     const [year, setYear] = useState<string>(new Date().getFullYear().toString());
@@ -80,7 +81,7 @@ export default function RevenueWaterfall() {
                                     />
                                     <Tooltip
                                         contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                                        formatter={(value: number) => [`$${formatNumber(value)}`, 'Revenue']}
                                         cursor={{ fill: '#F1F5F9' }}
                                     />
                                     <Legend />

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, DollarSign, Clock, FileText } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface BillingRule {
     id: string;
@@ -112,7 +113,7 @@ export default function BillingRulesManager() {
             width: "25%",
             cell: (item: any) => (
                 <div className="p-2">
-                    {item.ruleType === "FIXED_PRICE" && `$${Number(item.contractAmount).toLocaleString()}`}
+                    {item.ruleType === "FIXED_PRICE" && `$${formatNumber(Number(item.contractAmount))}`}
                     {item.ruleType === "COST_PLUS" && `Markup: ${item.markupPercentage}%`}
                     {item.ruleType === "TM" && "As Incurred"}
                 </div>

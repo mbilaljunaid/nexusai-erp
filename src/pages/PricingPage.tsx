@@ -34,6 +34,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Label } from "@/components/ui/label";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -441,13 +442,13 @@ export default function PricingPage() {
                     </FormItem>
                   )} />
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Services Needed (select all that apply)</label>
+                    <Label className="text-sm font-medium mb-2 block">Services Needed (select all that apply)</Label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {serviceOptions.map((service) => {
                         const IconComponent = service.icon;
                         const isChecked = selectedServices.includes(service.id);
                         return (
-                          <label
+                          <Label
                             key={service.id}
                             htmlFor={service.id}
                             className="flex items-center space-x-3 p-3 rounded-lg border hover-elevate cursor-pointer"
@@ -462,7 +463,7 @@ export default function PricingPage() {
                             <span className="text-sm flex-1">
                               {service.label}
                             </span>
-                          </label>
+                          </Label>
                         );
                       })}
                     </div>

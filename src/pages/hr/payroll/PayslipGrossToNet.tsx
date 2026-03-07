@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
-import { formatCurrency } from "@/lib/formatters";
 
 // Mock Data
 const payslipData = {
@@ -97,7 +96,7 @@ export default function PayslipGrossToNet() {
         { name: 'Post-Tax Deds', value: payslipData.summary.postTaxDeductions, color: COLORS[3] },
     ];
 
-    const formatCurrency = (val: number) => formatCurrency(val);
+    const formatCurrency = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
 
     const BreakdownRow = ({ item, isSubRow = false }: { item: any; isSubRow?: boolean }) => (
         <div className={cn(`grid grid-cols-12 gap-4 py-2 text-sm ${isSubRow ? 'text-muted-foreground pl-6' : 'font-medium'}`)}>

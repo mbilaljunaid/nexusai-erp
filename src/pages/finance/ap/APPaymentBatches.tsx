@@ -16,6 +16,7 @@ import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useLocation } from "wouter";
 import { downloadFile } from "@/lib/utils";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 function useActiveBu() {
     return useMemo(() => ({
@@ -126,7 +127,7 @@ export default function APPaymentBatches() {
         {
             header: "Total Amount",
             id: "totalAmount", width: "150px",
-            cell: (row) => `$${parseFloat(row.totalAmount || 0).toLocaleString()}`
+            cell: (row) => `$${formatNumber(parseFloat(row.totalAmount || 0))}`
         },
         {
             header: "Status",

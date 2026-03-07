@@ -7,6 +7,8 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface ESGGoal { id: string; goal_code: string; goal_name: string; category: string; subcategory: string; unit: string; baseline_value: number; target_value: number; target_year: number; status: string; owner: string; }
 interface Actual { actual_value: number; period: string; data_source: string; }
@@ -42,10 +44,10 @@ export default function ESGPlanning() {
     const varianceColumns: SpreadsheetColumn<any>[] = [
         { id: "cost_center", header: "Cost Center", width: "150px", cell: (v: any) => <span className="font-semibold">{v.cost_center}</span> },
         { id: "gl_account", header: "GL Account", width: "150px", cell: (v: any) => <span className="font-mono text-[10px] text-gray-500">{v.gl_account}</span> },
-        { id: "budget", header: "Budget", width: "120px", cell: (v: any) => <span className="font-mono">${Number(v.budget_amount).toLocaleString()}</span> },
-        { id: "actual", header: "Actual", width: "120px", cell: (v: any) => <span className="font-mono">${Number(v.actual_amount).toLocaleString()}</span> },
-        { id: "committed", header: "Committed", width: "120px", cell: (v: any) => <span className="font-mono text-amber-600">${Number(v.committed_amount).toLocaleString()}</span> },
-        { id: "available", header: "Available", width: "120px", cell: (v: any) => <span className={cn(`font-mono font-bold ${Number(v.available) < 0 ? 'text-red-600' : 'text-emerald-600'}`)}>${Number(v.available).toLocaleString()}</span> },
+        { id: "budget", header: "Budget", width: "120px", cell: (v: any) => <span className="font-mono">${formatNumber(Number(v.budget_amount))}</span> },
+        { id: "actual", header: "Actual", width: "120px", cell: (v: any) => <span className="font-mono">${formatNumber(Number(v.actual_amount))}</span> },
+        { id: "committed", header: "Committed", width: "120px", cell: (v: any) => <span className="font-mono text-amber-600">${formatNumber(Number(v.committed_amount))}</span> },
+        { id: "available", header: "Available", width: "120px", cell: (v: any) => <span className={cn(`font-mono font-bold ${Number(v.available) < 0 ? 'text-red-600' : 'text-emerald-600'}`)}>${formatNumber(Number(v.available))}</span> },
         {
             id: "utilization", header: "Utilization", width: "150px", cell: (v: any) => {
                 const pct = Number(v.utilization_pct ?? 0);
@@ -109,12 +111,12 @@ export default function ESGPlanning() {
                             <div className="grid grid-cols-4 gap-2 mb-2">
                                 {[['Code', 'goalCode', 'text'], ['Name', 'goalName', 'text'], ['Unit', 'unit', 'text'], ['Owner', 'owner', 'text'], ['Baseline', 'baselineValue', 'number'], ['Target', 'targetValue', 'number'], ['Target Year', 'targetYear', 'number'], ['Subcategory', 'subcategory', 'text']].map(([lbl, key, type]) => (
                                     <div key={key} className="flex flex-col gap-0.5">
-                                        <label className="text-[10px] font-bold">{lbl}</label>
+                                        <Label className="text-[10px] font-bold">{lbl}</Label>
                                         <Input type={type} value={(goalForm as any)[key]} onChange={e => setGoalForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 border border-green-200 rounded-md text-[11px]" aria-label={lbl} />
                                     </div>
                                 ))}
                                 <div className="flex flex-col gap-0.5">
-                                    <label className="text-[10px] font-bold">Category</label>
+                                    <Label className="text-[10px] font-bold">Category</Label>
                                     <Select value={goalForm.category} onValueChange={v => setGoalForm(p => ({ ...p, category: v }))}>
                                         <SelectTrigger aria-label="Category" className="text-[11px]"><SelectValue /></SelectTrigger>
                                         <SelectContent>{['ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
@@ -183,7 +185,7 @@ export default function ESGPlanning() {
                                     <div className="text-[11px] font-bold mb-2">Record Actual</div>
                                     {[['Period', 'period', 'text'], ['Value', 'actualValue', 'number'], ['Source', 'dataSource', 'text']].map(([lbl, key, type]) => (
                                         <div key={key} className="mb-1.5">
-                                            <label className="text-[9px] font-bold block mb-0.5">{lbl}</label>
+                                            <Label className="text-[9px] font-bold block mb-0.5">{lbl}</Label>
                                             <Input type={type} value={(actualForm as any)[key]} onChange={e => setActualForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-green-200 rounded-[5px] text-[11px] box-border" aria-label={lbl} />
                                         </div>
                                     ))}

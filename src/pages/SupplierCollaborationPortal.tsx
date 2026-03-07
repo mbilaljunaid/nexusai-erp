@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SupplierOnboardingWorkbench from "@/components/procurement/SupplierOnboardingWorkbench";
 import ContractWorkbench from "@/components/procurement/ContractWorkbench";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { Label } from "@/components/ui/label";
 
 export default function SupplierCollaborationPortal() {
   const { toast } = useToast();
@@ -126,11 +127,11 @@ export default function SupplierCollaborationPortal() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-medium">Supplier Name</label>
+                    <Label className="text-xs font-medium">Supplier Name</Label>
                     <Input placeholder="Search supplier..." value={newInteraction.supplier} onChange={(e) => setNewInteraction({ ...newInteraction, supplier: e.target.value })} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-medium">Interaction Type</label>
+                    <Label className="text-xs font-medium">Interaction Type</Label>
                     <Select value={newInteraction.type} onValueChange={(v) => setNewInteraction({ ...newInteraction, type: v })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -142,7 +143,7 @@ export default function SupplierCollaborationPortal() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-medium">Reference Number</label>
+                    <Label className="text-xs font-medium">Reference Number</Label>
                     <Input placeholder="PO-XXXXX" value={newInteraction.referenceId} onChange={(e) => setNewInteraction({ ...newInteraction, referenceId: e.target.value })} />
                   </div>
                   <Button className="w-full" disabled={createMutation.isPending || !newInteraction.supplier} onClick={() => createMutation.mutate(newInteraction)}>

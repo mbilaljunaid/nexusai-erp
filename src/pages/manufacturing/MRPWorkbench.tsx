@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface MrpRecommendation {
     id: string;
@@ -116,7 +117,7 @@ export default function MRPWorkbench() {
             id: "suggestedQuantity",
             header: "Quantity",
             width: "150px",
-            cell: (row: any) => <div className="p-2 font-mono">{parseFloat(row.suggestedQuantity).toLocaleString()}</div>
+            cell: (row: any) => <div className="p-2 font-mono">{formatNumber(parseFloat(row.suggestedQuantity))}</div>
         },
         {
             id: "suggestedDate",

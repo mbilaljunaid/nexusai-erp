@@ -10,6 +10,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface RegEvent {
     id: string; title: string; regulation: string; jurisdiction: string;
@@ -188,12 +189,12 @@ export default function RegulatoryCalendar() {
                     <div className="form-title">New Regulatory Event</div>
                     <div className="form-grid">
                         <div className="form-group-full">
-                            <label className="form-label">Title</label>
+                            <Label className="form-label">Title</Label>
                             <Input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="form-input h-9 text-[13px]" aria-label="Title" />
                         </div>
                         {[['regulation', 'Regulation', REGULATIONS], ['eventType', 'Event Type', EVENT_TYPES], ['recurrence', 'Recurrence', ['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL']]].map(([k, l, opts]) => (
                             <div key={k as string} className="form-group">
-                                <label className="form-label">{l as string}</label>
+                                <Label className="form-label">{l as string}</Label>
                                 <Select value={(form as any)[k as string]} onValueChange={v => setForm(p => ({ ...p, [k as string]: v }))}>
                                     <SelectTrigger className="form-input" aria-label={l as string}><SelectValue /></SelectTrigger>
                                     <SelectContent>{(opts as string[]).map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
@@ -202,12 +203,12 @@ export default function RegulatoryCalendar() {
                         ))}
                         {[['jurisdiction', 'Jurisdiction', 'text'], ['dueDate', 'Due Date', 'date'], ['reminderDays', 'Remind (days before)', 'number']].map(([k, l, t]) => (
                             <div key={k as string} className="form-group">
-                                <label className="form-label">{l as string}</label>
+                                <Label className="form-label">{l as string}</Label>
                                 <Input type={t as string} value={(form as any)[k as string] as string} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="form-input h-9 text-[13px]" aria-label={l as string} />
                             </div>
                         ))}
                         <div className="form-group-full">
-                            <label className="form-label">Description</label>
+                            <Label className="form-label">Description</Label>
                             <Textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="form-textarea" aria-label="Description" />
                         </div>
                     </div>

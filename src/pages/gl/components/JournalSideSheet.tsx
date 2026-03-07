@@ -23,6 +23,7 @@ import {
     CheckCircle
 } from "lucide-react";
 import { format } from "date-fns";
+import { formatNumber } from '@/lib/formatters';
 import {
     Table,
     TableBody,
@@ -117,8 +118,8 @@ export function JournalSideSheet({ isOpen, onClose, journal }: JournalSideSheetP
                                                             <span className="text-[10px] text-slate-400 font-normal">{line.description}</span>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="text-right font-semibold text-slate-900 dark:text-slate-200">{line.enteredDr > 0 ? line.enteredDr.toLocaleString() : '-'}</TableCell>
-                                                    <TableCell className="text-right font-semibold text-slate-900 dark:text-slate-200">{line.enteredCr > 0 ? line.enteredCr.toLocaleString() : '-'}</TableCell>
+                                                    <TableCell className="text-right font-semibold text-slate-900 dark:text-slate-200">{line.enteredDr > 0 ? formatNumber(line.enteredDr) : '-'}</TableCell>
+                                                    <TableCell className="text-right font-semibold text-slate-900 dark:text-slate-200">{line.enteredCr > 0 ? formatNumber(line.enteredCr) : '-'}</TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>

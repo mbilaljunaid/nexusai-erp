@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { formatNumber } from '@/lib/formatters';
 
 export function ForecastSubmissionForm() {
   const { toast } = useToast();
@@ -115,10 +116,10 @@ export function ForecastSubmissionForm() {
             ].map((option) => (
               <div key={option.value} className={cn(`flex items-start gap-3 p-3 border rounded-lg hover:bg-muted transition-colors ${scenarioType === option.value ? 'border-primary' : 'border-border'}`)}>
                 <RadioGroupItem value={option.value} id={`scenario-${option.value}`} className="mt-1" />
-                <label htmlFor={`scenario-${option.value}`} className="cursor-pointer flex-1">
+                <Label htmlFor={`scenario-${option.value}`} className="cursor-pointer flex-1">
                   <p className="font-medium text-sm">{option.label}</p>
                   <p className="text-xs text-muted-foreground">{option.desc}</p>
-                </label>
+                </Label>
               </div>
             ))}
           </RadioGroup>
@@ -143,7 +144,7 @@ export function ForecastSubmissionForm() {
                     <Label htmlFor={key} className="font-medium text-sm">{quarter} 2025</Label>
                     <div className="text-xs">
                       <span className="text-muted-foreground">Previous forecast: </span>
-                      <span className="font-mono">${prevForecast[key].toLocaleString()}</span>
+                      <span className="font-mono">${formatNumber(prevForecast[key])}</span>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -207,10 +208,10 @@ export function ForecastSubmissionForm() {
             ].map((option) => (
               <div key={option.value} className={cn(`flex items-center gap-3 p-3 border rounded hover:bg-muted ${confidenceLevel === option.value ? 'border-primary' : 'border-border'}`)}>
                 <RadioGroupItem value={option.value} id={`confidence-${option.value}`} />
-                <label htmlFor={`confidence-${option.value}`} className="cursor-pointer flex-1">
+                <Label htmlFor={`confidence-${option.value}`} className="cursor-pointer flex-1">
                   <p className="font-medium text-sm">{option.label}</p>
                   <p className="text-xs text-muted-foreground">{option.desc}</p>
-                </label>
+                </Label>
               </div>
             ))}
           </RadioGroup>

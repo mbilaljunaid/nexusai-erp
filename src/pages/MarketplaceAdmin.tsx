@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { MarketplaceApp, MarketplaceDeveloper, MarketplacePayout, MarketplaceAuditLog } from "@/types/erp-types";
 import { format } from "date-fns";
+import { formatNumber } from '@/lib/formatters';
 
 interface AppReviewDialogProps {
   app: MarketplaceApp | null;
@@ -398,7 +399,7 @@ export default function MarketplaceAdmin() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{installCount.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{formatNumber(installCount)}</div>
           </CardContent>
         </Card>
         <Card>

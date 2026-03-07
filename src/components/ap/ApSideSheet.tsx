@@ -34,9 +34,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { formatCurrency } from "@/lib/formatters";
 import ApPrepayApplication from "./ApPrepayApplication";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface ApSideSheetProps {
     open: boolean;
@@ -183,17 +183,17 @@ export function ApSideSheet({
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-xs text-muted-foreground uppercase">Contact Email</label>
+                                        <Label className="text-xs text-muted-foreground uppercase">Contact Email</Label>
                                         <p className="text-sm font-medium">{supplier.contactEmail || "N/A"}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-xs text-muted-foreground uppercase">Parent Supplier</label>
+                                        <Label className="text-xs text-muted-foreground uppercase">Parent Supplier</Label>
                                         <p className="text-sm font-medium">{supplier.parentSupplierId ? `#${supplier.parentSupplierId}` : "None"}</p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="text-xs text-muted-foreground uppercase">Address (Primary)</label>
+                                    <Label className="text-xs text-muted-foreground uppercase">Address (Primary)</Label>
                                     <p className="text-sm text-muted-foreground">{supplier.address || "No address on file"}</p>
                                     <p className="text-xs text-amber-600 mt-1">See "Sites" for full locations.</p>
                                 </div>
@@ -206,7 +206,7 @@ export function ApSideSheet({
                                     <div className="space-y-1">
                                         <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Total Amount</span>
                                         <div className="text-2xl font-bold text-primary">
-                                            {formatCurrency(Number(invoice.invoiceAmount) || 0, invoice.invoiceCurrencyCode)}
+                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.invoiceAmount))}
                                         </div>
                                     </div>
                                     <Badge variant="outline" className={getStatusColor(invoice.paymentStatus || "UNPAID")}>
@@ -230,31 +230,31 @@ export function ApSideSheet({
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-xs text-muted-foreground uppercase">Due Date</label>
+                                        <Label className="text-xs text-muted-foreground uppercase">Due Date</Label>
                                         <p className="text-sm font-medium">
                                             {invoice.dueDate ? format(new Date(invoice.dueDate), "MMM dd, yyyy") : "N/A"}
                                         </p>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-xs text-muted-foreground uppercase">Payment Terms</label>
+                                        <Label className="text-xs text-muted-foreground uppercase">Payment Terms</Label>
                                         <p className="text-sm font-medium">{invoice.paymentTerms || "Net 30"}</p>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-xs text-muted-foreground uppercase">Tax Amount</label>
+                                        <Label className="text-xs text-muted-foreground uppercase">Tax Amount</Label>
                                         <p className="text-sm font-medium">
-                                            {formatCurrency(Number(invoice.taxAmount || 0), invoice.invoiceCurrencyCode)}
+                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.taxAmount || 0))}
                                         </p>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-xs text-muted-foreground uppercase text-amber-600">Withholding Tax</label>
+                                        <Label className="text-xs text-muted-foreground uppercase text-amber-600">Withholding Tax</Label>
                                         <p className="text-sm font-bold text-amber-600">
                                             {invoice.withholdingTaxAmount && Number(invoice.withholdingTaxAmount) > 0
-                                                ? formatCurrency(Number(invoice.withholdingTaxAmount, invoice.invoiceCurrencyCode))
+                                                ? new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.withholdingTaxAmount))
                                                 : "No WHT"}
                                         </p>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-xs text-muted-foreground uppercase">Accounting Status</label>
+                                        <Label className="text-xs text-muted-foreground uppercase">Accounting Status</Label>
                                         <Badge variant="secondary" className="font-normal">{invoice.accountingStatus}</Badge>
                                     </div>
                                 </div>
@@ -424,7 +424,7 @@ function InvoicePrepaymentsView({ invoiceId }: { invoiceId: number }) {
                             </div>
                             <div className="text-right flex items-center gap-4">
                                 <div className="space-y-1">
-                                    <span className="text-sm font-bold text-green-600">-${formatCurrency(parseFloat(app.amountApplied))}</span>
+                                    <span className="text-sm font-bold text-green-600">-${formatNumber(parseFloat(app.amountApplied))}</span>
                                     <Badge variant="outline" className="block text-[8px] h-4 mt-1">{app.status}</Badge>
                                 </div>
                                 {app.status === "APPLIED" && (
@@ -574,24 +574,24 @@ function InvoiceAccountingView({ invoiceId }: { invoiceId: number }) {
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <Table className="w-full text-[10px]">
-                                <TableHeader className="bg-muted/10 border-b">
-                                    <TableRow>
-                                        <TableHead className="p-2 text-left">Account Class</TableHead>
-                                        <TableHead className="p-2 text-right">Debit</TableHead>
-                                        <TableHead className="p-2 text-right">Credit</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
+                            <table className="w-full text-[10px]">
+                                <thead className="bg-muted/10 border-b">
+                                    <tr>
+                                        <th className="p-2 text-left">Account Class</th>
+                                        <th className="p-2 text-right">Debit</th>
+                                        <th className="p-2 text-right">Credit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {journal.lines?.map((line: any) => (
-                                        <TableRow key={line.id} className="border-b last:border-0 hover:bg-muted/5">
-                                            <TableCell className="p-2 font-medium">{line.accountingClass}</TableCell>
-                                            <TableCell className="p-2 text-right">{line.enteredDr ? Number(line.enteredDr).toFixed(2) : ""}</TableCell>
-                                            <TableCell className="p-2 text-right">{line.enteredCr ? Number(line.enteredCr).toFixed(2) : ""}</TableCell>
-                                        </TableRow>
+                                        <tr key={line.id} className="border-b last:border-0 hover:bg-muted/5">
+                                            <td className="p-2 font-medium">{line.accountingClass}</td>
+                                            <td className="p-2 text-right">{line.enteredDr ? Number(line.enteredDr).toFixed(2) : ""}</td>
+                                            <td className="p-2 text-right">{line.enteredCr ? Number(line.enteredCr).toFixed(2) : ""}</td>
+                                        </tr>
                                     ))}
-                                </TableBody>
-                            </Table>
+                                </tbody>
+                            </table>
                         </CardContent>
                     </Card>
                 ))

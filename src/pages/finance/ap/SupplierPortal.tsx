@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, CheckCircle2, Clock, Upload, Bell } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function SupplierPortal() {
     const [page, setPage] = useState(1);
@@ -38,7 +39,7 @@ export default function SupplierPortal() {
         {
             header: "Amount",
             id: "amount", width: "150px",
-            cell: (row) => <span className="font-semibold text-primary">${row.amount.toLocaleString()}</span>
+            cell: (row) => <span className="font-semibold text-primary">${formatNumber(row.amount)}</span>
         },
         {
             header: "Status",
@@ -58,7 +59,7 @@ export default function SupplierPortal() {
         {
             header: "Total Value",
             id: "amount", width: "150px",
-            cell: (row) => <span className="font-semibold">${row.amount.toLocaleString()}</span>
+            cell: (row) => <span className="font-semibold">${formatNumber(row.amount)}</span>
         },
         {
             header: "Status",

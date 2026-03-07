@@ -16,6 +16,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { ColumnDef } from "@tanstack/react-table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
 
 interface EnvironmentVariable {
   id: string;
@@ -177,7 +178,7 @@ export default function EnvironmentManagement() {
           <h2 className="text-xl font-semibold">Add Environment Variable</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Environment</label>
+              <Label className="block text-sm font-medium mb-2">Environment</Label>
               <Select value={selectedEnv} onValueChange={(v: any) => setSelectedEnv(v)}>
                 <SelectTrigger data-testid="select-environment">
                   <SelectValue />
@@ -190,7 +191,7 @@ export default function EnvironmentManagement() {
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Variable Name</label>
+              <Label className="block text-sm font-medium mb-2">Variable Name</Label>
               <Input
                 type="text"
                 value={newKey}
@@ -200,7 +201,7 @@ export default function EnvironmentManagement() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Value</label>
+              <Label className="block text-sm font-medium mb-2">Value</Label>
               <Input
                 type={isSecret ? "password" : "text"}
                 value={newValue}
@@ -210,14 +211,14 @@ export default function EnvironmentManagement() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="flex items-center gap-2 text-sm pt-8">
+              <Label className="flex items-center gap-2 text-sm pt-8">
                 <Checkbox
                   checked={isSecret}
                   onCheckedChange={(checked: boolean) => setIsSecret(checked)}
                   data-testid="checkbox-is-secret"
                 />
                 <span>Secret/Sensitive</span>
-              </label>
+              </Label>
               <Button
                 onClick={handleAddVariable}
                 disabled={!newKey || !newValue || loading}

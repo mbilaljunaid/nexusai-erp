@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Check, X, FileDiff } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function ChangeRequestInbox() {
     const { toast } = useToast();
@@ -127,7 +128,7 @@ export default function ChangeRequestInbox() {
 
                             {actionType === "REJECT" && (
                                 <div>
-                                    <label className="text-sm font-medium">Rejection Reason</label>
+                                    <Label className="text-sm font-medium">Rejection Reason</Label>
                                     <Textarea
                                         value={rejectReason}
                                         onChange={(e) => setRejectReason(e.target.value)}

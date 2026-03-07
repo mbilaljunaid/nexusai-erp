@@ -14,6 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescri
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { formatNumber } from '@/lib/formatters';
 
 interface BatchOrder {
     id: string;
@@ -98,7 +99,7 @@ export default function BatchWorkbench() {
             id: "plannedQuantity",
             header: "Planned Qty",
             width: "150px",
-            cell: (row: any) => <div className="p-2"><span className="font-mono">{row.plannedQuantity.toLocaleString()} KG</span></div>
+            cell: (row: any) => <div className="p-2"><span className="font-mono">{formatNumber(row.plannedQuantity)} KG</span></div>
         },
         {
             id: "status",

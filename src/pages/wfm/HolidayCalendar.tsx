@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Label } from "@/components/ui/label";
 
 
 const MOCK_TENANT_ID = "test-tenant-wfm-001";
@@ -97,7 +98,7 @@ export default function HolidayCalendar() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Name</label>
+                            <Label className="text-sm font-medium">Name</Label>
                             <Input
                                 value={newHoliday.name}
                                 onChange={e => setNewHoliday({ ...newHoliday, name: e.target.value })}
@@ -105,11 +106,11 @@ export default function HolidayCalendar() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Date</label>
+                            <Label className="text-sm font-medium">Date</Label>
                             <DatePicker value={newHoliday.date} onChange={v => setNewHoliday({ ...newHoliday, date: v })} />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Country</label>
+                            <Label className="text-sm font-medium">Country</Label>
                             <Select value={newHoliday.countryCode} onValueChange={v => setNewHoliday({ ...newHoliday, countryCode: v })}>
                                 <SelectTrigger>
                                     <SelectValue />

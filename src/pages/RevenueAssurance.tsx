@@ -6,7 +6,6 @@ import { StandardDashboard, DashboardWidget } from "@/components/layout/Standard
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/formatters";
 
 interface AssuranceResult {
     period: string;
@@ -87,7 +86,7 @@ export default function RevenueAssurance() {
                     </div>
                     <div>
                         <div className="text-2xl font-bold tracking-tight text-blue-600">
-                            {result?.totalRevenue != null ? formatCurrency(result.totalRevenue) : "—"}
+                            {result?.totalRevenue != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact' }).format(result.totalRevenue) : "—"}
                         </div>
                         <p className="text-xs text-muted-foreground">Period recognized</p>
                     </div>
@@ -101,7 +100,7 @@ export default function RevenueAssurance() {
                     </div>
                     <div>
                         <div className="text-2xl font-bold tracking-tight text-amber-600">
-                            {result?.totalDeferred != null ? formatCurrency(result.totalDeferred) : "—"}
+                            {result?.totalDeferred != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact' }).format(result.totalDeferred) : "—"}
                         </div>
                         <p className="text-xs text-muted-foreground">Deferred revenue</p>
                     </div>

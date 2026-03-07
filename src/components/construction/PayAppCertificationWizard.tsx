@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { CheckCircle2, Circle, ArrowRight, ShieldCheck, AlertCircle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 interface CertificationStep {
     id: string;
@@ -131,15 +132,15 @@ export function PayAppCertificationWizard({ open, onOpenChange, payApp, onCertif
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div>
                                     <div className="text-sm text-muted-foreground mb-1">Total Completed</div>
-                                    <div className="text-xl font-bold">${Number(payApp.totalCompleted).toLocaleString()}</div>
+                                    <div className="text-xl font-bold">${formatNumber(Number(payApp.totalCompleted))}</div>
                                 </div>
                                 <div>
                                     <div className="text-sm text-muted-foreground mb-1">Retention</div>
-                                    <div className="text-xl font-bold text-red-600">(${Number(payApp.retentionAmount).toLocaleString()})</div>
+                                    <div className="text-xl font-bold text-red-600">(${formatNumber(Number(payApp.retentionAmount))})</div>
                                 </div>
                                 <div>
                                     <div className="text-sm text-muted-foreground mb-1">Payment Due</div>
-                                    <div className="text-xl font-bold text-green-600">${Number(payApp.currentPaymentDue).toLocaleString()}</div>
+                                    <div className="text-xl font-bold text-green-600">${formatNumber(Number(payApp.currentPaymentDue))}</div>
                                 </div>
                             </div>
                         </CardContent>

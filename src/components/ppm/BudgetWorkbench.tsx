@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Plus, Lock, CheckCircle, AlertTriangle, ShieldCheck } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { Label } from "@/components/ui/label";
 
 export function BudgetWorkbench() {
     const [projectId, setProjectId] = useState<string>(""); // In real app, from URL or Context
@@ -159,7 +160,7 @@ export function BudgetWorkbench() {
                                     </DialogHeader>
                                     <div className="space-y-4 py-4">
                                         <div className="space-y-2">
-                                            <label>Version Name</label>
+                                            <Label>Version Name</Label>
                                             <Input value={newVersionName} onChange={e => setNewVersionName(e.target.value)} placeholder="e.g. Q1 Forecast" />
                                         </div>
                                     </div>
@@ -212,15 +213,15 @@ export function BudgetWorkbench() {
                                                             </DialogHeader>
                                                             <div className="grid gap-4 py-4">
                                                                 <div className="grid grid-cols-4 items-center gap-4">
-                                                                    <label className="text-right">Task ID</label>
+                                                                    <Label className="text-right">Task ID</Label>
                                                                     <Input className="col-span-3" value={newLineData.taskId} onChange={e => setNewLineData({ ...newLineData, taskId: e.target.value })} placeholder="Internal Task UUID" />
                                                                 </div>
                                                                 <div className="grid grid-cols-4 items-center gap-4">
-                                                                    <label className="text-right">Period</label>
+                                                                    <Label className="text-right">Period</Label>
                                                                     <Input className="col-span-3" value={newLineData.periodName} onChange={e => setNewLineData({ ...newLineData, periodName: e.target.value })} placeholder="Jan-26" />
                                                                 </div>
                                                                 <div className="grid grid-cols-4 items-center gap-4">
-                                                                    <label className="text-right">Amount</label>
+                                                                    <Label className="text-right">Amount</Label>
                                                                     <Input className="col-span-3" value={newLineData.amount} onChange={e => setNewLineData({ ...newLineData, amount: e.target.value })} />
                                                                 </div>
                                                             </div>
@@ -253,7 +254,7 @@ export function BudgetWorkbench() {
                             <CardContent className="space-y-6">
                                 <div className="grid grid-cols-2 gap-8">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Control Level</label>
+                                        <Label className="text-sm font-medium">Control Level</Label>
                                         <Select value={ruleLevel} onValueChange={(val: any) => setRuleLevel(val)}>
                                             <SelectTrigger><SelectValue /></SelectTrigger>
                                             <SelectContent>
@@ -264,7 +265,7 @@ export function BudgetWorkbench() {
                                         <p className="text-xs text-muted-foreground">Aggregates funds check at this level.</p>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Control Type</label>
+                                        <Label className="text-sm font-medium">Control Type</Label>
                                         <Select value={ruleType} onValueChange={(val: any) => setRuleType(val)}>
                                             <SelectTrigger><SelectValue /></SelectTrigger>
                                             <SelectContent>
@@ -290,7 +291,7 @@ export function BudgetWorkbench() {
                             <CardContent className="space-y-4">
                                 <div className="flex gap-4 items-end">
                                     <div className="space-y-2 flex-1">
-                                        <label>Request Amount</label>
+                                        <Label>Request Amount</Label>
                                         <Input value={testAmount} onChange={e => setTestAmount(e.target.value)} type="number" />
                                     </div>
                                     <Button onClick={() => testFundsMutation.mutate()} disabled={testFundsMutation.isPending}>Check Funds</Button>

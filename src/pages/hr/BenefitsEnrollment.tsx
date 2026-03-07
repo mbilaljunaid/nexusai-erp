@@ -7,7 +7,8 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface BenefitPlan {
     id: string;
@@ -60,7 +61,7 @@ const TYPE_CLASSES: Record<string, { bg: string; text: string; lightBg: string }
     HSA: { bg: 'bg-cyan-600', text: 'text-cyan-600', lightBg: 'bg-cyan-600/20' },
 };
 
-const fmt = (n: number, c = 'USD') => formatCurrency(n, c);
+const fmt = (n: number, c = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency: c }).format(n);
 
 export default function BenefitsEnrollment() {
     const [activeTab, setActiveTab] = useState<'catalog' | 'enrollments' | 'summary'>('catalog');
@@ -101,7 +102,7 @@ export default function BenefitsEnrollment() {
 
     const terminateMutation = useMutation({
         mutationFn: (id: string) =>
-            fetch(`/api/hr/benefits/enrollments/${id}/terminate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ effectiveTo: formatNumber(new Date().toISOString().slice(0, 10) }) }).then(r => r.json()),
+            fetch(`/api/hr/benefits/enrollments/${id}/terminate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ effectiveTo: new Date().toISOString().slice(0, 10) }) }).then(r => r.json()),
         onSuccess: () => qc.invalidateQueries({ queryKey: ['benefit-enrollments'] }),
     });
 
@@ -136,10 +137,10 @@ export default function BenefitsEnrollment() {
                 return <span className={cn(`type-badge ${cls.lightBg} ${cls.text}`)}>{row.benefit_type}</span>;
             }
         },
-        { id: "enrolled", header: "Enrolled", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{formatNumber(Number(row.enrolled).toLocaleString()}</span> },
-        { id: "waived", header: "Waived", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{formatNumber(Number(row.waived).toLocaleString()}</span> },
-        { id: "emp_cost", header: "Employee Cost", width: "120px", cell: (row) => <span className="amt-cell block w-full text-right">{formatNumber(fmt(row.employee_cost_total ?? 0)}</span> },
-        { id: "empr_cost", header: "Employer Cost", width: "120px", cell: (row) => <span className="amt-cell block w-full text-right">{formatNumber(fmt(row.employer_cost_total ?? 0)}</span> },
+        { id: "enrolled", header: "Enrolled", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{formatNumber(Number(row.enrolled))}</span> },
+        { id: "waived", header: "Waived", width: "100px", cell: (row) => <span className="num-cell block w-full text-right">{formatNumber(Number(row.waived))}</span> },
+        { id: "emp_cost", header: "Employee Cost", width: "120px", cell: (row) => <span className="amt-cell block w-full text-right">{fmt(row.employee_cost_total ?? 0)}</span> },
+        { id: "empr_cost", header: "Employer Cost", width: "120px", cell: (row) => <span className="amt-cell block w-full text-right">{fmt(row.employer_cost_total ?? 0)}</span> },
         {
             id: "participation", header: "Participation %", width: "150px", cell: (row) => {
                 const total = Number(row.enrolled) + Number(row.waived);
@@ -167,7 +168,7 @@ export default function BenefitsEnrollment() {
             <div className="be-tabs">
                 {(['catalog', 'enrollments', 'summary'] as const).map(t => (
                     <button key={t} className={cn(`be-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
-                        {formatNumber(t.charAt(0).toUpperCase() + t.slice(1)}
+                        {t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                 ))}
             </div>
@@ -263,7 +264,7 @@ export default function BenefitsEnrollment() {
                             Employer: <strong>{fmt(enrollingPlan.employer_cost, enrollingPlan.currency_code)}/period</strong>
                         </div>
                         <div className="mf">
-                            <label className="ml" htmlFor="enroll-emp-id">Employee ID</label>
+                            <Label className="ml" htmlFor="enroll-emp-id">Employee ID</Label>
                             <Input id="enroll-emp-id" className="mi" value={employeeId} onChange={e => setEmployeeId(e.target.value)} />
                         </div>
                         <div className="deps-section">
@@ -291,8 +292,8 @@ export default function BenefitsEnrollment() {
                                 enrollMutation.mutate({
                                     planId: enrollingPlan.id,
                                     employeeId,
-                                    enrollmentDate: formatNumber(new Date().toISOString().slice(0, 10),
-                                    effectiveFrom: formatNumber(new Date().toISOString().slice(0, 10),
+                                    enrollmentDate: new Date().toISOString().slice(0, 10),
+                                    effectiveFrom: new Date().toISOString().slice(0, 10),
                                     dependents,
                                 })
                             } aria-label="Confirm enrollment">

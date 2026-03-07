@@ -6,6 +6,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
@@ -76,12 +77,12 @@ export default function NineBoxGrid() {
                     <div className="font-bold text-xs mb-2">New Assessment — {period}</div>
                     <div className="grid grid-cols-5 gap-2 mb-2">
                         {[['Employee ID', 'employeeId', 'text'], ['Assessed By', 'assessedBy', 'text']].map(([lbl, key, type]) => (
-                            <div key={key}><label className="text-[10px] font-bold block">{lbl}</label>
+                            <div key={key}><Label className="text-[10px] font-bold block">{lbl}</Label>
                                 <Input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full h-7 px-2 py-1 border-purple-200 rounded-md text-[11px]" aria-label={lbl} />
                             </div>
                         ))}
                         {[['Performance', 'performance'], ['Potential', 'potential']].map(([lbl, key]) => (
-                            <div key={key}><label className="text-[10px] font-bold block">{lbl}</label>
+                            <div key={key}><Label className="text-[10px] font-bold block">{lbl}</Label>
                                 <Select value={(form as any)[key]} onValueChange={v => setForm(p => ({ ...p, [key]: v }))}>
                                     <SelectTrigger className="w-full text-[11px]" aria-label={lbl}><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -90,7 +91,7 @@ export default function NineBoxGrid() {
                                 </Select>
                             </div>
                         ))}
-                        <div><label className="text-[10px] font-bold block">Notes</label>
+                        <div><Label className="text-[10px] font-bold block">Notes</Label>
                             <Input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} className="w-full h-7 px-2 py-1 border-purple-200 rounded-md text-[11px]" aria-label="Notes" />
                         </div>
                     </div>

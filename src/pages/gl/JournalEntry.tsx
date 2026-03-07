@@ -43,7 +43,6 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { AuditSidebar, AuditEvent } from "@/components/audit/AuditSidebar";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { DatePicker } from '@/components/ui/DatePicker';
-import { formatNumber } from "@/lib/formatters";
 
 interface JournalLine {
     id: string; // temp id for UI
@@ -65,6 +64,7 @@ interface JournalLine {
 }
 
 import { useRoute } from "wouter";
+import { formatNumber } from '@/lib/formatters';
 
 export default function JournalEntry() {
     const { toast } = useToast();
@@ -304,7 +304,7 @@ export default function JournalEntry() {
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl/journals" },
                 { label: "Journals", href: "/gl/journals" },
-                { label: journalId ? `Journal: ${formatNumber(journalId.substring(0, 8)}...` : "New Entry" },
+                { label: journalId ? `Journal: ${journalId.substring(0, 8)}...` : "New Entry" },
             ]}
             description={<LedgerContextBadge />}
             actions={

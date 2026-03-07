@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Car, Factory, Gauge, History, Settings, Activity } from "lucide-react";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatNumber } from '@/lib/formatters';
 
 export default function AutomotivePage() {
   const { data = [], isLoading } = useQuery<any[]>({
@@ -91,7 +92,7 @@ export default function AutomotivePage() {
                   </div>
                   <p className="text-xs text-muted-foreground">
                     Spec: {item.type || item.category || "Standard"} •
-                    Valuation: ${parseFloat(item.price || item.inventory || 0).toLocaleString()}
+                    Valuation: ${formatNumber(parseFloat(item.price || item.inventory || 0))}
                   </p>
                 </div>
                 <div className="flex flex-row items-center gap-3">

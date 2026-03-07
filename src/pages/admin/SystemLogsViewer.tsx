@@ -8,6 +8,7 @@ import LogEntry from '../../components/admin/LogEntry';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 interface Log {
     id: string;
@@ -125,9 +126,9 @@ export default function SystemLogsViewer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {/* Search */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-gray-700 mb-1">
                             Search
-                        </label>
+                        </Label>
                         <div className="relative">
                             <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                             <Input
@@ -143,9 +144,9 @@ export default function SystemLogsViewer() {
 
                     {/* Level Filter */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-gray-700 mb-1">
                             Log Level
-                        </label>
+                        </Label>
                         <Select value={filters.level} onValueChange={(val) => setFilters({ ...filters, level: val })}>
                             <SelectTrigger>
                                 <SelectValue placeholder="All Levels" />
@@ -162,9 +163,9 @@ export default function SystemLogsViewer() {
 
                     {/* User Filter */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-gray-700 mb-1">
                             User
-                        </label>
+                        </Label>
                         <Input
                             type="text"
                             value={filters.user}
@@ -175,9 +176,9 @@ export default function SystemLogsViewer() {
 
                     {/* Endpoint Filter */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-gray-700 mb-1">
                             Endpoint
-                        </label>
+                        </Label>
                         <Input
                             type="text"
                             value={filters.endpoint}
@@ -189,9 +190,9 @@ export default function SystemLogsViewer() {
 
                 {/* Log Count */}
                 <div className="mt-4 flex items-center gap-4">
-                    <label className="text-sm font-medium text-gray-700">
+                    <Label className="text-sm font-medium text-gray-700">
                         Show:
-                    </label>
+                    </Label>
                     <div className="flex items-center gap-2">
                         {[50, 100, 200, 500].map((value) => (
                             <button

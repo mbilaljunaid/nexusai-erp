@@ -15,6 +15,7 @@ import { Users, Award, TrendingUp, DollarSign, Building, CheckCircle, Clock } fr
 import { Progress } from "@/components/ui/progress";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Label } from "@/components/ui/label";
 
 interface Partner {
     id: string;
@@ -372,11 +373,11 @@ export default function PartnerManagement() {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Partner Name</label>
+                                    <Label className="text-sm font-medium">Partner Name</Label>
                                     <Input defaultValue={selectedPartner.name} placeholder="Company name" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Type</label>
+                                    <Label className="text-sm font-medium">Type</Label>
                                     <Select defaultValue={selectedPartner.type}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -390,7 +391,7 @@ export default function PartnerManagement() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Tier</label>
+                                    <Label className="text-sm font-medium">Tier</Label>
                                     <Select defaultValue={selectedPartner.tier}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -404,7 +405,7 @@ export default function PartnerManagement() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Status</label>
+                                    <Label className="text-sm font-medium">Status</Label>
                                     <Select defaultValue={selectedPartner.status}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -417,11 +418,11 @@ export default function PartnerManagement() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Contact Name</label>
+                                    <Label className="text-sm font-medium">Contact Name</Label>
                                     <Input defaultValue={selectedPartner.contactName} placeholder="Primary contact" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Contact Email</label>
+                                    <Label className="text-sm font-medium">Contact Email</Label>
                                     <Input defaultValue={selectedPartner.contactEmail} type="email" placeholder="email@partner.com" />
                                 </div>
                             </div>

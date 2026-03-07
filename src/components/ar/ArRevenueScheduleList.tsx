@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { Loader2, CheckCircle2, Clock, PlayCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { formatCurrency } from "@/lib/formatters";
+import { formatNumber } from '@/lib/formatters';
 
 interface ArRevenueScheduleListProps {
     invoiceId: number;
@@ -63,7 +63,7 @@ export function ArRevenueScheduleList({ invoiceId }: ArRevenueScheduleListProps)
                     ruleId: "1",
                     amount: "1500.00",
                     scheduleDate: scheduleDate.toISOString(),
-                    periodName: `${scheduleDate.toLocaleString('default', { month: 'short' })}-${scheduleDate.getFullYear() % 100}`,
+                    periodName: `${formatNumber(scheduleDate)}-${scheduleDate.getFullYear() % 100}`,
                     status: "Pending",
                     recognizedAmount: "0.00"
                 });
@@ -113,7 +113,7 @@ export function ArRevenueScheduleList({ invoiceId }: ArRevenueScheduleListProps)
                                 {format(new Date(schedule.scheduleDate), "MMM dd, yyyy")}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                                {formatCurrency(Number(schedule.amount))}
+                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(schedule.amount))}
                             </p>
                         </div>
                     </div>

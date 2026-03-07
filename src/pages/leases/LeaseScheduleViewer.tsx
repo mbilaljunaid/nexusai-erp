@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { FileText, Download } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { formatNumber } from '@/lib/formatters';
 
 export default function LeaseScheduleViewer() {
     const { data: schedule } = useQuery<any>({
@@ -14,10 +15,10 @@ export default function LeaseScheduleViewer() {
 
     const scheduleColumns: SpreadsheetColumn<any>[] = [
         { id: "period", header: "Period", width: "100px", cell: (row) => <span>{row.period}</span> },
-        { id: "payment", header: "Payment", width: "150px", cell: (row) => <span className="font-medium text-right block">${row.amount?.toLocaleString()}</span> },
-        { id: "principal", header: "Principal", width: "150px", cell: (row) => <span className="text-right block">${row.principal?.toLocaleString()}</span> },
-        { id: "interest", header: "Interest", width: "150px", cell: (row) => <span className="text-right block">${row.interest?.toLocaleString()}</span> },
-        { id: "balance", header: "Balance", width: "150px", cell: (row) => <span className="text-right block">${row.balance?.toLocaleString()}</span> }
+        { id: "payment", header: "Payment", width: "150px", cell: (row) => <span className="font-medium text-right block">${formatNumber(row.amount)}</span> },
+        { id: "principal", header: "Principal", width: "150px", cell: (row) => <span className="text-right block">${formatNumber(row.principal)}</span> },
+        { id: "interest", header: "Interest", width: "150px", cell: (row) => <span className="text-right block">${formatNumber(row.interest)}</span> },
+        { id: "balance", header: "Balance", width: "150px", cell: (row) => <span className="text-right block">${formatNumber(row.balance)}</span> }
     ];
 
     return (

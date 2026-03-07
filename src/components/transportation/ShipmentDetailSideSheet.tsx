@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Truck, MapPin, Calendar, AlertTriangle, ShieldCheck, Zap } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatNumber } from '@/lib/formatters';
 
 interface ShipmentDetailSideSheetProps {
     shipmentId: string | null;
@@ -59,7 +60,7 @@ export function ShipmentDetailSideSheet({ shipmentId, open, onOpenChange }: Ship
                         <div className="space-y-1">
                             <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Estimated Cost</p>
                             <div className="text-sm font-medium">
-                                {shipment?.totalCost ? `$${Number(shipment.totalCost).toLocaleString()}` : "-"}
+                                {shipment?.totalCost ? `$${formatNumber(Number(shipment.totalCost))}` : "-"}
                             </div>
                         </div>
                     </div>

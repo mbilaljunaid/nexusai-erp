@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 import React from "react";
@@ -15,16 +14,7 @@ interface DashboardWidgetProps {
     trend?: { value: number; label: string; positive: boolean };
 }
 
-// DashboardWidget — card wrapper for dashboard metric slots.
-// Wrapped in React.memo — used across 54 pages; re-renders on every query
-// refetch are prevented when props haven't changed.
-export const DashboardWidget = memo(function DashboardWidget({
-    title,
-    icon: Icon,
-    value,
-    description,
-    children,
-}: DashboardWidgetProps) {
+export function DashboardWidget({ title, icon: Icon, value, description, children }: DashboardWidgetProps) {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -40,4 +30,4 @@ export const DashboardWidget = memo(function DashboardWidget({
             </CardContent>
         </Card>
     );
-});
+}

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Header, Footer } from "@/components/Navigation";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 
 interface IndustryDemoPageProps {
@@ -129,7 +130,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
                     <h3 className="text-2xl font-bold mb-6">Request Demo</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium mb-2">Email Address</label>
+                        <Label className="block text-sm font-medium mb-2">Email Address</Label>
                         <Input
                           type="email"
                           value={email}

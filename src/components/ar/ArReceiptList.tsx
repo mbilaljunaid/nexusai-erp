@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ArReceiptApplicationDialog } from "./ArReceiptApplicationDialog";
 import type { ArReceipt } from "@/types/erp-types";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 
 export function ArReceiptList() {
@@ -95,7 +96,7 @@ export function ArReceiptList() {
                                     <div>
                                         <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Amount</div>
                                         <div className="text-2xl font-bold text-emerald-700">
-                                            ${parseFloat(receipt.amount).toLocaleString()}
+                                            ${formatNumber(parseFloat(receipt.amount))}
                                         </div>
                                     </div>
                                     <div className="text-right">

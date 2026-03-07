@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Loader2, Unlink } from "lucide-react";
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 export default function ARReceiptDetail() {
     const [, params] = useRoute("/finance/ar/receipts/:id");
@@ -68,7 +69,7 @@ export default function ARReceiptDetail() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Total Receipt Amount</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="text-xl font-bold text-green-600">${parseFloat(receipt.amount || 0).toLocaleString()}</div>
+                        <div className="text-xl font-bold text-green-600">${formatNumber(parseFloat(receipt.amount || 0))}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -108,7 +109,7 @@ export default function ARReceiptDetail() {
                                     <div className="flex items-center gap-4">
                                         <div className="text-right">
                                             <div className="text-sm text-muted-foreground">Applied Amount</div>
-                                            <div className="font-bold text-green-600">${parseFloat(a.amountApplied || 0).toLocaleString()}</div>
+                                            <div className="font-bold text-green-600">${formatNumber(parseFloat(a.amountApplied || 0))}</div>
                                         </div>
                                         <Button
                                             variant="outline"

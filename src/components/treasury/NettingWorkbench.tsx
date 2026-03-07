@@ -25,6 +25,7 @@ import {
 import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 interface NettingPosition {
     fromEntity: string;
@@ -257,7 +258,7 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-black text-emerald-700">
-                            ${metrics.netSettlements.toLocaleString()}
+                            ${formatNumber(metrics.netSettlements)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">Optimized Amount</p>
                     </CardContent>
@@ -285,7 +286,7 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-black text-purple-700">
-                            ${metrics.efficiencyGain.toLocaleString()}
+                            ${formatNumber(metrics.efficiencyGain)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">Cash Saved</p>
                     </CardContent>
@@ -312,7 +313,7 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                         <div>
                             <span className="text-xs text-muted-foreground">Post-Netting Volume:</span>
                             <p className="font-mono font-bold text-sm text-emerald-600">
-                                ${metrics.netSettlements.toLocaleString()}
+                                ${formatNumber(metrics.netSettlements)}
                             </p>
                         </div>
                         <div>
@@ -389,7 +390,7 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                                                             }`)}
                                                     >
                                                         {amount !== 0
-                                                            ? `${amount > 0 ? "+" : ""}${amount.toLocaleString()}`
+                                                            ? `${amount > 0 ? "+" : ""}${formatNumber(amount)}`
                                                             : "—"}
                                                     </TableCell>
                                                 );
@@ -403,7 +404,7 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                                                     }`)}
                                             >
                                                 {netPosition > 0 ? "+" : ""}
-                                                {netPosition.toLocaleString()}
+                                                {formatNumber(netPosition)}
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -445,10 +446,10 @@ function NettingBatchDetail({ batchId }: { batchId: string }) {
                                         <TableCell className="font-medium">{pos.fromEntity}</TableCell>
                                         <TableCell className="font-medium">{pos.toEntity}</TableCell>
                                         <TableCell className="text-right font-mono text-red-600">
-                                            ${Number(pos.grossPayable).toLocaleString()}
+                                            ${formatNumber(Number(pos.grossPayable))}
                                         </TableCell>
                                         <TableCell className="text-right font-mono text-emerald-600">
-                                            ${Number(pos.grossReceivable).toLocaleString()}
+                                            ${formatNumber(Number(pos.grossReceivable))}
                                         </TableCell>
                                         <TableCell className="text-right font-mono font-bold">
                                             ${Math.abs(Number(pos.netAmount)).toLocaleString()}

@@ -26,6 +26,7 @@ import {
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { formatNumber } from '@/lib/formatters';
 
 interface FaAssetWithFinancials extends Omit<FaAsset, 'originalCost' | 'datePlacedInService'> {
     datePlacedInService: string | Date;
@@ -80,13 +81,13 @@ export default function AssetWorkbench() {
             id: "originalCost",
             header: "Cost",
             width: "150px",
-            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center justify-end font-medium w-full">${Number(asset.originalCost).toLocaleString()}</div>
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center justify-end font-medium w-full">${formatNumber(Number(asset.originalCost))}</div>
         },
         {
             id: "recoverableCost",
             header: "Recoverable",
             width: "150px",
-            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center justify-end w-full">${Number(asset.recoverableCost).toLocaleString()}</div>
+            cell: (asset: FaAssetWithFinancials) => <div className="px-2 h-full flex items-center justify-end w-full">${formatNumber(Number(asset.recoverableCost))}</div>
         },
         {
             id: "status",

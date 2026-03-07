@@ -26,6 +26,8 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface Asset {
     id: string;
@@ -95,7 +97,7 @@ export default function FixedAssetWorkbench() {
             width: "250px", cell: (row: any) => <span>{row.description}</span>
         },
         { id: "datePlacedInService", header: "In Service", width: "150px", cell: (row: any) => <span>{formatDate(row.datePlacedInService)}</span> },
-        { id: "originalCost", header: "Cost", width: "150px", cell: (row: any) => <span className="tabular-nums">${parseFloat(row.originalCost || "0").toLocaleString()}</span> },
+        { id: "originalCost", header: "Cost", width: "150px", cell: (row: any) => <span className="tabular-nums">${formatNumber(parseFloat(row.originalCost || "0"))}</span> },
         {
             id: "category",
             header: "Category",
@@ -158,7 +160,7 @@ export default function FixedAssetWorkbench() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
-                                ${parseFloat(stats.totalCost || "0").toLocaleString()}
+                                ${formatNumber(parseFloat(stats.totalCost || "0"))}
                             </div>
                             <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                                 +12% vs last year
@@ -345,16 +347,16 @@ export default function FixedAssetWorkbench() {
                                     <div className="p-4 bg-muted/50 rounded-lg border space-y-4">
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-xs text-muted-foreground uppercase font-bold">Asset Book</label>
+                                                <Label className="text-xs text-muted-foreground uppercase font-bold">Asset Book</Label>
                                                 <Input disabled value="CORP_USD_BOOK" />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs text-muted-foreground uppercase font-bold">Current Period</label>
+                                                <Label className="text-xs text-muted-foreground uppercase font-bold">Current Period</Label>
                                                 <Input disabled value="FEB-2026" />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-xs text-muted-foreground uppercase font-bold">GL Post Date</label>
+                                            <Label className="text-xs text-muted-foreground uppercase font-bold">GL Post Date</Label>
                                             <DatePicker value="2026-02-10" onChange={() => { }} />
                                         </div>
                                     </div>
@@ -436,7 +438,7 @@ export default function FixedAssetWorkbench() {
                                                 <TableCell className="font-mono">{ma.invoiceNumber}</TableCell>
                                                 <TableCell className="font-medium">{ma.description}</TableCell>
                                                 <TableCell className="text-muted-foreground">{ma.vendorName}</TableCell>
-                                                <TableCell className="font-bold">${parseFloat(ma.amount).toLocaleString()}</TableCell>
+                                                <TableCell className="font-bold">${formatNumber(parseFloat(ma.amount))}</TableCell>
                                                 <TableCell><Badge variant="outline" className="text-amber-600 border-amber-600">{ma.status}</Badge></TableCell>
                                                 <TableCell className="text-right">
                                                     <Button size="sm">Prepare</Button>

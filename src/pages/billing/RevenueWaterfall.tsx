@@ -5,7 +5,6 @@ import { TrendingDown, DollarSign, Download, TrendingUp, Clock } from "lucide-re
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { formatNumber } from "@/lib/formatters";
 
 
 export default function RevenueWaterfall() {
@@ -43,7 +42,7 @@ export default function RevenueWaterfall() {
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Booked / TCV</div>
                         <div className="text-2xl font-bold mt-1">
-                            {formatCurrency((waterfall?.booked ?? waterfall?.invoiced ?? 0) * 1.5)}
+                            ${((waterfall?.booked ?? waterfall?.invoiced ?? 0) * 1.5).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </div>
                     </CardContent>
                 </Card>
@@ -51,7 +50,7 @@ export default function RevenueWaterfall() {
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Billed / Invoiced</div>
                         <div className="text-2xl font-bold mt-1">
-                            {formatCurrency(waterfall?.billed ?? waterfall?.invoiced ?? 0)}
+                            ${(waterfall?.billed ?? waterfall?.invoiced ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </div>
                     </CardContent>
                 </Card>
@@ -61,7 +60,7 @@ export default function RevenueWaterfall() {
                             <TrendingUp className="h-3 w-3 text-green-600" /> Recognized
                         </div>
                         <div className="text-2xl font-bold mt-1 text-green-600">
-                            {formatCurrency(waterfall?.recognized ?? 0)}
+                            ${(waterfall?.recognized ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </div>
                     </CardContent>
                 </Card>
@@ -71,7 +70,7 @@ export default function RevenueWaterfall() {
                             <Clock className="h-3 w-3 text-orange-600" /> Deferred
                         </div>
                         <div className="text-2xl font-bold mt-1 text-orange-600">
-                            {formatCurrency(waterfall?.deferred ?? 0)}
+                            ${(waterfall?.deferred ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </div>
                     </CardContent>
                 </Card>
@@ -81,7 +80,7 @@ export default function RevenueWaterfall() {
                             <DollarSign className="h-3 w-3 text-blue-600" /> Unbilled
                         </div>
                         <div className="text-2xl font-bold mt-1 text-blue-600">
-                            {formatCurrency(waterfall?.unbilled ?? 0)}
+                            ${(waterfall?.unbilled ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                         </div>
                     </CardContent>
                 </Card>

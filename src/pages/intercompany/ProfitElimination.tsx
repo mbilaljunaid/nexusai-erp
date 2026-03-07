@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { TrendingDown, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function ProfitElimination() {
@@ -24,14 +25,14 @@ export default function ProfitElimination() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">IC Inventory</div>
-                        <div className="text-3xl font-bold mt-1">${elimination?.icInventory?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(elimination?.icInventory)}</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Unrealized Profit</div>
                         <div className="text-3xl font-bold mt-1 text-red-600">
-                            ${elimination?.unrealizedProfit?.toLocaleString()}
+                            ${formatNumber(elimination?.unrealizedProfit)}
                         </div>
                     </CardContent>
                 </Card>
@@ -62,15 +63,15 @@ export default function ProfitElimination() {
                             <div className="grid grid-cols-3 gap-4 text-sm">
                                 <div>
                                     <div className="text-muted-foreground">IC Value</div>
-                                    <div className="font-medium">${item.icValue?.toLocaleString()}</div>
+                                    <div className="font-medium">${formatNumber(item.icValue)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground">Profit</div>
-                                    <div className="font-medium text-red-600">${item.profit?.toLocaleString()}</div>
+                                    <div className="font-medium text-red-600">${formatNumber(item.profit)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground">Elimination</div>
-                                    <div className="font-medium">${item.elimination?.toLocaleString()}</div>
+                                    <div className="font-medium">${formatNumber(item.elimination)}</div>
                                 </div>
                             </div>
                         </div>

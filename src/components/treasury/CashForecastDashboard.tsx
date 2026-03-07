@@ -32,6 +32,7 @@ import {
 import { format, addDays, differenceInDays } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 interface ForecastItem {
     id: string;
@@ -250,10 +251,7 @@ export function CashForecastDashboard() {
                                 }`)}
                         >
                             {metrics.next30dNet >= 0 ? "+" : ""}$
-                            {metrics.next30dNet.toLocaleString(undefined, {
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0,
-                            })}
+                            {formatNumber(metrics.next30dNet, 0)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">{selectedScenario} Scenario</p>
                     </CardContent>
@@ -268,7 +266,7 @@ export function CashForecastDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-black text-blue-700">
-                            ${metrics.next90dNet.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            ${formatNumber(metrics.next90dNet, 0)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">Cumulative Net Cash</p>
                     </CardContent>
@@ -331,7 +329,7 @@ export function CashForecastDashboard() {
                                     <XAxis dataKey="date" fontSize={10} />
                                     <YAxis fontSize={10} />
                                     <Tooltip
-                                        formatter={(value: number) => `$${value.toLocaleString()}`}
+                                        formatter={(value: number) => `$${formatNumber(value)}`}
                                         contentStyle={{
                                             borderRadius: "8px",
                                             border: "none",
@@ -389,7 +387,7 @@ export function CashForecastDashboard() {
                                         <Tooltip
                                             formatter={(value: number, name: string) => {
                                                 if (name === "confidence") return [`${value.toFixed(1)}%`, "Confidence"];
-                                                return [`$${value.toLocaleString()}`, "Forecast"];
+                                                return [`$${formatNumber(value)}`, "Forecast"];
                                             }}
                                             contentStyle={{
                                                 borderRadius: "8px",
@@ -506,7 +504,7 @@ export function CashForecastDashboard() {
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="font-mono font-bold text-sm">
-                                                        ${Number(anomaly.amount).toLocaleString()}
+                                                        ${formatNumber(Number(anomaly.amount))}
                                                     </p>
                                                     <Badge
                                                         className={cn(`text-xs mt-1 ${anomaly.severity === "HIGH"

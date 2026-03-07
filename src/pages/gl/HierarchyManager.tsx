@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { GlValueSet, GlSegmentValue, GlSegmentHierarchy } from "@/types/erp-types";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 // Helper to build tree structure
 type TreeNode = GlSegmentValue & { children: TreeNode[] };
@@ -154,7 +155,7 @@ export default function HierarchyManager() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Tree Version</label>
+                                <Label className="text-sm font-medium">Tree Version</Label>
                                 <Select
                                     value={newRelation.treeName}
                                     onValueChange={(val) => setNewRelation({ ...newRelation, treeName: val })}
@@ -168,7 +169,7 @@ export default function HierarchyManager() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Parent Node (Summary)</label>
+                                <Label className="text-sm font-medium">Parent Node (Summary)</Label>
                                 <Select
                                     value={newRelation.parentValue}
                                     onValueChange={(val) => setNewRelation({ ...newRelation, parentValue: val })}
@@ -188,7 +189,7 @@ export default function HierarchyManager() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Child Node</label>
+                                <Label className="text-sm font-medium">Child Node</Label>
                                 <Select
                                     value={newRelation.childValue}
                                     onValueChange={(val) => setNewRelation({ ...newRelation, childValue: val })}

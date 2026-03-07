@@ -12,6 +12,7 @@ import { ChevronRight, ChevronDown, FileSpreadsheet, TrendingUp, TrendingDown, A
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 interface BudgetBalance {
     ccid: string;
@@ -143,7 +144,7 @@ export default function BudgetBalanceDrillDown() {
                 {/* Period Selector & Actions */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Period:</label>
+                        <Label className="text-sm font-medium">Period:</Label>
                         <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Database, Zap, BarChart3, Activity, Settings, Grid3x3 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { IconNavigation } from "@/components/IconNavigation";
+import { formatNumber } from '@/lib/formatters';
 
 interface EmbeddingJob {
   id: string;
@@ -77,7 +78,7 @@ export default function RAGEmbeddingsPipeline() {
             <Card key={job.id} className="hover-elevate cursor-pointer"><CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div><p className="font-semibold">{job.name}</p>
-                  <p className="text-sm text-muted-foreground">{job.vectors.toLocaleString()} vectors • {job.documents} docs</p></div>
+                  <p className="text-sm text-muted-foreground">{formatNumber(job.vectors)} vectors • {job.documents} docs</p></div>
                 <Badge variant={job.status === "completed" ? "default" : "secondary"}>{job.status}</Badge>
               </div>
             </CardContent></Card>

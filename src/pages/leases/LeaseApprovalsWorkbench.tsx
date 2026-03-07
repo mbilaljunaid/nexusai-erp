@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from '@/components/layout/StandardPage';
-import { formatNumber } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 interface LeaseWorkflowItem {
     id: string;
@@ -66,7 +66,7 @@ export default function LeaseApprovalsWorkbench() {
     });
 
     const formatCurrency = (amount: number, currency: string = "USD") => {
-        return formatNumber(amount);
+        return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
     };
 
     return (
@@ -105,7 +105,7 @@ export default function LeaseApprovalsWorkbench() {
                                                 <div>
                                                     <p className="font-semibold text-lg">{lease.leaseName}</p>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Submitted by {lease.submittedBy} • {formatNumber(formatDate(lease.submittedAt)}
+                                                        Submitted by {lease.submittedBy} • {formatDate(lease.submittedAt)}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
@@ -154,7 +154,7 @@ export default function LeaseApprovalsWorkbench() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Approval Comments</label>
+                                        <Label className="text-sm font-medium">Approval Comments</Label>
                                         <Input placeholder="Optional feedback..." />
                                     </div>
 

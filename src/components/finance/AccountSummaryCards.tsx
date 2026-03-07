@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/formatters";
 import { CashBankAccount } from "@shared/schema";
 import { Wallet, CheckCircle2, AlertCircle, ArrowUpRight } from "lucide-react";
 
@@ -17,7 +16,7 @@ export function AccountSummaryCards({ account }: AccountSummaryCardsProps) {
                 </CardHeader>
                 <CardContent>
                     <div className="text-2xl font-bold">
-                        {formatCurrency(Number(account.currentBalance, account.currency))}
+                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: account.currency || 'USD' }).format(Number(account.currentBalance))}
                     </div>
                     <p className="text-xs text-muted-foreground">Internal books balance</p>
                 </CardContent>

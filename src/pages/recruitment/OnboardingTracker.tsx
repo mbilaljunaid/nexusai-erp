@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
 
 interface OnboardingTask {
     id: string;
@@ -319,5 +320,5 @@ export default function OnboardingTracker() {
 }
 
 function Label({ htmlFor, children, className }: { htmlFor?: string; children: React.ReactNode; className?: string }) {
-    return <label htmlFor={htmlFor} className={cn(`text-sm font-medium ${className}`)}>{children}</label>;
+    return <Label htmlFor={htmlFor} className={cn(`text-sm font-medium ${className}`)}>{children}</Label>;
 }

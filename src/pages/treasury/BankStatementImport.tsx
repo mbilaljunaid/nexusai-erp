@@ -5,7 +5,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload, FileText, CheckCircle2, AlertCircle, Link2, BarChart3 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { formatCurrency } from "@/lib/formatters";
 
 
 interface ImportRecord {
@@ -40,7 +39,7 @@ const STATUS_CFG: Record<string, string> = {
     Pending: 'bg-amber-100 text-amber-600',
 };
 
-const fmt = (n: number, c = 'USD') => formatCurrency(n, c);
+const fmt = (n: number, c = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency: c, maximumFractionDigits: 0 }).format(n);
 
 export default function BankStatementImport() {
     const [activeImport, setActiveImport] = useState<ImportRecord | null>(null);

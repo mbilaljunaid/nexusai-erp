@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface Commission {
     id: string;
@@ -63,7 +64,7 @@ export default function IncentiveDashboard() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${totalEarned.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(totalEarned)}</div>
                         <p className="text-xs text-muted-foreground">+20.1% from last month</p>
                     </CardContent>
                 </Card>
@@ -73,7 +74,7 @@ export default function IncentiveDashboard() {
                         <Wallet className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-amber-600">${pendingPayout.toLocaleString()}</div>
+                        <div className="text-2xl font-bold text-amber-600">${formatNumber(pendingPayout)}</div>
                         <p className="text-xs text-muted-foreground">Next payout date: Feb 15</p>
                     </CardContent>
                 </Card>
@@ -124,8 +125,8 @@ export default function IncentiveDashboard() {
                                     <TableRow key={comm.id}>
                                         <TableCell>{formatDate(comm.generatedAt)}</TableCell>
                                         <TableCell className="font-mono text-xs">{comm.opportunityId.substring(0, 8)}...</TableCell>
-                                        <TableCell>${Number(comm.baseAmount).toLocaleString()}</TableCell>
-                                        <TableCell className="font-bold text-green-600">+${Number(comm.commissionAmount).toLocaleString()}</TableCell>
+                                        <TableCell>${formatNumber(Number(comm.baseAmount))}</TableCell>
+                                        <TableCell className="font-bold text-green-600">+${formatNumber(Number(comm.commissionAmount))}</TableCell>
                                         <TableCell>
                                             <Badge variant={comm.status === 'paid' ? 'default' : 'secondary'}>
                                                 {comm.status.toUpperCase()}

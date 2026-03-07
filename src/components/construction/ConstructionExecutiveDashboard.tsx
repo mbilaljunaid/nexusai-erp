@@ -27,6 +27,7 @@ import { useNexusAI } from "@/contexts/NexusAIContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RiskDashboard } from "./RiskDashboard";
 import { EquipmentTelemetry } from "./EquipmentTelemetry";
+import { formatNumber } from '@/lib/formatters';
 
 interface ProjectRisk {
     contractId: string;
@@ -194,7 +195,7 @@ export default function ConstructionExecutiveDashboard() {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-right font-mono font-bold">
-                                                        ${Number(risk.variationExposure).toLocaleString()}
+                                                        ${formatNumber(Number(risk.variationExposure))}
                                                     </TableCell>
                                                 </TableRow>
                                             ))

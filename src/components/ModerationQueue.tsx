@@ -18,6 +18,7 @@ import {
   Users, Activity, Loader2, AlertOctagon, Search
 } from "lucide-react";
 import type { CommunityVoteAnomaly, CommunityAIRecommendation } from "@/types/erp-types";
+import { Label } from "@/components/ui/label";
 
 interface Flag {
   id: string;
@@ -618,7 +619,7 @@ export function ModerationQueue() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Action</label>
+                <Label className="text-sm font-medium">Action</Label>
                 <Select value={action} onValueChange={setAction}>
                   <SelectTrigger data-testid="select-moderation-action">
                     <SelectValue placeholder="Select an action..." />
@@ -640,7 +641,7 @@ export function ModerationQueue() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Reason (optional)</label>
+                <Label className="text-sm font-medium">Reason (optional)</Label>
                 <Textarea
                   placeholder="Add notes about this action..."
                   value={actionReason}
@@ -721,7 +722,7 @@ export function ModerationQueue() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Action</label>
+                <Label className="text-sm font-medium">Action</Label>
                 <Select value={anomalyAction} onValueChange={setAnomalyAction}>
                   <SelectTrigger data-testid="select-anomaly-action">
                     <SelectValue placeholder="Select an action..." />

@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Settings, Plus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export default function WmsStrategyManager() {
     const [isOpen, setIsOpen] = useState(false);
@@ -75,11 +76,11 @@ export default function WmsStrategyManager() {
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Strategy Name</label>
+                                <Label className="text-sm font-medium">Strategy Name</Label>
                                 <Input placeholder="e.g. Standard FIFO" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Type</label>
+                                <Label className="text-sm font-medium">Type</Label>
                                 <Select value={formData.type} onValueChange={(val) => setFormData({ ...formData, type: val })}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -89,7 +90,7 @@ export default function WmsStrategyManager() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Algorithm</label>
+                                <Label className="text-sm font-medium">Algorithm</Label>
                                 <Select value={formData.algorithm} onValueChange={(val) => setFormData({ ...formData, algorithm: val })}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -101,7 +102,7 @@ export default function WmsStrategyManager() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Description</label>
+                                <Label className="text-sm font-medium">Description</Label>
                                 <Input value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
                             </div>
                             <Button className="w-full" onClick={() => createMutation.mutate(formData)} disabled={createMutation.isPending}>

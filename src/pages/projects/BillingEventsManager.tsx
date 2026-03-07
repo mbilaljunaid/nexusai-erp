@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
 
 interface BillingEvent {
     id: string;
@@ -200,7 +201,7 @@ export default function BillingEventsManager() {
                     <CardContent className="space-y-4">
                         {/* Filters */}
                         <div className="flex items-center gap-4">
-                            <label className="text-sm font-medium">Filter:</label>
+                            <Label className="text-sm font-medium">Filter:</Label>
                             <Select value={filterType} onValueChange={setFilterType}>
                                 <SelectTrigger className="w-48">
                                     <SelectValue />

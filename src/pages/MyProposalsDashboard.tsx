@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { formatNumber } from '@/lib/formatters';
 import {
   FileText, Clock, DollarSign, Briefcase, Calendar,
   CheckCircle, XCircle, Eye, AlertCircle, ExternalLink,
@@ -206,7 +207,7 @@ export default function MyProposalsDashboard() {
                       <div className="flex flex-col items-end gap-3">
                         <div className="text-right">
                           <p className="text-lg font-bold text-primary">
-                            ${Number(proposal.proposed_price).toLocaleString()}
+                            ${formatNumber(Number(proposal.proposed_price))}
                           </p>
                           <p className="text-xs text-muted-foreground">Your Bid</p>
                         </div>

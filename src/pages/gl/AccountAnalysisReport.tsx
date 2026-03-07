@@ -11,6 +11,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useLedger } from "@/context/LedgerContext";
 import { downloadFile } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 type Transaction = {
     glDate: string;
@@ -101,7 +103,7 @@ export default function AccountAnalysisReport() {
             <DashboardWidget colSpan={4} title="Report Parameters" icon={Filter}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Period Name *</label>
+                        <Label className="text-sm font-medium">Period Name *</Label>
                         <Input
                             placeholder="e.g. Jan-26"
                             value={periodName}
@@ -109,7 +111,7 @@ export default function AccountAnalysisReport() {
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Account (Segment 3)</label>
+                        <Label className="text-sm font-medium">Account (Segment 3)</Label>
                         <Input
                             placeholder="e.g. 1000"
                             value={segment3}
@@ -152,8 +154,8 @@ export default function AccountAnalysisReport() {
                                             <TableCell>{tx.source}</TableCell>
                                             <TableCell className="font-mono text-xs">{tx.accountCode}</TableCell>
                                             <TableCell className="max-w-72 truncate">{tx.description}</TableCell>
-                                            <TableCell className="text-right">{Number(tx.accountedDr).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
-                                            <TableCell className="text-right">{Number(tx.accountedCr).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                                            <TableCell className="text-right">{formatNumber(Number(tx.accountedDr), 2)}</TableCell>
+                                            <TableCell className="text-right">{formatNumber(Number(tx.accountedCr), 2)}</TableCell>
                                         </TableRow>
                                     ))
                                 )}
@@ -162,8 +164,8 @@ export default function AccountAnalysisReport() {
                     </div>
 
                     <div className="mt-4 flex justify-end gap-8 text-sm font-bold border-t pt-4">
-                        <span>Total Debit: {generateReport.data.summary.totalDr.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                        <span>Total Credit: {generateReport.data.summary.totalCr.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                        <span>Total Debit: {formatNumber(generateReport.data.summary.totalDr, 2)}</span>
+                        <span>Total Credit: {formatNumber(generateReport.data.summary.totalCr, 2)}</span>
                     </div>
                 </DashboardWidget>
             )}

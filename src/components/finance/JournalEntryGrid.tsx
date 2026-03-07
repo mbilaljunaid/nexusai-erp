@@ -12,6 +12,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useLedger } from "@/context/LedgerContext";
 import type { GlAccount, GlPeriod, InsertGlJournal, InsertGlJournalLine } from "@/types/erp-types";
+import { Label } from "@/components/ui/label";
 
 export function JournalEntryGrid() {
     const { toast } = useToast();
@@ -129,11 +130,11 @@ export function JournalEntryGrid() {
                 {/* Header Section */}
                 <div className="grid grid-cols-3 gap-4 p-4 bg-muted/20 rounded-lg">
                     <div>
-                        <label className="text-sm font-medium">Journal Number</label>
+                        <Label className="text-sm font-medium">Journal Number</Label>
                         <Input value={journalNumber} onChange={e => setJournalNumber(e.target.value)} />
                     </div>
                     <div>
-                        <label className="text-sm font-medium">Period</label>
+                        <Label className="text-sm font-medium">Period</Label>
                         <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                             <SelectTrigger><SelectValue placeholder="Select Period" /></SelectTrigger>
                             <SelectContent>
@@ -146,7 +147,7 @@ export function JournalEntryGrid() {
                         </Select>
                     </div>
                     <div>
-                        <label className="text-sm font-medium">Description</label>
+                        <Label className="text-sm font-medium">Description</Label>
                         <Input value={description} onChange={e => setDescription(e.target.value)} />
                     </div>
                 </div>

@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, Clock, AlertCircle, User, DollarSign, Percent } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { formatNumber } from '@/lib/formatters';
 
 interface ApprovalRequest {
     id: string;
@@ -200,7 +201,7 @@ export default function DealDesk() {
                                                 <TableRow key={request.id}>
                                                     <TableCell className="font-medium">{request.quoteName}</TableCell>
                                                     <TableCell>{request.customerName}</TableCell>
-                                                    <TableCell className="text-right font-mono">${request.amount.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right font-mono">${formatNumber(request.amount)}</TableCell>
                                                     <TableCell className="text-right">
                                                         <Badge variant="outline" className="font-mono">
                                                             {request.requestedDiscount}%
@@ -255,7 +256,7 @@ export default function DealDesk() {
                                             <TableRow key={request.id}>
                                                 <TableCell className="font-medium">{request.quoteName}</TableCell>
                                                 <TableCell>{request.customerName}</TableCell>
-                                                <TableCell className="text-right font-mono">${request.amount.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-mono">${formatNumber(request.amount)}</TableCell>
                                                 <TableCell className="text-right">
                                                     <StatusBadge status="active" label={`${request.requestedDiscount}%`} />
                                                 </TableCell>
@@ -293,7 +294,7 @@ export default function DealDesk() {
                                             <TableRow key={request.id}>
                                                 <TableCell className="font-medium">{request.quoteName}</TableCell>
                                                 <TableCell>{request.customerName}</TableCell>
-                                                <TableCell className="text-right font-mono">${request.amount.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-mono">${formatNumber(request.amount)}</TableCell>
                                                 <TableCell className="text-right">
                                                     <Badge variant="outline" className="text-red-700 border-red-700">{request.requestedDiscount}%</Badge>
                                                 </TableCell>
@@ -320,19 +321,19 @@ export default function DealDesk() {
                                 {/* Request Details */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-sm font-medium">Quote Name</label>
+                                        <Label className="text-sm font-medium">Quote Name</Label>
                                         <div className="text-sm text-muted-foreground">{selectedRequest.quoteName}</div>
                                     </div>
                                     <div>
-                                        <label className="text-sm font-medium">Customer</label>
+                                        <Label className="text-sm font-medium">Customer</Label>
                                         <div className="text-sm text-muted-foreground">{selectedRequest.customerName}</div>
                                     </div>
                                     <div>
-                                        <label className="text-sm font-medium">Quote Amount</label>
-                                        <div className="text-sm font-bold">${selectedRequest.amount.toLocaleString()}</div>
+                                        <Label className="text-sm font-medium">Quote Amount</Label>
+                                        <div className="text-sm font-bold">${formatNumber(selectedRequest.amount)}</div>
                                     </div>
                                     <div>
-                                        <label className="text-sm font-medium">Requested Discount</label>
+                                        <Label className="text-sm font-medium">Requested Discount</Label>
                                         <div className="text-sm font-bold text-amber-700">{selectedRequest.requestedDiscount}%</div>
                                     </div>
                                 </div>

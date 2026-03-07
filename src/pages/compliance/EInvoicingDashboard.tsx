@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, CheckCircle2, XCircle, Clock, Globe, Send, RefreshCw, BarChart3 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Label } from "@/components/ui/label";
 
 interface EInvoiceDoc {
     id: string;
@@ -224,9 +225,9 @@ export default function EInvoicingDashboard() {
                         <h2 className="modal-title">Submit E-Invoice</h2>
                         {(['invoiceId', 'invoiceType', 'standard', 'countryCode'] as const).map(field => (
                             <div key={field} className="modal-field">
-                                <label className="modal-label" htmlFor={`einv-${field}`}>
+                                <Label className="modal-label" htmlFor={`einv-${field}`}>
                                     {field.replace(/([A-Z])/g, ' $1').trim()}
-                                </label>
+                                </Label>
                                 <Input
                                     id={`einv-${field}`}
                                     className="modal-input"

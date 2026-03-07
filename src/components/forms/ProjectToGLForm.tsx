@@ -8,6 +8,7 @@ import { Briefcase, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { formatNumber } from '@/lib/formatters';
 
 interface Project {
   id: string;
@@ -72,11 +73,11 @@ export function ProjectToGLForm({ project, onClose }: { project: Project; onClos
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Budget:</span>
-              <span className="font-semibold">${project.budget.toLocaleString()}</span>
+              <span className="font-semibold">${formatNumber(project.budget)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Amount Spent:</span>
-              <span className="font-semibold text-red-600">${project.spent.toLocaleString()}</span>
+              <span className="font-semibold text-red-600">${formatNumber(project.spent)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Status:</span>

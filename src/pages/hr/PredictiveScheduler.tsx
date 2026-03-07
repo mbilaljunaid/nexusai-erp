@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Label } from "@/components/ui/label";
 
 interface Shift {
     id: string;
@@ -99,11 +100,11 @@ export default function PredictiveScheduler() {
             actions={
                 <div className="ps-ctrl">
                     <div className="ps-loc">
-                        <label className="ll">Location</label>
+                        <Label className="ll">Location</Label>
                         <Input className="li" value={location} onChange={e => setLocation(e.target.value)} aria-label="Location ID" />
                     </div>
                     <div className="ps-wk">
-                        <label className="ll">Week Of</label>
+                        <Label className="ll">Week Of</Label>
                         <DatePicker className="li" value={weekStart} onChange={v => setWeekStart(v)} aria-label="Week start date" />
                     </div>
                     <button className="pub-btn" disabled={publishMutation.isPending || shifts.length === 0}
@@ -159,7 +160,7 @@ export default function PredictiveScheduler() {
             {activeTab === 'forecast' && (
                 <div className="forecast-panel">
                     <div className="fc-ctrl">
-                        <div className="pf"><label className="pl">Date</label><DatePicker className="pi" value={coverageDate} onChange={v => setCoverageDate(v)} aria-label="Date for coverage" /></div>
+                        <div className="pf"><Label className="pl">Date</Label><DatePicker className="pi" value={coverageDate} onChange={v => setCoverageDate(v)} aria-label="Date for coverage" /></div>
                         <button className="run-fc-btn" disabled={forecastMutation.isPending}
                             onClick={() => forecastMutation.mutate({ locationId: location, startDate: coverageDate, endDate: coverageDate })} aria-label="Run forecast">
                             {forecastMutation.isPending ? 'Forecasting…' : 'Run Forecast'}
@@ -211,10 +212,10 @@ export default function PredictiveScheduler() {
                 <div className="gen-panel">
                     <h3 className="gp-title">Generate Schedule from Demand Forecast</h3>
                     <div className="gp-grid">
-                        <div className="gf"><label className="gl">Week Start</label><DatePicker className="gi" value={genParams.weekStartDate || weekStart} onChange={v => setGenParams(p => ({ ...p, weekStartDate: v }))} aria-label="Schedule week start" /></div>
-                        <div className="gf"><label className="gl">Employee IDs (comma-sep)</label><Input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
-                        <div className="gf"><label className="gl">Max Hours / Employee</label><Input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
-                        <div className="gf"><label className="gl">Shift Hours</label><Input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>
+                        <div className="gf"><Label className="gl">Week Start</Label><DatePicker className="gi" value={genParams.weekStartDate || weekStart} onChange={v => setGenParams(p => ({ ...p, weekStartDate: v }))} aria-label="Schedule week start" /></div>
+                        <div className="gf"><Label className="gl">Employee IDs (comma-sep)</Label><Input className="gi" value={genParams.employeeIds} onChange={e => setGenParams(p => ({ ...p, employeeIds: e.target.value }))} aria-label="Employee IDs" /></div>
+                        <div className="gf"><Label className="gl">Max Hours / Employee</Label><Input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
+                        <div className="gf"><Label className="gl">Shift Hours</Label><Input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>
                     </div>
                     <button className="gen-btn" disabled={generateMutation.isPending}
                         onClick={() => generateMutation.mutate({

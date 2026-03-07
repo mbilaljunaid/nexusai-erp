@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Edit2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface Asset {
     id: string;
@@ -51,7 +52,7 @@ export default function FixedAssets() {
     const columns: SpreadsheetColumn<any>[] = [
         { id: "assetName", header: "Asset Name", width: "200px", cell: (row: any) => <span className="font-semibold">{row.assetName}</span> },
         { id: "category", header: "Category", width: "150px", cell: (row: any) => <span>{row.category}</span> },
-        { id: "cost", header: "Cost", width: "150px", cell: (row: any) => <span>${parseFloat(row.cost || "0").toLocaleString()}</span> },
+        { id: "cost", header: "Cost", width: "150px", cell: (row: any) => <span>${formatNumber(parseFloat(row.cost || "0"))}</span> },
         { id: "status", header: "Status", width: "120px", cell: (row: any) => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status}</Badge> },
         {
             id: "actions", header: "Actions", width: "100px", cell: (row: any) => (

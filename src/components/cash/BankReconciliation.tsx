@@ -29,6 +29,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export default function BankReconciliation() {
     const { toast } = useToast();
@@ -133,7 +134,7 @@ export default function BankReconciliation() {
                                     >
                                         <div className="flex justify-between items-start mb-1">
                                             <span className="font-semibold">{line.description}</span>
-                                            <span className="font-mono font-bold">{parseFloat(line.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                            <span className="font-mono font-bold">{formatNumber(parseFloat(line.amount), 2)}</span>
                                         </div>
                                         <div className="flex justify-between items-center text-xs text-muted-foreground">
                                             <div className="flex gap-3">
@@ -192,7 +193,7 @@ export default function BankReconciliation() {
                                         <div className="flex-1">
                                             <div className="flex justify-between items-start mb-1">
                                                 <span className="font-semibold text-sm">{trx.reference}</span>
-                                                <span className="font-mono font-bold">{parseFloat(trx.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                                <span className="font-mono font-bold">{formatNumber(parseFloat(trx.amount), 2)}</span>
                                             </div>
                                             <div className="flex justify-between items-center text-[10px] text-muted-foreground">
                                                 <div className="flex gap-2">
@@ -214,7 +215,7 @@ export default function BankReconciliation() {
                         <div className="flex justify-between items-center text-sm font-medium">
                             <span>Matched Amount:</span>
                             <span className={Math.abs(diff) < 0.01 ? 'text-green-600' : 'text-orange-600'}>
-                                {totalSelectedTrxAmount.toLocaleString()} / {parseFloat(currentLineAmount || "0").toLocaleString()}
+                                {formatNumber(totalSelectedTrxAmount)} / {formatNumber(parseFloat(currentLineAmount || "0"))}
                             </span>
                         </div>
                         <div className="flex gap-2">
@@ -237,7 +238,7 @@ export default function BankReconciliation() {
                         {Math.abs(diff) > 0.01 && selectedStatementLine && selectedTransactions.length > 0 && (
                             <p className="text-[10px] text-orange-500 text-center flex items-center justify-center gap-1">
                                 <AlertTriangle className="w-3 h-3" />
-                                Difference of {diff.toLocaleString()} must be resolved
+                                Difference of {formatNumber(diff)} must be resolved
                             </p>
                         )}
                     </div>

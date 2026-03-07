@@ -7,6 +7,7 @@ import { Grid3x3, BarChart3, PieChart as PieChartIcon, Settings } from "lucide-r
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 interface ReportSpreadsheetProps {
   data?: any[];
@@ -219,7 +220,7 @@ export function ReportSpreadsheet({ data = [], columns = [] }: ReportSpreadsheet
                     </DialogHeader>
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium">Dimension</label>
+                        <Label className="text-sm font-medium">Dimension</Label>
                         <Select value={pivotDimension} onValueChange={setPivotDimension}>
                           <SelectTrigger data-testid="select-pivot-dimension">
                             <SelectValue placeholder="Select dimension" />
@@ -234,7 +235,7 @@ export function ReportSpreadsheet({ data = [], columns = [] }: ReportSpreadsheet
                         </Select>
                       </div>
                       <div>
-                        <label className="text-sm font-medium">Metric</label>
+                        <Label className="text-sm font-medium">Metric</Label>
                         <Select value={pivotMetric} onValueChange={setPivotMetric}>
                           <SelectTrigger data-testid="select-pivot-metric">
                             <SelectValue placeholder="Select metric" />

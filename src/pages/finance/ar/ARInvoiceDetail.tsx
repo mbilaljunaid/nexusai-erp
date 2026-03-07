@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { formatNumber } from '@/lib/formatters';
 
 const salesCreditSchema = z.object({
     salespersonId: z.string().min(1, "Salesperson ID required"),
@@ -190,7 +191,7 @@ export default function ARInvoiceDetail() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Total Amount</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="text-xl font-bold">${parseFloat(invoice.totalAmount || invoice.amount || 0).toLocaleString()}</div>
+                        <div className="text-xl font-bold">${formatNumber(parseFloat(invoice.totalAmount || invoice.amount || 0))}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -229,9 +230,9 @@ export default function ARInvoiceDetail() {
                                         <div key={i} className="flex justify-between items-center p-3 border rounded-md bg-card">
                                             <div className="space-y-1">
                                                 <div className="font-medium">Item: {l.itemId || l.description}</div>
-                                                <div className="text-sm text-muted-foreground">Qty: {l.quantity || 1} &times; ${parseFloat(l.unitPrice || l.amount || 0).toLocaleString()}</div>
+                                                <div className="text-sm text-muted-foreground">Qty: {l.quantity || 1} &times; ${formatNumber(parseFloat(l.unitPrice || l.amount || 0))}</div>
                                             </div>
-                                            <div className="font-semibold">${parseFloat(l.amount || 0).toLocaleString()}</div>
+                                            <div className="font-semibold">${formatNumber(parseFloat(l.amount || 0))}</div>
                                         </div>
                                     ))}
                                 </div>

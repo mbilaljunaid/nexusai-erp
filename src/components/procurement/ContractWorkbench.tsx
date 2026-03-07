@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
+import { formatNumber } from '@/lib/formatters';
 
 export default function ContractWorkbench() {
     const { toast } = useToast();
@@ -142,7 +143,7 @@ export default function ContractWorkbench() {
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell className="text-sm font-semibold">
-                                                        ${Number(c.totalAmountLimit).toLocaleString()}
+                                                        ${formatNumber(Number(c.totalAmountLimit))}
                                                     </TableCell>
                                                     <TableCell className="text-right">
                                                         <Button variant="ghost" size="sm" onClick={() => {
@@ -256,7 +257,7 @@ export default function ContractWorkbench() {
                                             <span className="text-[10px] text-muted-foreground flex items-center gap-1"><CreditCard className="w-3 h-3" /> Amount Limit</span>
                                             <div className="space-y-2">
                                                 <span className="text-sm font-bold text-primary">
-                                                    ${Number(selectedContract?.totalAmountLimit).toLocaleString()}
+                                                    ${formatNumber(Number(selectedContract?.totalAmountLimit))}
                                                 </span>
                                                 {contractDetails.data && (
                                                     <div className="pt-2">
@@ -340,7 +341,7 @@ export default function ContractWorkbench() {
                                             <div>
                                                 <p className="text-[10px] uppercase font-bold text-muted-foreground">Total Consumption</p>
                                                 <p className="text-lg font-bold">
-                                                    ${Number((contractDetails.data as any)?.currentSpend || 0).toLocaleString()} / ${Number(selectedContract?.totalAmountLimit || 0).toLocaleString()}
+                                                    ${Number((contractDetails.data as any)?.currentSpend || 0).toLocaleString()} / ${formatNumber(Number(selectedContract?.totalAmountLimit || 0))}
                                                 </p>
                                             </div>
                                         </div>
@@ -375,7 +376,7 @@ export default function ContractWorkbench() {
                                                         <TableCell>
                                                             <Badge variant="outline" className="text-[10px]">{po.status}</Badge>
                                                         </TableCell>
-                                                        <TableCell className="text-right font-medium">${Number(po.totalAmount).toLocaleString()}</TableCell>
+                                                        <TableCell className="text-right font-medium">${formatNumber(Number(po.totalAmount))}</TableCell>
                                                     </TableRow>
                                                 ))
                                             )}

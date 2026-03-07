@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Plus, Trash2, Package } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export default function WmsUnitTypeManager() {
     const [isOpen, setIsOpen] = useState(false);
@@ -82,30 +83,30 @@ export default function WmsUnitTypeManager() {
                         <div className="space-y-4 py-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Code (e.g. PALLET-STD)</label>
+                                    <Label className="text-sm font-medium">Code (e.g. PALLET-STD)</Label>
                                     <Input value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Description</label>
+                                    <Label className="text-sm font-medium">Description</Label>
                                     <Input value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
                                 </div>
                             </div>
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Length (cm)</label>
+                                    <Label className="text-sm font-medium">Length (cm)</Label>
                                     <Input type="number" value={formData.length} onChange={(e) => setFormData({ ...formData, length: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Width (cm)</label>
+                                    <Label className="text-sm font-medium">Width (cm)</Label>
                                     <Input type="number" value={formData.width} onChange={(e) => setFormData({ ...formData, width: e.target.value })} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Height (cm)</label>
+                                    <Label className="text-sm font-medium">Height (cm)</Label>
                                     <Input type="number" value={formData.height} onChange={(e) => setFormData({ ...formData, height: e.target.value })} />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Max Weight (kg)</label>
+                                <Label className="text-sm font-medium">Max Weight (kg)</Label>
                                 <Input type="number" value={formData.maxWeight} onChange={(e) => setFormData({ ...formData, maxWeight: e.target.value })} />
                             </div>
                             <Button className="w-full" onClick={() => createMutation.mutate(formData)} disabled={createMutation.isPending}>

@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { formatNumber } from '@/lib/formatters';
 import {
     Form,
     FormControl,
@@ -101,7 +102,7 @@ export default function ResourceManager() {
             id: "costPerHour",
             header: "Cost/Hr",
             width: "150px",
-            cell: (row: Resource) => <span>${Number(row.costPerHour).toLocaleString()}</span>
+            cell: (row: Resource) => <span>${formatNumber(Number(row.costPerHour))}</span>
         },
         {
             id: "capacityPerHour",

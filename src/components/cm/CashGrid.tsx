@@ -6,6 +6,7 @@ import { Plus, Upload } from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatCurrency } from '@/lib/formatters';
 
 interface CashTransaction {
     id: string;
@@ -102,7 +103,7 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
                                 </td>
                                 <td className={cn(`px-4 py-2 text-right font-medium ${Number(row.amount) < 0 ? 'text-red-600' : 'text-green-600'
                                     }`)}>
-                                    {Number(row.amount).toLocaleString(undefined, { style: 'currency', currency: 'USD' })}
+                                    {formatCurrency(Number(row.amount))}
                                 </td>
                                 <td className="px-4 py-2 text-center">
                                     <span className={cn(`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.status === 'Reconciled' || row.status === 'Cleared'

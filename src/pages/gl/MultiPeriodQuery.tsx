@@ -25,7 +25,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
-import { formatCurrency } from "@/lib/formatters";
 
 interface Period {
     id: number;
@@ -99,11 +98,14 @@ export default function MultiPeriodQuery() {
     };
 
     const formatCurrency = (value: number) => {
-        return formatCurrency(value);
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+        }).format(value);
     };
 
     const formatPercent = (value: number) => {
-        return `${value >= 0 ? '+' : ''}${formatNumber(value.toFixed(2)}%`;
+        return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
     };
 
     const queryColumns: SpreadsheetColumn<any>[] = [
@@ -115,7 +117,7 @@ export default function MultiPeriodQuery() {
                 <div className="text-right w-full">
                     <div>{period.name}</div>
                     <div className="text-xs font-normal text-muted-foreground mr-1">
-                        {formatNumber(formatDate(period.startDate)}
+                        {formatDate(period.startDate)}
                     </div>
                 </div>
             ) as any,
@@ -150,7 +152,7 @@ export default function MultiPeriodQuery() {
                 if (row.isTotal) {
                     return (
                         <div className={cn(`text-right font-bold w-full ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`)}>
-                            {formatNumber(formatPercent(row.variance)}
+                            {formatPercent(row.variance)}
                         </div>
                     );
                 }
@@ -158,7 +160,7 @@ export default function MultiPeriodQuery() {
                     <div className="text-right w-full">
                         <div className={cn(`font-medium ${row.variance >= 0 ? "text-green-600" : "text-red-600"}`)}>
                             {row.variance >= 0 ? <TrendingUp className="h-4 w-4 inline mr-1" /> : <TrendingDown className="h-4 w-4 inline mr-1" />}
-                            {formatNumber(formatPercent(row.variance)}
+                            {formatPercent(row.variance)}
                         </div>
                         <div className="text-xs text-muted-foreground">{formatCurrency(row.varianceAmount)}</div>
                     </div>
@@ -345,7 +347,7 @@ export default function MultiPeriodQuery() {
                                     <CardContent className="pt-4">
                                         <div className="text-sm text-muted-foreground">Avg Growth Rate</div>
                                         <div className="text-2xl font-bold mt-1">
-                                            {formatNumber(formatPercent(queryData.statistics.avgGrowth)}
+                                            {formatPercent(queryData.statistics.avgGrowth)}
                                         </div>
                                     </CardContent>
                                 </Card>

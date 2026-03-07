@@ -11,7 +11,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, TrendingUp, Plus, Check } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
-import { formatNumber } from "@/lib/formatters";
 
 export function BudgetEntryForm() {
   const { toast } = useToast();
@@ -43,11 +42,11 @@ export function BudgetEntryForm() {
         totalBudget: parseFloat(totalBudget) || 0,
         amounts: monthlyBudget
       };
-
+      
       await api.epm.budgets.create(payload);
       setSuccessMessage("Budget saved successfully!");
       toast({ title: "Success", description: "Budget entry created" });
-
+      
       setBudgetCycle("");
       setDepartment("");
       setCostCenter("");
@@ -56,7 +55,7 @@ export function BudgetEntryForm() {
         jan: "", feb: "", mar: "", apr: "", may: "", jun: "",
         jul: "", aug: "", sep: "", oct: "", nov: "", dec: ""
       });
-
+      
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -69,11 +68,10 @@ export function BudgetEntryForm() {
   const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   const calculateTotal = () => {
-    const total = months.reduce((sum, month) => {
+    return months.reduce((sum, month) => {
       const val = parseFloat(monthlyBudget[month as keyof typeof monthlyBudget]) || 0;
       return sum + val;
-    }, 0);
-    return formatNumber(total, 2);
+    }, 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   return (
@@ -229,7 +227,7 @@ export function BudgetEntryForm() {
               </div>
               <div className="p-3 bg-green-500/10 dark:bg-green-950 rounded-lg">
                 <p className="text-sm font-semibold text-green-900 dark:text-green-100" data-testid="text-monthly-total">
-                  Total: {formatCurrency(calculateTotal())}
+                  Total: ${calculateTotal()}
                 </p>
               </div>
             </CardContent>

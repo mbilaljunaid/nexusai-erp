@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface Employee {
   id: string;
@@ -80,7 +81,7 @@ export function EmployeeToPayrollForm({ employee, onClose }: { employee: Employe
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Annual Salary:</span>
-              <span className="font-semibold">${parseFloat(salary).toLocaleString()}</span>
+              <span className="font-semibold">${formatNumber(parseFloat(salary))}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Department:</span>

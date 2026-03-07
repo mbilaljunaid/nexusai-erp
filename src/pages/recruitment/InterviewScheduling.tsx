@@ -11,6 +11,7 @@ import { Calendar, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Label } from "@/components/ui/label";
 
 
 
@@ -46,7 +47,7 @@ export default function InterviewScheduling() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <label className="text-sm font-medium">Candidate</label>
+                        <Label className="text-sm font-medium">Candidate</Label>
                         <Select value={candidateId} onValueChange={setCandidateId}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select candidate" />
@@ -59,16 +60,16 @@ export default function InterviewScheduling() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-sm font-medium">Date</label>
+                            <Label className="text-sm font-medium">Date</Label>
                             <DatePicker className="w-full border rounded-md p-2" onChange={() => { }} />
                         </div>
                         <div>
-                            <label className="text-sm font-medium">Time</label>
+                            <Label className="text-sm font-medium">Time</Label>
                             <Input type="time" className="w-full" />
                         </div>
                     </div>
                     <div>
-                        <label className="text-sm font-medium">Interview Panel</label>
+                        <Label className="text-sm font-medium">Interview Panel</Label>
                         <Select defaultValue="PANEL1">
                             <SelectTrigger>
                                 <SelectValue />

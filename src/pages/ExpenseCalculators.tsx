@@ -19,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 const MILEAGE_RATES = {
     BUSINESS: { rate: 0.67, label: "Business (IRS 2026)" },
@@ -142,7 +143,7 @@ export default function ExpenseCalculators() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium mb-2 block">Mileage Type</label>
+                            <Label className="text-sm font-medium mb-2 block">Mileage Type</Label>
                             <div className="grid grid-cols-3 gap-2">
                                 {Object.entries(MILEAGE_RATES).map(([key, { label, rate }]) => (
                                     <Button
@@ -160,10 +161,10 @@ export default function ExpenseCalculators() {
 
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+                                <Label className="text-sm font-medium mb-2 block flex items-center gap-1">
                                     <MapPin className="h-3 w-3" />
                                     Origin
-                                </label>
+                                </Label>
                                 <Input
                                     placeholder="Starting location"
                                     value={origin}
@@ -171,10 +172,10 @@ export default function ExpenseCalculators() {
                                 />
                             </div>
                             <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+                                <Label className="text-sm font-medium mb-2 block flex items-center gap-1">
                                     <MapPin className="h-3 w-3" />
                                     Destination
-                                </label>
+                                </Label>
                                 <Input
                                     placeholder="Ending location"
                                     value={destination}
@@ -184,7 +185,7 @@ export default function ExpenseCalculators() {
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium mb-2 block">Distance (miles)</label>
+                            <Label className="text-sm font-medium mb-2 block">Distance (miles)</Label>
                             <Input
                                 type="number"
                                 placeholder="e.g., 125.5"
@@ -238,7 +239,7 @@ export default function ExpenseCalculators() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium mb-2 block">Travel Location</label>
+                            <Label className="text-sm font-medium mb-2 block">Travel Location</Label>
                             <Select value={location} onValueChange={(val) => setLocation(val as keyof typeof PER_DIEM_RATES)}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue />
@@ -253,23 +254,23 @@ export default function ExpenseCalculators() {
 
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+                                <Label className="text-sm font-medium mb-2 block flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
                                     Start Date
-                                </label>
+                                </Label>
                                 <DatePicker value={startDate} onChange={v => setStartDate(v)} />
                             </div>
                             <div>
-                                <label className="text-sm font-medium mb-2 block flex items-center gap-1">
+                                <Label className="text-sm font-medium mb-2 block flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
                                     End Date
-                                </label>
+                                </Label>
                                 <DatePicker value={endDate} onChange={v => setEndDate(v)} />
                             </div>
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium mb-2 block">Meals Included</label>
+                            <Label className="text-sm font-medium mb-2 block">Meals Included</Label>
                             <div className="grid grid-cols-3 gap-2">
                                 <Button
                                     variant={meals.breakfast ? "default" : "outline"}

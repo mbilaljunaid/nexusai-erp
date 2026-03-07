@@ -4,6 +4,7 @@ import { StandardDashboard } from "@/components/ui/StandardDashboard";
 import { DashboardWidget } from "@/components/ui/DashboardWidget";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, DollarSign, PieChart, Activity } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 export default function BudgetingDashboard() {
   const { data: budgets = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/epm/budgets"] });
@@ -20,13 +21,13 @@ export default function BudgetingDashboard() {
       <div className="grid gap-4 md:grid-cols-2">
         <DashboardWidget
           title="Total Budget"
-          value={`$${totalBudget.toLocaleString()}`}
+          value={`$${formatNumber(totalBudget)}`}
           icon={DollarSign}
           description="Total allocated budget"
         />
         <DashboardWidget
           title="Total Spent"
-          value={`$${totalSpent.toLocaleString()}`}
+          value={`$${formatNumber(totalSpent)}`}
           icon={Activity}
           description="Total utilization"
         />
@@ -38,7 +39,7 @@ export default function BudgetingDashboard() {
             {isLoading ? <TableSkeleton rows={4} /> : budgets.length === 0 ? <p className="text-muted-foreground text-center py-4">No data</p> : budgets.slice(0, 5).map((b: any) => (
               <div key={b.id} className="p-3 border rounded-lg text-sm hover:bg-muted/50 transition-colors flex justify-between" data-testid={`budget-${b.id}`}>
                 <span className="font-medium">{b.department || "General"}</span>
-                <span className="font-mono font-bold">${parseFloat(b.amount || 0).toLocaleString()}</span>
+                <span className="font-mono font-bold">${formatNumber(parseFloat(b.amount || 0))}</span>
               </div>
             ))}
           </div>

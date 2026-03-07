@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { FileText, Download, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatNumber } from '@/lib/formatters';
 
 interface ReportData {
     account: {
@@ -81,17 +82,17 @@ export function ReconciliationReportDialog({
                         <div className="grid grid-cols-3 gap-6 bg-muted/30 p-4 rounded-lg border border-muted-foreground/10">
                             <div className="space-y-1">
                                 <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Ledger Balance</span>
-                                <div className="text-2xl font-bold">{report?.account.currency} {report?.summary.ledgerBalance.toLocaleString()}</div>
+                                <div className="text-2xl font-bold">{report?.account.currency} {formatNumber(report?.summary.ledgerBalance)}</div>
                             </div>
                             <div className="space-y-1">
                                 <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Statement Balance</span>
-                                <div className="text-2xl font-bold">{report?.account.currency} {report?.summary.statementBalance.toLocaleString()}</div>
+                                <div className="text-2xl font-bold">{report?.account.currency} {formatNumber(report?.summary.statementBalance)}</div>
                             </div>
                             <div className="space-y-1">
                                 <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Unreconciled Variance</span>
                                 <div className="flex items-center gap-2">
                                     <div className={cn(`text-2xl font-bold ${report?.summary.variance === 0 ? 'text-green-600' : 'text-destructive'}`)}>
-                                        {report?.account.currency} {report?.summary.variance.toLocaleString()}
+                                        {report?.account.currency} {formatNumber(report?.summary.variance)}
                                     </div>
                                     {report?.summary.variance === 0 ? <CheckCircle2 className="h-5 w-5 text-green-600" /> : <AlertCircle className="h-5 w-5 text-destructive" />}
                                 </div>
@@ -121,7 +122,7 @@ export function ReconciliationReportDialog({
                                                 <TableRow key={i}>
                                                     <TableCell className="text-xs">{format(new Date(l.date), 'MMM dd')}</TableCell>
                                                     <TableCell className="text-xs max-w-36 truncate">{l.description}</TableCell>
-                                                    <TableCell className="text-xs text-right font-medium">{l.amount.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-xs text-right font-medium">{formatNumber(l.amount)}</TableCell>
                                                 </TableRow>
                                             ))
                                         )}
@@ -150,7 +151,7 @@ export function ReconciliationReportDialog({
                                                 <TableRow key={i}>
                                                     <TableCell className="text-xs">{format(new Date(t.date), 'MMM dd')}</TableCell>
                                                     <TableCell className="text-xs max-w-36 truncate">{t.description}</TableCell>
-                                                    <TableCell className="text-xs text-right font-medium">{t.amount.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-xs text-right font-medium">{formatNumber(t.amount)}</TableCell>
                                                 </TableRow>
                                             ))
                                         )}

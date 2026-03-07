@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import ExcelJS from "exceljs";
+import { Label } from "@/components/ui/label";
 
 interface ExcelImportModalProps {
   formId: string;
@@ -171,14 +172,14 @@ export function ExcelImportModal({ formId, templateColumns }: ExcelImportModalPr
               id="excel-file"
               data-testid="input-excel-file"
             />
-            <label htmlFor="excel-file" className="cursor-pointer">
+            <Label htmlFor="excel-file" className="cursor-pointer">
               <div className="text-sm text-muted-foreground">
                 Click to select an Excel file or drag and drop
               </div>
               <div className="text-xs text-muted-foreground mt-1">
                 Supports .xlsx, .xls, and .csv files
               </div>
-            </label>
+            </Label>
           </div>
           {importMutation.isPending && (
             <div className="text-sm text-muted-foreground">Importing records...</div>

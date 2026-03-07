@@ -9,6 +9,8 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { useQuery } from "@tanstack/react-query";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 export default function Analytics() {
   const [activeNav, setActiveNav] = useState("dashboard");
@@ -66,12 +68,12 @@ export default function Analytics() {
 
   const analyticsColumns: SpreadsheetColumn<any>[] = [
     { id: "month", header: "Month", width: "100px", cell: (row) => <span>{row.month}</span> },
-    { id: "revenue", header: "Revenue", width: "120px", cell: (row) => <span className="text-right block">${row.revenue.toLocaleString()}</span> },
-    { id: "expenses", header: "Expenses", width: "120px", cell: (row) => <span className="text-right block">${row.expenses.toLocaleString()}</span> },
+    { id: "revenue", header: "Revenue", width: "120px", cell: (row) => <span className="text-right block">${formatNumber(row.revenue)}</span> },
+    { id: "expenses", header: "Expenses", width: "120px", cell: (row) => <span className="text-right block">${formatNumber(row.expenses)}</span> },
     {
       id: "profit", header: "Profit", width: "120px", cell: (row) => {
         const profit = row.revenue - row.expenses;
-        return <span className="text-right block font-semibold">${profit.toLocaleString()}</span>;
+        return <span className="text-right block font-semibold">${formatNumber(profit)}</span>;
       }
     },
     {
@@ -228,7 +230,7 @@ export default function Analytics() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <label className="text-sm font-medium">Report Type</label>
+                <Label className="text-sm font-medium">Report Type</Label>
                 <Select value={reportType} onValueChange={setReportType}>
                   <SelectTrigger className="mt-1" data-testid="select-report-type">
                     <SelectValue />
@@ -242,7 +244,7 @@ export default function Analytics() {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium">Format</label>
+                <Label className="text-sm font-medium">Format</Label>
                 <Select value={reportFormat} onValueChange={setReportFormat}>
                   <SelectTrigger className="mt-1" data-testid="select-report-format">
                     <SelectValue />

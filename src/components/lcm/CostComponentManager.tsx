@@ -13,6 +13,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Plus, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 
 export default function CostComponentManager() {
     const { toast } = useToast();
@@ -68,7 +69,7 @@ export default function CostComponentManager() {
                 {/* Creation Form */}
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6 p-4 bg-muted/50 rounded-lg items-end">
                     <div className="md:col-span-1">
-                        <label className="text-xs font-medium">Name</label>
+                        <Label className="text-xs font-medium">Name</Label>
                         <Input
                             value={newComponent.name}
                             onChange={(e) => setNewComponent({ ...newComponent, name: e.target.value })}
@@ -76,7 +77,7 @@ export default function CostComponentManager() {
                         />
                     </div>
                     <div className="md:col-span-1">
-                        <label className="text-xs font-medium">Type</label>
+                        <Label className="text-xs font-medium">Type</Label>
                         <Select
                             value={newComponent.componentType}
                             onValueChange={(val) => setNewComponent({ ...newComponent, componentType: val })}
@@ -93,7 +94,7 @@ export default function CostComponentManager() {
                         </Select>
                     </div>
                     <div className="md:col-span-1">
-                        <label className="text-xs font-medium">Basis</label>
+                        <Label className="text-xs font-medium">Basis</Label>
                         <Select
                             value={newComponent.allocationBasis}
                             onValueChange={(val) => setNewComponent({ ...newComponent, allocationBasis: val })}
@@ -110,7 +111,7 @@ export default function CostComponentManager() {
                         </Select>
                     </div>
                     <div className="md:col-span-1">
-                        <label className="text-xs font-medium">Absorption Account</label>
+                        <Label className="text-xs font-medium">Absorption Account</Label>
                         <Input
                             value={newComponent.absorptionAccountCcid}
                             onChange={(e) => setNewComponent({ ...newComponent, absorptionAccountCcid: e.target.value })}
@@ -118,7 +119,7 @@ export default function CostComponentManager() {
                         />
                     </div>
                     <div className="md:col-span-1">
-                        <label className="text-xs font-medium">Variance Account</label>
+                        <Label className="text-xs font-medium">Variance Account</Label>
                         <Input
                             value={newComponent.varianceAccountCcid}
                             onChange={(e) => setNewComponent({ ...newComponent, varianceAccountCcid: e.target.value })}

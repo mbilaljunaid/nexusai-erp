@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, BarChart3, Download, TrendingUp, AlertCircle } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 export default function MobileApps() {
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
@@ -47,7 +48,7 @@ export default function MobileApps() {
                       <TrendingUp className="h-4 w-4 text-green-600" />
                       {app.rating}★
                     </div>
-                    <div className="text-xs text-muted-foreground">{app.downloadCount.toLocaleString()} downloads</div>
+                    <div className="text-xs text-muted-foreground">{formatNumber(app.downloadCount)} downloads</div>
                   </div>
                 </div>
               </CardContent>
@@ -72,7 +73,7 @@ export default function MobileApps() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <span className="text-muted-foreground">DAU:</span>
-                    <div className="font-bold">{metric.dailyActiveUsers.toLocaleString()}</div>
+                    <div className="font-bold">{formatNumber(metric.dailyActiveUsers)}</div>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Avg Session:</span>

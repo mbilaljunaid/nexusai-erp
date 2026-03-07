@@ -20,6 +20,7 @@ import { Link } from "wouter";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { useEnterprise } from "@/contexts/EnterpriseContext";
+import { formatNumber } from '@/lib/formatters';
 
 export default function ProcurementDashboard() {
     const { activeBuId } = useEnterprise();
@@ -120,7 +121,7 @@ export default function ProcurementDashboard() {
                                     <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false}
                                         tickFormatter={(v) => v.length > 10 ? `${v.substring(0, 10)}...` : v} />
                                     <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v: any) => `$${v}`} />
-                                    <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, 'Spend']} cursor={{ fill: 'transparent' }} />
+                                    <Tooltip formatter={(value: number) => [`$${formatNumber(value)}`, 'Spend']} cursor={{ fill: 'transparent' }} />
                                     <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
                                 </BarChart>
                             </ResponsiveContainer>

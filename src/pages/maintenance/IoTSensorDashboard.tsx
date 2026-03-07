@@ -7,6 +7,7 @@ import { Activity, Thermometer, Gauge, Download } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function IoTSensorDashboard() {
@@ -40,7 +41,7 @@ export default function IoTSensorDashboard() {
 
             <div className="grid grid-cols-3 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Asset</label>
+                    <Label className="text-sm font-medium">Asset</Label>
                     <Select value={assetId} onValueChange={setAssetId}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select asset" />
@@ -55,7 +56,7 @@ export default function IoTSensorDashboard() {
                     </Select>
                 </div>
                 <div>
-                    <label className="text-sm font-medium">Time Range</label>
+                    <Label className="text-sm font-medium">Time Range</Label>
                     <Select value={timeRange} onValueChange={setTimeRange}>
                         <SelectTrigger>
                             <SelectValue />

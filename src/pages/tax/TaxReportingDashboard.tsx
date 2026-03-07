@@ -10,6 +10,8 @@ import { useState } from "react";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 export default function TaxReportingDashboard() {
     const [period, setPeriod] = useState("2026-02");
@@ -41,7 +43,7 @@ export default function TaxReportingDashboard() {
         >
             <div className="space-y-6">
                 <div>
-                    <label className="text-sm font-medium">Reporting Period</label>
+                    <Label className="text-sm font-medium">Reporting Period</Label>
                     <Select value={period} onValueChange={setPeriod}>
                         <SelectTrigger className="w-64">
                             <SelectValue />
@@ -58,19 +60,19 @@ export default function TaxReportingDashboard() {
                     <Card>
                         <CardContent className="pt-6">
                             <div className="text-sm text-muted-foreground">Total Tax Collected</div>
-                            <div className="text-3xl font-bold mt-1">${reporting?.totalCollected?.toLocaleString()}</div>
+                            <div className="text-3xl font-bold mt-1">${formatNumber(reporting?.totalCollected)}</div>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="pt-6">
                             <div className="text-sm text-muted-foreground">Tax Payable</div>
-                            <div className="text-3xl font-bold mt-1">${reporting?.taxPayable?.toLocaleString()}</div>
+                            <div className="text-3xl font-bold mt-1">${formatNumber(reporting?.taxPayable)}</div>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="pt-6">
                             <div className="text-sm text-muted-foreground">Tax Receivable</div>
-                            <div className="text-3xl font-bold mt-1">${reporting?.taxReceivable?.toLocaleString()}</div>
+                            <div className="text-3xl font-bold mt-1">${formatNumber(reporting?.taxReceivable)}</div>
                         </CardContent>
                     </Card>
                     <Card>

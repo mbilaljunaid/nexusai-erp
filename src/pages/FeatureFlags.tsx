@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/accordion";
 import { Flag, Plus, Search, RefreshCw, Gauge } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 interface FeatureFlag {
   id: string;
@@ -271,7 +272,7 @@ export default function FeatureFlags() {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1">
-              <label className="text-sm font-medium">Flag Name</label>
+              <Label className="text-sm font-medium">Flag Name</Label>
               <Input
                 placeholder="e.g. new_dashboard_v2"
                 value={newFlag.name}
@@ -279,7 +280,7 @@ export default function FeatureFlags() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-medium">Description</label>
+              <Label className="text-sm font-medium">Description</Label>
               <Input
                 placeholder="What does this flag control?"
                 value={newFlag.description}
@@ -288,7 +289,7 @@ export default function FeatureFlags() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-sm font-medium">Module</label>
+                <Label className="text-sm font-medium">Module</Label>
                 <Select
                   value={newFlag.module}
                   onValueChange={(v) => setNewFlag({ ...newFlag, module: v })}
@@ -304,7 +305,7 @@ export default function FeatureFlags() {
                 </Select>
               </div>
               <div className="space-y-1">
-                <label className="text-sm font-medium">Rollout %</label>
+                <Label className="text-sm font-medium">Rollout %</Label>
                 <Input
                   type="number"
                   min={0}

@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePickerField } from '@/components/forms/DatePickerField';
+import { formatNumber } from '@/lib/formatters';
 
 const runSchema = z.object({
     payGroupId: z.string().min(1, "Pay Group is required"),
@@ -243,7 +244,7 @@ export default function PayrollWorkbench() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {runs && runs.length > 0 ? `$${Number(runs[0].totalNet || 0).toLocaleString()}` : "$0.00"}
+                            {runs && runs.length > 0 ? `$${formatNumber(Number(runs[0].totalNet || 0))}` : "$0.00"}
                         </div>
                         <p className="text-xs text-muted-foreground">
                             {runs && runs.length > 0 ? `${runs[0].periodName} (Paid)` : "No Date"}

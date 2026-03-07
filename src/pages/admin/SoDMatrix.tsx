@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ShieldAlert, Trash2, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 // Mock roles derived from shared definition or fetched
 const AVAILABLE_ROLES = [
@@ -99,7 +100,7 @@ export default function SoDMatrix() {
                         <div className="space-y-4 py-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Role A</label>
+                                    <Label className="text-sm font-medium">Role A</Label>
                                     <Select value={roleA} onValueChange={setRoleA}>
                                         <SelectTrigger><SelectValue placeholder="Select Role" /></SelectTrigger>
                                         <SelectContent>
@@ -108,7 +109,7 @@ export default function SoDMatrix() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Role B</label>
+                                    <Label className="text-sm font-medium">Role B</Label>
                                     <Select value={roleB} onValueChange={setRoleB}>
                                         <SelectTrigger><SelectValue placeholder="Select Role" /></SelectTrigger>
                                         <SelectContent>
@@ -119,7 +120,7 @@ export default function SoDMatrix() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Risk Level</label>
+                                <Label className="text-sm font-medium">Risk Level</Label>
                                 <Select value={riskLevel} onValueChange={setRiskLevel}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -131,7 +132,7 @@ export default function SoDMatrix() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Description</label>
+                                <Label className="text-sm font-medium">Description</Label>
                                 <Textarea
                                     value={description}
                                     onChange={e => setDescription(e.target.value)}

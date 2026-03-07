@@ -11,6 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, XCircle, Link2, FileCheck, AlertTriangle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface ReconciliationItem {
     id: string;
@@ -153,7 +155,7 @@ export default function BudgetReconciliation() {
                 {/* Period Selector & Actions */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Period:</label>
+                        <Label className="text-sm font-medium">Period:</Label>
                         <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />
@@ -181,7 +183,7 @@ export default function BudgetReconciliation() {
                                     By signing off, you confirm that all budget vs actual variances have been reviewed and reconciled.
                                 </p>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Comments (Optional)</label>
+                                    <Label className="text-sm font-medium">Comments (Optional)</Label>
                                     <Textarea
                                         placeholder="Add any notes or observations..."
                                         value={signOffComments}
@@ -230,14 +232,14 @@ export default function BudgetReconciliation() {
                                     items.map((item) => (
                                         <TableRow key={item.id}>
                                             <TableCell className="font-medium">{item.account}</TableCell>
-                                            <TableCell className="text-right font-mono">${item.budgetAmount.toLocaleString()}</TableCell>
+                                            <TableCell className="text-right font-mono">${formatNumber(item.budgetAmount)}</TableCell>
                                             <TableCell className="text-right font-mono">
-                                                {item.actualAmount ? `$${item.actualAmount.toLocaleString()}` : "-"}
+                                                {item.actualAmount ? `$${formatNumber(item.actualAmount)}` : "-"}
                                             </TableCell>
                                             <TableCell className="text-right font-mono">
                                                 {item.variance !== undefined ? (
                                                     <span className={item.variance < 0 ? "text-red-600" : "text-green-600"}>
-                                                        ${Math.abs(item.variance).toLocaleString()}
+                                                        ${formatNumber(Math.abs(item.variance))}
                                                     </span>
                                                 ) : "-"}
                                             </TableCell>
@@ -284,7 +286,7 @@ export default function BudgetReconciliation() {
                             <div className="p-4 border rounded-lg space-y-2">
                                 <div className="text-sm font-medium">Budget Line</div>
                                 <div className="text-xs text-muted-foreground">{selectedItem?.budgetLineId}</div>
-                                <div className="text-lg font-mono">${selectedItem?.budgetAmount.toLocaleString()}</div>
+                                <div className="text-lg font-mono">${formatNumber(selectedItem?.budgetAmount)}</div>
                             </div>
                         </div>
                         <DialogFooter>

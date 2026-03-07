@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api"; // Assuming we might mock this or add an endpoint later
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { formatNumber } from '@/lib/formatters';
 
 interface AgingBucket {
     bucket: string;
@@ -55,7 +56,7 @@ export function ArAgingAnalysis({ customerId }: ArAgingAnalysisProps) {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Total Outstanding</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-primary">${totalOutstanding.toLocaleString()}</div>
+                        <div className="text-2xl font-bold text-primary">${formatNumber(totalOutstanding)}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -91,7 +92,7 @@ export function ArAgingAnalysis({ customerId }: ArAgingAnalysisProps) {
                                 ))}
                             </Pie>
                             <Tooltip
-                                formatter={(value: number) => `$${value.toLocaleString()}`}
+                                formatter={(value: number) => `$${formatNumber(value)}`}
                                 contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                             />
                             <Legend verticalAlign="bottom" height={36} iconType="circle" />
@@ -119,7 +120,7 @@ export function ArAgingAnalysis({ customerId }: ArAgingAnalysisProps) {
                             </TableCell>
                             <TableCell className="text-right">{bucket.count}</TableCell>
                             <TableCell className="text-right font-bold">
-                                ${bucket.amount.toLocaleString()}
+                                ${formatNumber(bucket.amount)}
                             </TableCell>
                         </TableRow>
                     ))}

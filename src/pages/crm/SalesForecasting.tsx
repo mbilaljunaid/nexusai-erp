@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function SalesForecasting() {
     // Mock User ID for now (Phase 1 Auth)
@@ -59,7 +60,7 @@ export default function SalesForecasting() {
                     <Progress value={forecast?.attainment || 0} className="h-4" indicatorClassName={attainmentColor} />
                     <div className="flex justify-between mt-2 text-sm text-muted-foreground">
                         <span>$0</span>
-                        <span>Target: ${Number(forecast?.quota).toLocaleString()}</span>
+                        <span>Target: ${formatNumber(Number(forecast?.quota))}</span>
                     </div>
                 </CardContent>
             </Card>
@@ -72,7 +73,7 @@ export default function SalesForecasting() {
                         <CheckCircle className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${Number(forecast?.closedWon).toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(Number(forecast?.closedWon))}</div>
                         <p className="text-xs text-muted-foreground">Booked Revenue</p>
                     </CardContent>
                 </Card>
@@ -82,7 +83,7 @@ export default function SalesForecasting() {
                         <Target className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${Number(forecast?.commitForecast).toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(Number(forecast?.commitForecast))}</div>
                         <p className="text-xs text-muted-foreground">High Confidence</p>
                     </CardContent>
                 </Card>
@@ -92,7 +93,7 @@ export default function SalesForecasting() {
                         <TrendingUp className="h-4 w-4 text-purple-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${Number(forecast?.bestCaseForecast).toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(Number(forecast?.bestCaseForecast))}</div>
                         <p className="text-xs text-muted-foreground">Potential Upside</p>
                     </CardContent>
                 </Card>
@@ -102,7 +103,7 @@ export default function SalesForecasting() {
                         <AlertTriangle className="h-4 w-4 text-amber-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${Number(forecast?.weightedForecast).toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(Number(forecast?.weightedForecast))}</div>
                         <p className="text-xs text-muted-foreground">Risk Adjusted</p>
                     </CardContent>
                 </Card>

@@ -7,6 +7,7 @@ import { BarChart3, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { formatNumber } from '@/lib/formatters';
 
 interface Budget {
   id: string;
@@ -73,16 +74,16 @@ export function BudgetToVarianceReportForm({ budget, onClose }: { budget: Budget
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <p className="text-xs text-muted-foreground">Budgeted</p>
-                <p className="text-lg font-semibold">${budget.amount.toLocaleString()}</p>
+                <p className="text-lg font-semibold">${formatNumber(budget.amount)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Actual</p>
-                <p className="text-lg font-semibold">${budget.spent.toLocaleString()}</p>
+                <p className="text-lg font-semibold">${formatNumber(budget.spent)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Variance</p>
                 <p className={cn(`text-lg font-semibold ${variance > 0 ? "text-red-600" : "text-green-600"}`)}>
-                  {variance > 0 ? "+" : ""}{variance.toLocaleString()} ({variancePercent}%)
+                  {variance > 0 ? "+" : ""}{formatNumber(variance)} ({variancePercent}%)
                 </p>
               </div>
             </div>

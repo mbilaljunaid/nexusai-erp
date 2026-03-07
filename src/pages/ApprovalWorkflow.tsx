@@ -7,6 +7,7 @@ import { IconNavigation } from "@/components/IconNavigation";
 import { CheckCircle2, Clock, XCircle, ArrowRight, Users, FileText, DollarSign, Filter } from "lucide-react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { formatNumber } from '@/lib/formatters';
 
 interface ApprovalRequest {
   id: string;
@@ -135,7 +136,7 @@ export default function ApprovalWorkflow() {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="text-2xl font-semibold font-mono">${parseFloat(request.amount).toLocaleString()}</p>
+                          <p className="text-2xl font-semibold font-mono">${formatNumber(parseFloat(request.amount))}</p>
                           <Badge>{request.status.toUpperCase()}</Badge>
                         </div>
                         {activeNav === "pending" && (

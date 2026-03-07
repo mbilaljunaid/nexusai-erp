@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export default function CreditMemoWorkbench() {
     const { businessUnitId } = useEnterpriseStore();
@@ -202,7 +203,7 @@ export default function CreditMemoWorkbench() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-red-600">
-                                ${metrics.totalCreditAmount.toLocaleString()}
+                                ${formatNumber(metrics.totalCreditAmount)}
                             </div>
                             <p className="text-xs text-muted-foreground">Lifetime credits</p>
                         </CardContent>

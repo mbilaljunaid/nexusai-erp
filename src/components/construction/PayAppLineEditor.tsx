@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calculator, Save, X, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 interface PayAppLine {
     id: string;
@@ -96,15 +97,15 @@ export function PayAppLineEditor({ open, onOpenChange, line, onSave, isReadOnly 
                             <div className="grid grid-cols-5 gap-4 text-sm">
                                 <div>
                                     <div className="text-muted-foreground mb-1">Scheduled Value</div>
-                                    <div className="font-mono font-bold">${scheduledValue.toLocaleString()}</div>
+                                    <div className="font-mono font-bold">${formatNumber(scheduledValue)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground mb-1">Previous Amount</div>
-                                    <div className="font-mono">${previousAmount.toLocaleString()}</div>
+                                    <div className="font-mono">${formatNumber(previousAmount)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground mb-1">This Period</div>
-                                    <div className="font-mono text-blue-600 font-bold">${workThisPeriod.toLocaleString()}</div>
+                                    <div className="font-mono text-blue-600 font-bold">${formatNumber(workThisPeriod)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground mb-1">% Complete</div>
@@ -112,7 +113,7 @@ export function PayAppLineEditor({ open, onOpenChange, line, onSave, isReadOnly 
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground mb-1">Balance</div>
-                                    <div className="font-mono">${balance.toLocaleString()}</div>
+                                    <div className="font-mono">${formatNumber(balance)}</div>
                                 </div>
                             </div>
                         </CardContent>
@@ -166,11 +167,11 @@ export function PayAppLineEditor({ open, onOpenChange, line, onSave, isReadOnly 
                         <div className="text-sm space-y-2">
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">Work Completed This Period:</span>
-                                <span className="font-mono">${totalCompleted.toLocaleString()} - ${previousAmount.toLocaleString()} = ${workThisPeriod.toLocaleString()}</span>
+                                <span className="font-mono">${formatNumber(totalCompleted)} - ${formatNumber(previousAmount)} = ${formatNumber(workThisPeriod)}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">Percentage Complete:</span>
-                                <span className="font-mono">${totalCompleted.toLocaleString()} ÷ ${scheduledValue.toLocaleString()} = {percentComplete.toFixed(2)}%</span>
+                                <span className="font-mono">${formatNumber(totalCompleted)} ÷ ${formatNumber(scheduledValue)} = {percentComplete.toFixed(2)}%</span>
                             </div>
                         </div>
                     </div>

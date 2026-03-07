@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { Upload, File, X, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 interface FileUploadZoneProps {
     onFileSelect: (file: File) => void;
@@ -130,7 +131,7 @@ export function FileUploadZone({
                         onChange={handleFileInput}
                         disabled={disabled}
                     />
-                    <label htmlFor="file-upload">
+                    <Label htmlFor="file-upload">
                         <Button
                             type="button"
                             variant="outline"
@@ -140,7 +141,7 @@ export function FileUploadZone({
                         >
                             Select File
                         </Button>
-                    </label>
+                    </Label>
                     <p className="text-xs text-muted-foreground mt-3">
                         Accepted formats: {acceptedFormats.join(", ")} • Max size: {maxSizeMB}MB
                     </p>

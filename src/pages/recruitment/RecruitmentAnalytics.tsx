@@ -19,6 +19,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
+import { formatNumber } from '@/lib/formatters';
 
 interface Analytics {
     timeToHire: number;
@@ -218,7 +219,7 @@ export default function RecruitmentAnalytics() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-muted-foreground">Cost per Hire</p>
-                                <p className="text-2xl font-bold">${analytics.costPerHire.toLocaleString()}</p>
+                                <p className="text-2xl font-bold">${formatNumber(analytics.costPerHire)}</p>
                             </div>
                             <DollarSign className="h-8 w-8 text-orange-600" />
                         </div>

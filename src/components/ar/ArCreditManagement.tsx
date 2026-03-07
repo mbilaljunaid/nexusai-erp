@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { formatNumber } from '@/lib/formatters';
 import {
     ShieldAlert,
     ShieldCheck,
@@ -85,7 +86,7 @@ export function ArCreditManagement() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${metrics.totalExposure.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(metrics.totalExposure)}</div>
                         <p className="text-xs text-muted-foreground">+2.5% from last month</p>
                     </CardContent>
                 </Card>
@@ -161,11 +162,11 @@ export function ArCreditManagement() {
                                     <TableCell>
                                         <Badge variant="outline">{task.type}</Badge>
                                     </TableCell>
-                                    <TableCell>${task.currentLimit.toLocaleString()}</TableCell>
+                                    <TableCell>${formatNumber(task.currentLimit)}</TableCell>
                                     <TableCell>
                                         {task.requestedAmount ? (
                                             <span className="text-emerald-600 font-medium">
-                                                ${task.requestedAmount.toLocaleString()}
+                                                ${formatNumber(task.requestedAmount)}
                                             </span>
                                         ) : "-"}
                                     </TableCell>
@@ -212,12 +213,12 @@ export function ArCreditManagement() {
                             </div>
                             <div>
                                 <Label>Current Limit</Label>
-                                <div className="font-medium">${selectedTask?.currentLimit.toLocaleString()}</div>
+                                <div className="font-medium">${formatNumber(selectedTask?.currentLimit)}</div>
                             </div>
                             {selectedTask?.requestedAmount && (
                                 <div>
                                     <Label>Requested Amount</Label>
-                                    <div className="font-medium text-emerald-600">${selectedTask.requestedAmount.toLocaleString()}</div>
+                                    <div className="font-medium text-emerald-600">${formatNumber(selectedTask.requestedAmount)}</div>
                                 </div>
                             )}
                         </div>

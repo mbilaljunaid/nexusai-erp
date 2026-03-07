@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, UploadCloud } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Label } from "@/components/ui/label";
 
 
 // MOCK USER
@@ -92,7 +93,7 @@ export default function PayrollTransfer() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Time Period</label>
+                            <Label className="text-sm font-medium">Time Period</Label>
                             <Select onValueChange={setSelectedPeriod}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Period" />

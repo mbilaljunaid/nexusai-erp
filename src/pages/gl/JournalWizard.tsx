@@ -14,6 +14,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Card } from "@/components/ui/card";
+import { formatNumber } from '@/lib/formatters';
 
 interface JournalLine {
     id: number;
@@ -223,15 +224,15 @@ export default function JournalWizard() {
                 <div className="flex items-center gap-6 text-sm">
                     <div className="flex flex-col">
                         <span className="text-muted-foreground text-xs uppercase tracking-wider">Total Debit</span>
-                        <span className="font-mono font-bold text-lg">{totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                        <span className="font-mono font-bold text-lg">{formatNumber(totalDebit, 2)}</span>
                     </div>
                     <div className="flex flex-col">
                         <span className="text-muted-foreground text-xs uppercase tracking-wider">Total Credit</span>
-                        <span className="font-mono font-bold text-lg">{totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                        <span className="font-mono font-bold text-lg">{formatNumber(totalCredit, 2)}</span>
                     </div>
                     <div className="px-4 py-1 rounded bg-slate-100 flex items-center gap-2">
                         <span className={Math.abs(totalDebit - totalCredit) > 0.01 ? "text-red-600 font-bold" : "text-green-600 font-bold"}>
-                            Variance: {Math.abs(totalDebit - totalCredit).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            Variance: {formatNumber(Math.abs(totalDebit - totalCredit), 2)}
                         </span>
                         {Math.abs(totalDebit - totalCredit) > 0.01 && <AlertTriangle className="h-4 w-4 text-red-500" />}
                     </div>

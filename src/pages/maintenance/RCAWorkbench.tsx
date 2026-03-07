@@ -9,6 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Search, Save, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 interface RCAAnalysis {
@@ -124,7 +125,7 @@ export default function RCAWorkbench() {
             </div>
 
             <div>
-                <label className="text-sm font-medium">Select Failure Event</label>
+                <Label className="text-sm font-medium">Select Failure Event</Label>
                 <Select value={selectedFailure} onValueChange={setSelectedFailure}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select failure to analyze" />
@@ -175,7 +176,7 @@ export default function RCAWorkbench() {
                                         />
                                         <div className="grid grid-cols-2 gap-2">
                                             <div>
-                                                <label className="text-xs text-muted-foreground">Likelihood (1-10)</label>
+                                                <Label className="text-xs text-muted-foreground">Likelihood (1-10)</Label>
                                                 <Select
                                                     value={rc.likelihood.toString()}
                                                     onValueChange={(value) => updateRootCause(rc.id, { likelihood: parseInt(value) })}
@@ -193,7 +194,7 @@ export default function RCAWorkbench() {
                                                 </Select>
                                             </div>
                                             <div>
-                                                <label className="text-xs text-muted-foreground">Impact (1-10)</label>
+                                                <Label className="text-xs text-muted-foreground">Impact (1-10)</Label>
                                                 <Select
                                                     value={rc.impact.toString()}
                                                     onValueChange={(value) => updateRootCause(rc.id, { impact: parseInt(value) })}
@@ -241,7 +242,7 @@ export default function RCAWorkbench() {
                                         />
                                         <div className="grid grid-cols-2 gap-2">
                                             <div>
-                                                <label className="text-xs text-muted-foreground">Priority</label>
+                                                <Label className="text-xs text-muted-foreground">Priority</Label>
                                                 <Select
                                                     value={ca.priority}
                                                     onValueChange={(value: any) => updateCorrectiveAction(ca.id, { priority: value })}
@@ -257,7 +258,7 @@ export default function RCAWorkbench() {
                                                 </Select>
                                             </div>
                                             <div>
-                                                <label className="text-xs text-muted-foreground">Status</label>
+                                                <Label className="text-xs text-muted-foreground">Status</Label>
                                                 <Select
                                                     value={ca.status}
                                                     onValueChange={(value: any) => updateCorrectiveAction(ca.id, { status: value })}

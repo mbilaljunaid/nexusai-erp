@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface LeaseDetailProps {
     leaseId: string;
@@ -129,7 +130,7 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                         <Card>
                             <CardHeader><CardTitle>Financials (NPV)</CardTitle></CardHeader>
                             <CardContent className="space-y-2">
-                                <div className="flex justify-between font-bold"><span>Total Liability:</span> <span>${Number(lease.initialDirectCosts || 0).toLocaleString()}</span></div>
+                                <div className="flex justify-between font-bold"><span>Total Liability:</span> <span>${formatNumber(Number(lease.initialDirectCosts || 0))}</span></div>
                                 <div className="flex justify-between"><span>Active Payments:</span> <span>{lease.payments?.length || 0}</span></div>
                             </CardContent>
                         </Card>

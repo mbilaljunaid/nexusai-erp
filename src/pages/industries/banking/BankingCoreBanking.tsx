@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Landmark, Building2, Send, History, Wallet, Activity } from "lucide-react";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatNumber } from '@/lib/formatters';
 
 export default function BankingPage() {
   const { data = [], isLoading } = useQuery<any[]>({
@@ -90,7 +91,7 @@ export default function BankingPage() {
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Valuation: ₹{parseFloat(item.amount || item.balance || 0).toLocaleString()} •
+                    Valuation: ₹{formatNumber(parseFloat(item.amount || item.balance || 0))} •
                     Auth Date: {item.date || item.createdAt?.split("T")[0] || "Contemporary"}
                   </p>
                 </div>

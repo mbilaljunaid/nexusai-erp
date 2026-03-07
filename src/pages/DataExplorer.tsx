@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function DataExplorer() {
   return (
@@ -14,15 +15,15 @@ export default function DataExplorer() {
         <CardHeader><CardTitle className="text-base">Create Custom Query</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Select Data Source</label>
+            <Label className="text-sm font-medium">Select Data Source</Label>
             <Input placeholder="Leads, Opportunities, Accounts, ..." data-testid="input-source" />
           </div>
           <div>
-            <label className="text-sm font-medium">Filter Conditions</label>
+            <Label className="text-sm font-medium">Filter Conditions</Label>
             <Input placeholder="Add filters..." data-testid="input-filter" />
           </div>
           <div>
-            <label className="text-sm font-medium">Group By</label>
+            <Label className="text-sm font-medium">Group By</Label>
             <Input placeholder="Select fields..." data-testid="input-group" />
           </div>
           <Button data-testid="button-execute">Execute Query</Button>

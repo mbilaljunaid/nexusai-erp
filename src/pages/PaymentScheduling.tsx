@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Calendar, DollarSign, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { formatNumber } from '@/lib/formatters';
 
 interface PaymentSchedule {
   id: string;
@@ -57,7 +58,7 @@ export default function PaymentScheduling() {
       {(activeNav === "pending" || activeNav === "scheduled") && (
         <div className="space-y-3">
           {((activeNav === "pending" ? (schedules || []).filter(s => s.status === "pending") : (schedules || []).filter(s => s.status === "scheduled")) || []).map((schedule: any) => (
-            <Card key={schedule.id} className="hover-elevate"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{schedule.invoiceId}</p><p className="text-sm text-muted-foreground">Due: {schedule.dueDate}</p></div><Badge>${parseFloat(schedule.amount).toLocaleString()}</Badge></div></CardContent></Card>
+            <Card key={schedule.id} className="hover-elevate"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{schedule.invoiceId}</p><p className="text-sm text-muted-foreground">Due: {schedule.dueDate}</p></div><Badge>${formatNumber(parseFloat(schedule.amount))}</Badge></div></CardContent></Card>
           ))}
         </div>
       )}

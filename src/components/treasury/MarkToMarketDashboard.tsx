@@ -35,6 +35,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { TreasuryFxDeal } from "@/types/erp-types";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export function MarkToMarketDashboard() {
     const [revaluationMode, setRevaluationMode] = useState<"BULK" | "SINGLE">("BULK");
@@ -181,7 +182,7 @@ export function MarkToMarketDashboard() {
             className: "text-right",
             cell: (item) => (
                 <span className="font-bold">
-                    {Number(item.buyAmount).toLocaleString()} {item.buyCurrency}
+                    {formatNumber(Number(item.buyAmount))} {item.buyCurrency}
                 </span>
             ),
         },
@@ -202,10 +203,7 @@ export function MarkToMarketDashboard() {
                     <div className="flex flex-col items-end">
                         <span className={cn(`font-bold ${isGain ? "text-emerald-600" : "text-red-600"}`)}>
                             {isGain ? "+" : ""}
-                            {mtm.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                            })}{" "}
+                            {formatNumber(mtm, 2)}{" "}
                             USD
                         </span>
                         {isGain ? (
@@ -300,10 +298,7 @@ export function MarkToMarketDashboard() {
                                 }`)}
                         >
                             {plMetrics.totalUnrealizedPL >= 0 ? "+" : ""}$
-                            {plMetrics.totalUnrealizedPL.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                            })}
+                            {formatNumber(plMetrics.totalUnrealizedPL, 2)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">
                             {fxDeals.length} Active FX Positions
@@ -320,7 +315,7 @@ export function MarkToMarketDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-black text-emerald-700">
-                            +${plMetrics.largestGain.mtm.toLocaleString()}
+                            +${formatNumber(plMetrics.largestGain.mtm)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1 truncate">
                             {plMetrics.largestGain.dealNumber || "N/A"}
@@ -337,7 +332,7 @@ export function MarkToMarketDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-black text-red-700">
-                            ${plMetrics.largestLoss.mtm.toLocaleString()}
+                            ${formatNumber(plMetrics.largestLoss.mtm)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1 truncate">
                             {plMetrics.largestLoss.dealNumber || "N/A"}
@@ -354,7 +349,7 @@ export function MarkToMarketDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-black text-blue-700">
-                            ${plMetrics.ytdRealizedPL.toLocaleString()}
+                            ${formatNumber(plMetrics.ytdRealizedPL)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">Settled Deals</p>
                     </CardContent>
@@ -379,7 +374,7 @@ export function MarkToMarketDashboard() {
                                 <XAxis dataKey="date" fontSize={10} />
                                 <YAxis fontSize={10} />
                                 <Tooltip
-                                    formatter={(value: number) => [`$${value.toLocaleString()}`, "MTM"]}
+                                    formatter={(value: number) => [`$${formatNumber(value)}`, "MTM"]}
                                     contentStyle={{
                                         borderRadius: "8px",
                                         border: "none",
@@ -426,7 +421,7 @@ export function MarkToMarketDashboard() {
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
-                                    <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                                    <Tooltip formatter={(value: number) => `$${formatNumber(value)}`} />
                                 </PieChart>
                             </ResponsiveContainer>
                         ) : (
@@ -460,7 +455,7 @@ export function MarkToMarketDashboard() {
                         <div>
                             <span className="text-muted-foreground">Amount:</span>
                             <p className="font-bold text-primary">
-                                ${Math.abs(plMetrics.totalUnrealizedPL).toLocaleString()}
+                                ${formatNumber(Math.abs(plMetrics.totalUnrealizedPL))}
                             </p>
                         </div>
                     </div>

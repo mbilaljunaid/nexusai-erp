@@ -28,6 +28,7 @@ import { format } from "date-fns";
 import { api } from "@/lib/api";
 import type { GlJournal } from "@/types/erp-types";
 import { ExcelImportModal } from "@/components/ExcelImportModal";
+import { formatNumber } from '@/lib/formatters';
 
 export default function JournalEntries() {
   const [, setLocation] = useLocation();
@@ -104,7 +105,7 @@ export default function JournalEntries() {
       cell: (item: any) => (
         <div className="flex flex-col items-end">
           <span className="font-bold font-mono">
-            {Number(item.totalDebit || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            {formatNumber(Number(item.totalDebit || 0), 2)}
           </span>
           <span className="text-xs text-indigo-500 font-semibold">{item.currencyCode}</span>
         </div>
@@ -220,7 +221,7 @@ export default function JournalEntries() {
             <div className="space-y-1">
               <span className="text-sm text-muted-foreground">Total Debit</span>
               <p className="font-medium">
-                {Number(selectedJournal?.totalDebit || 0).toLocaleString()} {selectedJournal?.currencyCode}
+                {formatNumber(Number(selectedJournal?.totalDebit || 0))} {selectedJournal?.currencyCode}
               </p>
             </div>
           </div>

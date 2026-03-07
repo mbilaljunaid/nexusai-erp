@@ -7,6 +7,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface Shipment {
     id: string;
@@ -239,7 +240,7 @@ export default function ShipmentTracking() {
                     <div className="mode-form">
                         {[['originZip', 'Origin ZIP', 'text'], ['destZip', 'Destination ZIP', 'text'], ['weightLbs', 'Weight (lbs)', 'number'], ['requiredTransitDays', 'Max Transit Days', 'number']].map(([k, label, t]) => (
                             <div key={k} className="mff">
-                                <label className="mfl">{label}</label>
+                                <Label className="mfl">{label}</Label>
                                 <Input type={t as string} value={(modeForm as any)[k as string]} onChange={e => setModeForm(p => ({ ...p, [k as string]: t === 'number' ? parseInt(e.target.value) || 0 : e.target.value }))} className="h-9 text-[12px]" aria-label={label as string} />
                             </div>
                         ))}

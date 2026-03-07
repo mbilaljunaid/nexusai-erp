@@ -14,6 +14,7 @@ import CreateAffiliateDialog from '@/components/admin/dialogs/CreateAffiliateDia
 import EditAffiliateDialog from '@/components/admin/dialogs/EditAffiliateDialog';
 import { exportToCSV } from '@/utils/exportUtils';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function Affiliates() {
     const { data: allAffiliates = [], isLoading, error } = useAffiliates();
@@ -452,7 +453,7 @@ export default function Affiliates() {
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className="text-right">
-                                                    <div className="font-medium">${payment.amount.toLocaleString()}</div>
+                                                    <div className="font-medium">${formatNumber(payment.amount)}</div>
                                                     <Badge variant={payment.status === 'paid' ? 'default' : 'secondary'}>
                                                         {payment.status}
                                                     </Badge>

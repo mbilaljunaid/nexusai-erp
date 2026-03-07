@@ -12,7 +12,7 @@ import { StandardDashboard, DashboardWidget } from "@/components/layout/Standard
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 interface ForecastPoint {
   period: string;
@@ -34,7 +34,7 @@ interface ForecastResponse {
 }
 
 const fmt = (n: number) =>
-  formatCurrency(n);
+  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 1 }).format(n);
 
 export default function RevenueForecasting() {
   const { toast } = useToast();
@@ -61,20 +61,20 @@ export default function RevenueForecasting() {
 
   const historyColumns: SpreadsheetColumn<any>[] = [
     { id: "period", header: "Period", width: "200px", cell: (row, i) => <span className="font-mono text-xs">{row.period || `Period ${i + 1}`}</span> },
-    { id: "amount", header: <div className="text-right w-full">Amount</div>, width: "150px", cell: (row) => <div className="text-right font-medium w-full">{formatNumber(fmt(row.y)}</div> },
+    { id: "amount", header: <div className="text-right w-full">Amount</div>, width: "150px", cell: (row) => <div className="text-right font-medium w-full">{fmt(row.y)}</div> },
     { id: "type", header: <div className="text-right w-full">Type</div>, width: "100px", cell: () => <div className="text-right w-full"><Badge variant="outline" className="text-[10px]">Actual</Badge></div> }
   ];
 
   const forecastColumns: SpreadsheetColumn<any>[] = [
     { id: "period", header: "Period", width: "200px", cell: (row) => <span className="font-mono text-xs">{row.period}</span> },
-    { id: "amount", header: <div className="text-right w-full">Projected</div>, width: "150px", cell: (row) => <div className="text-right font-semibold text-indigo-700 w-full">{formatNumber(fmt(row.amount)}</div> },
+    { id: "amount", header: <div className="text-right w-full">Projected</div>, width: "150px", cell: (row) => <div className="text-right font-semibold text-indigo-700 w-full">{fmt(row.amount)}</div> },
     {
       id: "delta", header: <div className="text-right w-full">Δ vs Last</div>, width: "150px", cell: (row, i) => {
         const prev = i === 0
           ? (data?.history?.[data.history.length - 1]?.y ?? 0)
           : data?.forecast?.[i - 1]?.amount ?? 0;
         const delta = row.amount - prev;
-        const deltaFmt = `${delta >= 0 ? "+" : ""}${formatNumber(fmt(delta)}`;
+        const deltaFmt = `${delta >= 0 ? "+" : ""}${fmt(delta)}`;
         return <div className={cn(`text-right text-xs font-medium w-full ${delta >= 0 ? "text-emerald-600" : "text-red-500"}`)}>{deltaFmt}</div>;
       }
     }
@@ -94,7 +94,7 @@ export default function RevenueForecasting() {
             onClick={() => {
               open();
               sendMessage(
-                `Analyze the revenue forecast. Historical total: ${formatNumber(fmt(totalHistorical)}. Projected next ${months} months: ${formatNumber(fmt(totalForecast)}. Slope: ${formatNumber(trend.toFixed(2)} per period. Provide executive summary and risks.`
+                `Analyze the revenue forecast. Historical total: ${fmt(totalHistorical)}. Projected next ${months} months: ${fmt(totalForecast)}. Slope: ${trend.toFixed(2)} per period. Provide executive summary and risks.`
               );
             }}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold gap-2 shadow-lg"
@@ -109,7 +109,7 @@ export default function RevenueForecasting() {
       <DashboardWidget title="Forecast Configuration" colSpan={4} icon={GitBranch}>
         <div className="flex flex-wrap gap-4 items-end">
           <div className="space-y-1 flex-1 min-w-36">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Projection Horizon</label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Projection Horizon</Label>
             <Select value={months} onValueChange={(v) => { setMonths(v); }}>
               <SelectTrigger data-testid="select-months"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -121,9 +121,9 @@ export default function RevenueForecasting() {
             </Select>
           </div>
           <div className="space-y-1 flex-1 min-w-48">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Contract Filter <span className="text-slate-400">(optional)</span>
-            </label>
+            </Label>
             <Input
               placeholder="Contract ID or leave blank for all"
               value={contractId}
@@ -149,18 +149,18 @@ export default function RevenueForecasting() {
       ) : (
         <>
           <DashboardWidget colSpan={1} title="Historical Revenue" icon={BarChart2}>
-            <div className="text-3xl font-bold tracking-tight">{formatNumber(fmt(totalHistorical)}</div>
+            <div className="text-3xl font-bold tracking-tight">{fmt(totalHistorical)}</div>
             <p className="text-xs text-muted-foreground mt-1">Last period: <span className="font-mono">{lastHistoricalPeriod}</span></p>
           </DashboardWidget>
 
           <DashboardWidget colSpan={1} title={`${months}-Month Forecast`} icon={TrendingUp}>
-            <div className="text-3xl font-bold tracking-tight text-indigo-600">{formatNumber(fmt(totalForecast)}</div>
+            <div className="text-3xl font-bold tracking-tight text-indigo-600">{fmt(totalForecast)}</div>
             <p className="text-xs text-muted-foreground mt-1">Starts: <span className="font-mono">{nextPeriod}</span></p>
           </DashboardWidget>
 
           <DashboardWidget colSpan={1} title="Trend Slope" icon={Activity}>
             <div className={cn(`text-3xl font-bold tracking-tight ${trend >= 0 ? "text-emerald-600" : "text-red-600"}`)}>
-              {trend >= 0 ? "+" : ""}{formatNumber(trend.toFixed(2)}
+              {trend >= 0 ? "+" : ""}{trend.toFixed(2)}
               <span className="text-sm font-normal text-muted-foreground ml-1">/period</span>
             </div>
             <Badge variant="secondary" className="mt-2 text-[10px]">
@@ -174,7 +174,7 @@ export default function RevenueForecasting() {
             </div>
             {data?.model && (
               <p className="text-xs text-muted-foreground mt-1">
-                y = <span className="font-mono">{formatNumber(data.model.slope.toFixed(2)}x + {formatNumber(data.model.intercept.toFixed(2)}</span>
+                y = <span className="font-mono">{data.model.slope.toFixed(2)}x + {data.model.intercept.toFixed(2)}</span>
               </p>
             )}
             {data?.message && <p className="text-xs text-amber-600 mt-1">{data.message}</p>}
@@ -208,7 +208,7 @@ export default function RevenueForecasting() {
               {/* Totals row */}
               <div className="border-t pt-3 mt-2 flex justify-between items-center">
                 <span className="text-xs font-medium text-muted-foreground">Total Projected</span>
-                <span className="font-bold text-indigo-700">{formatNumber(fmt(totalForecast)}</span>
+                <span className="font-bold text-indigo-700">{fmt(totalForecast)}</span>
               </div>
             </DashboardWidget>
           )}

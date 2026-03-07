@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 export interface SearchField {
   key: string;
@@ -59,7 +60,7 @@ export function ContextualSearch({ fields, onSearch, placeholder = "Search...", 
         <Card className="p-4 space-y-3">
           {fields.map((field) => (
             <div key={field.key} className="space-y-1">
-              <label className="text-sm font-medium text-muted-foreground">{field.label}</label>
+              <Label className="text-sm font-medium text-muted-foreground">{field.label}</Label>
               {field.type === "select" && field.options ? (
                 <select
                   value={filters[field.key] || ""}

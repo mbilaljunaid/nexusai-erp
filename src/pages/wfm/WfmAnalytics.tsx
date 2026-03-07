@@ -8,6 +8,7 @@ import { DollarSign, Clock, AlertTriangle, Users } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 
 
@@ -80,7 +81,7 @@ export default function WfmAnalytics() {
                         <DollarSign className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${metrics?.estimatedCost?.toLocaleString() || 0}</div>
+                        <div className="text-2xl font-bold">${formatNumber(metrics?.estimatedCost) || 0}</div>
                         <p className="text-xs text-muted-foreground">@ $50/hr Avg</p>
                     </CardContent>
                 </Card>

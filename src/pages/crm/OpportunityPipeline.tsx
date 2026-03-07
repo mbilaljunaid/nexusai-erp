@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { TrendingUp, DollarSign, Calendar, User, Sparkles, Filter } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 type OpportunityStage = "DISCOVERY" | "QUALIFICATION" | "PROPOSAL" | "NEGOTIATION" | "CLOSED_WON" | "CLOSED_LOST";
 
@@ -134,7 +136,7 @@ export default function OpportunityPipeline() {
                 <div className="flex items-center gap-4 bg-card p-4 rounded-lg border">
                     <Filter className="h-5 w-5 text-muted-foreground" />
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Owner:</label>
+                        <Label className="text-sm font-medium">Owner:</Label>
                         <Select value={selectedOwner} onValueChange={setSelectedOwner}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />
@@ -148,7 +150,7 @@ export default function OpportunityPipeline() {
                         </Select>
                     </div>
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Product:</label>
+                        <Label className="text-sm font-medium">Product:</Label>
                         <Select value={selectedProduct} onValueChange={setSelectedProduct}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />
@@ -246,21 +248,21 @@ export default function OpportunityPipeline() {
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-sm font-medium">Account</label>
+                                        <Label className="text-sm font-medium">Account</Label>
                                         <div className="text-sm text-muted-foreground">{selectedOpportunity.accountName}</div>
                                     </div>
                                     <div>
-                                        <label className="text-sm font-medium">Amount</label>
-                                        <div className="text-sm font-bold">${selectedOpportunity.amount.toLocaleString()}</div>
+                                        <Label className="text-sm font-medium">Amount</Label>
+                                        <div className="text-sm font-bold">${formatNumber(selectedOpportunity.amount)}</div>
                                     </div>
                                     <div>
-                                        <label className="text-sm font-medium">Close Date</label>
+                                        <Label className="text-sm font-medium">Close Date</Label>
                                         <div className="text-sm text-muted-foreground">
                                             {formatDate(selectedOpportunity.closeDate)}
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="text-sm font-medium">Owner</label>
+                                        <Label className="text-sm font-medium">Owner</Label>
                                         <div className="text-sm text-muted-foreground flex items-center gap-1">
                                             <User className="h-3 w-3" />
                                             {selectedOpportunity.owner}

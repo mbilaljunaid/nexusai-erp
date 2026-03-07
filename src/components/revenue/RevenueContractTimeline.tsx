@@ -10,7 +10,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatCurrency } from "@/lib/formatters";
 import { History } from "lucide-react";
 
 interface TimelineEntry {
@@ -78,11 +77,11 @@ export function RevenueContractTimeline({ contractId }: { contractId: string }) 
                                 <div className="flex items-center gap-4 text-xs mt-1 bg-muted/30 p-2 rounded">
                                     <div>
                                         <span className="text-muted-foreground">Price: </span>
-                                        <span className="font-mono">{formatCurrency(Number(entry.totalTransactionPrice || 0))}</span>
+                                        <span className="font-mono">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(entry.totalTransactionPrice || 0))}</span>
                                     </div>
                                     <div>
                                         <span className="text-muted-foreground">Allocated: </span>
-                                        <span className="font-mono">{formatCurrency(Number(entry.totalAllocatedPrice || 0))}</span>
+                                        <span className="font-mono">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(entry.totalAllocatedPrice || 0))}</span>
                                     </div>
                                 </div>
                             </div>

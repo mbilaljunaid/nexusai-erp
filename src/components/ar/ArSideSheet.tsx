@@ -42,6 +42,7 @@ import { ArAdjustmentDialog } from "./ArAdjustmentDialog"; // Import Dialog
 import { Button } from "@/components/ui/button"; // Import Button
 import { CreateCreditMemoDialog } from "./CreateCreditMemoDialog";
 import { ArAgingAnalysis } from "./ArAgingAnalysis";
+import { formatNumber } from '@/lib/formatters';
 
 interface ArSideSheetProps {
     isOpen: boolean;
@@ -115,11 +116,11 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
             <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-muted/50 rounded-xl border">
                     <p className="text-xs text-muted-foreground mb-1">Total Amount</p>
-                    <p className="text-xl font-bold text-primary">${parseFloat(data.totalAmount).toLocaleString()}</p>
+                    <p className="text-xl font-bold text-primary">${formatNumber(parseFloat(data.totalAmount))}</p>
                 </div>
                 <div className="p-4 bg-muted/50 rounded-xl border">
                     <p className="text-xs text-muted-foreground mb-1">Tax Amount</p>
-                    <p className="text-xl font-bold text-primary">${parseFloat(data.taxAmount).toLocaleString()}</p>
+                    <p className="text-xl font-bold text-primary">${formatNumber(parseFloat(data.taxAmount))}</p>
                 </div>
             </div>
 
@@ -210,7 +211,7 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                                     </div>
                                     <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
                                         <span>{acc.accountNumber}</span>
-                                        <span className="text-rose-600 font-bold tracking-tight">${parseFloat(acc.balance).toLocaleString()}</span>
+                                        <span className="text-rose-600 font-bold tracking-tight">${formatNumber(parseFloat(acc.balance))}</span>
                                     </div>
 
                                     {selectedAccountId === acc.id && (
@@ -389,10 +390,10 @@ function ArAccountingView({ entityId, type }: { entityId: string, type: "invoice
                                             </div>
                                         </td>
                                         <td className="p-3 text-right font-bold text-emerald-600">
-                                            {line.enteredDr && Number(line.enteredDr) > 0 ? `$${Number(line.enteredDr).toLocaleString()}` : ""}
+                                            {line.enteredDr && Number(line.enteredDr) > 0 ? `$${formatNumber(Number(line.enteredDr))}` : ""}
                                         </td>
                                         <td className="p-3 text-right font-bold text-rose-600">
-                                            {line.enteredCr && Number(line.enteredCr) > 0 ? `$${Number(line.enteredCr).toLocaleString()}` : ""}
+                                            {line.enteredCr && Number(line.enteredCr) > 0 ? `$${formatNumber(Number(line.enteredCr))}` : ""}
                                         </td>
                                     </tr>
                                 ))}

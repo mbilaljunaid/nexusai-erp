@@ -13,6 +13,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 export default function APSupplierDetail() {
     const [, params] = useRoute("/finance/ap/suppliers/:id");
@@ -147,7 +148,7 @@ export default function APSupplierDetail() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Total Balance</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="text-xl font-bold text-primary">${parseFloat(supplier.totalBalance || 0).toLocaleString()}</div>
+                        <div className="text-xl font-bold text-primary">${formatNumber(parseFloat(supplier.totalBalance || 0))}</div>
                     </CardContent>
                 </Card>
                 <Card>

@@ -20,6 +20,7 @@ import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
+import { formatNumber } from '@/lib/formatters';
 
 interface TrialBalanceRow {
     ccid: string;
@@ -265,14 +266,14 @@ export default function TrialBalance() {
                                         id: "totalDebit",
                                         width: "15%",
                                         className: "text-right tabular-nums",
-                                        cell: (row: TrialBalanceRow) => row.totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                        cell: (row: TrialBalanceRow) => formatNumber(row.totalDebit, 2)
                                     },
                                     {
                                         header: "Credit",
                                         id: "totalCredit",
                                         width: "15%",
                                         className: "text-right tabular-nums",
-                                        cell: (row: TrialBalanceRow) => row.totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })
+                                        cell: (row: TrialBalanceRow) => formatNumber(row.totalCredit, 2)
                                     },
                                     {
                                         header: "Net Balance",
@@ -281,7 +282,7 @@ export default function TrialBalance() {
                                         className: "text-right font-bold tabular-nums",
                                         cell: (row: TrialBalanceRow) => (
                                             <span className={row.netBalance < 0 ? "text-red-500" : ""}>
-                                                {row.netBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                {formatNumber(row.netBalance, 2)}
                                             </span>
                                         )
                                     },
@@ -338,11 +339,11 @@ export default function TrialBalance() {
                                             <div className="flex gap-4">
                                                 <div className="flex flex-col">
                                                     <span className="text-muted-foreground">Debit</span>
-                                                    <span className="font-mono font-bold text-green-600">{Number(line.debit).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                                    <span className="font-mono font-bold text-green-600">{formatNumber(Number(line.debit), 2)}</span>
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <span className="text-muted-foreground">Credit</span>
-                                                    <span className="font-mono font-bold text-red-600">{Number(line.credit).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                                    <span className="font-mono font-bold text-red-600">{formatNumber(Number(line.credit), 2)}</span>
                                                 </div>
                                             </div>
                                             <Button variant="ghost" size="sm" className="h-8 px-2 text-primary font-bold">

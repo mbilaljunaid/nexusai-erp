@@ -10,6 +10,8 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 export default function BudgetVariance() {
     const [period, setPeriod] = useState("2026-02");
@@ -41,7 +43,7 @@ export default function BudgetVariance() {
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Period</label>
+                    <Label className="text-sm font-medium">Period</Label>
                     <Select value={period} onValueChange={setPeriod}>
                         <SelectTrigger>
                             <SelectValue />
@@ -54,7 +56,7 @@ export default function BudgetVariance() {
                     </Select>
                 </div>
                 <div>
-                    <label className="text-sm font-medium">Dimension</label>
+                    <Label className="text-sm font-medium">Dimension</Label>
                     <Select value={dimension} onValueChange={setDimension}>
                         <SelectTrigger>
                             <SelectValue />
@@ -72,20 +74,20 @@ export default function BudgetVariance() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Total Budget</div>
-                        <div className="text-3xl font-bold mt-1">${variance?.totalBudget?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(variance?.totalBudget)}</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Actual Spend</div>
-                        <div className="text-3xl font-bold mt-1">${variance?.actualSpend?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(variance?.actualSpend)}</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Variance</div>
                         <div className={cn(`text-3xl font-bold mt-1 ${variance?.variance >= 0 ? 'text-red-600' : 'text-green-600'}`)}>
-                            ${Math.abs(variance?.variance || 0).toLocaleString()}
+                            ${formatNumber(Math.abs(variance?.variance || 0))}
                         </div>
                     </CardContent>
                 </Card>
@@ -117,16 +119,16 @@ export default function BudgetVariance() {
                                 <div className="grid grid-cols-4 gap-4 text-sm mb-3">
                                     <div>
                                         <div className="text-muted-foreground">Budget</div>
-                                        <div className="font-medium">${item.budget?.toLocaleString()}</div>
+                                        <div className="font-medium">${formatNumber(item.budget)}</div>
                                     </div>
                                     <div>
                                         <div className="text-muted-foreground">Actual</div>
-                                        <div className="font-medium">${item.actual?.toLocaleString()}</div>
+                                        <div className="font-medium">${formatNumber(item.actual)}</div>
                                     </div>
                                     <div>
                                         <div className="text-muted-foreground">Variance</div>
                                         <div className={cn(`font-medium ${item.variance >= 0 ? 'text-red-600' : 'text-green-600'}`)}>
-                                            ${Math.abs(item.variance).toLocaleString()}
+                                            ${formatNumber(Math.abs(item.variance))}
                                         </div>
                                     </div>
                                     <div>

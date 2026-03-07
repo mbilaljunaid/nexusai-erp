@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { TrendingUp, DollarSign, Target, BarChart3, Download } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function RevenueIntelligence() {
     const { data: analytics } = useQuery<any>({
@@ -28,14 +29,14 @@ export default function RevenueIntelligence() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Forecasted Revenue</div>
-                        <div className="text-3xl font-bold mt-1">${analytics?.forecastedRevenue?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(analytics?.forecastedRevenue)}</div>
                         <div className="text-sm text-green-600 mt-1">+12% vs last quarter</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Pipeline Value</div>
-                        <div className="text-3xl font-bold mt-1">${analytics?.pipelineValue?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(analytics?.pipelineValue)}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -47,7 +48,7 @@ export default function RevenueIntelligence() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Avg Deal Size</div>
-                        <div className="text-3xl font-bold mt-1">${analytics?.avgDealSize?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(analytics?.avgDealSize)}</div>
                     </CardContent>
                 </Card>
             </div>

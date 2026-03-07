@@ -12,6 +12,7 @@ import { Calendar as CalendarIcon, Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function AbsenceManagement() {
@@ -59,7 +60,7 @@ export default function AbsenceManagement() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium">Leave Type</label>
+                            <Label className="text-sm font-medium">Leave Type</Label>
                             <Select value={leaveType} onValueChange={setLeaveType}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select type" />
@@ -73,7 +74,7 @@ export default function AbsenceManagement() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-sm font-medium">Start Date</label>
+                                <Label className="text-sm font-medium">Start Date</Label>
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <Button variant="outline" className="w-full justify-start">
@@ -87,7 +88,7 @@ export default function AbsenceManagement() {
                                 </Popover>
                             </div>
                             <div>
-                                <label className="text-sm font-medium">End Date</label>
+                                <Label className="text-sm font-medium">End Date</Label>
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <Button variant="outline" className="w-full justify-start">
@@ -102,7 +103,7 @@ export default function AbsenceManagement() {
                             </div>
                         </div>
                         <div>
-                            <label className="text-sm font-medium">Reason</label>
+                            <Label className="text-sm font-medium">Reason</Label>
                             <Textarea
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}

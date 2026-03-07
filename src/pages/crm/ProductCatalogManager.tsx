@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Package, Plus, Edit, Trash2, Archive, Eye, DollarSign, Layers } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { formatNumber } from '@/lib/formatters';
 
 interface Product {
     id: string;
@@ -183,7 +184,7 @@ export default function ProductCatalogManager() {
                 <div className="flex items-center justify-between bg-card p-4 rounded-lg border">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <label className="text-sm font-medium">Status:</label>
+                            <Label className="text-sm font-medium">Status:</Label>
                             <Select value={statusFilter} onValueChange={setStatusFilter}>
                                 <SelectTrigger className="w-32">
                                     <SelectValue />
@@ -197,7 +198,7 @@ export default function ProductCatalogManager() {
                             </Select>
                         </div>
                         <div className="flex items-center gap-2">
-                            <label className="text-sm font-medium">Category:</label>
+                            <Label className="text-sm font-medium">Category:</Label>
                             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                                 <SelectTrigger className="w-40">
                                     <SelectValue />
@@ -271,8 +272,8 @@ export default function ProductCatalogManager() {
                                                             )}
                                                         </TableCell>
                                                         <TableCell className="text-sm">{product.category}</TableCell>
-                                                        <TableCell className="text-right font-mono">${product.listPrice.toLocaleString()}</TableCell>
-                                                        <TableCell className="text-right font-mono text-muted-foreground">${product.costPrice.toLocaleString()}</TableCell>
+                                                        <TableCell className="text-right font-mono">${formatNumber(product.listPrice)}</TableCell>
+                                                        <TableCell className="text-right font-mono text-muted-foreground">${formatNumber(product.costPrice)}</TableCell>
                                                         <TableCell className="text-right">
                                                             <span className={cn(`font-semibold ${Number(margin) >= 40 ? 'text-green-700' : 'text-amber-700'}`)}>
                                                                 {margin}%
@@ -334,7 +335,7 @@ export default function ProductCatalogManager() {
                                                     <div>
                                                         <CardTitle className="text-lg">{bundle.name}</CardTitle>
                                                         <CardDescription className="mt-1">
-                                                            SKU: {bundle.sku} • List Price: ${bundle.listPrice.toLocaleString()}
+                                                            SKU: {bundle.sku} • List Price: ${formatNumber(bundle.listPrice)}
                                                         </CardDescription>
                                                     </div>
                                                     <StatusBadge status={bundle.status} />
@@ -483,11 +484,11 @@ export default function ProductCatalogManager() {
                                             </div>
                                             <div>
                                                 <div className="text-sm font-medium">List Price</div>
-                                                <div className="text-sm text-muted-foreground">${selectedProduct.listPrice.toLocaleString()}</div>
+                                                <div className="text-sm text-muted-foreground">${formatNumber(selectedProduct.listPrice)}</div>
                                             </div>
                                             <div>
                                                 <div className="text-sm font-medium">Cost Price</div>
-                                                <div className="text-sm text-muted-foreground">${selectedProduct.costPrice.toLocaleString()}</div>
+                                                <div className="text-sm text-muted-foreground">${formatNumber(selectedProduct.costPrice)}</div>
                                             </div>
                                         </div>
                                     </div>

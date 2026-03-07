@@ -34,6 +34,7 @@ import { useToast} from"@/hooks/use-toast";
 import { format} from'date-fns';
 import { Progress} from"@/components/ui/progress";
 import { StandardPage} from'@/components/layout/StandardPage';
+import { formatNumber } from '@/lib/formatters';
 
 export default function TradeOperationDetails() {
     const { id} = useParams<{ id: string}>();
@@ -227,11 +228,11 @@ export default function TradeOperationDetails() {
                                 <CardContent className="space-y-4">
                                     <div className="flex justify-between items-center pb-2 border-b">
                                         <span className="text-sm text-muted-foreground">Est. Total Charges</span>
-                                        <span className="font-bold text-lg font-mono">${Number(op.totalEstimatedCharges || 0).toLocaleString()}</span>
+                                        <span className="font-bold text-lg font-mono">${formatNumber(Number(op.totalEstimatedCharges || 0))}</span>
                                     </div>
                                     <div className="flex justify-between items-center pb-2 border-b">
                                         <span className="text-sm text-muted-foreground">Actual Charges</span>
-                                        <span className="font-bold text-lg font-mono text-blue-600">${Number(op.totalActualCharges || 0).toLocaleString()}</span>
+                                        <span className="font-bold text-lg font-mono text-blue-600">${formatNumber(Number(op.totalActualCharges || 0))}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-red-600">
                                         <span className="text-sm">Variance</span>
@@ -334,7 +335,7 @@ export default function TradeOperationDetails() {
                                                     <TableCell>
                                                         <Badge variant="outline" className="text-[10px]">WEIGHT</Badge>
                                                     </TableCell>
-                                                    <TableCell className="text-right font-mono font-bold">${Number(charge.amount).toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right font-mono font-bold">${formatNumber(Number(charge.amount))}</TableCell>
                                                     <TableCell className="text-center">
                                                         {charge.isActual ? (
                                                             <Badge variant="success" className="text-[9px]">ACTUAL (AP)</Badge>

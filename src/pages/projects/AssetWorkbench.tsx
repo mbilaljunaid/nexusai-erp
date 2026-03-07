@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building, ArrowUpRight, DollarSign, CheckCircle2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface ProjectAsset {
     id: string;
@@ -64,7 +65,7 @@ export default function AssetWorkbench() {
             id: "cost", header: "CIP Cost", width: "15%", cell: (item: any) => (
                 <div className="p-2 font-mono flex items-center gap-1">
                     <DollarSign className="h-3 w-3 text-muted-foreground" />
-                    {parseFloat(item.cost).toLocaleString()}
+                    {formatNumber(parseFloat(item.cost))}
                 </div>
             )
         },

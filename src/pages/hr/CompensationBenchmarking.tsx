@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { DollarSign, TrendingUp, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function CompensationBenchmarking() {
     const { data: benchmark } = useQuery<any>({
@@ -49,15 +50,15 @@ export default function CompensationBenchmarking() {
                             <div className="grid grid-cols-4 gap-4 text-sm">
                                 <div>
                                     <div className="text-muted-foreground">Current Avg</div>
-                                    <div className="font-medium">${pos.currentAvg?.toLocaleString()}</div>
+                                    <div className="font-medium">${formatNumber(pos.currentAvg)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground">Market 50th %</div>
-                                    <div className="font-medium">${pos.market50?.toLocaleString()}</div>
+                                    <div className="font-medium">${formatNumber(pos.market50)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground">Market 75th %</div>
-                                    <div className="font-medium">${pos.market75?.toLocaleString()}</div>
+                                    <div className="font-medium">${formatNumber(pos.market75)}</div>
                                 </div>
                                 <div>
                                     <div className="text-muted-foreground">Headcount</div>

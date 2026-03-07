@@ -13,6 +13,8 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Send, CheckCircle, XCircle, Clock, MessageSquare, History } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface BudgetSubmission {
     id: string;
@@ -266,7 +268,7 @@ export default function BudgetWorkflow() {
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Comments</label>
+                                <Label className="text-sm font-medium">Comments</Label>
                                 <Textarea
                                     placeholder="Add your comments..."
                                     value={actionComments}
@@ -335,7 +337,7 @@ function SubmissionsTable({
                             <TableCell className="font-medium">{submission.budgetName}</TableCell>
                             <TableCell><code className="text-xs">v{submission.version}</code></TableCell>
                             <TableCell>{submission.department}</TableCell>
-                            <TableCell className="text-right font-mono">${submission.amount.toLocaleString()}</TableCell>
+                            <TableCell className="text-right font-mono">${formatNumber(submission.amount)}</TableCell>
                             <TableCell>{submission.submittedBy}</TableCell>
                             <TableCell>{formatDate(submission.submittedAt)}</TableCell>
                             <TableCell>

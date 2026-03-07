@@ -10,6 +10,7 @@ import { Code, Play, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Label } from "@/components/ui/label";
 
 export default function TaxRuleEngine() {
     const { toast } = useToast();
@@ -49,7 +50,7 @@ export default function TaxRuleEngine() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
-                                <label htmlFor="ruleName" className="text-sm font-medium">Rule Name</label>
+                                <Label htmlFor="ruleName" className="text-sm font-medium">Rule Name</Label>
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -62,7 +63,7 @@ export default function TaxRuleEngine() {
                                 </TooltipProvider>
                             </div>
                             <div>
-                                <label className="text-sm font-medium mb-2 block">Conditions (If)</label>
+                                <Label className="text-sm font-medium mb-2 block">Conditions (If)</Label>
                                 {conditions.map((condition, i) => (
                                     <div key={i} className="grid grid-cols-3 gap-2 mb-2">
                                         <Select value={condition.field}>
@@ -121,7 +122,7 @@ export default function TaxRuleEngine() {
                                 ))}
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Then (Action)</label>
+                                <Label className="text-sm font-medium">Then (Action)</Label>
                                 <Select defaultValue="APPLY_RATE">
                                     <TooltipProvider>
                                         <Tooltip>
@@ -143,7 +144,7 @@ export default function TaxRuleEngine() {
                                 </Select>
                             </div>
                             <div>
-                                <label htmlFor="rulePriority" className="text-sm font-medium">Priority</label>
+                                <Label htmlFor="rulePriority" className="text-sm font-medium">Priority</Label>
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>

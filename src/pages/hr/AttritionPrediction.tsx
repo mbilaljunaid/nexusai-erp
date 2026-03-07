@@ -7,6 +7,7 @@ import { TrendingDown, AlertTriangle, User } from 'lucide-react';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 interface RiskScore {
     id: string; employee_id: string; risk_score: number; risk_band: string;
     tenure_months: number; engagement_score: number; last_promotion_days: number;
@@ -121,7 +122,7 @@ export default function AttritionPrediction() {
                     <div className="grid grid-cols-4 gap-2">
                         {[['employeeId', 'Employee ID', 'text'], ['tenureMonths', 'Tenure (months)', 'number'], ['engagementScore', 'Engagement (1-5)', 'number'], ['lastPromotionDays', 'Days Since Promo', 'number'], ['managerTenureMonths', 'Manager Tenure (mo)', 'number'], ['compaRatio', 'Compa-Ratio (0-1.5)', 'number'], ['recentAbsenceDays', 'Absence Days (30d)', 'number'], ['overdueGoals', 'Overdue Goals', 'number']].map(([k, l, t]) => (
                             <div key={k as string} className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-semibold">{l as string}</label>
+                                <Label className="text-[10px] font-semibold">{l as string}</Label>
                                 <Input type={t as string} value={(form as any)[k as string]} onChange={e => setForm(p => ({ ...p, [k as string]: e.target.value }))} className="h-7 text-xs" aria-label={l as string} />
                             </div>
                         ))}

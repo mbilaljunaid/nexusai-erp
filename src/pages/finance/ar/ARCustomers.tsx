@@ -3,7 +3,6 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Users, Building, MapPin, Contact2 } from "lucide-react";
+import { Plus, Users, Building, MapPin, Contact2 } from "lucide-react";
 import type { ArCustomer, ArCustomerAccount, ArCustomerSite, ArCustomerContact } from "@shared/schema";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -156,7 +155,7 @@ export default function ARCustomers() {
     { id: "accountNumber", header: "Account Number", width: "150px", cell: (r: any) => <span>{r.accountNumber}</span> },
     { id: "accountName", header: "Account Name", width: "200px", cell: (r: any) => <span>{r.accountName}</span> },
     { id: "riskCategory", header: "Risk", width: "120px", cell: (r: any) => <span>{r.riskCategory}</span> },
-    { id: "balance", header: "Balance", width: "120px", cell: (row: any) => <span>${formatCurrency(Number(row.balance))}</span> },
+    { id: "balance", header: "Balance", width: "120px", cell: (row: any) => <span>${Number(row.balance).toFixed(2)}</span> },
     { id: "actions", header: "Actions", width: "100px", cell: (r: any) => <Button variant="outline" size="sm" onClick={() => setSelectedAccountId(r.id)}>Select</Button> },
   ];
 
@@ -206,10 +205,7 @@ export default function ARCustomers() {
                     <FormField control={customerForm.control} name="name" render={({ field }) => (
                       <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <Button type="submit" disabled={customerForm.formState.isSubmitting}>
-                      {customerForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Save
-                    </Button>
+                    <Button type="submit">Save</Button>
                   </form>
                 </Form>
               </DialogContent>
@@ -240,10 +236,7 @@ export default function ARCustomers() {
                     <FormField control={accountForm.control} name="accountNumber" render={({ field }) => (
                       <FormItem><FormLabel>Account Number</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <Button type="submit" disabled={customerForm.formState.isSubmitting}>
-                      {customerForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Save
-                    </Button>
+                    <Button type="submit">Save</Button>
                   </form>
                 </Form>
               </DialogContent>
@@ -291,10 +284,7 @@ export default function ARCustomers() {
                     <FormField control={siteForm.control} name="address" render={({ field }) => (
                       <FormItem><FormLabel>Address (Standard/IBAN)</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <Button type="submit" disabled={customerForm.formState.isSubmitting}>
-                      {customerForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Save
-                    </Button>
+                    <Button type="submit">Save</Button>
                   </form>
                 </Form>
               </DialogContent>
@@ -317,51 +307,46 @@ export default function ARCustomers() {
         <div className="border rounded-lg p-4 bg-card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold flex items-center gap-2"><Contact2 className="w-5 h-5" /> Contacts {selectedCustomerId && "(Selected)"}</h2>
-            <Sheet>
-              <SheetTrigger asChild><Button size="sm" disabled={!selectedCustomerId}><Plus className="w-4 h-4 mr-2" /> New Contact</Button></SheetTrigger>
-              <SheetContent side="right" className="w-[480px] sm:max-w-[480px] overflow-y-auto">
-                <SheetHeader><SheetTitle>Create Customer Contact</SheetTitle></SheetHeader>
-                <div className="mt-6">
-                  <Form {...contactForm}>
-                    <form onSubmit={contactForm.handleSubmit((d) => createContact.mutate({ ...d, siteId: d.siteId || undefined }))} className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField control={contactForm.control} name="firstName" render={({ field }) => (
-                          <FormItem><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                        <FormField control={contactForm.control} name="lastName" render={({ field }) => (
-                          <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-                        )} />
-                      </div>
-                      <FormField control={contactForm.control} name="email" render={({ field }) => (
-                        <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
+            <Dialog>
+              <DialogTrigger asChild><Button size="sm" disabled={!selectedCustomerId}><Plus className="w-4 h-4 mr-2" /> New Contact</Button></DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Create Customer Contact</DialogTitle></DialogHeader>
+                <Form {...contactForm}>
+                  <form onSubmit={contactForm.handleSubmit((d) => createContact.mutate({ ...d, siteId: d.siteId || undefined }))} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField control={contactForm.control} name="firstName" render={({ field }) => (
+                        <FormItem><FormLabel>First Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                       )} />
-                      <FormField control={contactForm.control} name="phone" render={({ field }) => (
-                        <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                      <FormField control={contactForm.control} name="lastName" render={({ field }) => (
+                        <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                       )} />
-                      <FormField control={contactForm.control} name="role" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Role</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
-                            <SelectContent>
-                              <SelectItem value="BILLING">Billing Contact</SelectItem>
-                              <SelectItem value="DUNNING">Dunning Contact</SelectItem>
-                              <SelectItem value="SHIPPING">Shipping Contact</SelectItem>
-                              <SelectItem value="PRIMARY">Primary Contact</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )} />
-                      <Button type="submit" disabled={customerForm.formState.isSubmitting}>
-                        {customerForm.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Save
-                      </Button>
-                    </form>
-                  </Form>
-                </div>
-              </SheetContent>
-            </Sheet>
+                    </div>
+                    <FormField control={contactForm.control} name="email" render={({ field }) => (
+                      <FormItem><FormLabel>Email</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={contactForm.control} name="phone" render={({ field }) => (
+                      <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                    )} />
+                    <FormField control={contactForm.control} name="role" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            <SelectItem value="BILLING">Billing Contact</SelectItem>
+                            <SelectItem value="DUNNING">Dunning Contact</SelectItem>
+                            <SelectItem value="SHIPPING">Shipping Contact</SelectItem>
+                            <SelectItem value="PRIMARY">Primary Contact</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <Button type="submit">Save</Button>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
           </div>
           {selectedCustomerId ? (
             <InteractiveSpreadsheet

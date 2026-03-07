@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { formatNumber } from '@/lib/formatters';
 
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -104,7 +105,7 @@ function ApprovalRow({
                                 <span className="text-muted-foreground">Amount: </span>
                                 <span className={cn(`font-semibold ${Number(payload.adjustmentAmount) >= 0 ? "text-emerald-700" : "text-red-700"}`)}>
                                     {payload.adjustmentAmount !== undefined
-                                        ? `${Number(payload.adjustmentAmount) >= 0 ? "+" : ""}${Number(payload.adjustmentAmount).toLocaleString()} ${payload.currencyCode ?? ""}`
+                                        ? `${Number(payload.adjustmentAmount) >= 0 ? "+" : ""}${formatNumber(Number(payload.adjustmentAmount))} ${payload.currencyCode ?? ""}`
                                         : "—"}
                                 </span>
                             </div>

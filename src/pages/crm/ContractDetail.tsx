@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function ContractDetail() {
     const { id } = useParams() as any;
@@ -73,7 +74,7 @@ export default function ContractDetail() {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-sm text-muted-foreground">Total Value</h3>
-                                <p className="text-lg font-medium">${Number(contract.totalAmount).toLocaleString()}</p>
+                                <p className="text-lg font-medium">${formatNumber(Number(contract.totalAmount))}</p>
                             </div>
                             <div>
                                 <h3 className="font-semibold text-sm text-muted-foreground">Renewal Notice</h3>

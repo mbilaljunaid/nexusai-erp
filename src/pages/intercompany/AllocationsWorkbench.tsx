@@ -10,6 +10,7 @@ import { Loader2, Plus, Play, ChevronRight } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function AllocationsWorkbench() {
@@ -172,11 +173,11 @@ function CreateRuleDialog({ open, onOpenChange, orgs, onSubmit }: { open: boolea
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Rule Name</label>
+                            <Label className="text-sm font-medium">Rule Name</Label>
                             <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. IT Overhead Sep 2025" />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Source Org</label>
+                            <Label className="text-sm font-medium">Source Org</Label>
                             <Select value={sourceOrg} onValueChange={setSourceOrg}>
                                 <SelectTrigger><SelectValue placeholder="Select Org" /></SelectTrigger>
                                 <SelectContent>
@@ -187,7 +188,7 @@ function CreateRuleDialog({ open, onOpenChange, orgs, onSubmit }: { open: boolea
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Allocation Lines (Percentage)</label>
+                        <Label className="text-sm font-medium">Allocation Lines (Percentage)</Label>
                         {lines.map((line, idx) => (
                             <div key={idx} className="flex gap-2">
                                 <Select value={line.targetOrgId} onValueChange={(val) => {
@@ -234,11 +235,11 @@ function RunAllocationDialog({ open, onOpenChange, onSubmit }: { open: boolean, 
                     <p className="text-sm text-muted-foreground">Enter the total source amount to distribute based on the rule percentages.</p>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Total Amount</label>
+                            <Label className="text-sm font-medium">Total Amount</Label>
                             <Input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00" />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Currency</label>
+                            <Label className="text-sm font-medium">Currency</Label>
                             <Select value={currency} onValueChange={setCurrency}>
                                 <SelectTrigger><SelectValue /></SelectTrigger>
                                 <SelectContent>

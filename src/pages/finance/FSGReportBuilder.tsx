@@ -7,7 +7,6 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { formatCurrency } from "@/lib/formatters";
 
 interface FSGRow {
     rowNum: number;
@@ -125,7 +124,7 @@ export default function FSGReportBuilder() {
                 const val = runResult?.data?.[row.rowNum]?.[c.colNum] ?? 0;
                 return (
                     <div className={cn(`text-right w-full font-variant-numeric tabular-nums ${val < 0 ? 'text-red-600' : ''}`)}>
-                        {formatCurrency(val)}
+                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val)}
                     </div>
                 );
             }

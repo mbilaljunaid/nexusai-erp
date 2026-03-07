@@ -6,6 +6,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from "@/components/ui/label";
 
 
 interface Dock {
@@ -121,7 +122,7 @@ export default function YardManagement() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                                 {[['Carrier SCAC', 'carrierScac', 'text'], ['Direction', 'direction', 'select:INBOUND|OUTBOUND'], ['Start Time', 'scheduledStart', 'datetime-local'], ['End Time', 'scheduledEnd', 'datetime-local'], ['PO Reference', 'purchaseOrderRef', 'text']].map(([lbl, key, type]) => (
                                     <div key={key as string} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                        <label style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>{lbl}</label>
+                                        <Label style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>{lbl}</Label>
                                         {(type as string).startsWith('select:') ? (
                                             <Select value={(form as any)[key as string]} onValueChange={v => setForm(p => ({ ...p, [key as string]: v }))}>
                                                 <SelectTrigger style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label={lbl as string}><SelectValue /></SelectTrigger>
@@ -133,7 +134,7 @@ export default function YardManagement() {
                                     </div>
                                 ))}
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                    <label style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>Dock</label>
+                                    <Label style={{ fontSize: 10, fontWeight: 600, color: '#374151' }}>Dock</Label>
                                     <Select value={form.dockId} onValueChange={v => setForm(p => ({ ...p, dockId: v }))}>
                                         <SelectTrigger style={{ padding: '6px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 11 }} aria-label="Select dock"><SelectValue placeholder="Select dock…" /></SelectTrigger>
                                         <SelectContent>

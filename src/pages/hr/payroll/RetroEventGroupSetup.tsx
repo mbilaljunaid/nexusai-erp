@@ -139,9 +139,9 @@ export default function RetroEventGroupSetup() {
                                 </div>
                                 <div className="flex items-center space-x-2 pt-2">
                                     <Checkbox id="active" checked={eventGroup.isActive} onCheckedChange={(val) => setEventGroup({ ...eventGroup, isActive: !!val })} />
-                                    <label htmlFor="active" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                    <Label htmlFor="active" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                         Activate Triggers for Engine
-                                    </label>
+                                    </Label>
                                 </div>
                             </CardContent>
                         </Card>

@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Users, Phone } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function CollectionsWorkbench() {
     const { data: collections } = useQuery<any>({
@@ -22,7 +23,7 @@ export default function CollectionsWorkbench() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Total Overdue</div>
-                        <div className="text-3xl font-bold mt-1">${collections?.totalOverdue?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(collections?.totalOverdue)}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -34,7 +35,7 @@ export default function CollectionsWorkbench() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Promise to Pay</div>
-                        <div className="text-3xl font-bold mt-1 text-orange-600">${collections?.promiseToPay?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1 text-orange-600">${formatNumber(collections?.promiseToPay)}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -56,7 +57,7 @@ export default function CollectionsWorkbench() {
                                 <div>
                                     <div className="font-medium">{case_.customerName}</div>
                                     <div className="text-sm text-muted-foreground">
-                                        Overdue: ${case_.overdueAmount?.toLocaleString()}
+                                        Overdue: ${formatNumber(case_.overdueAmount)}
                                     </div>
                                 </div>
                                 <Badge variant={case_.priority === "HIGH" ? "destructive" : "secondary"}>

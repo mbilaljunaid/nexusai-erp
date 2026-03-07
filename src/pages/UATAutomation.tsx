@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface UATScript {
   id: string;
@@ -99,7 +100,7 @@ export default function UATAutomation() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium">Industry</label>
+              <Label className="text-sm font-medium">Industry</Label>
               <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
                 <SelectTrigger data-testid="select-industry">
                   <SelectValue placeholder="Select industry" />
@@ -114,7 +115,7 @@ export default function UATAutomation() {
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium">Module</label>
+              <Label className="text-sm font-medium">Module</Label>
               <Select value={selectedModule} onValueChange={setSelectedModule}>
                 <SelectTrigger data-testid="select-module">
                   <SelectValue placeholder="Select module" />

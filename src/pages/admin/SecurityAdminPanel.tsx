@@ -7,6 +7,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 interface IPEntry {
   ip: string;
@@ -186,9 +187,9 @@ export default function SecurityAdminPanel() {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-4">Add IP Address</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <Label className="block text-sm font-medium text-gray-700 mb-1">
               IP Address *
-            </label>
+            </Label>
             <Input
               type="text"
               value={newIP}
@@ -197,9 +198,9 @@ export default function SecurityAdminPanel() {
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <Label className="block text-sm font-medium text-gray-700 mb-1">
               Reason (Optional)
-            </label>
+            </Label>
             <Input
               type="text"
               value={reason}

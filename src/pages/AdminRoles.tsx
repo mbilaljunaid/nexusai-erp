@@ -11,6 +11,7 @@ import { getFormMetadata } from "@/lib/formMetadata";
 import { queryClient } from "@/lib/queryClient";
 import { Plus, Trash2 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Label } from "@/components/ui/label";
 
 const PERMISSIONS = [
   { id: "read", label: "Read" },
@@ -70,7 +71,7 @@ export default function AdminRoles() {
           />
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Permissions</label>
+            <Label className="text-sm font-medium">Permissions</Label>
             <div className="space-y-2">
               {PERMISSIONS.map(perm => (
                 <div key={perm.id} className="flex items-center gap-2">
@@ -80,7 +81,7 @@ export default function AdminRoles() {
                     onCheckedChange={() => togglePermission(perm.id)}
                     data-testid={`checkbox-perm-${perm.id}`}
                   />
-                  <label htmlFor={perm.id} className="text-sm cursor-pointer">{perm.label}</label>
+                  <Label htmlFor={perm.id} className="text-sm cursor-pointer">{perm.label}</Label>
                 </div>
               ))}
             </div>

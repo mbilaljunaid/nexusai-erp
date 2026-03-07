@@ -48,6 +48,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface ForecastDetail {
     source: "AR" | "AP" | "MANUAL";
@@ -275,7 +276,7 @@ export function CashForecastWidget() {
                             />
                             <Tooltip
                                 contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
-                                formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
+                                formatter={(value: number) => [`$${formatNumber(value)}`, ""]}
                             />
                             <Legend />
 
@@ -318,19 +319,19 @@ export function CashForecastWidget() {
                                         {formatDate(day.date)}
                                     </TableCell>
                                     <TableCell className="text-right text-green-600">
-                                        {day.inflow > 0 ? `+${day.inflow.toLocaleString()}` : "-"}
+                                        {day.inflow > 0 ? `+${formatNumber(day.inflow)}` : "-"}
                                     </TableCell>
                                     <TableCell className="text-right text-red-600">
-                                        {day.outflow > 0 ? `-${day.outflow.toLocaleString()}` : "-"}
+                                        {day.outflow > 0 ? `-${formatNumber(day.outflow)}` : "-"}
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className={cn(`flex items-center justify-end gap-1 ${day.netChange >= 0 ? 'text-green-600' : 'text-red-500'}`)}>
                                             {day.netChange >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                                            {Math.abs(day.netChange).toLocaleString()}
+                                            {formatNumber(Math.abs(day.netChange))}
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right font-bold">
-                                        ${day.closingBalance.toLocaleString()}
+                                        ${formatNumber(day.closingBalance)}
                                     </TableCell>
                                 </TableRow>
                             ))}

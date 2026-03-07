@@ -9,6 +9,7 @@ import { Upload, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function SupplierPortal() {
@@ -52,7 +53,7 @@ export default function SupplierPortal() {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="font-bold">${order.amount?.toLocaleString()}</div>
+                                    <div className="font-bold">${formatNumber(order.amount)}</div>
                                     <Badge variant={order.status === "CONFIRMED" ? "default" : "secondary"}>
                                         {order.status}
                                     </Badge>

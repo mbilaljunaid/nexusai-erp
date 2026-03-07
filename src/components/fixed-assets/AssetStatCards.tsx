@@ -25,6 +25,7 @@ function StatCard({ title, value, icon, description }: StatCardProps) {
 }
 
 import { Loader2 } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 export function AssetStatCards({ stats, isLoading }: { stats?: any, isLoading?: boolean }) {
     if (isLoading) {
@@ -48,7 +49,7 @@ export function AssetStatCards({ stats, isLoading }: { stats?: any, isLoading?: 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <StatCard
                 title="Total Asset Value"
-                value={`$${totalNBV.toLocaleString()}`}
+                value={`$${formatNumber(totalNBV)}`}
                 icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
                 description="Net Book Value"
             />

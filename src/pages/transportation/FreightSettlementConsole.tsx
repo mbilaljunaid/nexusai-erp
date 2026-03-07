@@ -8,6 +8,7 @@ import { Receipt, CheckCircle2, AlertCircle, Zap, ArrowRight, DollarSign } from 
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function FreightSettlementConsole() {
@@ -51,7 +52,7 @@ export default function FreightSettlementConsole() {
             id: "plannedAmount",
             header: "Planned",
             width: "120px",
-            cell: (info: any) => <div className="px-2 h-full flex items-center">${Number(info.plannedAmount || 0).toLocaleString()}</div>
+            cell: (info: any) => <div className="px-2 h-full flex items-center">${formatNumber(Number(info.plannedAmount || 0))}</div>
         },
         {
             id: "actualAmount",
@@ -59,7 +60,7 @@ export default function FreightSettlementConsole() {
             width: "120px",
             cell: (info: any) => <div className="px-2 h-full flex items-center">{info.actualAmount ? (
                 <div className="flex items-center gap-2">
-                    <span className="font-semibold text-emerald-600">${Number(info.actualAmount || 0).toLocaleString()}</span>
+                    <span className="font-semibold text-emerald-600">${formatNumber(Number(info.actualAmount || 0))}</span>
                 </div>
             ) : <span className="text-muted-foreground italic">Awaiting Invoice</span>}</div>
         },
@@ -72,7 +73,7 @@ export default function FreightSettlementConsole() {
                     "font-bold",
                     Number(info.varianceAmount) > 0 ? "text-amber-600" : "text-emerald-600"
                 )}>
-                    {Number(info.varianceAmount) > 0 ? "+" : ""}{Number(info.varianceAmount).toLocaleString()}
+                    {Number(info.varianceAmount) > 0 ? "+" : ""}{formatNumber(Number(info.varianceAmount))}
                 </span>
             ) : "-"}</div>
         },

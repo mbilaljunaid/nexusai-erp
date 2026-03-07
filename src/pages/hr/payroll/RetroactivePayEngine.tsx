@@ -19,6 +19,7 @@ import {
     ArrowRight
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export default function RetroactivePayEngine() {
     const { toast } = useToast();
@@ -79,7 +80,7 @@ export default function RetroactivePayEngine() {
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Payroll Group</label>
+                            <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Payroll Group</Label>
                             <Select defaultValue="US_SALARY">
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Payroll Group" />
@@ -92,7 +93,7 @@ export default function RetroactivePayEngine() {
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Event Group</label>
+                            <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Event Group</Label>
                             <Select defaultValue="SALARY_CHANGES">
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Event Group" />

@@ -16,6 +16,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { GitBranch, Plus, Copy, ArrowUpCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { formatNumber } from '@/lib/formatters';
 
 interface Scenario {
     id: string;
@@ -324,15 +325,15 @@ export default function ScenarioComparison() {
                                         return (
                                             <TableRow key={account}>
                                                 <TableCell className="font-medium">{account}</TableCell>
-                                                {selectedScenarios.map(scenarioId => (
+                                                {formatNumber(selectedScenarios.map(scenarioId => (
                                                     <TableCell key={scenarioId} className="text-right font-mono">
-                                                        ${(amounts[scenarioId] || 0).toLocaleString()}
+                                                        ${(amounts[scenarioId] || 0))}
                                                     </TableCell>
                                                 ))}
                                                 {selectedScenarios.length === 2 && (
                                                     <TableCell className={cn(`text-right font-mono flex items-center justify-end gap-1 ${delta >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                                         {delta >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                                                        ${Math.abs(delta).toLocaleString()}
+                                                        ${formatNumber(Math.abs(delta))}
                                                     </TableCell>
                                                 )}
                                             </TableRow>

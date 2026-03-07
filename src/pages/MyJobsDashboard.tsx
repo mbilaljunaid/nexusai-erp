@@ -15,6 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 import {
   Briefcase, Plus, Clock, DollarSign, Users, Calendar,
   CheckCircle, XCircle, Eye, MessageSquare, ChevronRight,
@@ -283,7 +285,7 @@ export default function MyJobsDashboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 text-sm">
                           <span className="font-semibold text-primary">
-                            ${Number(proposal.proposed_price).toLocaleString()}
+                            ${formatNumber(Number(proposal.proposed_price))}
                           </span>
                           <span className="text-muted-foreground flex items-center gap-1">
                             <Clock className="w-3 h-3" />
@@ -348,7 +350,7 @@ export default function MyJobsDashboard() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Job Title</label>
+              <Label className="text-sm font-medium mb-1.5 block">Job Title</Label>
               <Input
                 placeholder="e.g., ERP Implementation Consultant Needed"
                 value={newJob.title}
@@ -357,7 +359,7 @@ export default function MyJobsDashboard() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Description</label>
+              <Label className="text-sm font-medium mb-1.5 block">Description</Label>
               <Textarea
                 placeholder="Describe your project requirements, goals, and expectations..."
                 rows={4}
@@ -368,7 +370,7 @@ export default function MyJobsDashboard() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Category</label>
+                <Label className="text-sm font-medium mb-1.5 block">Category</Label>
                 <Select value={newJob.categoryId} onValueChange={(v) => setNewJob({ ...newJob, categoryId: v })}>
                   <SelectTrigger data-testid="select-job-category">
                     <SelectValue placeholder="Select category" />
@@ -381,7 +383,7 @@ export default function MyJobsDashboard() {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Urgency</label>
+                <Label className="text-sm font-medium mb-1.5 block">Urgency</Label>
                 <Select value={newJob.urgency} onValueChange={(v) => setNewJob({ ...newJob, urgency: v })}>
                   <SelectTrigger data-testid="select-job-urgency">
                     <SelectValue />
@@ -397,7 +399,7 @@ export default function MyJobsDashboard() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Budget Min ($)</label>
+                <Label className="text-sm font-medium mb-1.5 block">Budget Min ($)</Label>
                 <Input
                   type="number"
                   placeholder="500"
@@ -407,7 +409,7 @@ export default function MyJobsDashboard() {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Budget Max ($)</label>
+                <Label className="text-sm font-medium mb-1.5 block">Budget Max ($)</Label>
                 <Input
                   type="number"
                   placeholder="5000"
@@ -418,11 +420,11 @@ export default function MyJobsDashboard() {
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Deadline</label>
+              <Label className="text-sm font-medium mb-1.5 block">Deadline</Label>
               <DatePicker value={newJob.deadline} onChange={(v) => setNewJob({ ...newJob, deadline: v })} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Required Skills (comma-separated)</label>
+              <Label className="text-sm font-medium mb-1.5 block">Required Skills (comma-separated)</Label>
               <Input
                 placeholder="e.g., SAP, Oracle, Financial Reporting"
                 value={newJob.skills}

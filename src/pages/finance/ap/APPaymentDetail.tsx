@@ -11,6 +11,7 @@ import { Play, CheckCircle, Download, FileText, Loader2, Trash2 } from "lucide-r
 import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { useToast } from "@/hooks/use-toast";
 import { downloadFile } from "@/lib/utils";
+import { formatNumber } from '@/lib/formatters';
 
 export default function APPaymentDetail() {
     const [, params] = useRoute("/finance/ap/payments/:id");
@@ -129,7 +130,7 @@ export default function APPaymentDetail() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Total Value</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="text-xl font-bold">${parseFloat(batch.totalAmount || 0).toLocaleString()}</div>
+                        <div className="text-xl font-bold">${formatNumber(parseFloat(batch.totalAmount || 0))}</div>
                     </CardContent>
                 </Card>
                 <Card>

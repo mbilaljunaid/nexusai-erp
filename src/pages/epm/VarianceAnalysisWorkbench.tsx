@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, TrendingUp, TrendingDown, FileText, BarChart3 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface VarianceItem {
     account: string;
@@ -117,7 +119,7 @@ export default function VarianceAnalysisWorkbench() {
                 {/* Period Selectors */}
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Current Period:</label>
+                        <Label className="text-sm font-medium">Current Period:</Label>
                         <Select value={currentPeriod} onValueChange={setCurrentPeriod}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />
@@ -131,7 +133,7 @@ export default function VarianceAnalysisWorkbench() {
                     </div>
                     <span className="text-muted-foreground">vs</span>
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Prior Period:</label>
+                        <Label className="text-sm font-medium">Prior Period:</Label>
                         <Select value={priorPeriod} onValueChange={setPriorPeriod}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />
@@ -165,7 +167,7 @@ export default function VarianceAnalysisWorkbench() {
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="account" angle={-45} textAnchor="end" height={100} />
                                     <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
-                                    <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                                    <Tooltip formatter={(value: number) => `$${formatNumber(value)}`} />
                                     <Bar dataKey="variance" radius={[4, 4, 0, 0]}>
                                         {chartData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.variance >= 0 ? "#10b981" : "#ef4444"} />
@@ -214,10 +216,10 @@ export default function VarianceAnalysisWorkbench() {
                                             >
                                                 <TableCell className="font-medium">{item.account}</TableCell>
                                                 <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
-                                                <TableCell className="text-right font-mono">${item.currentAmount.toLocaleString()}</TableCell>
-                                                <TableCell className="text-right font-mono">${item.priorAmount.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-mono">${formatNumber(item.currentAmount)}</TableCell>
+                                                <TableCell className="text-right font-mono">${formatNumber(item.priorAmount)}</TableCell>
                                                 <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
-                                                    ${Math.abs(item.variance).toLocaleString()}
+                                                    ${formatNumber(Math.abs(item.variance))}
                                                 </TableCell>
                                                 <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                                     {item.variancePct.toFixed(1)}%

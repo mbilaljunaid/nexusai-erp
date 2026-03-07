@@ -9,6 +9,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardDashboard, DashboardWidget } from "@/components/layout/StandardDashboard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Label } from "@/components/ui/label";
 
 export default function POSTerminalCheckout() {
   const { toast } = useToast();
@@ -99,19 +100,19 @@ export default function POSTerminalCheckout() {
       <DashboardWidget title="Process Register Sale" colSpan={4} icon={Plus}>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Terminal</label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Terminal</Label>
             <Input placeholder="TerminalID" value={newSale.terminalId} disabled data-testid="input-terminal" className="bg-muted/50" />
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Product SKU</label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Product SKU</Label>
             <Input placeholder="SKU / Barcode" value={newSale.productId} onChange={(e) => setNewSale({ ...newSale, productId: e.target.value })} data-testid="input-prodid" />
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Quantity</label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Quantity</Label>
             <Input placeholder="Qty" type="number" value={newSale.quantity} onChange={(e) => setNewSale({ ...newSale, quantity: e.target.value })} data-testid="input-qty" />
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Method</label>
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Method</Label>
             <Select value={newSale.paymentType} onValueChange={(v) => setNewSale({ ...newSale, paymentType: v })}>
               <SelectTrigger data-testid="select-payment"><SelectValue /></SelectTrigger>
               <SelectContent>

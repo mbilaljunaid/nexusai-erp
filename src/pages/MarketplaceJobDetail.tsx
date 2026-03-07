@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Building2, MapPin, Currency, Clock, Bookmark, Share2, Briefcase, GraduationCap, ChevronLeft, Calendar as CalendarIcon, DollarSign, CheckCircle2, ChevronDown, CheckSquare, Search, Filter, ArrowLeft, Users, MessageSquare, AlertCircle, User } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface JobProposal {
   id: string;
@@ -290,7 +292,7 @@ export default function MarketplaceJobDetail() {
                           <div className="flex items-center gap-4 text-sm">
                             <span className="flex items-center gap-1.5 font-semibold text-primary">
                               <DollarSign className="w-4 h-4" />
-                              ${Number(proposalItem.bid_amount).toLocaleString()}
+                              ${formatNumber(Number(proposalItem.bid_amount))}
                             </span>
                             {proposalItem.estimated_delivery_days && (
                               <span className="flex items-center gap-1.5 text-muted-foreground">
@@ -421,7 +423,7 @@ export default function MarketplaceJobDetail() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Cover Letter</label>
+              <Label className="text-sm font-medium mb-1.5 block">Cover Letter</Label>
               <Textarea
                 placeholder="Describe your experience and how you would approach this project..."
                 rows={5}
@@ -432,7 +434,7 @@ export default function MarketplaceJobDetail() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Your Bid ($)</label>
+                <Label className="text-sm font-medium mb-1.5 block">Your Bid ($)</Label>
                 <Input
                   type="number"
                   placeholder={`${job.budget_min} - ${job.budget_max}`}
@@ -442,7 +444,7 @@ export default function MarketplaceJobDetail() {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Delivery (days)</label>
+                <Label className="text-sm font-medium mb-1.5 block">Delivery (days)</Label>
                 <Input
                   type="number"
                   placeholder="7"

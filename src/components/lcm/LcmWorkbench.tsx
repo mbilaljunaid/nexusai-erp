@@ -31,6 +31,7 @@ import CostComponentManager from "./CostComponentManager";
 import LcmAuditLogSideSheet from "./LcmAuditLogSideSheet";
 import { History } from "lucide-react";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Label } from "@/components/ui/label";
 
 export default function LcmWorkbench() {
     const { toast } = useToast();
@@ -164,7 +165,7 @@ export default function LcmWorkbench() {
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Operation Name (Voyage / Shipment)</label>
+                                <Label className="text-sm font-medium">Operation Name (Voyage / Shipment)</Label>
                                 <Input
                                     placeholder="e.g. Inbound Shipment #1001"
                                     value={newOpName}

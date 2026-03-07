@@ -5,6 +5,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Download } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
@@ -38,7 +39,7 @@ export default function CategoryManagement() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Total Spend</div>
-                        <div className="text-3xl font-bold mt-1">${categories?.totalSpend?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1">${formatNumber(categories?.totalSpend)}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -50,7 +51,7 @@ export default function CategoryManagement() {
                 <Card>
                     <CardContent className="pt-6">
                         <div className="text-sm text-muted-foreground">Savings YTD</div>
-                        <div className="text-3xl font-bold mt-1 text-green-600">${categories?.savingsYTD?.toLocaleString()}</div>
+                        <div className="text-3xl font-bold mt-1 text-green-600">${formatNumber(categories?.savingsYTD)}</div>
                     </CardContent>
                 </Card>
             </div>
@@ -91,7 +92,7 @@ export default function CategoryManagement() {
                             <div key={cat.id} className="border rounded-lg p-3">
                                 <div className="flex justify-between items-center mb-1">
                                     <div className="font-medium">{cat.name}</div>
-                                    <div className="font-bold">${cat.spend?.toLocaleString()}</div>
+                                    <div className="font-bold">${formatNumber(cat.spend)}</div>
                                 </div>
                                 <div className="text-sm text-muted-foreground">
                                     {cat.supplierCount} suppliers • {cat.savingsOpportunity}% savings opportunity

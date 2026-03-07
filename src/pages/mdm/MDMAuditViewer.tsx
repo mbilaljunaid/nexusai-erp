@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Search, FileText, User, Calendar } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 import {
     Select,
@@ -74,7 +75,7 @@ export default function MDMAuditViewer() {
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium mb-2">Entity Type</label>
+                            <Label className="block text-sm font-medium mb-2">Entity Type</Label>
                             <Select
                                 value={entityType}
                                 onValueChange={(v: any) => setEntityType(v)}
@@ -92,7 +93,7 @@ export default function MDMAuditViewer() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-2">Entity ID</label>
+                            <Label className="block text-sm font-medium mb-2">Entity ID</Label>
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                 <Input

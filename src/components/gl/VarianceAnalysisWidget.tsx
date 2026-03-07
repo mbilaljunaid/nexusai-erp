@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, TrendingDown, Minus, Info } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { formatNumber } from '@/lib/formatters';
 
 interface VarianceItem {
     account: string;
@@ -86,7 +87,7 @@ export function VarianceAnalysisWidget({ currentPeriodId, onClose }: VarianceAna
                                         {item.variance > 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                                         {Math.abs(item.variancePercent)}%
                                         <span className="text-xs font-normal text-muted-foreground ml-1">
-                                            (${Math.abs(item.variance).toLocaleString()})
+                                            (${formatNumber(Math.abs(item.variance))})
                                         </span>
                                     </div>
                                 </div>

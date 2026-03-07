@@ -5,6 +5,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import UsageAnalyticsService, { FeatureAdoptionMetric, StickinessStat } from '@/services/usageAnalyticsService';
 import { TrendingUp, Users, Activity, Target, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function UsageAnalyticsDashboard() {
@@ -40,19 +41,19 @@ export default function UsageAnalyticsDashboard() {
             id: 'unique_users',
             header: 'Users',
             width: "150px",
-            cell: (row: any) => <div className="p-2 font-medium">{row.unique_users?.toLocaleString()}</div>
+            cell: (row: any) => <div className="p-2 font-medium">{formatNumber(row.unique_users)}</div>
         },
         {
             id: 'total_events',
             header: 'Events',
             width: "150px",
-            cell: (row: any) => <div className="p-2">{row.total_events?.toLocaleString()}</div>
+            cell: (row: any) => <div className="p-2">{formatNumber(row.total_events)}</div>
         },
         {
             id: 'unique_sessions',
             header: 'Sessions',
             width: "150px",
-            cell: (row: any) => <div className="p-2">{row.unique_sessions?.toLocaleString()}</div>
+            cell: (row: any) => <div className="p-2">{formatNumber(row.unique_sessions)}</div>
         }
     ];
 
@@ -81,7 +82,7 @@ export default function UsageAnalyticsDashboard() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold">{stickiness?.dau?.toLocaleString() || 0}</div>
+                        <div className="text-3xl font-bold">{formatNumber(stickiness?.dau) || 0}</div>
                         <p className="text-xs text-gray-500 mt-1">Last 24 hours</p>
                     </CardContent>
                 </Card>

@@ -151,7 +151,7 @@ export function LeaseAIExtractionModal({ isOpen, onClose, onSuccess }: AIExtract
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-center w-full">
-                                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                                    <Label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                             <Upload className="h-8 w-8 text-muted-foreground mb-2" />
                                             <p className="mb-2 text-sm text-muted-foreground">
@@ -165,7 +165,7 @@ export function LeaseAIExtractionModal({ isOpen, onClose, onSuccess }: AIExtract
                                             accept=".pdf,.docx,.txt"
                                             onChange={handleFileChange}
                                         />
-                                    </label>
+                                    </Label>
                                 </div>
 
                                 {file && (

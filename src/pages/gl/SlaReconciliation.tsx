@@ -10,6 +10,8 @@ import { Loader2, RefreshCcw, AlertTriangle, CheckCircle } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 type ReconData = {
     period: string;
@@ -51,7 +53,7 @@ export default function SlaReconciliation() {
             <DashboardWidget colSpan={4} title="Reconciliation Scope">
                 <div className="flex gap-4 items-end">
                     <div className="space-y-2 w-64">
-                        <label className="text-sm font-medium">Ledger</label>
+                        <Label className="text-sm font-medium">Ledger</Label>
                         <Select value={ledgerId} onValueChange={setLedgerId}>
                             <SelectTrigger><SelectValue /></SelectTrigger>
                             <SelectContent>
@@ -61,7 +63,7 @@ export default function SlaReconciliation() {
                         </Select>
                     </div>
                     <div className="space-y-2 w-48">
-                        <label className="text-sm font-medium">Period</label>
+                        <Label className="text-sm font-medium">Period</Label>
                         <Input value={periodName} onChange={e => setPeriodName(e.target.value)} />
                     </div>
                 </div>
@@ -90,18 +92,18 @@ export default function SlaReconciliation() {
                         <div className="grid grid-cols-3 gap-4 text-center">
                             <div className="p-4 border rounded bg-muted/20">
                                 <h4 className="text-sm font-medium text-muted-foreground">SLA Total</h4>
-                                <div className="text-2xl font-bold mt-2">{data.sla.dr.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                                <div className="text-2xl font-bold mt-2">{formatNumber(data.sla.dr, 2)}</div>
                                 <div className="text-xs text-muted-foreground">Debits</div>
                             </div>
                             <div className="p-4 border rounded bg-muted/20">
                                 <h4 className="text-sm font-medium text-muted-foreground">GL Total</h4>
-                                <div className="text-2xl font-bold mt-2">{data.gl.dr.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                                <div className="text-2xl font-bold mt-2">{formatNumber(data.gl.dr, 2)}</div>
                                 <div className="text-xs text-muted-foreground">Debits</div>
                             </div>
                             <div className="p-4 border rounded bg-card">
                                 <h4 className="text-sm font-medium text-muted-foreground">Variance</h4>
                                 <div className={cn(`text-2xl font-bold mt-2 ${data.variance.dr !== 0 ? "text-red-600" : "text-green-600"}`)}>
-                                    {data.variance.dr.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {formatNumber(data.variance.dr, 2)}
                                 </div>
                                 <div className="text-xs text-muted-foreground">Difference</div>
                             </div>

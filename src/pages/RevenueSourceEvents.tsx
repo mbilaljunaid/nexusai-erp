@@ -31,6 +31,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DatePickerField } from '@/components/forms/DatePickerField';
+import { formatNumber } from '@/lib/formatters';
 
 interface SourceEvent {
     id: string;
@@ -309,7 +310,7 @@ export default function RevenueSourceEvents() {
                                                         {format(new Date(event.eventDate), "MMM dd, yyyy")}
                                                     </TableCell>
                                                     <TableCell className="text-right font-mono">
-                                                        {event.currency} {parseFloat(event.amount).toLocaleString()}
+                                                        {event.currency} {formatNumber(parseFloat(event.amount))}
                                                     </TableCell>
                                                     <TableCell>
                                                         {event.contractId ? (

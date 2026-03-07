@@ -12,6 +12,7 @@ import { Plus, Play, ArrowRight, History, Settings2, Building2, ShieldCheck } fr
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export function ZbaManager() {
     const queryClient = useQueryClient();
@@ -231,7 +232,7 @@ export function ZbaManager() {
                                                     {sweep.direction === 'SUB_TO_MASTER' ? 'Pool Funds' : 'Refill Sub'}
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="text-right font-medium text-xs">{Number(sweep.amount).toLocaleString()}</TableCell>
+                                            <TableCell className="text-right font-medium text-xs">{formatNumber(Number(sweep.amount))}</TableCell>
                                             <TableCell className="text-right">
                                                 <Badge variant="default" className="bg-green-600 text-[10px]">{sweep.status}</Badge>
                                             </TableCell>

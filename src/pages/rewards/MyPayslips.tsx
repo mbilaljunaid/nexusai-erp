@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { FileText, Download, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function MyPayslips() {
@@ -42,7 +43,7 @@ export default function MyPayslips() {
     const netPay = totalEarnings - totalDeductions;
 
     return (
-        <StandardPage title="${netPay.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
+        <StandardPage title="${formatNumber(netPay, 2)}">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">My Payslips</h2>
@@ -62,7 +63,7 @@ export default function MyPayslips() {
                             <FileText className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">${Number(payslip.totalNet).toLocaleString()}</div>
+                            <div className="text-2xl font-bold">${formatNumber(Number(payslip.totalNet))}</div>
                             <p className="text-xs text-muted-foreground">
                                 Paid on {format(new Date(payslip.paymentDate || payslip.periodEndDate), 'MMM dd, yyyy')}
                             </p>
@@ -103,12 +104,12 @@ export default function MyPayslips() {
                                     {earnings.map((item: any) => (
                                         <div key={item.id} className="flex justify-between items-center py-2 border-b last:border-0 border-border/50">
                                             <span className="font-medium">{item.elementName}</span>
-                                            <span>${Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                            <span>${formatNumber(Number(item.amount), 2)}</span>
                                         </div>
                                     ))}
                                     <div className="flex justify-between items-center pt-2 font-bold text-lg">
                                         <span>Total Earnings</span>
-                                        <span>${totalEarnings.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                        <span>${formatNumber(totalEarnings, 2)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +128,7 @@ export default function MyPayslips() {
                                     ))}
                                     <div className="flex justify-between items-center pt-2 font-bold text-lg">
                                         <span>Total Deductions</span>
-                                        <span className="text-red-600">-${totalDeductions.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                        <span className="text-red-600">-${formatNumber(totalDeductions, 2)}</span>
                                     </div>
                                 </div>
                             </div>

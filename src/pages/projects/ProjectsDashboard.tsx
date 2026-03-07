@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/badge';
 import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
+import { formatNumber } from '@/lib/formatters';
 
 export default function ProjectsDashboard() {
     const [buId, setBuId] = useState<string | undefined>();
@@ -20,7 +21,7 @@ export default function ProjectsDashboard() {
 
     const metrics = [
         { label: 'Total Projects', value: summary?.totalProjects ?? summary?.projectCount ?? '0', change: '+2', icon: FolderKanban, color: "bg-blue-100 text-blue-700" },
-        { label: 'Total Budgeted', value: `$${parseFloat(summary?.totalBudget || "0").toLocaleString()}`, change: '0', icon: DollarSign, color: "bg-green-100 text-green-700" },
+        { label: 'Total Budgeted', value: `$${formatNumber(parseFloat(summary?.totalBudget || "0"))}`, change: '0', icon: DollarSign, color: "bg-green-100 text-green-700" },
         { label: 'Active Projects', value: summary?.activeProjects ?? '0', change: 'Real-time', icon: BarChart3, color: "bg-purple-100 text-purple-700" },
         { label: 'Avg % Complete', value: `${summary?.avgPercentComplete ?? 0}%`, change: 'Real-time', icon: TrendingUp, color: "bg-orange-100 text-orange-700" },
     ];

@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import type { BillingEvent } from "@/types/erp-types";
 import { format } from "date-fns";
+import { formatNumber } from '@/lib/formatters';
 
 interface BillingEventDetailSheetProps {
     event: BillingEvent | null;
@@ -49,7 +50,7 @@ export function BillingEventDetailSheet({ event, open, onOpenChange }: BillingEv
                             <div>
                                 <Label className="text-muted-foreground">Amount</Label>
                                 <div className="text-2xl font-bold font-mono">
-                                    ${Number(event.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    ${formatNumber(Number(event.amount), 2)}
                                     <span className="text-sm text-muted-foreground ml-1">{event.currency || 'USD'}</span>
                                 </div>
                             </div>

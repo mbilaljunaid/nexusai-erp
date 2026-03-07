@@ -7,6 +7,8 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface Dispute { id: string; dispute_number: string; from_entity: string; to_entity: string; disputed_amount: number; currency: string; status: string; reason: string; opened_by: string; opened_at: string; events: DEvent[]; resolution: string; }
 interface DEvent { at: string; by: string; action: string; note: string; }
@@ -50,7 +52,7 @@ export default function ICDisputeWorkbench() {
         { id: "dispute_number", header: "#", width: "100px", cell: (row) => <div className="ic-col-id">{row.dispute_number}</div> },
         { id: "entities", header: "From → To", width: "150px", cell: (row) => <div className="ic-col-entities">{row.from_entity} → {row.to_entity}</div> },
         { id: "reason", header: "Reason", width: "120px", cell: (row) => <div className="ic-col-reason">{row.reason}</div> },
-        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="font-mono">{row.disputed_amount ? `$${Number(row.disputed_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}` : '—'}</div> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="font-mono">{row.disputed_amount ? `$${formatNumber(Number(row.disputed_amount), 2)}` : '—'}</div> },
         { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-gray-500 bg-gray-500/10'; return <span className={cn(`ic-stat-badge ${clrClass}`)}>{row.status}</span>; } },
         { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div className="ic-col-date">{formatDate(row.opened_at)}</div> },
         { id: "actions", header: "Actions", width: "200px", cell: (row) => <div className="ic-act-btns"><button onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} className="ic-btn-view">{selected?.id === row.id ? 'Unselect' : 'View'}</button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} className="ic-btn-review">Review</button><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} className="ic-btn-escalate">Escalate</button></>}</div> }
@@ -66,7 +68,7 @@ export default function ICDisputeWorkbench() {
         >
             {/* KPI row */}
             <div className="ic-kpis">
-                {[{ label: 'Active Disputes', val: totalOpen, clr: 'text-red-600' }, { label: 'Total Disputed', val: `$${totalAmt.toLocaleString(undefined, { minimumFractionDigits: 0 })}`, clr: 'text-amber-600' }, { label: 'Total Disputes', val: safeDisputes.length, clr: 'text-blue-700' }].map(k => (
+                {[{ label: 'Active Disputes', val: totalOpen, clr: 'text-red-600' }, { label: 'Total Disputed', val: `$${formatNumber(totalAmt, 0)}`, clr: 'text-amber-600' }, { label: 'Total Disputes', val: safeDisputes.length, clr: 'text-blue-700' }].map(k => (
                     <div key={k.label} className="ic-kpi-card">
                         <div className="ic-kpi-label">{k.label}</div>
                         <div className={cn(`ic-kpi-val ${k.clr}`)}>{k.val}</div>
@@ -88,7 +90,7 @@ export default function ICDisputeWorkbench() {
                     <div className="ic-new-title">Open New IC Dispute</div>
                     <div className="ic-new-grid">
                         <div className="ic-new-fld">
-                            <label>From Entity</label>
+                            <Label>From Entity</Label>
                             <Select value={form.fromEntity} onValueChange={v => setForm(p => ({ ...p, fromEntity: v }))}>
                                 <SelectTrigger aria-label="From Entity"><SelectValue placeholder="Select Entity..." /></SelectTrigger>
                                 <SelectContent>
@@ -97,7 +99,7 @@ export default function ICDisputeWorkbench() {
                             </Select>
                         </div>
                         <div className="ic-new-fld">
-                            <label>To Entity</label>
+                            <Label>To Entity</Label>
                             <Select value={form.toEntity} onValueChange={v => setForm(p => ({ ...p, toEntity: v }))}>
                                 <SelectTrigger aria-label="To Entity"><SelectValue placeholder="Select Entity..." /></SelectTrigger>
                                 <SelectContent>
@@ -107,19 +109,19 @@ export default function ICDisputeWorkbench() {
                         </div>
                         {[['Currency', 'currency', 'text'], ['Disputed Amount', 'disputedAmount', 'number']].map(([lbl, key, type]) => (
                             <div key={key} className="ic-new-fld">
-                                <label>{lbl}</label>
+                                <Label>{lbl}</Label>
                                 <Input type={type} value={(form as any)[key as string]} onChange={e => setForm(p => ({ ...p, [key as string]: e.target.value }))} aria-label={lbl as string} />
                             </div>
                         ))}
                         <div className="ic-new-fld">
-                            <label>Reason</label>
+                            <Label>Reason</Label>
                             <Select value={form.reason} onValueChange={v => setForm(p => ({ ...p, reason: v }))}>
                                 <SelectTrigger aria-label="Reason"><SelectValue /></SelectTrigger>
                                 <SelectContent>{REASONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                             </Select>
                         </div>
                         <div className="ic-new-fld ic-span-2">
-                            <label>Notes</label>
+                            <Label>Notes</Label>
                             <Input value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} aria-label="Notes" />
                         </div>
                     </div>

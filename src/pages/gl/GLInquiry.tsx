@@ -13,6 +13,7 @@ import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
+import { formatNumber } from '@/lib/formatters';
 
 export default function GLInquiry() {
     const { currentLedgerId, activeLedger } = useLedger();
@@ -107,7 +108,7 @@ export default function GLInquiry() {
                             <CardContent className="p-6">
                                 <p className="text-sm font-medium text-slate-500 mb-1">Total Period Debits</p>
                                 <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200 font-mono">
-                                    {totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {formatNumber(totalDebit, 2)}
                                 </h3>
                             </CardContent>
                         </Card>
@@ -115,7 +116,7 @@ export default function GLInquiry() {
                             <CardContent className="p-6">
                                 <p className="text-sm font-medium text-slate-500 mb-1">Total Period Credits</p>
                                 <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200 font-mono">
-                                    {totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {formatNumber(totalCredit, 2)}
                                 </h3>
                             </CardContent>
                         </Card>
@@ -123,7 +124,7 @@ export default function GLInquiry() {
                             <CardContent className="p-6">
                                 <p className="text-sm font-medium text-indigo-700 mb-1">Net Period Change</p>
                                 <h3 className="text-3xl font-bold text-indigo-900 dark:text-indigo-200 font-mono">
-                                    {netChange.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {formatNumber(netChange, 2)}
                                 </h3>
                             </CardContent>
                         </Card>
@@ -186,10 +187,10 @@ export default function GLInquiry() {
                                                     <Badge variant="secondary" className="font-normal text-xs">{line.journal?.source || 'Manual'}</Badge>
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono text-sm">
-                                                    {line.accountedDebit ? parseFloat(line.accountedDebit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '-'}
+                                                    {line.accountedDebit ? formatNumber(parseFloat(line.accountedDebit), 2) : '-'}
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono text-sm pr-6">
-                                                    {line.accountedCredit ? parseFloat(line.accountedCredit).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '-'}
+                                                    {line.accountedCredit ? formatNumber(parseFloat(line.accountedCredit), 2) : '-'}
                                                 </TableCell>
                                             </TableRow>
                                         ))

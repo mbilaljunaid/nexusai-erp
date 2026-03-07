@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2, ShieldAlert, CreditCard } from "lucide-react";
 import type { TreasuryDeal, TreasuryFxDeal } from "@/types/erp-types";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export function BackOfficeWorkbench() {
     const { toast } = useToast();
@@ -108,7 +109,7 @@ export function BackOfficeWorkbench() {
                                     <TableCell><Badge variant="outline">{deal.type}</Badge></TableCell>
                                     <TableCell>CP-{deal.counterpartyId.substring(0, 8)}</TableCell>
                                     <TableCell className="text-right font-semibold">
-                                        {Number(deal.principalAmount).toLocaleString()} {deal.currency}
+                                        {formatNumber(Number(deal.principalAmount))} {deal.currency}
                                     </TableCell>
                                     <TableCell className="text-xs text-muted-foreground">{deal.traderId || 'SYSTEM'}</TableCell>
                                     <TableCell className="text-right">
@@ -129,7 +130,7 @@ export function BackOfficeWorkbench() {
                                     <TableCell><Badge variant="secondary">{deal.dealType}</Badge></TableCell>
                                     <TableCell>CP-{deal.counterpartyId.substring(0, 8)}</TableCell>
                                     <TableCell className="text-right font-semibold">
-                                        {Number(deal.buyAmount).toLocaleString()} {deal.buyCurrency}
+                                        {formatNumber(Number(deal.buyAmount))} {deal.buyCurrency}
                                     </TableCell>
                                     <TableCell className="text-xs text-muted-foreground">{deal.traderId || 'SYSTEM'}</TableCell>
                                     <TableCell className="text-right">

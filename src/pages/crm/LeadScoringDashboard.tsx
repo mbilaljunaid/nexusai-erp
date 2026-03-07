@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { TrendingUp, Sparkles, User, Mail, Building, ArrowRight, Target, Zap } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { Label } from "@/components/ui/label";
 
 interface Lead {
     id: string;
@@ -184,7 +185,7 @@ export default function LeadScoringDashboard() {
                 {/* Filters */}
                 <div className="flex items-center gap-4 bg-card p-4 rounded-lg border">
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Score:</label>
+                        <Label className="text-sm font-medium">Score:</Label>
                         <Select value={selectedScore} onValueChange={setSelectedScore}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />
@@ -198,7 +199,7 @@ export default function LeadScoringDashboard() {
                         </Select>
                     </div>
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium">Source:</label>
+                        <Label className="text-sm font-medium">Source:</Label>
                         <Select value={selectedSource} onValueChange={setSelectedSource}>
                             <SelectTrigger className="w-40">
                                 <SelectValue />

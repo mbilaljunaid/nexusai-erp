@@ -8,6 +8,7 @@ import { Receipt } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { formatNumber } from '@/lib/formatters';
 
 interface Expense {
   id: string;
@@ -90,7 +91,7 @@ export function ExpenseToGLForm({ expense, onClose }: { expense: Expense; onClos
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Amount:</span>
-              <span className="font-semibold">${parseFloat(amount).toLocaleString()}</span>
+              <span className="font-semibold">${formatNumber(parseFloat(amount))}</span>
             </div>
           </div>
         </CardContent>

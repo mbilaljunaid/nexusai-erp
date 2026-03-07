@@ -8,6 +8,7 @@ import { Eye, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatNumber } from '@/lib/formatters';
 
 interface Project {
     id: string;
@@ -102,7 +103,7 @@ export default function ProjectList() {
             width: "150px",
             cell: (proj: Project) => (
                 <div className="px-2 h-full flex items-center justify-end font-medium w-full">
-                    ${parseFloat(proj.budget || "0").toLocaleString()}
+                    ${formatNumber(parseFloat(proj.budget || "0"))}
                 </div>
             )
         },

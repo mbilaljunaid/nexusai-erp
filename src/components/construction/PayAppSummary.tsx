@@ -6,6 +6,7 @@ import { TrendingUp, DollarSign, Percent, MinusCircle, FileDown } from "lucide-r
 import { cn } from "@/lib/utils";
 import { generatePayAppPDF, type PayAppData } from "./reports/PayAppPDFGenerator";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 interface PayAppSummaryProps {
     payApp: {
@@ -111,7 +112,7 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1">
                             <div className="text-sm text-muted-foreground">Original Contract Amount</div>
-                            <div className="text-2xl font-bold font-mono">${scheduled.toLocaleString()}</div>
+                            <div className="text-2xl font-bold font-mono">${formatNumber(scheduled)}</div>
                         </div>
                         <div className="space-y-1">
                             <div className="text-sm text-muted-foreground">Percentage Complete</div>
@@ -140,7 +141,7 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                         <div className="grid grid-cols-3 gap-3">
                             <div className="bg-blue-500/10 p-3 rounded-lg border border-blue-200">
                                 <div className="text-xs text-blue-700 mb-1">Previous Amount</div>
-                                <div className="font-mono font-bold text-blue-900 dark:text-blue-200">${previous.toLocaleString()}</div>
+                                <div className="font-mono font-bold text-blue-900 dark:text-blue-200">${formatNumber(previous)}</div>
                             </div>
                             <div className="bg-green-500/10 p-3 rounded-lg border border-green-200">
                                 <div className="text-xs text-green-700 mb-1 flex items-center gap-1">
@@ -152,11 +153,11 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                                         </Badge>
                                     )}
                                 </div>
-                                <div className="font-mono font-bold text-green-900 dark:text-green-200">${thisPeriod.toLocaleString()}</div>
+                                <div className="font-mono font-bold text-green-900 dark:text-green-200">${formatNumber(thisPeriod)}</div>
                             </div>
                             <div className="bg-purple-500/10 p-3 rounded-lg border border-purple-200">
                                 <div className="text-xs text-purple-700 mb-1">Total to Date</div>
-                                <div className="font-mono font-bold text-purple-900 dark:text-purple-200">${totalCompleted.toLocaleString()}</div>
+                                <div className="font-mono font-bold text-purple-900 dark:text-purple-200">${formatNumber(totalCompleted)}</div>
                             </div>
                         </div>
                     </div>
@@ -172,18 +173,18 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                         <div className="space-y-2">
                             <div className="flex justify-between items-center py-2 border-b">
                                 <span className="text-sm">Total Completed & Stored to Date</span>
-                                <span className="font-mono font-semibold">${totalCompleted.toLocaleString()}</span>
+                                <span className="font-mono font-semibold">${formatNumber(totalCompleted)}</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b">
                                 <span className="text-sm flex items-center gap-2">
                                     Retainage ({payApp.retentionPercent}%)
                                     <Percent className="h-3 w-3 text-muted-foreground" />
                                 </span>
-                                <span className="font-mono font-semibold text-red-600">(${retention.toLocaleString()})</span>
+                                <span className="font-mono font-semibold text-red-600">(${formatNumber(retention)})</span>
                             </div>
                             <div className="flex justify-between items-center py-3 bg-green-500/10 px-3 rounded-lg">
                                 <span className="font-semibold">Current Payment Due</span>
-                                <span className="font-mono text-xl font-bold text-green-700">${paymentDue.toLocaleString()}</span>
+                                <span className="font-mono text-xl font-bold text-green-700">${formatNumber(paymentDue)}</span>
                             </div>
                         </div>
                     </div>
@@ -193,7 +194,7 @@ export function PayAppSummary({ payApp, className }: PayAppSummaryProps) {
                         <div className="flex justify-between items-center">
                             <div>
                                 <div className="text-sm text-muted-foreground mb-1">Balance to Finish</div>
-                                <div className="font-mono text-2xl font-bold">${balance.toLocaleString()}</div>
+                                <div className="font-mono text-2xl font-bold">${formatNumber(balance)}</div>
                             </div>
                             <div className="text-right">
                                 <div className="text-sm text-muted-foreground mb-1">Remaining %</div>

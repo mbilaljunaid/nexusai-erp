@@ -15,6 +15,7 @@ import {
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ApPprSideSheet } from "./ApPprSideSheet";
+import { formatNumber } from '@/lib/formatters';
 
 export function ApPprDashboard() {
     const [isSideSheetOpen, setIsSideSheetOpen] = useState(false);
@@ -104,7 +105,7 @@ export function ApPprDashboard() {
                                                         {batch.status}
                                                     </Badge>
                                                 </td>
-                                                <td className="p-3">${Number(batch.totalAmount).toLocaleString()}</td>
+                                                <td className="p-3">${formatNumber(Number(batch.totalAmount))}</td>
                                                 <td className="p-3">{batch.paymentCount} Items</td>
                                                 <td className="p-3 flex items-center gap-1 opacity-70">
                                                     <Calendar className="h-3 w-3" />

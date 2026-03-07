@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, Truck } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export default function DockScheduler() {
     const [date, setDate] = useState<Date>(new Date());
@@ -102,19 +103,19 @@ export default function DockScheduler() {
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Dock Number</label>
+                                <Label className="text-sm font-medium">Dock Number</Label>
                                 <Input value={formData.dockNumber} onChange={(e) => setFormData({ ...formData, dockNumber: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Carrier</label>
+                                <Label className="text-sm font-medium">Carrier</Label>
                                 <Input placeholder="DHL, FedEx, Own Fleet" value={formData.carrier} onChange={(e) => setFormData({ ...formData, carrier: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Time (24h)</label>
+                                <Label className="text-sm font-medium">Time (24h)</Label>
                                 <Input type="time" value={formData.timeShort} onChange={(e) => setFormData({ ...formData, timeShort: e.target.value })} />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Reference (PO/Shipment)</label>
+                                <Label className="text-sm font-medium">Reference (PO/Shipment)</Label>
                                 <Input placeholder="PO-12345" value={formData.referenceNumber} onChange={(e) => setFormData({ ...formData, referenceNumber: e.target.value })} />
                             </div>
                             <Button className="w-full" onClick={() => createMutation.mutate(null)} disabled={createMutation.isPending}>

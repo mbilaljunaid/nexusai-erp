@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
+import { formatNumber } from '@/lib/formatters';
 
 export default function CrmAnalyticsDashboard() {
     const { data, isLoading } = useQuery<any>({
@@ -130,7 +131,7 @@ export default function CrmAnalyticsDashboard() {
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="stage" fontSize={12} />
                                             <YAxis fontSize={12} tickFormatter={(value) => `$${value}`} />
-                                            <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, "Value"]} />
+                                            <Tooltip formatter={(value: number) => [`$${formatNumber(value)}`, "Value"]} />
                                             <Bar dataKey="totalValue" fill="#3b82f6" radius={[8, 8, 0, 0]} />
                                         </BarChart>
                                     </ResponsiveContainer>
@@ -173,7 +174,7 @@ export default function CrmAnalyticsDashboard() {
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="category" fontSize={12} />
                                             <YAxis fontSize={12} tickFormatter={(value) => `$${value}K`} />
-                                            <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}K`, "Revenue"]} />
+                                            <Tooltip formatter={(value: number) => [`$${formatNumber(value)}K`, "Revenue"]} />
                                             <Bar dataKey="value" radius={[8, 8, 0, 0]}>
                                                 {revenueWaterfall.map((entry: any, index: number) => (
                                                     <Cell key={`cell-${index}`} fill={entry.color} />

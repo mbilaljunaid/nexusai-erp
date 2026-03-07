@@ -23,6 +23,7 @@ import { useLedger } from "@/context/LedgerContext";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ContextualSearch } from "@/components/ContextualSearch";
+import { formatNumber } from '@/lib/formatters';
 
 // Types
 interface BudgetBalance {
@@ -197,10 +198,10 @@ export default function BudgetManager() {
                                             return (
                                                 <TableRow key={b.id} className="border-white/5 hover:bg-white/5 transition-colors">
                                                     <TableCell className="font-mono text-xs text-blue-200">{b.codeCombinationId}</TableCell>
-                                                    <TableCell className="font-bold text-blue-400">${parseFloat(b.budgetAmount).toLocaleString()}</TableCell>
-                                                    <TableCell className="text-emerald-400">${parseFloat(b.actualAmount).toLocaleString()}</TableCell>
-                                                    <TableCell className="text-amber-400">${parseFloat(b.encumbranceAmount).toLocaleString()}</TableCell>
-                                                    <TableCell className="font-black text-white">${parseFloat(b.fundsAvailable).toLocaleString()}</TableCell>
+                                                    <TableCell className="font-bold text-blue-400">${formatNumber(parseFloat(b.budgetAmount))}</TableCell>
+                                                    <TableCell className="text-emerald-400">${formatNumber(parseFloat(b.actualAmount))}</TableCell>
+                                                    <TableCell className="text-amber-400">${formatNumber(parseFloat(b.encumbranceAmount))}</TableCell>
+                                                    <TableCell className="font-black text-white">${formatNumber(parseFloat(b.fundsAvailable))}</TableCell>
                                                     <TableCell className="w-32">
                                                         <div className="flex flex-col gap-1">
                                                             <Progress value={usage} className="h-1 bg-white/5" indicatorClassName={usage > 90 ? "bg-red-500" : usage > 70 ? "bg-amber-500" : "bg-blue-500"} />

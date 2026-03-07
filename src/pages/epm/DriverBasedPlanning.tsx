@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Save } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 export default function DriverBasedPlanning() {
     const { toast } = useToast();
@@ -48,11 +49,11 @@ export default function DriverBasedPlanning() {
                         {drivers.map((driver, i) => (
                             <div key={i} className="grid grid-cols-3 gap-4 p-3 border rounded-lg">
                                 <div>
-                                    <label className="text-sm">Driver Name</label>
+                                    <Label className="text-sm">Driver Name</Label>
                                     <Input value={driver.name} readOnly />
                                 </div>
                                 <div>
-                                    <label className="text-sm">Value</label>
+                                    <Label className="text-sm">Value</Label>
                                     <Input
                                         type="number"
                                         value={driver.value}
@@ -64,7 +65,7 @@ export default function DriverBasedPlanning() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-sm">Formula</label>
+                                    <Label className="text-sm">Formula</Label>
                                     <Input value={driver.formula} placeholder="e.g., A * B" readOnly />
                                 </div>
                             </div>

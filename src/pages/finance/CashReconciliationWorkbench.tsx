@@ -11,6 +11,7 @@ import { AccountSummaryCards } from "@/components/finance/AccountSummaryCards";
 import { ReconciliationSplitView } from "@/components/finance/ReconciliationSplitView";
 import { StatementUploadDialog } from "@/components/finance/StatementUploadDialog";
 import { CashBankAccount } from "@shared/schema";
+import { Label } from "@/components/ui/label";
 
 export default function CashReconciliationWorkbench() {
     const { toast } = useToast();
@@ -66,7 +67,7 @@ export default function CashReconciliationWorkbench() {
 
             <div className="space-y-6">
                 <div className="flex items-center gap-4 bg-muted/30 p-4 rounded-lg border">
-                    <label className="text-sm font-medium">Bank Account:</label>
+                    <Label className="text-sm font-medium">Bank Account:</Label>
                     <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
                         <SelectTrigger className="w-72">
                             <SelectValue placeholder="Select a bank account" />

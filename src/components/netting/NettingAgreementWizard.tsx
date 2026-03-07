@@ -20,6 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface AgreementWizardProps {
     isOpen: boolean;
@@ -326,7 +327,7 @@ export function NettingAgreementWizard({ isOpen, onClose, onSuccess }: Agreement
                                         <div>
                                             <p className="text-muted-foreground">Auto-Settle Threshold</p>
                                             <p className="font-medium">
-                                                {autoSettleThreshold ? `${currency} ${parseFloat(autoSettleThreshold).toLocaleString()}` : 'None'}
+                                                {autoSettleThreshold ? `${currency} ${formatNumber(parseFloat(autoSettleThreshold))}` : 'None'}
                                             </p>
                                         </div>
                                         <div>

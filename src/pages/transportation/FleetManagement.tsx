@@ -10,6 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function FleetManagement() {
@@ -68,7 +70,7 @@ export default function FleetManagement() {
             </div>
 
             <div>
-                <label className="text-sm font-medium">Filter by Status</label>
+                <Label className="text-sm font-medium">Filter by Status</Label>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
                     <SelectTrigger className="w-64">
                         <SelectValue />
@@ -104,7 +106,7 @@ export default function FleetManagement() {
                                         <div className="grid grid-cols-4 gap-4 mt-3">
                                             <div>
                                                 <div className="text-xs text-muted-foreground">Mileage</div>
-                                                <div className="font-medium">{vehicle.mileage?.toLocaleString()} mi</div>
+                                                <div className="font-medium">{formatNumber(vehicle.mileage)} mi</div>
                                             </div>
                                             <div>
                                                 <div className="text-xs text-muted-foreground">Fuel Efficiency</div>

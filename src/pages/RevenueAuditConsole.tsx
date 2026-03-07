@@ -25,6 +25,7 @@ import { InteractiveSpreadsheet} from"@/components/ui/InteractiveSpreadsheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger} from"@/components/ui/tabs";
 import { format} from"date-fns";
 import { Skeleton} from"@/components/ui/skeleton";
+import { formatNumber } from '@/lib/formatters';
 
 export default function RevenueAuditConsole() {
     const [searchId, setSearchId] = useState("");
@@ -209,7 +210,7 @@ export default function RevenueAuditConsole() {
                                                 { id:"scheduleDate", header:"Date", width:"150px", cell: (row: any) => format(new Date(row.scheduleDate),"MMM dd, yyyy")},
                                                 { id:"eventType", header:"Type", width:"150px", cell: (row: any) => <Badge variant="outline">{row.eventType}</Badge>},
                                                 { id:"accountType", header:"Account", width:"150px", cell: (row: any) => <span>{row.accountType}</span>},
-                                                { id:"amount", header:"Amount", width:"150px", cell: (row: any) => <span className="font-mono">${parseFloat(row.amount).toLocaleString()}</span>},
+                                                { id:"amount", header:"Amount", width:"150px", cell: (row: any) => <span className="font-mono">${formatNumber(parseFloat(row.amount))}</span>},
                                                 {
                                                     id:"status", header:"Status", width:"150px", cell: (row: any) => (
                                                         <StatusBadge status={row.status} />

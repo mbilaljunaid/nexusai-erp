@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Calculator, Plus, PlayCircle, Save } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { formatNumber } from '@/lib/formatters';
 
 interface AllocationRule {
     id: string;
@@ -281,7 +282,7 @@ export default function BudgetAllocationWorkbench() {
                                         >
                                             <TableCell className="font-medium">{rule.name}</TableCell>
                                             <TableCell><code className="text-xs">{rule.sourceAccount}</code></TableCell>
-                                            <TableCell className="text-right font-mono">${rule.totalAmount.toLocaleString()}</TableCell>
+                                            <TableCell className="text-right font-mono">${formatNumber(rule.totalAmount)}</TableCell>
                                             <TableCell>
                                                 <Badge variant="outline">{rule.basis.replace("_", " ")}</Badge>
                                             </TableCell>
@@ -339,7 +340,7 @@ export default function BudgetAllocationWorkbench() {
                                                 {target.percentage ? `${target.percentage.toFixed(1)}%` : "-"}
                                             </TableCell>
                                             <TableCell className="text-right font-mono">
-                                                {target.allocatedAmount ? `$${target.allocatedAmount.toLocaleString()}` : "-"}
+                                                {target.allocatedAmount ? `$${formatNumber(target.allocatedAmount)}` : "-"}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -360,7 +361,7 @@ export default function BudgetAllocationWorkbench() {
                             <div className="space-y-4 py-4">
                                 <div className="p-4 bg-muted rounded-lg">
                                     <div className="text-sm font-semibold mb-1">Total Amount</div>
-                                    <div className="text-2xl font-bold">${previewData.totalAllocated.toLocaleString()}</div>
+                                    <div className="text-2xl font-bold">${formatNumber(previewData.totalAllocated)}</div>
                                 </div>
                                 <Table>
                                     <TableHeader>
@@ -375,7 +376,7 @@ export default function BudgetAllocationWorkbench() {
                                         {previewData.targets.map((target, idx) => (
                                             <TableRow key={idx}>
                                                 <TableCell className="font-medium">{target.account}</TableCell>
-                                                <TableCell className="text-right font-mono">${target.amount.toLocaleString()}</TableCell>
+                                                <TableCell className="text-right font-mono">${formatNumber(target.amount)}</TableCell>
                                                 <TableCell className="text-right">{target.percentage.toFixed(1)}%</TableCell>
                                                 <TableCell>
                                                     <Progress value={target.percentage} className="w-24" />

@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export default function UsageMeteringDashboard() {
     const { businessUnitId } = useEnterpriseStore();
@@ -176,7 +177,7 @@ export default function UsageMeteringDashboard() {
                         <Activity className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{metrics?.totalUsageEvents?.toLocaleString() || 0}</div>
+                        <div className="text-2xl font-bold">{formatNumber(metrics?.totalUsageEvents) || 0}</div>
                         <p className="text-xs text-muted-foreground">{metrics?.period || "Current Month"}</p>
                     </CardContent>
                 </Card>

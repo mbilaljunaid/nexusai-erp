@@ -7,6 +7,7 @@ import { TrendingUp, DollarSign, Package, FileText, Download, Calendar } from "l
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
@@ -21,7 +22,7 @@ export default function CustomerAnalytics() {
         { id: "orderNumber", header: "Order #", width: "150px", cell: (order: any) => <span className="font-medium">{order.orderNumber}</span> },
         { id: "date", header: "Date", width: "150px", cell: (order: any) => <span>{formatDate(order.date)}</span> },
         { id: "status", header: "Status", width: "150px", cell: (order: any) => <span>{order.status}</span> },
-        { id: "amount", header: "Amount", width: "150px", cell: (order: any) => <span>${order.amount.toLocaleString()}</span> }
+        { id: "amount", header: "Amount", width: "150px", cell: (order: any) => <span>${formatNumber(order.amount)}</span> }
     ];
 
     return (
@@ -43,7 +44,7 @@ export default function CustomerAnalytics() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <div className="text-sm text-muted-foreground">Total Spend (YTD)</div>
-                                <div className="text-2xl font-bold mt-1">${analytics?.totalSpend?.toLocaleString()}</div>
+                                <div className="text-2xl font-bold mt-1">${formatNumber(analytics?.totalSpend)}</div>
                             </div>
                             <DollarSign className="h-8 w-8 text-green-600" />
                         </div>
@@ -76,7 +77,7 @@ export default function CustomerAnalytics() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <div className="text-sm text-muted-foreground">Avg Order Value</div>
-                                <div className="text-2xl font-bold mt-1">${analytics?.avgOrderValue?.toLocaleString()}</div>
+                                <div className="text-2xl font-bold mt-1">${formatNumber(analytics?.avgOrderValue)}</div>
                             </div>
                             <TrendingUp className="h-8 w-8 text-purple-600" />
                         </div>

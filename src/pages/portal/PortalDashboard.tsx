@@ -17,6 +17,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function PortalDashboard() {
@@ -53,7 +54,7 @@ export default function PortalDashboard() {
                         <div className="flex-1">
                             <h3 className="text-sm font-semibold text-red-800">Payment Overdue</h3>
                             <p className="text-sm text-red-700 mt-1">
-                                You have <span className="font-bold">${stats.overdue.toLocaleString()}</span> in overdue payments.
+                                You have <span className="font-bold">${formatNumber(stats.overdue)}</span> in overdue payments.
                                 Please make a payment to avoid service interruption.
                             </p>
                             <Link href="/portal/invoices">
@@ -70,14 +71,14 @@ export default function PortalDashboard() {
             <div className="grid gap-4 md:grid-cols-3">
                 <StatCard
                     title="Total Outstanding"
-                    value={`$${stats.outstanding?.toLocaleString() || "0.00"}`}
+                    value={`$${formatNumber(stats.outstanding) || "0.00"}`}
                     icon={DollarSign}
                     color="text-blue-600"
                     bg="bg-blue-500/10"
                 />
                 <StatCard
                     title="Overdue Amount"
-                    value={`$${stats.overdue?.toLocaleString() || "0.00"}`}
+                    value={`$${formatNumber(stats.overdue) || "0.00"}`}
                     icon={AlertCircle}
                     color={hasOverdue ? "text-red-600" : "text-gray-400"}
                     bg={hasOverdue ? "bg-red-500/10" : "bg-gray-500/10"}
@@ -125,7 +126,7 @@ export default function PortalDashboard() {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-sm font-bold text-emerald-600">${Number(payment.amount).toLocaleString()}</p>
+                                            <p className="text-sm font-bold text-emerald-600">${formatNumber(Number(payment.amount))}</p>
                                         </div>
                                     </div>
                                 ))}

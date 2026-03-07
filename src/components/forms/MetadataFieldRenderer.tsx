@@ -137,9 +137,9 @@ export function MetadataFieldRenderer({
                   disabled={readOnly || fieldState.disabled}
                   data-testid={`checkbox-${field.name}`}
                 />
-                <label htmlFor={field.name} className="text-sm cursor-pointer">
+                <Label htmlFor={field.name} className="text-sm cursor-pointer">
                   {field.label}
-                </label>
+                </Label>
               </div>
             )}
 
@@ -165,9 +165,9 @@ export function MetadataFieldRenderer({
                       className="text-primary border-gray-300"
                       data-testid={`radio-${field.name}-${option.value}`}
                     />
-                    <label htmlFor={`${field.name}-${option.value}`} className="text-sm cursor-pointer">
+                    <Label htmlFor={`${field.name}-${option.value}`} className="text-sm cursor-pointer">
                       {option.label}
-                    </label>
+                    </Label>
                   </div>
                 ))}
               </RadioGroup>
@@ -208,9 +208,9 @@ export function MetadataFieldRenderer({
                         disabled={readOnly || fieldState.disabled}
                         data-testid={`multiselect-option-${field.name}-${option.value}`}
                       />
-                      <label htmlFor={`${field.name}-${option.value}`} className="text-sm cursor-pointer">
+                      <Label htmlFor={`${field.name}-${option.value}`} className="text-sm cursor-pointer">
                         {option.label}
-                      </label>
+                      </Label>
                     </div>
                   );
                 })}

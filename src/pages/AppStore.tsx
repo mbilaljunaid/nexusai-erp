@@ -20,6 +20,7 @@ import {
   ExternalLink, Settings, CheckCircle, Clock, AlertCircle
 } from "lucide-react";
 import type { MarketplaceApp } from "@/types/erp-types";
+import { Label } from "@/components/ui/label";
 interface AppInstallation { id: string; appId?: string; app?: MarketplaceApp; status?: string; installedAt?: string;[key: string]: any; }
 interface AppReview { id: string; appId?: string; rating?: number; comment?: string;[key: string]: any; }
 
@@ -173,7 +174,7 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
 
         <div className="space-y-4 flex-1 overflow-hidden">
           <div>
-            <label className="text-sm font-medium mb-2 block">Your Rating</label>
+            <Label className="text-sm font-medium mb-2 block">Your Rating</Label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -197,7 +198,7 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">Your Review</label>
+            <Label className="text-sm font-medium mb-2 block">Your Review</Label>
             <Textarea
               placeholder="Tell others what you think about this app..."
               value={comment}

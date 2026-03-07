@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 export default function DatabaseBackups() {
     const backups = [
@@ -106,19 +107,19 @@ export default function DatabaseBackups() {
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <label className="text-sm font-medium">Backup Schedule</label>
+                                <Label className="text-sm font-medium">Backup Schedule</Label>
                                 <div className="text-sm text-muted-foreground mt-1">Daily at 3:00 AM UTC</div>
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Retention Period</label>
+                                <Label className="text-sm font-medium">Retention Period</Label>
                                 <div className="text-sm text-muted-foreground mt-1">30 days</div>
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Backup Location</label>
+                                <Label className="text-sm font-medium">Backup Location</Label>
                                 <div className="text-sm text-muted-foreground mt-1">AWS S3: nexusai-backups</div>
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Compression</label>
+                                <Label className="text-sm font-medium">Compression</Label>
                                 <div className="text-sm text-muted-foreground mt-1">Enabled (gzip)</div>
                             </div>
                         </div>
@@ -203,11 +204,11 @@ export default function DatabaseBackups() {
                             </p>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm font-medium">Recovery Point Objective (RPO)</label>
+                                    <Label className="text-sm font-medium">Recovery Point Objective (RPO)</Label>
                                     <div className="text-sm text-muted-foreground mt-1">5 minutes</div>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Recovery Time Objective (RTO)</label>
+                                    <Label className="text-sm font-medium">Recovery Time Objective (RTO)</Label>
                                     <div className="text-sm text-muted-foreground mt-1">30 minutes</div>
                                 </div>
                             </div>

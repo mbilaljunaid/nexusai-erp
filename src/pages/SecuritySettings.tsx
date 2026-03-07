@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Toggle } from "@/components/ui/toggle";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, Lock, Smartphone, Key } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export default function SecuritySettings() {
   const [mfaEnabled, setMfaEnabled] = useState(true);
@@ -36,19 +37,19 @@ export default function SecuritySettings() {
             </div>
             {mfaEnabled && (
               <div className="space-y-2 pt-2 border-t">
-                <label className="text-sm">Available MFA Methods:</label>
+                <Label className="text-sm">Available MFA Methods:</Label>
                 <div className="space-y-4 pt-4">
                   <div className="flex items-center gap-2">
                     <Checkbox defaultChecked id="email" />
-                    <label htmlFor="email" className="text-sm cursor-pointer leading-none">Email</label>
+                    <Label htmlFor="email" className="text-sm cursor-pointer leading-none">Email</Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <Checkbox defaultChecked id="sms" />
-                    <label htmlFor="sms" className="text-sm cursor-pointer leading-none">SMS</label>
+                    <Label htmlFor="sms" className="text-sm cursor-pointer leading-none">SMS</Label>
                   </div>
                   <div className="flex items-center gap-2">
                     <Checkbox defaultChecked id="app" />
-                    <label htmlFor="app" className="text-sm cursor-pointer leading-none">Authenticator App</label>
+                    <Label htmlFor="app" className="text-sm cursor-pointer leading-none">Authenticator App</Label>
                   </div>
                 </div>
               </div>
@@ -65,7 +66,7 @@ export default function SecuritySettings() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
-              <label className="text-sm font-medium">Password Expiry (days)</label>
+              <Label className="text-sm font-medium">Password Expiry (days)</Label>
               <Input type="number" value={passwordExpiry} onChange={(e) => setPasswordExpiry(parseInt(e.target.value))} className="mt-1" data-testid="input-password-expiry" />
             </div>
             <div className="space-y-2 text-sm">
@@ -91,16 +92,16 @@ export default function SecuritySettings() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div>
-            <label className="text-sm font-medium">Session Timeout (minutes)</label>
+            <Label className="text-sm font-medium">Session Timeout (minutes)</Label>
             <Input type="number" value={sessionTimeout} onChange={(e) => setSessionTimeout(parseInt(e.target.value))} className="mt-1" data-testid="input-session-timeout" />
             <p className="text-xs text-muted-foreground mt-1">User will be logged out after inactivity</p>
           </div>
           <div>
-            <label className="text-sm font-medium">Maximum Concurrent Sessions</label>
+            <Label className="text-sm font-medium">Maximum Concurrent Sessions</Label>
             <Input type="number" defaultValue={3} className="mt-1" data-testid="input-max-sessions" />
           </div>
           <div>
-            <label className="text-sm font-medium">Login Attempt Limit</label>
+            <Label className="text-sm font-medium">Login Attempt Limit</Label>
             <Input type="number" defaultValue={5} className="mt-1" data-testid="input-login-limit" />
             <p className="text-xs text-muted-foreground mt-1">Account will be locked after failed attempts</p>
           </div>

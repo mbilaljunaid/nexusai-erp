@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { formatNumber } from '@/lib/formatters';
 
 interface Requisition {
     id: number | string;
@@ -48,7 +49,7 @@ export default function RequisitionBoard() {
         {
             id: "totalAmount", width: "150px",
             header: "Total",
-            cell: (item) => <span>${Number(item.totalAmount).toLocaleString()}</span>
+            cell: (item) => <span>${formatNumber(Number(item.totalAmount))}</span>
         },
         {
             id: "status", width: "150px",

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Calculator, FileText, AlertCircle, CheckCircle2, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { formatNumber } from '@/lib/formatters';
 
 interface InvoiceLineItem {
     id: string;
@@ -172,7 +173,7 @@ export function TaxCalculationPreview() {
                                 <SelectContent>
                                     {mockInvoices.map(invoice => (
                                         <SelectItem key={invoice.id} value={invoice.id}>
-                                            {invoice.number} - {invoice.customer} (${invoice.amount.toLocaleString()})
+                                            {invoice.number} - {invoice.customer} (${formatNumber(invoice.amount)})
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface Opportunity {
   id: string;
@@ -88,7 +89,7 @@ export function ConvertOpportunityToInvoiceForm({ opportunity, onClose }: { oppo
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Amount:</span>
-              <span className="font-semibold">${opportunity.amount.toLocaleString()}</span>
+              <span className="font-semibold">${formatNumber(opportunity.amount)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Linked To:</span>

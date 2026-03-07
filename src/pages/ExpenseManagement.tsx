@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/sheet";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useLocation } from "wouter";
+import { Label } from "@/components/ui/label";
 
 export default function ExpenseManagement() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -364,7 +365,7 @@ export default function ExpenseManagement() {
           </SheetHeader>
           <div className="py-6 space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Report Title</label>
+              <Label className="text-sm font-medium mb-2 block">Report Title</Label>
               <Input
                 type="text"
                 placeholder="e.g., Business Trip to NYC"
@@ -372,7 +373,7 @@ export default function ExpenseManagement() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Description (Optional)</label>
+              <Label className="text-sm font-medium mb-2 block">Description (Optional)</Label>
               <Textarea
                 placeholder="Additional details..."
                 rows={3}

@@ -4,6 +4,7 @@ import { TrendingUp, Users, DollarSign, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function CampaignDetail() {
     const params = useParams() as any;
@@ -44,7 +45,7 @@ export default function CampaignDetail() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${Number(stats?.totalRevenue).toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(Number(stats?.totalRevenue))}</div>
                         <p className="text-xs text-muted-foreground">From {stats?.wonDeals} deals</p>
                     </CardContent>
                 </Card>
@@ -54,7 +55,7 @@ export default function CampaignDetail() {
                         <DollarSign className="h-4 w-4 text-red-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${Number(stats?.totalCost).toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(Number(stats?.totalCost))}</div>
                         <p className="text-xs text-muted-foreground">Actual / Budget</p>
                     </CardContent>
                 </Card>

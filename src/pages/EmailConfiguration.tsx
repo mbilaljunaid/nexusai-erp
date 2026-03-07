@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function EmailConfiguration() {
   return (
@@ -12,11 +13,11 @@ export default function EmailConfiguration() {
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div>
-            <label className="text-sm font-medium">SMTP Host</label>
+            <Label className="text-sm font-medium">SMTP Host</Label>
             <Input placeholder="smtp.gmail.com" data-testid="input-smtp-host" />
           </div>
           <div>
-            <label className="text-sm font-medium">From Address</label>
+            <Label className="text-sm font-medium">From Address</Label>
             <Input placeholder="noreply@company.com" data-testid="input-from-address" />
           </div>
           <Button data-testid="button-save-email">Save Configuration</Button>

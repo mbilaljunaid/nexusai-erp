@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency } from "@/lib/formatters";
 import { TrendingUp, TrendingDown, AlertCircle, Activity } from "lucide-react";
 
 interface ProjectHealthCardProps {
@@ -33,7 +32,7 @@ export function ProjectHealthCard({ metrics, alerts }: ProjectHealthCardProps) {
     };
 
     const formatCurrency = (amount: number) => {
-        return formatCurrency(amount);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
     };
 
     return (

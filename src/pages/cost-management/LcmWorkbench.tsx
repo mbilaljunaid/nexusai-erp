@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ContextualSearch } from "@/components/ContextualSearch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function LcmWorkbench() {
@@ -145,7 +146,7 @@ export default function LcmWorkbench() {
                                                     <TableCell>{op.departureDate ? format(new Date(op.departureDate), 'MMM d, yyyy') : '-'}</TableCell>
                                                     <TableCell>{op.arrivalDate ? format(new Date(op.arrivalDate), 'MMM d, yyyy') : '-'}</TableCell>
                                                     <TableCell className="text-right">
-                                                        {op.totalEstimatedCost ? `$${Number(op.totalEstimatedCost).toLocaleString()}` : '-'}
+                                                        {op.totalEstimatedCost ? `$${formatNumber(Number(op.totalEstimatedCost))}` : '-'}
                                                     </TableCell>
                                                     <TableCell>
                                                         <TooltipProvider>

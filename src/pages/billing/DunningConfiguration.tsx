@@ -9,6 +9,7 @@ import { AlertTriangle, Mail, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function DunningConfiguration() {
@@ -66,7 +67,7 @@ export default function DunningConfiguration() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium">Strategy Name</label>
+                            <Label className="text-sm font-medium">Strategy Name</Label>
                             <Input
                                 value={strategyName}
                                 onChange={(e) => setStrategyName(e.target.value)}
@@ -80,7 +81,7 @@ export default function DunningConfiguration() {
                                     <div key={i} className="border rounded-lg p-3">
                                         <div className="grid grid-cols-3 gap-2">
                                             <div>
-                                                <label className="text-xs">Days Overdue</label>
+                                                <Label className="text-xs">Days Overdue</Label>
                                                 <Input
                                                     type="number"
                                                     value={level.daysOverdue}
@@ -92,7 +93,7 @@ export default function DunningConfiguration() {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-xs">Action</label>
+                                                <Label className="text-xs">Action</Label>
                                                 <Select
                                                     value={level.action}
                                                     onValueChange={(value) => {
@@ -113,7 +114,7 @@ export default function DunningConfiguration() {
                                                 </Select>
                                             </div>
                                             <div>
-                                                <label className="text-xs">Template</label>
+                                                <Label className="text-xs">Template</Label>
                                                 <Input value={level.template} readOnly />
                                             </div>
                                         </div>

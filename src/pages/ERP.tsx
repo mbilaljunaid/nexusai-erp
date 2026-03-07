@@ -15,6 +15,7 @@ import { FormSearch } from "@/components/FormSearch";
 import { useQuery } from "@tanstack/react-query";
 import { DollarSign, Package, BarChart3, FileText, Warehouse, TrendingUp, Settings, ShoppingCart, Zap, Users, Mail, ClipboardList } from "lucide-react";
 import { Link, useRoute } from "wouter";
+import { formatNumber } from '@/lib/formatters';
 
 export default function ERP() {
   const [match, rawParams] = useRoute("/erp/:page");
@@ -192,7 +193,7 @@ export default function ERP() {
           <div className="space-y-2">
             {filteredInvoices.length > 0 ? (
               filteredInvoices.map((i: any) => (
-                <Card key={i.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.name}</p><p className="text-sm text-muted-foreground">Qty: {i.qty}</p></div><Badge>${i.value.toLocaleString()}</Badge></div></CardContent></Card>
+                <Card key={i.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between"><div><p className="font-semibold">{i.name}</p><p className="text-sm text-muted-foreground">Qty: {i.qty}</p></div><Badge>${formatNumber(i.value)}</Badge></div></CardContent></Card>
               ))
             ) : (
               <Card><CardContent className="p-4"><p className="text-muted-foreground">No inventory items found</p></CardContent></Card>

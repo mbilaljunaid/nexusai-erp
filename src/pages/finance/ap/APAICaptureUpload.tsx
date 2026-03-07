@@ -8,6 +8,7 @@ import { Upload, FileText, Image, FileAudio, FileSpreadsheet, Loader2, CheckCirc
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Label } from "@/components/ui/label";
 
 export default function APAICaptureUpload() {
     const [file, setFile] = useState<File | null>(null);
@@ -127,13 +128,13 @@ export default function APAICaptureUpload() {
                                     onChange={handleFileSelect}
                                     accept="image/*,.pdf,.xlsx,.xls,audio/*"
                                 />
-                                <label htmlFor="file-upload" className="cursor-pointer">
+                                <Label htmlFor="file-upload" className="cursor-pointer">
                                     <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                                     <p className="text-sm font-medium">Click to upload or drag and drop</p>
                                     <p className="text-xs text-muted-foreground mt-1">
                                         Images, PDFs, Excel, or Audio files
                                     </p>
-                                </label>
+                                </Label>
                             </div>
 
                             {file && (
@@ -189,29 +190,29 @@ export default function APAICaptureUpload() {
                         <CardContent>
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div>
-                                    <label className="text-sm font-medium">Invoice Number</label>
+                                    <Label className="text-sm font-medium">Invoice Number</Label>
                                     <p className="text-lg font-mono">{extractedData.invoiceNumber || "N/A"}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Supplier</label>
+                                    <Label className="text-sm font-medium">Supplier</Label>
                                     <p className="text-lg">{extractedData.supplierName || "N/A"}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Invoice Date</label>
+                                    <Label className="text-sm font-medium">Invoice Date</Label>
                                     <p className="text-lg">{extractedData.invoiceDate || "N/A"}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Due Date</label>
+                                    <Label className="text-sm font-medium">Due Date</Label>
                                     <p className="text-lg">{extractedData.dueDate || "N/A"}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Total Amount</label>
+                                    <Label className="text-sm font-medium">Total Amount</Label>
                                     <p className="text-lg font-bold">
                                         {extractedData.currency || "USD"} {extractedData.totalAmount || "0.00"}
                                     </p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Confidence</label>
+                                    <Label className="text-sm font-medium">Confidence</Label>
                                     <p className="text-lg">{(extractedData.confidence * 100).toFixed(0)}%</p>
                                 </div>
                             </div>

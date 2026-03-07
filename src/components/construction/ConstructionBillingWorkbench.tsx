@@ -28,6 +28,7 @@ import { PayAppLineEditor } from "./PayAppLineEditor";
 import { PayAppCertificationWizard } from "./PayAppCertificationWizard";
 import { PayAppSummary } from "./PayAppSummary";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface PayApp {
     id: string;
@@ -310,7 +311,7 @@ export default function ConstructionBillingWorkbench() {
                                     {format(new Date(app.periodEnd), "MMM d, yyyy")}
                                 </div>
                                 <div className="font-mono text-sm font-bold text-primary">
-                                    Due: ${Number(app.currentPaymentDue).toLocaleString()}
+                                    Due: ${formatNumber(Number(app.currentPaymentDue))}
                                 </div>
                             </div>
                         ))}
@@ -330,19 +331,19 @@ export default function ConstructionBillingWorkbench() {
                                 <Card>
                                     <CardContent className="pt-6">
                                         <div className="text-sm font-medium text-muted-foreground">Total Completed</div>
-                                        <div className="text-2xl font-bold">${Number(activeApp.totalCompleted).toLocaleString()}</div>
+                                        <div className="text-2xl font-bold">${formatNumber(Number(activeApp.totalCompleted))}</div>
                                     </CardContent>
                                 </Card>
                                 <Card>
                                     <CardContent className="pt-6">
                                         <div className="text-sm font-medium text-muted-foreground">Retention</div>
-                                        <div className="text-2xl font-bold text-red-600">(${Number(activeApp.retentionAmount).toLocaleString()})</div>
+                                        <div className="text-2xl font-bold text-red-600">(${formatNumber(Number(activeApp.retentionAmount))})</div>
                                     </CardContent>
                                 </Card>
                                 <Card>
                                     <CardContent className="pt-6">
                                         <div className="text-sm font-medium text-muted-foreground">Payment Due</div>
-                                        <div className="text-2xl font-bold text-green-600">${Number(activeApp.currentPaymentDue).toLocaleString()}</div>
+                                        <div className="text-2xl font-bold text-green-600">${formatNumber(Number(activeApp.currentPaymentDue))}</div>
                                     </CardContent>
                                 </Card>
                                 <Card className="flex flex-col items-center justify-center p-4 gap-2">
@@ -429,7 +430,7 @@ export default function ConstructionBillingWorkbench() {
                                             {
                                                 header: "Scheduled Value",
                                                 accessorKey: "scheduledValue",
-                                                cell: (item: any) => `$${Number(item.scheduledValue).toLocaleString()}`,
+                                                cell: (item: any) => `$${formatNumber(Number(item.scheduledValue))}`,
                                                 sortable: true
                                             },
                                             {

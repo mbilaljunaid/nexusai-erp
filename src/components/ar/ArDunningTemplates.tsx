@@ -15,6 +15,7 @@ import {
 import { Plus, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
+import { Label } from "@/components/ui/label";
 
 type Template = {
     id: string;
@@ -72,32 +73,32 @@ export function ArDunningTemplates() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label>Name</label>
+                                <Label>Name</Label>
                                 <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
                             </div>
                             <div className="space-y-2">
-                                <label>Severity</label>
+                                <Label>Severity</Label>
                                 <Input value={formData.severity} onChange={e => setFormData({ ...formData, severity: e.target.value })} />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label>Email Subject</label>
+                            <Label>Email Subject</Label>
                             <Input value={formData.subject} onChange={e => setFormData({ ...formData, subject: e.target.value })} required />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label>Min Days Overdue</label>
+                                <Label>Min Days Overdue</Label>
                                 <Input type="number" value={formData.daysOverdueMin} onChange={e => setFormData({ ...formData, daysOverdueMin: parseInt(e.target.value) })} />
                             </div>
                             <div className="space-y-2">
-                                <label>Max Days Overdue</label>
+                                <Label>Max Days Overdue</Label>
                                 <Input type="number" value={formData.daysOverdueMax} onChange={e => setFormData({ ...formData, daysOverdueMax: parseInt(e.target.value) })} />
                             </div>
                         </div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Content Template</label>
+                                    <Label className="text-sm font-medium">Content Template</Label>
                                     <Textarea
                                         value={formData.content}
                                         onChange={e => setFormData({ ...formData, content: e.target.value })}
@@ -111,7 +112,7 @@ export function ArDunningTemplates() {
                                 </Button>
                             </div>
                             <div className="space-y-4">
-                                <label className="text-sm font-medium">Template Preview</label>
+                                <Label className="text-sm font-medium">Template Preview</Label>
                                 <div className="h-48 p-4 rounded-md border border-slate-200 bg-slate-500/10 overflow-y-auto text-sm whitespace-pre-wrap">
                                     <div className="font-bold border-b pb-2 mb-2">Subject: {formData.subject || "(No Subject)"}</div>
                                     {formData.content || "(No Content)"}

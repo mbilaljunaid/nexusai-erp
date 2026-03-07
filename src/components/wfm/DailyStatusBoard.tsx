@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 interface DailyStatusBoardProps {
     tenantId: string;
@@ -80,9 +81,9 @@ export function DailyStatusBoard({ tenantId }: DailyStatusBoardProps) {
                             className="h-4 w-4"
                             aria-label="Enable auto-refresh every 5 minutes"
                         />
-                        <label htmlFor="autoRefresh" className="text-sm text-muted-foreground">
+                        <Label htmlFor="autoRefresh" className="text-sm text-muted-foreground">
                             Auto-refresh (5 min)
-                        </label>
+                        </Label>
                     </div>
                 </div>
             </div>

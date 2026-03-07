@@ -14,6 +14,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 
 import { Building2, MapPin, Currency, Clock, Bookmark, Share2, Briefcase, GraduationCap, ChevronLeft, Calendar, DollarSign, CheckCircle2, ChevronDown, CheckSquare, Search, Filter, ArrowUpDown, AlertCircle, Users, ChevronRight } from "lucide-react";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Label } from "@/components/ui/label";
 
 interface JobPosting {
   id: string;
@@ -148,7 +149,7 @@ export default function MarketplaceJobs() {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1.5 block">Category</label>
+                    <Label className="text-xs text-muted-foreground mb-1.5 block">Category</Label>
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                       <SelectTrigger data-testid="select-category">
                         <SelectValue placeholder="All Categories" />
@@ -165,7 +166,7 @@ export default function MarketplaceJobs() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1.5 block">Status</label>
+                    <Label className="text-xs text-muted-foreground mb-1.5 block">Status</Label>
                     <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                       <SelectTrigger data-testid="select-status">
                         <SelectValue placeholder="All Status" />
@@ -181,7 +182,7 @@ export default function MarketplaceJobs() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1.5 block">Urgency</label>
+                    <Label className="text-xs text-muted-foreground mb-1.5 block">Urgency</Label>
                     <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
                       <SelectTrigger data-testid="select-urgency">
                         <SelectValue placeholder="All Urgency" />
@@ -197,7 +198,7 @@ export default function MarketplaceJobs() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1.5 block">Sort By</label>
+                    <Label className="text-xs text-muted-foreground mb-1.5 block">Sort By</Label>
                     <Select value={sortBy} onValueChange={setSortBy}>
                       <SelectTrigger data-testid="select-sort">
                         <ArrowUpDown className="w-4 h-4 mr-2" />

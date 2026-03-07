@@ -25,6 +25,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDes
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { formatNumber } from '@/lib/formatters';
 
 // Local types (differ from API types - see mappers below)
 interface Meter {
@@ -275,7 +276,7 @@ export function MeterReadingModule() {
                                             {/* Current Value */}
                                             <div className="flex items-baseline gap-2">
                                                 <Gauge className={cn("h-5 w-5", statusConfig.color)} />
-                                                <span className="text-3xl font-bold">{meter.currentValue.toLocaleString()}</span>
+                                                <span className="text-3xl font-bold">{formatNumber(meter.currentValue)}</span>
                                                 <span className="text-muted-foreground">{meter.uom}</span>
                                             </div>
 
@@ -296,9 +297,9 @@ export function MeterReadingModule() {
                                                     <div className="flex justify-between text-xs text-muted-foreground">
                                                         <span>0</span>
                                                         {meter.pmTriggerValue && (
-                                                            <span>PM: {meter.pmTriggerValue.toLocaleString()}</span>
+                                                            <span>PM: {formatNumber(meter.pmTriggerValue)}</span>
                                                         )}
-                                                        <span>Max: {meter.highThreshold.toLocaleString()}</span>
+                                                        <span>Max: {formatNumber(meter.highThreshold)}</span>
                                                     </div>
                                                 </div>
                                             )}
@@ -453,7 +454,7 @@ export function MeterReadingModule() {
                                     {readings.map(reading => (
                                         <div key={reading.id} className="flex items-center justify-between p-3 border rounded">
                                             <div>
-                                                <div className="font-medium">{reading.value.toLocaleString()} {selectedMeter.uom}</div>
+                                                <div className="font-medium">{formatNumber(reading.value)} {selectedMeter.uom}</div>
                                                 <div className="text-sm text-muted-foreground">
                                                     {format(new Date(reading.timestamp), "MMM dd, yyyy HH:mm")}
                                                     {reading.readBy && ` • ${reading.readBy}`}

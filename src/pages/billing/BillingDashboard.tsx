@@ -8,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { CreateBillingEventSheet } from "./components/CreateBillingEventSheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
-import { formatCurrency } from "@/lib/formatters";
 
 export default function BillingDashboard() {
     const { businessUnitId } = useEnterpriseStore();
@@ -24,7 +23,12 @@ export default function BillingDashboard() {
     });
 
     const formatCurrency = (amount: number) => {
-        return formatCurrency(amount);
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(amount);
     };
 
     const navigationCards = [

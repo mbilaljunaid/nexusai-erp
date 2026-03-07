@@ -19,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import ExcelJS from "exceljs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 const MODULES = [
   { id: "crm", label: "CRM", icon: "Target" },
@@ -245,7 +246,7 @@ export default function Reports() {
                   Import data from Excel files to quickly load records into the system. Supports batch operations and data validation.
                 </p>
                 <div className="space-y-3">
-                  <label className="flex items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer hover:bg-muted transition-colors">
+                  <Label className="flex items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer hover:bg-muted transition-colors">
                     <div className="text-center">
                       <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                       <p className="text-sm font-medium">Click to upload Excel file</p>
@@ -258,7 +259,7 @@ export default function Reports() {
                       className="hidden"
                       data-testid="input-excel-import"
                     />
-                  </label>
+                  </Label>
                   {importData.length > 0 && (
                     <div className="p-3 bg-green-500/10 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
                       <p className="text-sm font-medium text-green-900 dark:text-green-100">
@@ -315,9 +316,9 @@ export default function Reports() {
                 <h3 className="font-semibold text-sm">Auto-refresh Reports</h3>
                 <div className="flex items-center gap-3">
                   <Checkbox id="auto-refresh" defaultChecked className="w-4 h-4" />
-                  <label htmlFor="auto-refresh" className="text-sm">
+                  <Label htmlFor="auto-refresh" className="text-sm">
                     Automatically refresh reports every 5 minutes
-                  </label>
+                  </Label>
                 </div>
               </div>
 

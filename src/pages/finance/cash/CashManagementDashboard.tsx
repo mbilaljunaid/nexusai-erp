@@ -18,7 +18,6 @@ import {
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useState } from "react";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
-import { formatCurrency } from "@/lib/formatters";
 
 interface CashPosition {
     totalCash: number;
@@ -70,7 +69,10 @@ export default function CashManagementDashboard() {
     });
 
     const formatCurrency = (amount: number, currency: string = "USD") => {
-        return formatCurrency(amount, currency);
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: currency
+        }).format(amount);
     };
 
     const formatShortDate = (dateString: string) => {

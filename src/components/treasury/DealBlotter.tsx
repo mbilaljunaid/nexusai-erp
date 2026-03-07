@@ -30,6 +30,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { TreasuryDeal, TreasuryFxDeal } from "@/types/erp-types";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 type UnifiedDeal = (TreasuryDeal | TreasuryFxDeal) & {
     _dealCategory: "MONEY_MARKET" | "FX";
@@ -261,7 +262,7 @@ export function DealBlotter() {
                     return (
                         <div className="flex flex-col items-end">
                             <span className="font-bold">
-                                {Number(fxDeal.buyAmount).toLocaleString()} {fxDeal.buyCurrency}
+                                {formatNumber(Number(fxDeal.buyAmount))} {fxDeal.buyCurrency}
                             </span>
                             <span className="text-[10px] text-muted-foreground">
                                 @ {Number(fxDeal.exchangeRate || 0).toFixed(4)}
@@ -273,7 +274,7 @@ export function DealBlotter() {
                     return (
                         <div className="flex flex-col items-end">
                             <span className="font-bold">
-                                {Number(mmDeal.principalAmount || 0).toLocaleString()} {mmDeal.currency}
+                                {formatNumber(Number(mmDeal.principalAmount || 0))} {mmDeal.currency}
                             </span>
                             <span className="text-[10px] text-muted-foreground italic">
                                 Rate: {mmDeal.interestRate}%

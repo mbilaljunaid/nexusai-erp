@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface VarianceData {
     account: string;
@@ -71,7 +73,7 @@ export default function VarianceAnalysis() {
                     <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Current Period</label>
+                                <Label className="text-sm font-medium">Current Period</Label>
                                 <Select value={currentPeriod} onValueChange={setCurrentPeriod}>
                                     <SelectTrigger>
                                         <SelectValue />
@@ -87,7 +89,7 @@ export default function VarianceAnalysis() {
                                 <ArrowRight className="h-6 w-6 text-muted-foreground" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Prior Period</label>
+                                <Label className="text-sm font-medium">Prior Period</Label>
                                 <Select value={priorPeriod} onValueChange={setPriorPeriod}>
                                     <SelectTrigger>
                                         <SelectValue />
@@ -118,7 +120,7 @@ export default function VarianceAnalysis() {
                         </CardHeader>
                         <CardContent>
                             <div className={cn(`text-2xl font-bold ${totalVariance >= 0 ? 'text-green-900 dark:text-green-200' : 'text-red-900'}`)}>
-                                {totalVariance >= 0 ? '+' : ''}${totalVariance.toLocaleString()}
+                                {totalVariance >= 0 ? '+' : ''}${formatNumber(totalVariance)}
                             </div>
                             <p className="text-xs text-muted-foreground mt-1">
                                 {totalVariancePct >= 0 ? '+' : ''}{totalVariancePct.toFixed(2)}% change
@@ -163,7 +165,7 @@ export default function VarianceAnalysis() {
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="account" angle={-45} textAnchor="end" height={120} />
                                 <YAxis />
-                                <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
+                                <Tooltip formatter={(value: number) => `$${formatNumber(value)}`} />
                                 <Legend />
                                 <Bar dataKey="variance" name="Variance">
                                     {chartData.map((entry, index) => (
@@ -199,10 +201,10 @@ export default function VarianceAnalysis() {
                                 {variance.map((row) => (
                                     <TableRow key={row.account} className={row.account === "Total Assets" ? "bg-muted font-bold" : ""}>
                                         <TableCell>{row.account}</TableCell>
-                                        <TableCell className="text-right font-mono">${row.currentPeriod.toLocaleString()}</TableCell>
-                                        <TableCell className="text-right font-mono">${row.priorPeriod.toLocaleString()}</TableCell>
+                                        <TableCell className="text-right font-mono">${formatNumber(row.currentPeriod)}</TableCell>
+                                        <TableCell className="text-right font-mono">${formatNumber(row.priorPeriod)}</TableCell>
                                         <TableCell className={cn(`text-right font-mono font-bold ${row.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
-                                            {row.variance >= 0 ? '+' : ''}${row.variance.toLocaleString()}
+                                            {row.variance >= 0 ? '+' : ''}${formatNumber(row.variance)}
                                         </TableCell>
                                         <TableCell className={cn(`text-right font-mono ${row.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
                                             {row.variancePct >= 0 ? '+' : ''}{row.variancePct.toFixed(2)}%

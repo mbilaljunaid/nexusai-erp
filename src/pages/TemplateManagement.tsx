@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
@@ -352,19 +353,19 @@ export default function TemplateManagement() {
                         <TabsContent value="metadata" className="space-y-4">
                             <div className="grid gap-4">
                                 <div>
-                                    <label className="text-sm font-medium">Category</label>
+                                    <Label className="text-sm font-medium">Category</Label>
                                     <p className="text-sm text-muted-foreground">
                                         {previewTemplate?.templateCategory || 'N/A'}
                                     </p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Dependencies</label>
+                                    <Label className="text-sm font-medium">Dependencies</Label>
                                     <p className="text-sm text-muted-foreground">
                                         {previewTemplate?.dependencies?.join(', ') || 'None'}
                                     </p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium">Description</label>
+                                    <Label className="text-sm font-medium">Description</Label>
                                     <p className="text-sm text-muted-foreground">
                                         {previewTemplate?.description || 'No description provided'}
                                     </p>

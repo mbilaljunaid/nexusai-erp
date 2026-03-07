@@ -17,6 +17,7 @@ import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 export default function ContractDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
@@ -68,7 +69,7 @@ export default function ContractDashboard() {
                 );
             }
         },
-        { id: "totalAmount", header: "Value", width: "120px", cell: (row) => <span>${Number(row.totalAmount).toLocaleString()}</span> },
+        { id: "totalAmount", header: "Value", width: "120px", cell: (row) => <span>${formatNumber(Number(row.totalAmount))}</span> },
         { id: "startDate", header: "Start Date", width: "120px", cell: (row) => <span>{row.startDate ? format(new Date(row.startDate), "MMM dd, yyyy") : "-"}</span> },
         { id: "endDate", header: "End Date", width: "120px", cell: (row) => <span>{row.endDate ? format(new Date(row.endDate), "MMM dd, yyyy") : "-"}</span> },
         {

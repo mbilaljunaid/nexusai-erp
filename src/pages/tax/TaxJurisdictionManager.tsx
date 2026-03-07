@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { MapPin, Save, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Label } from "@/components/ui/label";
 
 export default function TaxJurisdictionManager() {
     const { toast } = useToast();
@@ -47,7 +48,7 @@ export default function TaxJurisdictionManager() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
-                                <label className="text-sm font-medium">Jurisdiction Name</label>
+                                <Label className="text-sm font-medium">Jurisdiction Name</Label>
                                 <Input
                                     value={jurisdictionName}
                                     onChange={(e) => setJurisdictionName(e.target.value)}
@@ -55,7 +56,7 @@ export default function TaxJurisdictionManager() {
                                 />
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Tax Rate (%)</label>
+                                <Label className="text-sm font-medium">Tax Rate (%)</Label>
                                 <Input
                                     type="number"
                                     step="0.01"
@@ -65,7 +66,7 @@ export default function TaxJurisdictionManager() {
                                 />
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Type</label>
+                                <Label className="text-sm font-medium">Type</Label>
                                 <Select defaultValue="STATE">
                                     <SelectTrigger>
                                         <SelectValue />

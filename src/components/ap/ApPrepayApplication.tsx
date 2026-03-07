@@ -13,6 +13,7 @@ import {
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 interface ApPrepayApplicationProps {
     invoiceId: number;
@@ -92,7 +93,7 @@ export default function ApPrepayApplication({ invoiceId, open, onOpenChange }: A
                                             <TableCell className="font-mono text-xs">{prepay.invoiceNumber}</TableCell>
                                             <TableCell className="text-xs">{formatDate(prepay.invoiceDate)}</TableCell>
                                             <TableCell className="text-right text-xs font-semibold">
-                                                ${parseFloat(prepay.prepayAmountRemaining).toLocaleString()}
+                                                ${formatNumber(parseFloat(prepay.prepayAmountRemaining))}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button

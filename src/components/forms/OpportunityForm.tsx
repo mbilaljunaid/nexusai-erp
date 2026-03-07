@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
-import { formatNumber } from "@/lib/formatters";
+import { formatNumber } from '@/lib/formatters';
 
 export function OpportunityForm() {
   const { toast } = useToast();
@@ -161,7 +161,7 @@ export function OpportunityForm() {
 
           <div className="p-3 bg-blue-500/10 dark:bg-blue-950 rounded-lg">
             <p className="text-sm text-blue-900 dark:text-blue-100">
-              <strong>Weighted Value:</strong> {formatCurrency(weightedValue)}
+              <strong>Weighted Value:</strong> ${formatNumber(weightedValue, 2)}
             </p>
           </div>
 

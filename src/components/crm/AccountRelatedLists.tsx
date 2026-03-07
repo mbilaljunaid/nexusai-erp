@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { Link } from "wouter";
+import { formatNumber } from '@/lib/formatters';
 
 interface Contact {
     id: string;
@@ -82,7 +83,7 @@ export function AccountOpportunityList({ accountId }: { accountId: string }) {
             columns={[
                 { header: "Name", accessorKey: "name", cell: (o: Opportunity) => <span className="font-medium">{o.name}</span> },
                 { header: "Stage", accessorKey: "stage", cell: (o: Opportunity) => <Badge variant="secondary">{o.stage.replace('_', ' ')}</Badge> },
-                { header: "Amount", accessorKey: "amount", cell: (o: Opportunity) => `$${Number(o.amount).toLocaleString()}` },
+                { header: "Amount", accessorKey: "amount", cell: (o: Opportunity) => `$${formatNumber(Number(o.amount))}` },
                 { header: "Close Date", accessorKey: "closeDate", cell: (o: Opportunity) => o.closeDate ? format(new Date(o.closeDate), 'PP') : '-' },
                 {
                     header: "Actions",

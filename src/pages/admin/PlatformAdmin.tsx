@@ -375,6 +375,7 @@ interface Tenant {
 
 import NexusAIToolRegistrySection from "@/components/admin/NexusAIToolRegistrySection";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function PlatformAdmin() {
@@ -478,7 +479,7 @@ export default function PlatformAdmin() {
     },
     { id: "plan", header: "Plan", width: 120, cell: (item) => <span className="text-xs capitalize">{item.plan}</span> },
     { id: "users", header: "Users", width: 100, cell: (item) => <span className="font-mono">{item.users}</span> },
-    { id: "aiCredits", header: "AI Credits", width: 120, cell: (item) => <span className="font-mono">{item.aiCreditsUsed.toLocaleString()}</span> },
+    { id: "aiCredits", header: "AI Credits", width: 120, cell: (item) => <span className="font-mono">{formatNumber(item.aiCreditsUsed)}</span> },
     { id: "created", header: "Created", width: 120, cell: (item) => <span className="text-xs">{item.createdAt}</span> },
     {
       id: "actions", header: "Actions", width: 100, cell: (item) => (

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, MoreHorizontal, Sparkles } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -82,7 +83,7 @@ export function LeadCard({ lead, onCall, onEmail }: LeadCardProps) {
               <span className="text-muted-foreground">AI Score</span>
             </div>
           </div>
-          <p className="text-sm font-semibold font-mono">${lead.value.toLocaleString()}</p>
+          <p className="text-sm font-semibold font-mono">${formatNumber(lead.value)}</p>
         </div>
         
         <div className="mt-3 flex gap-2">

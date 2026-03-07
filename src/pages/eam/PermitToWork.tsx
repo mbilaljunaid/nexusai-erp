@@ -7,6 +7,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 interface Permit { id: string; permit_number: string; permit_type: string; asset_id: string; location: string; description: string; status: string; requested_by: string; approved_by: string; contractor: string; start_datetime: string; end_datetime: string; events: PEvent[]; }
 interface PEvent { at: string; by: string; action: string; note: string; }
@@ -84,7 +85,7 @@ export default function PermitToWork() {
                     <div className="font-bold text-xs mb-2">Create Permit</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         <div className="flex flex-col gap-0.5">
-                            <label className="text-[10px] font-bold">Type</label>
+                            <Label className="text-[10px] font-bold">Type</Label>
                             <Select value={form.permitType} onValueChange={v => setForm(p => ({ ...p, permitType: v }))}>
                                 <SelectTrigger className="px-2 py-1.5 text-xs h-auto" aria-label="Type">
                                     <SelectValue />
@@ -96,12 +97,12 @@ export default function PermitToWork() {
                         </div>
                         {[['Asset ID', 'assetId', 'text'], ['Location', 'location', 'text'], ['Requested By', 'requestedBy', 'text'], ['Contractor', 'contractor', 'text'], ['Start', 'startDatetime', 'datetime-local'], ['End', 'endDatetime', 'datetime-local']].map(([lbl, key, type]) => (
                             <div key={key} className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-bold">{lbl}</label>
+                                <Label className="text-[10px] font-bold">{lbl}</Label>
                                 <Input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="px-2 py-1.5 text-[11px] h-auto" aria-label={lbl} />
                             </div>
                         ))}
                         <div className="flex flex-col gap-0.5 col-span-2">
-                            <label className="text-[10px] font-bold">Description</label>
+                            <Label className="text-[10px] font-bold">Description</Label>
                             <Input value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="px-2 py-1.5 text-[11px] h-auto" aria-label="Description" />
                         </div>
                     </div>

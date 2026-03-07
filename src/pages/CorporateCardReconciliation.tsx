@@ -19,6 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Label } from "@/components/ui/label";
 
 export default function CorporateCardReconciliation() {
     const { toast } = useToast();
@@ -159,9 +160,9 @@ export default function CorporateCardReconciliation() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <label className="text-sm font-medium mb-2 block">
+                        <Label className="text-sm font-medium mb-2 block">
                             CSV Data (Format: Date,Merchant,Amount,CardNumber,Category,Description)
-                        </label>
+                        </Label>
                         <Textarea
                             className="h-32 font-mono text-sm"
                             placeholder="2026-02-10,Starbucks,15.50,****1234,MEALS,Coffee meeting

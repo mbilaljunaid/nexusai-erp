@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function SystemSettings() {
   return (
@@ -13,11 +14,11 @@ export default function SystemSettings() {
         <CardHeader><CardTitle className="text-base">General Settings</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium">Organization Name</label>
+            <Label className="text-sm font-medium">Organization Name</Label>
             <Input placeholder="Your Company" data-testid="input-org-name" />
           </div>
           <div>
-            <label className="text-sm font-medium">Default Timezone</label>
+            <Label className="text-sm font-medium">Default Timezone</Label>
             <Input placeholder="UTC" data-testid="input-timezone" />
           </div>
           <Button data-testid="button-save">Save Settings</Button>

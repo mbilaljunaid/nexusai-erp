@@ -9,6 +9,7 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { Loader2, TrendingDown, AlertTriangle } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 export default function ApAgingReport() {
     const { data: agingData, isLoading } = useQuery<any[]>({
@@ -58,7 +59,7 @@ export default function ApAgingReport() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Total Liabilities</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${totalOutstanding.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                        <div className="text-2xl font-bold">${formatNumber(totalOutstanding, 2)}</div>
                         <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                             <TrendingDown className="h-3 w-3 text-green-500" />
                             Accounts Payable Balance
@@ -95,7 +96,7 @@ export default function ApAgingReport() {
                                 <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
                                 <Tooltip
-                                    formatter={(v: any) => [`$${v.toLocaleString()}`, 'Amount']}
+                                    formatter={(v: any) => [`$${formatNumber(v)}`, 'Amount']}
                                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                 />
                                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
@@ -130,13 +131,13 @@ export default function ApAgingReport() {
                             {agingData?.map((row, i) => (
                                 <TableRow key={i}>
                                     <TableCell className="font-medium">{row.supplierName}</TableCell>
-                                    <TableCell className="text-right">${Number(row.current).toLocaleString()}</TableCell>
-                                    <TableCell className="text-right">${Number(row.days1_30).toLocaleString()}</TableCell>
-                                    <TableCell className="text-right">${Number(row.days31_60).toLocaleString()}</TableCell>
-                                    <TableCell className="text-right">${Number(row.days61_90).toLocaleString()}</TableCell>
-                                    <TableCell className="text-right">${Number(row.daysOver90).toLocaleString()}</TableCell>
+                                    <TableCell className="text-right">${formatNumber(Number(row.current))}</TableCell>
+                                    <TableCell className="text-right">${formatNumber(Number(row.days1_30))}</TableCell>
+                                    <TableCell className="text-right">${formatNumber(Number(row.days31_60))}</TableCell>
+                                    <TableCell className="text-right">${formatNumber(Number(row.days61_90))}</TableCell>
+                                    <TableCell className="text-right">${formatNumber(Number(row.daysOver90))}</TableCell>
                                     <TableCell className="text-right font-bold text-primary">
-                                        ${Number(row.total).toLocaleString()}
+                                        ${formatNumber(Number(row.total))}
                                     </TableCell>
                                 </TableRow>
                             ))}

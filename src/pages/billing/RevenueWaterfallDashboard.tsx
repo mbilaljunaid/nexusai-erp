@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export default function RevenueWaterfallDashboard() {
     const { businessUnitId } = useEnterpriseStore();
@@ -90,7 +91,7 @@ export default function RevenueWaterfallDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-amber-600">
-                            ${metrics.totalDeferred.toLocaleString()}
+                            ${formatNumber(metrics.totalDeferred)}
                         </div>
                         <p className="text-xs text-muted-foreground">Awaiting recognition</p>
                     </CardContent>
@@ -103,7 +104,7 @@ export default function RevenueWaterfallDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-green-600">
-                            ${metrics.recognizedMTD.toLocaleString()}
+                            ${formatNumber(metrics.recognizedMTD)}
                         </div>
                         <p className="text-xs text-muted-foreground">Month to date</p>
                     </CardContent>
@@ -115,7 +116,7 @@ export default function RevenueWaterfallDashboard() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${metrics.upcomingRecognition.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(metrics.upcomingRecognition)}</div>
                         <p className="text-xs text-muted-foreground">Next 30 days</p>
                     </CardContent>
                 </Card>
@@ -233,7 +234,7 @@ export default function RevenueWaterfallDashboard() {
                                     </div>
                                     <div className="text-right">
                                         <div className="font-bold text-green-600">
-                                            +${Number(schedule.amount).toLocaleString()}
+                                            +${formatNumber(Number(schedule.amount))}
                                         </div>
                                         <div className="text-xs text-muted-foreground">
                                             Invoice ID: {schedule.invoiceId}

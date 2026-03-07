@@ -15,7 +15,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { formatCurrency } from "@/lib/formatters";
 
 export default function ContractWorkbench() {
   const [search, setSearch] = useState("");
@@ -146,7 +145,7 @@ export default function ContractWorkbench() {
                   <TableCell>{formatDate(c.startDate)}</TableCell>
                   <TableCell>
                     {c.totalAmount ?
-                      formatCurrency(Number(c.totalAmount), c.currency)
+                      new Intl.NumberFormat('en-US', { style: 'currency', currency: c.currency || 'USD' }).format(Number(c.totalAmount))
                       : '-'}
                   </TableCell>
                   <TableCell>

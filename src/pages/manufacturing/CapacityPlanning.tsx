@@ -9,6 +9,8 @@ import { TrendingUp, TrendingDown, AlertTriangle, Calendar, Download, Settings }
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function CapacityPlanning() {
@@ -61,7 +63,7 @@ export default function CapacityPlanning() {
 
             <div className="grid grid-cols-3 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Work Center</label>
+                    <Label className="text-sm font-medium">Work Center</Label>
                     <Select value={workCenterId} onValueChange={setWorkCenterId}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select work center" />
@@ -77,7 +79,7 @@ export default function CapacityPlanning() {
                     </Select>
                 </div>
                 <div>
-                    <label className="text-sm font-medium">Time Horizon</label>
+                    <Label className="text-sm font-medium">Time Horizon</Label>
                     <Select value={periodType} onValueChange={(v: any) => setPeriodType(v)}>
                         <SelectTrigger>
                             <SelectValue />
@@ -97,13 +99,13 @@ export default function CapacityPlanning() {
                         <Card>
                             <CardContent className="pt-6">
                                 <div className="text-sm text-muted-foreground">Available Capacity</div>
-                                <div className="text-2xl font-bold mt-2">{capacityData.availableHours?.toLocaleString()} hrs</div>
+                                <div className="text-2xl font-bold mt-2">{formatNumber(capacityData.availableHours)} hrs</div>
                             </CardContent>
                         </Card>
                         <Card>
                             <CardContent className="pt-6">
                                 <div className="text-sm text-muted-foreground">Planned Load</div>
-                                <div className="text-2xl font-bold mt-2">{capacityData.plannedHours?.toLocaleString()} hrs</div>
+                                <div className="text-2xl font-bold mt-2">{formatNumber(capacityData.plannedHours)} hrs</div>
                             </CardContent>
                         </Card>
                         <Card>
@@ -118,7 +120,7 @@ export default function CapacityPlanning() {
                             <CardContent className="pt-6">
                                 <div className="text-sm text-muted-foreground">Over/Under Capacity</div>
                                 <div className={cn(`text-2xl font-bold mt-2 ${capacityData.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
-                                    {capacityData.variance >= 0 ? '+' : ''}{capacityData.variance?.toLocaleString()} hrs
+                                    {capacityData.variance >= 0 ? '+' : ''}{formatNumber(capacityData.variance)} hrs
                                 </div>
                             </CardContent>
                         </Card>

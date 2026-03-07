@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MRRAnalyticsService, { SaaSMetrics } from '@/services/mrrAnalyticsService';
 import { TrendingUp, DollarSign, Users, Target, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function MRRAnalyticsDashboard() {
@@ -72,7 +73,7 @@ export default function MRRAnalyticsDashboard() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold">{metrics?.total_customers?.toLocaleString() || 0}</div>
+                        <div className="text-3xl font-bold">{formatNumber(metrics?.total_customers) || 0}</div>
                         <p className="text-xs text-gray-500 mt-1">
                             ARPU: ${(metrics?.arpu || 0).toFixed(2)}
                         </p>

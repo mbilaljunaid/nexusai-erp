@@ -10,6 +10,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { Progress } from "@/components/ui/progress";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { format } from "date-fns";
+import { formatNumber } from '@/lib/formatters';
 
 
 interface CustomerHealthDashboardProps {
@@ -165,7 +166,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             cell: (row: any) => (
                 <div className="p-2">
                     <div className="font-medium">{row.customers?.name || 'Unknown'}</div>
-                    <div className="text-sm text-gray-500">ARR: ${row.current_arr?.toLocaleString()}</div>
+                    <div className="text-sm text-gray-500">ARR: ${formatNumber(row.current_arr)}</div>
                 </div>
             )
         },

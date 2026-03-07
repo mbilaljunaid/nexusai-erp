@@ -19,6 +19,7 @@ import {
   ArrowUpDown, LayoutGrid, List, Filter, Loader2
 } from "lucide-react";
 import type { ServicePackage, ServiceOrder, ServiceCategory, ServiceReview, UserTrustLevel } from "@/types/erp-types";
+import { Label } from "@/components/ui/label";
 
 interface ServicePackageWithCategory extends ServicePackage {
   category?: ServiceCategory;
@@ -314,7 +315,7 @@ export function ServiceMarketplace() {
                   />
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm text-muted-foreground mb-1 block">Price ($)</label>
+                      <Label className="text-sm text-muted-foreground mb-1 block">Price ($)</Label>
                       <Input
                         type="number"
                         placeholder="0.00"
@@ -324,7 +325,7 @@ export function ServiceMarketplace() {
                       />
                     </div>
                     <div>
-                      <label className="text-sm text-muted-foreground mb-1 block">Delivery (days)</label>
+                      <Label className="text-sm text-muted-foreground mb-1 block">Delivery (days)</Label>
                       <Input
                         type="number"
                         placeholder="7"
@@ -904,7 +905,7 @@ export function ServiceMarketplace() {
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Rating</label>
+              <Label className="text-sm font-medium mb-2 block">Rating</Label>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Button
@@ -922,7 +923,7 @@ export function ServiceMarketplace() {
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Comment (optional)</label>
+              <Label className="text-sm font-medium mb-2 block">Comment (optional)</Label>
               <Textarea
                 placeholder="Share your experience..."
                 value={reviewData.comment}

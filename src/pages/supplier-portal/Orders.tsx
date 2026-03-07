@@ -18,7 +18,7 @@ import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
-import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 import {
     Table,
@@ -90,7 +90,7 @@ export default function SupplierOrders() {
     const createInvoiceMutation = useMutation({
         mutationFn: async (po: any) => {
             const payload = {
-                invoiceNumber: `INV-${po.poNumber}-${formatNumber(Date.now()}`,
+                invoiceNumber: `INV-${po.poNumber}-${Date.now()}`,
                 items: po.items && po.items.length > 0
                     ? po.items.map((item: any) => ({ poLineId: item.id, quantity: item.quantity, unitPrice: item.unitPrice }))
                     : [{ poLineId: `${po.id}-line-1`, quantity: 1, unitPrice: Number(po.totalAmount) }]
@@ -247,7 +247,7 @@ export default function SupplierOrders() {
             {/* Filters */}
             <div className="flex gap-4 items-end flex-wrap">
                 <div className="flex-1 min-w-48">
-                    <label className="text-sm font-medium mb-2 block">Search</label>
+                    <Label className="text-sm font-medium mb-2 block">Search</Label>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -259,7 +259,7 @@ export default function SupplierOrders() {
                     </div>
                 </div>
                 <div className="w-48">
-                    <label className="text-sm font-medium mb-2 block">Status</label>
+                    <Label className="text-sm font-medium mb-2 block">Status</Label>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
                         <SelectTrigger>
                             <SelectValue />
@@ -273,7 +273,7 @@ export default function SupplierOrders() {
                     </Select>
                 </div>
                 <div className="w-48">
-                    <label className="text-sm font-medium mb-2 block">Date Range</label>
+                    <Label className="text-sm font-medium mb-2 block">Date Range</Label>
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button variant="outline" className="w-full justify-start text-left font-normal">
@@ -378,7 +378,7 @@ export default function SupplierOrders() {
                                     <TableRow key={po.id} className={selectedOrders.has(po.id) ? 'bg-blue-500/10' : ''}>
                                         <TableCell>
                                             <Checkbox
-                                                checked={formatNumber(selectedOrders.has(po.id)}
+                                                checked={selectedOrders.has(po.id)}
                                                 onCheckedChange={() => toggleOrderSelection(po.id)}
                                                 aria-label={`Select order ${po.poNumber}`}
                                             />
@@ -387,7 +387,7 @@ export default function SupplierOrders() {
                                         <TableCell>{po.orderDate ? format(new Date(po.orderDate), 'MMM d, yyyy') : '-'}</TableCell>
                                         <TableCell><StatusBadge status={po.status} /></TableCell>
                                         <TableCell className="text-right">
-                                            {formatCurrency(Number(po.totalAmount, po.currency))}
+                                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: po.currency || 'USD' }).format(Number(po.totalAmount))}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex justify-end gap-2">

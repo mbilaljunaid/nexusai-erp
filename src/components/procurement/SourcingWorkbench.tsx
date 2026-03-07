@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 export default function SourcingWorkbench() {
     const { toast } = useToast();
@@ -299,7 +300,7 @@ export default function SourcingWorkbench() {
                                                     <TableRow key={line.id}>
                                                         <TableCell className="text-xs text-muted-foreground">{line.lineNumber}</TableCell>
                                                         <TableCell className="text-xs font-medium">{line.itemDescription}</TableCell>
-                                                        <TableCell className="text-xs font-bold">{Number(line.targetQuantity).toLocaleString()}</TableCell>
+                                                        <TableCell className="text-xs font-bold">{formatNumber(Number(line.targetQuantity))}</TableCell>
                                                         <TableCell className="text-xs">{line.unitOfMeasure}</TableCell>
                                                     </TableRow>
                                                 ))}
@@ -332,7 +333,7 @@ export default function SourcingWorkbench() {
                                                             <p className="text-[10px] text-muted-foreground">Submitted: {formatDateTime(bid.submissionDate)}</p>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="text-lg font-bold text-primary">${bid.totalBidAmount.toLocaleString()}</p>
+                                                            <p className="text-lg font-bold text-primary">${formatNumber(bid.totalBidAmount)}</p>
                                                             {selectedRFQ?.status === 'PUBLISHED' && (
                                                                 <Button size="sm" variant="default" className="h-7 text-[10px]" onClick={() => awardRFQMutation.mutate(bid.id)}>
                                                                     Award Contract
@@ -383,13 +384,13 @@ export default function SourcingWorkbench() {
                                         <Card className="bg-blue-500/10 border-blue-100">
                                             <CardContent className="p-4">
                                                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Lowest Bid</p>
-                                                <p className="text-2xl font-bold text-blue-700">${rfqAnalysis.lowestBid.toLocaleString()}</p>
+                                                <p className="text-2xl font-bold text-blue-700">${formatNumber(rfqAnalysis.lowestBid)}</p>
                                             </CardContent>
                                         </Card>
                                         <Card className="bg-indigo-500/10 border-indigo-100">
                                             <CardContent className="p-4">
                                                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Average Bid</p>
-                                                <p className="text-2xl font-bold text-indigo-700">${rfqAnalysis.averageBid.toLocaleString()}</p>
+                                                <p className="text-2xl font-bold text-indigo-700">${formatNumber(rfqAnalysis.averageBid)}</p>
                                             </CardContent>
                                         </Card>
                                         <Card className="bg-amber-500/10 border-amber-100">
@@ -487,7 +488,7 @@ export default function SourcingWorkbench() {
                                                             <div className="bg-muted/30 p-3 rounded text-xs space-y-1">
                                                                 <div className="flex justify-between">
                                                                     <span className="text-muted-foreground">Total Bid:</span>
-                                                                    <span className="font-bold">${bestBid.totalBidAmount.toLocaleString()}</span>
+                                                                    <span className="font-bold">${formatNumber(bestBid.totalBidAmount)}</span>
                                                                 </div>
                                                                 <div className="flex justify-between">
                                                                     <span className="text-muted-foreground">Savings vs Avg:</span>

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Truck, PackageCheck, Undo2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export function ReceiptManager() {
     const { toast } = useToast();
@@ -151,11 +152,11 @@ export function ReceiptManager() {
                             <p className="text-sm">Returning: <strong>{returnReceiptLine.poLine?.itemDescription || "Item"}</strong></p>
                             <p className="text-xs text-muted-foreground">Original Receipt: {returnReceiptLine.header?.receiptNumber}</p>
                             <div className="grid grid-cols-2 gap-4">
-                                <div><label className="text-xs font-semibold">Received</label><Input disabled value={returnReceiptLine.quantityReceived} /></div>
-                                <div><label className="text-xs font-semibold">Already Returned</label><Input disabled value={returnReceiptLine.quantityReturned || 0} /></div>
+                                <div><Label className="text-xs font-semibold">Received</Label><Input disabled value={returnReceiptLine.quantityReceived} /></div>
+                                <div><Label className="text-xs font-semibold">Already Returned</Label><Input disabled value={returnReceiptLine.quantityReturned || 0} /></div>
                             </div>
                             <div>
-                                <label className="text-xs font-semibold">Quantity to Return</label>
+                                <Label className="text-xs font-semibold">Quantity to Return</Label>
                                 <Input type="number" value={returnQty} onChange={e => setReturnQty(e.target.value)} />
                             </div>
                             <div className="flex justify-end gap-2 mt-4 pt-4">

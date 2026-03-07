@@ -13,6 +13,7 @@ import { useLocation } from "wouter";
 import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2, Search } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 export default function APQuickPayment() {
     const [, setLocation] = useLocation();
@@ -110,7 +111,7 @@ export default function APQuickPayment() {
         },
         { header: "Invoice Number", id: "invoiceNumber", width: "150px" },
         { header: "Date", id: "invoiceDate", width: "150px", cell: (r) => formatDate(r.invoiceDate) },
-        { header: "Amount", id: "invoiceAmount", width: "150px", cell: (r) => `$${parseFloat(r.invoiceAmount).toLocaleString()}` },
+        { header: "Amount", id: "invoiceAmount", width: "150px", cell: (r) => `$${formatNumber(parseFloat(r.invoiceAmount))}` },
         { header: "Due Date", id: "dueDate", width: "150px", cell: (r) => r.dueDate ? formatDate(r.dueDate) : "-" }
     ];
 

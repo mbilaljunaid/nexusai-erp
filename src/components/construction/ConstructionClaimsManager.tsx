@@ -19,6 +19,7 @@ import { AlertCircle, CheckCircle2, Gavel, Plus, FileText, Ban } from "lucide-re
 import { format } from "date-fns";
 import { StandardTable, Column } from "../tables/StandardTable";
 import type { ConstructionClaim } from "@/types/erp-types";
+import { formatNumber } from '@/lib/formatters';
 
 interface Props {
     contractId: string;
@@ -106,7 +107,7 @@ export default function ConstructionClaimsManager({ contractId }: Props) {
         {
             header: "Claimed",
             accessorKey: "amountClaimed",
-            cell: (item) => `$${Number(item.amountClaimed).toLocaleString()}`,
+            cell: (item) => `$${formatNumber(Number(item.amountClaimed))}`,
             sortable: true
         },
         {
@@ -231,7 +232,7 @@ export default function ConstructionClaimsManager({ contractId }: Props) {
                             <div className="p-4 bg-muted rounded-md space-y-2 text-sm">
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Claimed Amount:</span>
-                                    <span className="font-mono font-bold">${Number(settlingClaim.amountClaimed).toLocaleString()}</span>
+                                    <span className="font-mono font-bold">${formatNumber(Number(settlingClaim.amountClaimed))}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Claim Type:</span>

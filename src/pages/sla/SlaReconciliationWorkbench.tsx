@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { BarChart3, Scale, AlertTriangle, CheckCircle2, FileText, Download, Filter, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 export default function SlaReconciliationWorkbench() {
     const [period, setPeriod] = useState("FEB-2026");
@@ -42,7 +44,7 @@ export default function SlaReconciliationWorkbench() {
                 <div className="flex flex-wrap items-center justify-between gap-4 bg-muted/30 p-4 rounded-lg border">
                     <div className="flex items-center gap-4">
                         <div className="flex flex-col gap-1">
-                            <label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Ledger</label>
+                            <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Ledger</Label>
                             <Select defaultValue="PRIMARY">
                                 <SelectTrigger className="w-48 h-9"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -52,7 +54,7 @@ export default function SlaReconciliationWorkbench() {
                             </Select>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Period</label>
+                            <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Period</Label>
                             <Select value={period} onValueChange={setPeriod}>
                                 <SelectTrigger className="w-36 h-9"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -141,10 +143,10 @@ export default function SlaReconciliationWorkbench() {
                                 {report?.summary.map((row) => (
                                     <TableRow key={row.module} className="hover:bg-muted/30 transition-colors">
                                         <TableCell className="font-medium">{row.module}</TableCell>
-                                        <TableCell className="text-right font-mono text-sm">${row.subledgerBalance.toLocaleString()}</TableCell>
-                                        <TableCell className="text-right font-mono text-sm">${row.glBalance.toLocaleString()}</TableCell>
+                                        <TableCell className="text-right font-mono text-sm">${formatNumber(row.subledgerBalance)}</TableCell>
+                                        <TableCell className="text-right font-mono text-sm">${formatNumber(row.glBalance)}</TableCell>
                                         <TableCell className={cn(`text-right font-mono text-sm font-bold ${row.variance !== 0 ? 'text-red-500' : 'text-green-600'}`)}>
-                                            ${row.variance.toLocaleString()}
+                                            ${formatNumber(row.variance)}
                                         </TableCell>
                                         <TableCell className="text-center">
                                             <Badge variant={row.status === 'MATCHED' ? 'success' : 'destructive'} className="text-[10px]">

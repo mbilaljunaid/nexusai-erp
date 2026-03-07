@@ -20,7 +20,6 @@ import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, AlertCircle, RefreshCcw, FileText, Filter, Download, Plus, Link as LinkIcon, AlertTriangle, Clock, Target, CalendarDays, Search, PlayCircle } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
 import { StandardPage } from '@/components/layout/StandardPage';
-import { formatCurrency } from "@/lib/formatters";
 
 interface BankAccount {
     id: string;
@@ -207,7 +206,10 @@ export default function BankReconciliationWorkbench() {
     };
 
     const formatCurrency = (amount: number, currency: string = "USD") => {
-        return formatCurrency(amount, currency);
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: currency
+        }).format(amount);
     };
 
     const formatShortDate = (dateString: string) => {

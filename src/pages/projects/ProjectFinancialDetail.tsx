@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { TrendingUp, TrendingDown, DollarSign, Activity, Package, Clock } from "lucide-react";
 import { AnalyticsChart } from '@/components/AnalyticsChart';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatNumber } from '@/lib/formatters';
 
 interface Props {
     projectId: string;
@@ -40,7 +41,7 @@ export default function ProjectFinancialDetail({ projectId }: Props) {
     const performanceIndices = [
         { label: "CPI", value: metrics.cpi.toFixed(2), metric: "Cost Performance", status: metrics.cpi >= 1 ? "Under Budget" : "Over Budget", variant: metrics.cpi >= 1 ? "default" : "destructive" },
         { label: "SPI", value: metrics.spi.toFixed(2), metric: "Schedule Performance", status: metrics.spi >= 1 ? "On Schedule" : "Behind Schedule", variant: metrics.spi >= 1 ? "default" : "destructive" },
-        { label: "EAC", value: `$${parseFloat(metrics.eac).toLocaleString()}`, metric: "Estimate at Comp.", status: "Forecasted", variant: "secondary" },
+        { label: "EAC", value: `$${formatNumber(parseFloat(metrics.eac))}`, metric: "Estimate at Comp.", status: "Forecasted", variant: "secondary" },
     ];
 
     const chartData = [
@@ -71,7 +72,7 @@ export default function ProjectFinancialDetail({ projectId }: Props) {
                                 <m.icon className={cn(`h-4 w-4 ${m.color}`)} />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-xl font-bold">${parseFloat(m.value).toLocaleString()}</div>
+                                <div className="text-xl font-bold">${formatNumber(parseFloat(m.value))}</div>
                             </CardContent>
                         </Card>
                     ))}
@@ -124,11 +125,11 @@ export default function ProjectFinancialDetail({ projectId }: Props) {
                             <div className="pt-4 space-y-2">
                                 <div className="text-sm text-muted-foreground flex justify-between">
                                     <span>Budget (BAC)</span>
-                                    <span>${parseFloat(project.budget || "0").toLocaleString()}</span>
+                                    <span>${formatNumber(parseFloat(project.budget || "0"))}</span>
                                 </div>
                                 <div className="text-sm text-muted-foreground flex justify-between">
                                     <span>Estimate to Complete (ETC)</span>
-                                    <span>${parseFloat(metrics.etc).toLocaleString()}</span>
+                                    <span>${formatNumber(parseFloat(metrics.etc))}</span>
                                 </div>
                             </div>
                         </CardContent>

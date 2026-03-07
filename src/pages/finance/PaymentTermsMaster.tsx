@@ -7,7 +7,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 
 interface PaymentTerm {
@@ -39,13 +39,13 @@ const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
     ImmediateDue: { bg: '#fee2e2', color: '#dc2626' },
 };
 
-const fmt = (n: number) => formatCurrency(n);
+const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n);
 
 export default function PaymentTermsMaster() {
     const [selected, setSelected] = useState<PaymentTerm | null>(null);
     const [showNew, setShowNew] = useState(false);
     const [newTerm, setNewTerm] = useState({ termCode: '', termName: '', netDays: 30, discountPct: 0, discountDays: 0, termType: 'Net' });
-    const [schedTest, setSchedTest] = useState({ termCode: '', invoiceDate: formatNumber(new Date().toISOString().slice(0, 10), totalAmount: 10000 });
+    const [schedTest, setSchedTest] = useState({ termCode: '', invoiceDate: new Date().toISOString().slice(0, 10), totalAmount: 10000 });
     const [schedule, setSchedule] = useState<ScheduleLine[]>([]);
     const qc = useQueryClient();
 
@@ -67,7 +67,7 @@ export default function PaymentTermsMaster() {
     const scheduleColumns: SpreadsheetColumn<ScheduleLine>[] = [
         { id: "installment_num", header: "#", width: "50px", cell: (row) => row.installment_num },
         { id: "due_date", header: "Due Date", width: "120px", cell: (row) => <div className="mono due-date">{row.due_date}</div> },
-        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{formatNumber(fmt(row.amount)}</div> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{fmt(row.amount)}</div> },
         { id: "discount", header: "Discount", width: "120px", cell: (row) => <div className="mono green">{row.discount_amount > 0 ? fmt(row.discount_amount) : '—'}</div> },
         { id: "discountDeadline", header: "Discount Deadline", width: "150px", cell: (row) => <div className="mono small">{row.discount_due_date ?? '—'}</div> }
     ];
@@ -122,7 +122,7 @@ export default function PaymentTermsMaster() {
                                     ['discountDays', 'Discount Days', 'number', '10'],
                                 ].map(([key, label, type, ph]) => (
                                     <div key={key} className="ff">
-                                        <label className="fl">{label}</label>
+                                        <Label className="fl">{label}</Label>
                                         <Input className="h-9 text-[12px]" type={type as string} placeholder={ph as string}
                                             value={(newTerm as any)[key as string] ?? ''}
                                             onChange={e => setNewTerm(p => ({ ...p, [key as string]: type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value }))}
@@ -130,7 +130,7 @@ export default function PaymentTermsMaster() {
                                     </div>
                                 ))}
                                 <div className="ff">
-                                    <label className="fl">Type</label>
+                                    <Label className="fl">Type</Label>
                                     <Select value={newTerm.termType} onValueChange={v => setNewTerm(p => ({ ...p, termType: v }))}>
                                         <SelectTrigger className="fi" aria-label="Term type"><SelectValue /></SelectTrigger>
                                         <SelectContent>
@@ -152,15 +152,15 @@ export default function PaymentTermsMaster() {
                         <h3 className="st-title">Due Date Calculator</h3>
                         <div className="st-row">
                             <div className="sf">
-                                <label className="sl">Term Code</label>
+                                <Label className="sl">Term Code</Label>
                                 <Input className="si" value={schedTest.termCode} onChange={e => setSchedTest(p => ({ ...p, termCode: e.target.value }))} placeholder="e.g. NET30" aria-label="Term code for calculator" />
                             </div>
                             <div className="sf">
-                                <label className="sl">Invoice Date</label>
+                                <Label className="sl">Invoice Date</Label>
                                 <DatePicker className="si" value={schedTest.invoiceDate} onChange={v => setSchedTest(p => ({ ...p, invoiceDate: v }))} aria-label="Invoice date" />
                             </div>
                             <div className="sf">
-                                <label className="sl">Amount</label>
+                                <Label className="sl">Amount</Label>
                                 <Input className="si" type="number" value={schedTest.totalAmount} onChange={e => setSchedTest(p => ({ ...p, totalAmount: parseFloat(e.target.value) || 0 }))} aria-label="Invoice amount" />
                             </div>
                         </div>

@@ -24,6 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 interface AIAgent {
     id: string;
@@ -173,7 +174,7 @@ export function NexusAIAgentRegistrySection() {
                             <div className="grid gap-4 py-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Agent Name</label>
+                                        <Label className="text-sm font-medium">Agent Name</Label>
                                         <Input
                                             placeholder="e.g. Finance Assistant"
                                             value={currentAgent?.name || ""}
@@ -181,7 +182,7 @@ export function NexusAIAgentRegistrySection() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Module ID</label>
+                                        <Label className="text-sm font-medium">Module ID</Label>
                                         <Input
                                             placeholder="e.g. finance"
                                             value={currentAgent?.moduleId || ""}
@@ -190,7 +191,7 @@ export function NexusAIAgentRegistrySection() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Module Display Name</label>
+                                    <Label className="text-sm font-medium">Module Display Name</Label>
                                     <Input
                                         placeholder="e.g. Finance & Treasury"
                                         value={currentAgent?.moduleName || ""}
@@ -198,7 +199,7 @@ export function NexusAIAgentRegistrySection() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Description</label>
+                                    <Label className="text-sm font-medium">Description</Label>
                                     <Textarea
                                         placeholder="What does this agent do?"
                                         value={currentAgent?.description || ""}
@@ -206,7 +207,7 @@ export function NexusAIAgentRegistrySection() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">System Prompt (Persona)</label>
+                                    <Label className="text-sm font-medium">System Prompt (Persona)</Label>
                                     <Textarea
                                         className="min-h-36 font-mono text-sm"
                                         placeholder="You are an expert financial analyst..."
@@ -219,7 +220,7 @@ export function NexusAIAgentRegistrySection() {
                                         checked={currentAgent?.isActive}
                                         onCheckedChange={checked => setCurrentAgent({ ...currentAgent, isActive: checked })}
                                     />
-                                    <label className="text-sm font-medium">Active</label>
+                                    <Label className="text-sm font-medium">Active</Label>
                                 </div>
                             </div>
                             <DialogFooter>

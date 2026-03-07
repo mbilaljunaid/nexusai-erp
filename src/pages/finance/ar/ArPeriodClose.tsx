@@ -22,6 +22,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
 import { StandardPage } from '@/components/layout/StandardPage';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { formatNumber } from '@/lib/formatters';
 
 export default function ArPeriodClose() {
     const { toast } = useToast();
@@ -168,7 +169,7 @@ export default function ArPeriodClose() {
                                     <CardTitle className="text-sm font-medium text-muted-foreground">Subledger Balance</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-2xl font-bold">${reconciliation?.subledgerBalance?.toLocaleString()}</div>
+                                    <div className="text-2xl font-bold">${formatNumber(reconciliation?.subledgerBalance)}</div>
                                     <p className="text-xs text-muted-foreground">Total of all AR TB items</p>
                                 </CardContent>
                             </Card>
@@ -177,7 +178,7 @@ export default function ArPeriodClose() {
                                     <CardTitle className="text-sm font-medium text-muted-foreground">GL Balance</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-2xl font-bold">${reconciliation?.glBalance?.toLocaleString()}</div>
+                                    <div className="text-2xl font-bold">${formatNumber(reconciliation?.glBalance)}</div>
                                     <p className="text-xs text-muted-foreground">Account: 11000 - Accounts Receivable</p>
                                 </CardContent>
                             </Card>
@@ -194,7 +195,7 @@ export default function ArPeriodClose() {
                                     ) : (
                                         <div className="text-2xl font-bold text-red-600 flex items-center gap-2">
                                             <AlertTriangle className="h-6 w-6" />
-                                            ${reconciliation?.difference?.toLocaleString()}
+                                            ${formatNumber(reconciliation?.difference)}
                                         </div>
                                     )}
                                     <p className="text-xs text-muted-foreground">Variance to investigate</p>

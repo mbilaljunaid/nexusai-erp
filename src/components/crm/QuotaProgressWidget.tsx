@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { formatCurrency } from "@/lib/formatters";
 import { TrendingUp, Target, Award } from "lucide-react";
 
 interface QuotaPerformance {
@@ -32,7 +31,7 @@ export function QuotaProgressWidget({ userId, periodName = "Q1-2026" }: { userId
     const { quota, actual, attainment } = performance || { quota: 0, actual: 0, attainment: 0 };
 
     const formatCurrency = (val: number) =>
-        formatCurrency(val);
+        new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
 
     const getStatusColor = (percent: number) => {
         if (percent >= 100) return "bg-green-500";

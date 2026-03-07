@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, CheckCircle, AlertCircle, Sparkles, ArrowRight, DollarSign } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { formatNumber } from '@/lib/formatters';
 
 interface ConfigOption {
     id: string;
@@ -165,7 +166,7 @@ export default function CpqConfigurator() {
                             <SelectContent>
                                 {products.map((product: any) => (
                                     <SelectItem key={product.id} value={product.id}>
-                                        {product.name} - ${product.basePrice.toLocaleString()}
+                                        {product.name} - ${formatNumber(product.basePrice)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -187,7 +188,7 @@ export default function CpqConfigurator() {
                                     </div>
                                     <div className="text-right">
                                         <div className="text-sm font-medium text-purple-800">Estimated Price</div>
-                                        <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">${totalPrice.toLocaleString()}</div>
+                                        <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">${formatNumber(totalPrice)}</div>
                                     </div>
                                 </div>
                             </CardHeader>
@@ -256,12 +257,12 @@ export default function CpqConfigurator() {
                                                                 onCheckedChange={(checked) => handleOptionChange(option.id, checked)}
                                                                 disabled={!isAvailable}
                                                             />
-                                                            <label
+                                                            <Label
                                                                 htmlFor={option.id}
                                                                 className="text-sm text-muted-foreground cursor-pointer"
                                                             >
                                                                 Enable this option
-                                                            </label>
+                                                            </Label>
                                                         </div>
                                                     )}
 
@@ -354,23 +355,23 @@ export default function CpqConfigurator() {
                                     <CardContent className="space-y-3">
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground">Base Price</span>
-                                            <span className="font-mono">${configuration.baseProduct.basePrice.toLocaleString()}</span>
+                                            <span className="font-mono">${formatNumber(configuration.baseProduct.basePrice)}</span>
                                         </div>
                                         {pricing?.options && pricing.options.map((opt: any) => (
                                             <div key={opt.name} className="flex items-center justify-between text-sm">
                                                 <span className="text-muted-foreground">{opt.name}</span>
-                                                <span className="font-mono">+${opt.price.toLocaleString()}</span>
+                                                <span className="font-mono">+${formatNumber(opt.price)}</span>
                                             </div>
                                         ))}
                                         {pricing?.discount && pricing.discount > 0 && (
                                             <div className="flex items-center justify-between text-sm text-green-700">
                                                 <span>Discount</span>
-                                                <span className="font-mono">-${pricing.discount.toLocaleString()}</span>
+                                                <span className="font-mono">-${formatNumber(pricing.discount)}</span>
                                             </div>
                                         )}
                                         <div className="flex items-center justify-between pt-3 border-t font-bold">
                                             <span>Total Price</span>
-                                            <span className="text-lg">${totalPrice.toLocaleString()}</span>
+                                            <span className="text-lg">${formatNumber(totalPrice)}</span>
                                         </div>
                                     </CardContent>
                                 </Card>

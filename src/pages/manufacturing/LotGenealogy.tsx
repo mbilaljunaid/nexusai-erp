@@ -7,6 +7,8 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 
 interface Lot { id: string; lot_number: string; item_number: string; item_description: string; lot_type: string; quantity: number; unit_of_measure: string; status: string; expiry_date: string; supplier_lot: string; work_order_id: string; parent_lots: any[]; trace_events: any[]; created_at: string; }
@@ -37,7 +39,7 @@ export default function LotGenealogy() {
         { id: "lotNumber", header: "Lot #", width: "150px", cell: (l) => <span className="font-mono font-bold text-[11px]">{l.lot_number}</span> },
         { id: "item", header: "Item", width: "200px", cell: (l) => <><div className="font-semibold text-[11px]">{l.item_number}</div><div className="text-[10px] text-gray-400">{l.item_description}</div></> },
         { id: "type", header: "Type", width: "100px", cell: (l) => <span className="text-[10px] text-gray-500">{l.lot_type}</span> },
-        { id: "quantity", header: "Quantity", width: "150px", cell: (l) => <span className="font-mono font-bold">{Number(l.quantity).toLocaleString()} {l.unit_of_measure}</span> },
+        { id: "quantity", header: "Quantity", width: "150px", cell: (l) => <span className="font-mono font-bold">{formatNumber(Number(l.quantity))} {l.unit_of_measure}</span> },
         {
             id: "expiry", header: "Expiry", width: "150px", cell: (l) => {
                 const daysToExpiry = l.expiry_date ? Math.ceil((new Date(l.expiry_date).getTime() - Date.now()) / 86400000) : null;
@@ -77,12 +79,12 @@ export default function LotGenealogy() {
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         {[['lotNumber', 'Lot Number', 'text'], ['itemNumber', 'Item Number', 'text'], ['quantity', 'Quantity', 'number'], ['unitOfMeasure', 'UOM', 'text'], ['expiryDate', 'Expiry Date', 'date'], ['supplierLot', 'Supplier Lot', 'text'], ['workOrderId', 'Work Order ID', 'text']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
-                                <label className="text-[9px] font-bold text-gray-700">{l}</label>
+                                <Label className="text-[9px] font-bold text-gray-700">{l}</Label>
                                 <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="py-1 px-2 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
                         <div className="flex flex-col gap-0.5">
-                            <label className="text-[9px] font-bold">Lot Type</label>
+                            <Label className="text-[9px] font-bold">Lot Type</Label>
                             <Select value={form.lotType} onValueChange={v => setForm(p => ({ ...p, lotType: v }))}>
                                 <SelectTrigger className="py-1 px-2 text-[11px]" aria-label="Lot type"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -125,7 +127,7 @@ export default function LotGenealogy() {
                         </div>
                         <div className="text-[10px] text-gray-500 mb-2.5">
                             <div>Item: <strong className="font-bold">{selected.item_number}</strong></div>
-                            <div>Qty: {Number(selected.quantity).toLocaleString()} {selected.unit_of_measure}</div>
+                            <div>Qty: {formatNumber(Number(selected.quantity))} {selected.unit_of_measure}</div>
                             {selected.work_order_id && <div>Work Order: {selected.work_order_id}</div>}
                             {selected.supplier_lot && <div>Supplier Lot: {selected.supplier_lot}</div>}
                         </div>

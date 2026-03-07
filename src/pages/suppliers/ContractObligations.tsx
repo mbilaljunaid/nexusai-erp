@@ -7,6 +7,8 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface Obligation {
     id: string;
@@ -78,7 +80,7 @@ export default function ContractObligations() {
 
             {/* KPIs */}
             <div className="flex gap-2.5 mb-3.5">
-                {[['Total', summary?.total ?? 0, '#6b7280'], ['Pending', summary?.pending ?? 0, '#1d4ed8'], ['Overdue', summary?.overdue ?? 0, '#dc2626'], ['Met', summary?.met ?? 0, '#059669'], ['At Risk', `${summary?.currency_code ?? 'USD'} ${Number(summary?.total_at_risk ?? 0).toLocaleString()}`, '#d97706']].map(([l, v, c]) => (
+                {[['Total', summary?.total ?? 0, '#6b7280'], ['Pending', summary?.pending ?? 0, '#1d4ed8'], ['Overdue', summary?.overdue ?? 0, '#dc2626'], ['Met', summary?.met ?? 0, '#059669'], ['At Risk', `${summary?.currency_code ?? 'USD'} ${formatNumber(Number(summary?.total_at_risk ?? 0))}`, '#d97706']].map(([l, v, c]) => (
                     <Card key={l as string} className="px-4 py-2.5 flex-1 shadow-sm border-l-[4px]" style={{ borderLeftColor: c as string }}>
                         <div className="text-xl font-extrabold font-mono">{v}</div>
                         <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
@@ -104,19 +106,19 @@ export default function ContractObligations() {
                     <div className="grid grid-cols-3 gap-2">
                         {[['contractId', 'Contract ID', 'text'], ['supplierId', 'Supplier ID', 'text'], ['title', 'Title', 'text'], ['dueDate', 'Due Date', 'date'], ['penaltyAmount', 'Penalty Amount', 'number']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-semibold">{l}</label>
+                                <Label className="text-[10px] font-semibold">{l}</Label>
                                 <Input type={t} value={(newOb as any)[k] ?? ''} onChange={e => setNewOb(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
                         <div className="flex flex-col gap-0.5">
-                            <label className="text-[10px] font-semibold">Type</label>
+                            <Label className="text-[10px] font-semibold">Type</Label>
                             <Select value={newOb.obligationType} onValueChange={v => setNewOb(p => ({ ...p, obligationType: v }))}>
                                 <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Obligation type"><SelectValue /></SelectTrigger>
                                 <SelectContent>{['DELIVERY', 'REPORTING', 'COMPLIANCE', 'INSURANCE', 'PAYMENT', 'SLA', 'AUDIT'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
                             </Select>
                         </div>
                         <div className="flex flex-col gap-0.5">
-                            <label className="text-[10px] font-semibold">Recurrence</label>
+                            <Label className="text-[10px] font-semibold">Recurrence</Label>
                             <Select value={newOb.recurrence} onValueChange={v => setNewOb(p => ({ ...p, recurrence: v }))}>
                                 <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Recurrence"><SelectValue /></SelectTrigger>
                                 <SelectContent>{['NONE', 'MONTHLY', 'QUARTERLY', 'ANNUAL'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
@@ -158,7 +160,7 @@ export default function ContractObligations() {
                                 <span>Supplier: {ob.supplier_id}</span>
                                 <span>Contract: {ob.contract_id}</span>
                                 {ob.escalation_level > 0 && <span className="text-red-600 font-bold">{ESC_LABELS[ob.escalation_level]}</span>}
-                                {ob.penalty_amount && <span className="text-amber-600 font-semibold">{ob.currency_code} {Number(ob.penalty_amount).toLocaleString()}</span>}
+                                {ob.penalty_amount && <span className="text-amber-600 font-semibold">{ob.currency_code} {formatNumber(Number(ob.penalty_amount))}</span>}
                             </div>
 
                             {sel && (

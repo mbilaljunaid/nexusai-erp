@@ -11,6 +11,7 @@ import { ShipmentDetailSideSheet } from "@/components/transportation/ShipmentDet
 import { LogisticsInsightsCard } from "@/components/transportation/LogisticsInsightsCard";
 import { RouteMapOverlay } from "@/components/transportation/RouteMapOverlay";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function RoutePlanningWorkbench() {
     const { toast } = useToast();
@@ -67,7 +68,7 @@ export default function RoutePlanningWorkbench() {
             id: "totalCost",
             header: "Est. Cost",
             width: "120px",
-            cell: (info: any) => <div className="px-2 h-full flex items-center">{info.totalCost ? `$${Number(info.totalCost).toLocaleString()}` : "-"}</div>
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{info.totalCost ? `$${formatNumber(Number(info.totalCost))}` : "-"}</div>
         },
         {
             id: "actions",

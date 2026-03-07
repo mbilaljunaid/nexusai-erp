@@ -25,6 +25,7 @@ import type { TreasuryDeal } from "@/types/erp-types";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export function TreasuryWorkbench() {
     const [isEntryOpen, setIsEntryOpen] = useState(false);
@@ -87,7 +88,7 @@ export function TreasuryWorkbench() {
             className: "text-right",
             cell: (item) => (
                 <div className="flex flex-col items-end">
-                    <span className="font-bold">{Number(item.principalAmount).toLocaleString()} {item.currency}</span>
+                    <span className="font-bold">{formatNumber(Number(item.principalAmount))} {item.currency}</span>
                     <span className="text-[10px] text-muted-foreground italic">Rate: {item.interestRate}%</span>
                 </div>
             )

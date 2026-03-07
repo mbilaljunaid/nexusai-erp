@@ -26,6 +26,8 @@ import {
 import type { MarketplaceDeveloper, MarketplaceApp, MarketplaceCategory, MarketplacePayout } from "@/types/erp-types";
 import { formatCurrency } from "@/lib/formatters";
 import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface EarningsSummary {
   totalEarnings: string;
@@ -693,7 +695,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
           <CardContent>
             <div className="text-2xl font-bold flex items-center gap-1">
               <Download className="w-5 h-5 text-muted-foreground" />
-              {installCount.toLocaleString()}
+              {formatNumber(installCount)}
             </div>
           </CardContent>
         </Card>
@@ -704,7 +706,7 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
           <CardContent>
             <div className="text-2xl font-bold flex items-center gap-1">
               <DollarSign className="w-5 h-5 text-green-500" />
-              {totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatNumber(totalRevenue, 2)}
             </div>
           </CardContent>
         </Card>
@@ -962,19 +964,19 @@ function DeveloperDashboard({ developer }: { developer: MarketplaceDeveloper }) 
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Company Name</label>
+                  <Label className="text-sm font-medium">Company Name</Label>
                   <p className="text-muted-foreground">{developer.name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Display Name</label>
+                  <Label className="text-sm font-medium">Display Name</Label>
                   <p className="text-muted-foreground">{developer.name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Email</label>
+                  <Label className="text-sm font-medium">Email</Label>
                   <p className="text-muted-foreground">{developer.supportEmail}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Website</label>
+                  <Label className="text-sm font-medium">Website</Label>
                   <p className="text-muted-foreground">{developer.website || "Not set"}</p>
                 </div>
               </div>

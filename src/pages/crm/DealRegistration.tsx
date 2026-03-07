@@ -15,6 +15,7 @@ import { ContextualSearch } from "@/components/ContextualSearch";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { formatNumber } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 interface DealRegistration {
     id: string;
@@ -464,31 +465,31 @@ export default function DealRegistration() {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Deal Name</label>
+                                    <Label className="text-sm font-medium">Deal Name</Label>
                                     <Input defaultValue={selectedDeal.dealName} placeholder="Opportunity name" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Customer Name</label>
+                                    <Label className="text-sm font-medium">Customer Name</Label>
                                     <Input defaultValue={selectedDeal.customerName} placeholder="Customer company" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Partner Name</label>
+                                    <Label className="text-sm font-medium">Partner Name</Label>
                                     <Input defaultValue={selectedDeal.partnerName} placeholder="Partner company" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Product Type</label>
+                                    <Label className="text-sm font-medium">Product Type</Label>
                                     <Input defaultValue={selectedDeal.productType} placeholder="e.g., Enterprise License" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Estimated Value ($)</label>
+                                    <Label className="text-sm font-medium">Estimated Value ($)</Label>
                                     <Input type="number" defaultValue={selectedDeal.estimatedValue} placeholder="0" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Expected Close Date</label>
+                                    <Label className="text-sm font-medium">Expected Close Date</Label>
                                     <DatePicker onChange={() => { }} />
                                 </div>
                                 <div className="space-y-2 col-span-2">
-                                    <label className="text-sm font-medium">Description</label>
+                                    <Label className="text-sm font-medium">Description</Label>
                                     <Textarea rows={4} defaultValue={selectedDeal.description} placeholder="Deal details and context..." />
                                 </div>
                             </div>

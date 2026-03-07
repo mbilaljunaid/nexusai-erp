@@ -14,6 +14,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, Building2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { Label } from "@/components/ui/label";
 
 export default function LegalGroups() {
     const { toast } = useToast();
@@ -115,7 +116,7 @@ export default function LegalGroups() {
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Legal Name *</label>
+                            <Label className="text-sm font-medium">Legal Name *</Label>
                             <Input
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -124,14 +125,14 @@ export default function LegalGroups() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Registration No.</label>
+                                <Label className="text-sm font-medium">Registration No.</Label>
                                 <Input
                                     value={formData.registrationNumber}
                                     onChange={(e) => setFormData({ ...formData, registrationNumber: e.target.value })}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Base Currency</label>
+                                <Label className="text-sm font-medium">Base Currency</Label>
                                 <Input
                                     value={formData.currency}
                                     onChange={(e) => setFormData({ ...formData, currency: e.target.value.toUpperCase() })}
@@ -139,7 +140,7 @@ export default function LegalGroups() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Description</label>
+                            <Label className="text-sm font-medium">Description</Label>
                             <Input
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}

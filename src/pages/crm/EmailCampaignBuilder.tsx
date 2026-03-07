@@ -16,6 +16,7 @@ import { Mail, Send, Users, BarChart3, Eye, Calendar, Target, Zap } from "lucide
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { formatNumber } from '@/lib/formatters';
 
 interface EmailCampaign {
     id: string;
@@ -246,7 +247,7 @@ export default function EmailCampaignBuilder() {
                                                             <StatusBadge status={campaign.status} />
                                                         </TableCell>
                                                         <TableCell className="text-right font-mono">
-                                                            {campaign.stats?.sent.toLocaleString() || "—"}
+                                                            {formatNumber(campaign.stats?.sent) || "—"}
                                                         </TableCell>
                                                         <TableCell className="text-right">
                                                             {campaign.stats ? (
@@ -402,23 +403,23 @@ export default function EmailCampaignBuilder() {
                                                 {campaign.stats && (
                                                     <div className="grid grid-cols-5 gap-4 text-center">
                                                         <div>
-                                                            <div className="text-2xl font-bold">{campaign.stats.sent.toLocaleString()}</div>
+                                                            <div className="text-2xl font-bold">{formatNumber(campaign.stats.sent)}</div>
                                                             <div className="text-xs text-muted-foreground">Sent</div>
                                                         </div>
                                                         <div>
-                                                            <div className="text-2xl font-bold">{campaign.stats.delivered.toLocaleString()}</div>
+                                                            <div className="text-2xl font-bold">{formatNumber(campaign.stats.delivered)}</div>
                                                             <div className="text-xs text-muted-foreground">Delivered</div>
                                                         </div>
                                                         <div>
-                                                            <div className="text-2xl font-bold text-blue-700">{campaign.stats.opened.toLocaleString()}</div>
+                                                            <div className="text-2xl font-bold text-blue-700">{formatNumber(campaign.stats.opened)}</div>
                                                             <div className="text-xs text-muted-foreground">Opened</div>
                                                         </div>
                                                         <div>
-                                                            <div className="text-2xl font-bold text-green-700">{campaign.stats.clicked.toLocaleString()}</div>
+                                                            <div className="text-2xl font-bold text-green-700">{formatNumber(campaign.stats.clicked)}</div>
                                                             <div className="text-xs text-muted-foreground">Clicked</div>
                                                         </div>
                                                         <div>
-                                                            <div className="text-2xl font-bold text-red-700">{campaign.stats.bounced.toLocaleString()}</div>
+                                                            <div className="text-2xl font-bold text-red-700">{formatNumber(campaign.stats.bounced)}</div>
                                                             <div className="text-xs text-muted-foreground">Bounced</div>
                                                         </div>
                                                     </div>

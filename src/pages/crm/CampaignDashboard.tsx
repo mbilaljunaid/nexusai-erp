@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function CampaignDashboard() {
     const { toast } = useToast();
@@ -78,7 +79,7 @@ export default function CampaignDashboard() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${totalBudget.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">${formatNumber(totalBudget)}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -121,7 +122,7 @@ export default function CampaignDashboard() {
                                                 {c.status}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell>${Number(c.budgetedCost).toLocaleString()}</TableCell>
+                                        <TableCell>${formatNumber(Number(c.budgetedCost))}</TableCell>
                                         <TableCell>{formatDate(c.createdAt)}</TableCell>
                                         <TableCell className="text-right">
                                             <Link href={`/crm/campaigns/${c.id}`}>

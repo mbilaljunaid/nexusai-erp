@@ -9,6 +9,7 @@ import { Calendar, Users, Save, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function ShiftPlanning() {
@@ -78,7 +79,7 @@ export default function ShiftPlanning() {
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-sm font-medium">Week</label>
+                    <Label className="text-sm font-medium">Week</Label>
                     <Select value={selectedWeek} onValueChange={setSelectedWeek}>
                         <SelectTrigger>
                             <SelectValue />
@@ -91,7 +92,7 @@ export default function ShiftPlanning() {
                     </Select>
                 </div>
                 <div>
-                    <label className="text-sm font-medium">Department</label>
+                    <Label className="text-sm font-medium">Department</Label>
                     <Select value={department} onValueChange={setDepartment}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select department" />

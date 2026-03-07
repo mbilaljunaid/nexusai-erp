@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, ArrowUp, Minus } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 export function TrialBalanceGrid() {
     const { data: report = [], isLoading } = useQuery<any[]>({
@@ -25,9 +26,9 @@ export function TrialBalanceGrid() {
                     </Badge>
                 </div>
                 <div className="flex gap-8 text-sm text-muted-foreground mt-2">
-                    <div>Total Debits: <span className="text-foreground font-bold font-mono">${totalDebits.toLocaleString()}</span></div>
-                    <div>Total Credits: <span className="text-foreground font-bold font-mono">${totalCredits.toLocaleString()}</span></div>
-                    <div>Difference: <span className={cn(`font-bold font-mono ${isBalanced ? 'text-green-600' : 'text-red-600'}`)}>${Math.abs(totalDebits - totalCredits).toLocaleString()}</span></div>
+                    <div>Total Debits: <span className="text-foreground font-bold font-mono">${formatNumber(totalDebits)}</span></div>
+                    <div>Total Credits: <span className="text-foreground font-bold font-mono">${formatNumber(totalCredits)}</span></div>
+                    <div>Difference: <span className={cn(`font-bold font-mono ${isBalanced ? 'text-green-600' : 'text-red-600'}`)}>${formatNumber(Math.abs(totalDebits - totalCredits))}</span></div>
                 </div>
             </CardHeader>
             <CardContent>
@@ -57,14 +58,14 @@ export function TrialBalanceGrid() {
                                             <Badge variant="outline" className="text-xs">{row.accountType}</Badge>
                                         </TableCell>
                                         <TableCell className="text-right font-mono text-muted-foreground">
-                                            {row.totalDebit > 0 ? `$${row.totalDebit.toLocaleString()}` : "-"}
+                                            {row.totalDebit > 0 ? `$${formatNumber(row.totalDebit)}` : "-"}
                                         </TableCell>
                                         <TableCell className="text-right font-mono text-muted-foreground">
-                                            {row.totalCredit > 0 ? `$${row.totalCredit.toLocaleString()}` : "-"}
+                                            {row.totalCredit > 0 ? `$${formatNumber(row.totalCredit)}` : "-"}
                                         </TableCell>
                                         <TableCell className="text-right font-mono font-bold">
                                             <span className={row.displayBalance >= 0 ? "text-foreground" : "text-red-600"}>
-                                                {row.displayBalance >= 0 ? `$${row.displayBalance.toLocaleString()}` : `($${Math.abs(row.displayBalance).toLocaleString()})`}
+                                                {row.displayBalance >= 0 ? `$${formatNumber(row.displayBalance)}` : `($${formatNumber(Math.abs(row.displayBalance))})`}
                                             </span>
                                         </TableCell>
                                     </TableRow>

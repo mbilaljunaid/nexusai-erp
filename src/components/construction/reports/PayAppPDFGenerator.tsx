@@ -1,6 +1,6 @@
-import { formatNumber } from "@/lib/formatters";
 import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
 import { format } from "date-fns";
+import { formatNumber } from '@/lib/formatters';
 
 // Define styles for AIA G702/G703 format
 const styles = StyleSheet.create({
@@ -191,19 +191,19 @@ export function PayAppPDFDocument({ data }: { data: PayAppData }) {
                     <View style={styles.row}>
                         <Text style={{ flex: 1 }}>Original Contract Sum</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            {formatCurrency(data.originalContractSum)}
+                            ${formatNumber(data.originalContractSum, 2)}
                         </Text>
                     </View>
                     <View style={styles.row}>
                         <Text style={{ flex: 1 }}>Net Change by Change Orders</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            {formatNumber(data.changeOrders, 2)}
+                            ${formatNumber(data.changeOrders, 2)}
                         </Text>
                     </View>
                     <View style={[styles.row, { borderBottom: "1pt solid #000", fontWeight: "bold" }]}>
                         <Text style={{ flex: 1 }}>Current Contract Sum</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            {formatCurrency(data.currentContractSum)}
+                            ${formatNumber(data.currentContractSum, 2)}
                         </Text>
                     </View>
                 </View>
@@ -226,16 +226,16 @@ export function PayAppPDFDocument({ data }: { data: PayAppData }) {
                             <Text style={styles.col1}>{item.itemNumber}</Text>
                             <Text style={styles.col2}>{item.description}</Text>
                             <Text style={styles.col3}>
-                                {formatCurrency(item.scheduledValue)}
+                                ${formatNumber(item.scheduledValue, 2)}
                             </Text>
                             <Text style={styles.col4}>
-                                {formatNumber(item.workCompleted, 2)}
+                                ${formatNumber(item.workCompleted, 2)}
                             </Text>
                             <Text style={styles.col5}>
-                                {formatNumber(item.materialsStored, 2)}
+                                ${formatNumber(item.materialsStored, 2)}
                             </Text>
                             <Text style={styles.col6}>
-                                {formatCurrency(item.totalCompleted)}
+                                ${formatNumber(item.totalCompleted, 2)}
                             </Text>
                         </View>
                     ))}
@@ -246,19 +246,19 @@ export function PayAppPDFDocument({ data }: { data: PayAppData }) {
                     <View style={styles.totalRow}>
                         <Text style={{ flex: 1, fontWeight: "bold" }}>Total Work Completed and Stored to Date</Text>
                         <Text style={{ width: "20%", textAlign: "right", fontWeight: "bold" }}>
-                            {formatCurrency(totalCompleted)}
+                            ${formatNumber(totalCompleted, 2)}
                         </Text>
                     </View>
                     <View style={styles.row}>
                         <Text style={{ flex: 1 }}>Less Retainage ({data.retainageRate}%)</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            {formatCurrency(retainageAmount)}
+                            ${formatNumber(retainageAmount, 2)}
                         </Text>
                     </View>
                     <View style={[styles.totalRow, { backgroundColor: "#f0f0f0" }]}>
                         <Text style={{ flex: 1, fontWeight: "bold", fontSize: 11 }}>AMOUNT DUE THIS APPLICATION</Text>
                         <Text style={{ width: "20%", textAlign: "right", fontWeight: "bold", fontSize: 11 }}>
-                            {formatCurrency(amountDue)}
+                            ${formatNumber(amountDue, 2)}
                         </Text>
                     </View>
                 </View>

@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAdminMetrics } from '@/hooks/admin/useAdminData';
 import { useQueryClient } from '@tanstack/react-query';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 const systemServices = [
     { service: 'API Server', uptime: '99.98%' },
@@ -55,7 +56,7 @@ export default function AdminDashboard() {
                         {isLoading ? (
                             <Skeleton className="h-8 w-24" />
                         ) : (
-                            <div className="text-2xl font-bold">{metrics?.totalTenants?.toLocaleString() ?? '—'}</div>
+                            <div className="text-2xl font-bold">{formatNumber(metrics?.totalTenants) ?? '—'}</div>
                         )}
                         <p className="text-xs text-muted-foreground mt-1">Registered organizations</p>
                     </CardContent>
@@ -70,7 +71,7 @@ export default function AdminDashboard() {
                         {isLoading ? (
                             <Skeleton className="h-8 w-24" />
                         ) : (
-                            <div className="text-2xl font-bold">{metrics?.activeTenants?.toLocaleString() ?? '—'}</div>
+                            <div className="text-2xl font-bold">{formatNumber(metrics?.activeTenants) ?? '—'}</div>
                         )}
                         <p className="text-xs text-muted-foreground mt-1">Currently active tenants</p>
                     </CardContent>
@@ -85,7 +86,7 @@ export default function AdminDashboard() {
                         {isLoading ? (
                             <Skeleton className="h-8 w-24" />
                         ) : (
-                            <div className="text-2xl font-bold">{metrics?.activeDemos?.toLocaleString() ?? '—'}</div>
+                            <div className="text-2xl font-bold">{formatNumber(metrics?.activeDemos) ?? '—'}</div>
                         )}
                         <p className="text-xs text-muted-foreground mt-1">Live demo environments</p>
                     </CardContent>
@@ -100,7 +101,7 @@ export default function AdminDashboard() {
                         {isLoading ? (
                             <Skeleton className="h-8 w-24" />
                         ) : (
-                            <div className="text-2xl font-bold">{metrics?.openSupportRequests?.toLocaleString() ?? '—'}</div>
+                            <div className="text-2xl font-bold">{formatNumber(metrics?.openSupportRequests) ?? '—'}</div>
                         )}
                         <p className="text-xs text-muted-foreground mt-1">Awaiting response</p>
                     </CardContent>

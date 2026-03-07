@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function PartnerDashboard() {
     const { toast } = useToast();
@@ -62,7 +63,7 @@ export default function PartnerDashboard() {
         { id: "dealName", header: "Deal Name", width: "200px", cell: (row) => <span className="font-semibold">{row.dealName}</span> },
         { id: "customerName", header: "Customer", width: "150px", cell: (row) => <span className="text-muted-foreground">{row.customerName}</span> },
         { id: "stage", header: "Stage", width: "120px", cell: (row) => <span className="text-muted-foreground">{row.stage}</span> },
-        { id: "amount", header: "Amount", width: "120px", cell: (row) => <span className="font-medium">${Number(row.amount).toLocaleString()}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <span className="font-medium">${formatNumber(Number(row.amount))}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => (
                 <span className={cn(`text-xs px-2 py-1 rounded-full ${row.status === 'Approved' ? 'bg-green-100 text-green-800' :

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 interface BurdenSchedule {
     id: string;
@@ -236,7 +237,7 @@ export default function CostBurdeningInterface() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Active Schedule</label>
+                                <Label className="text-sm font-medium">Active Schedule</Label>
                                 <Select value={selectedScheduleId} onValueChange={setSelectedScheduleId}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select schedule..." />
@@ -253,7 +254,7 @@ export default function CostBurdeningInterface() {
 
                             {selectedScheduleId && burdenRules.length > 0 && (
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Multipliers</label>
+                                    <Label className="text-sm font-medium">Multipliers</Label>
                                     <div className="space-y-2 max-h-64 overflow-y-auto">
                                         {burdenRules.map(rule => (
                                             <div key={rule.id} className="p-2 bg-muted rounded-md text-xs">

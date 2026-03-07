@@ -4,6 +4,7 @@ import { GitCommit, GitPullRequest, Building2, ArrowRight} from"lucide-react";
 import { Link} from"wouter";
 import { Badge} from"@/components/ui/badge";
 import { Button} from"@/components/ui/button";
+import { formatNumber } from '@/lib/formatters';
 
 interface AccountNode {
     id: string;
@@ -87,7 +88,7 @@ export function AccountHierarchy({ accountId}: { accountId: string}) {
                             <h3 className="text-xl font-bold">{current.name}</h3>
                             <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
                                 <span>{current.industry ||'No Industry'}</span>
-                                {current.annualRevenue && <span>${Number(current.annualRevenue).toLocaleString()}</span>}
+                                {current.annualRevenue && <span>${formatNumber(Number(current.annualRevenue))}</span>}
                             </div>
                         </div>
                     </div>

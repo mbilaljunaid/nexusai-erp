@@ -8,6 +8,7 @@ import { AlertCircle, ShieldCheck, TrendingUp, AlertTriangle, Lock } from "lucid
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 interface ArCreditProfileProps {
     account: ArCustomerAccount;
@@ -97,11 +98,11 @@ export function ArCreditProfile({ account }: ArCreditProfileProps) {
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="p-2 bg-muted/50 rounded">
                             <div className="text-muted-foreground text-xs">Credit Limit</div>
-                            <div className="font-semibold">${limit.toLocaleString()}</div>
+                            <div className="font-semibold">${formatNumber(limit)}</div>
                         </div>
                         <div className="p-2 bg-muted/50 rounded">
                             <div className="text-muted-foreground text-xs">Current Exposure</div>
-                            <div className="font-semibold">${balance.toLocaleString()}</div>
+                            <div className="font-semibold">${formatNumber(balance)}</div>
                         </div>
                     </div>
 

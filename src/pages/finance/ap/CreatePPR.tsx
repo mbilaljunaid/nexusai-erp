@@ -14,6 +14,7 @@ import { useLocation} from"wouter";
 import { ChevronRight, ChevronLeft, Save, Plus, ArrowRight, CheckCircle2, Loader2} from"lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn} from"@/components/ui/InteractiveSpreadsheet";
 import { DatePicker} from'@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 const steps = [
     { id: 1, name:"Template & Criteria"},
@@ -139,14 +140,14 @@ export default function CreatePPR() {
         { header:"Supplier", id:"supplierId", width:"150px", cell: (r) => r.supplier?.name ||"Unknown"},
         { header:"Invoice Number", id:"invoiceNumber", width:"150px"},
         { header:"Date", id:"invoiceDate", width:"150px", cell: (r) => formatDate(r.invoiceDate)},
-        { header:"Amount", id:"invoiceAmount", width:"150px", cell: (r) =>`$${parseFloat(r.invoiceAmount).toLocaleString()}`},
+        { header:"Amount", id:"invoiceAmount", width:"150px", cell: (r) =>`$${formatNumber(parseFloat(r.invoiceAmount))}`},
         { header:"Due Date", id:"dueDate", width:"150px", cell: (r) => r.dueDate ? formatDate(r.dueDate) :"-"}
     ];
 
     const paymentColumns: SpreadsheetColumn<any>[] = [
         { header:"Payee (Supplier)", id:"supplierName", width:"150px"},
         { header:"Invoices to Pay", id:"invoiceCount", width:"150px"},
-        { header:"Total Payment Amount", id:"totalAmount", width:"150px", cell: (r) => <span className="font-bold text-green-700">£{parseFloat(r.totalAmount).toLocaleString()}</span>}
+        { header:"Total Payment Amount", id:"totalAmount", width:"150px", cell: (r) => <span className="font-bold text-green-700">£{formatNumber(parseFloat(r.totalAmount))}</span>}
     ];
 
     return (

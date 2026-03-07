@@ -13,6 +13,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import type { Account, Contact, Opportunity, Case } from "@/types/erp-types";
 import { Link } from "wouter";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function AccountDetail() {
     const [, params] = useRoute("/crm/accounts/:id") as [boolean, { id?: string } | null];
@@ -98,7 +99,7 @@ export default function AccountDetail() {
                                     </div>
                                     <div>
                                         <p className="text-muted-foreground">Annual Revenue</p>
-                                        <p className="font-medium">${Number(account.annualRevenue || 0).toLocaleString()}</p>
+                                        <p className="font-medium">${formatNumber(Number(account.annualRevenue || 0))}</p>
                                     </div>
                                     <div>
                                         <p className="text-muted-foreground">Phone</p>
@@ -135,7 +136,7 @@ export default function AccountDetail() {
                                         columns={[
                                             { id: "name", header: "Name", width: "40%", cell: (o: any) => <div className="p-2 font-medium">{o.name}</div> },
                                             { id: "stage", header: "Stage", width: "20%", cell: (o: any) => <div className="p-2"><Badge variant="outline">{o.stage}</Badge></div> },
-                                            { id: "amount", header: "Amount", width: "20%", cell: (o: any) => <div className="p-2">${Number(o.amount).toLocaleString()}</div> },
+                                            { id: "amount", header: "Amount", width: "20%", cell: (o: any) => <div className="p-2">${formatNumber(Number(o.amount))}</div> },
                                             { id: "closeDate", header: "Close Date", width: "20%", cell: (o: any) => <div className="p-2">{o.closeDate ? formatDate(o.closeDate) : '-'}</div> }
                                         ]}
                                         virtualized={true}

@@ -7,7 +7,8 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
-import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 interface PayrollRun {
     id: string;
     payroll_name: string;
@@ -35,7 +36,7 @@ const STATUS_CFG: Record<string, { color: string; bg: string; label: string }> =
 
 const COUNTRIES = ['US', 'GB', 'DE', 'FR', 'IN', 'AU', 'CA', 'SG'];
 const fmt = (n: number, c = 'USD') =>
-    formatCurrency(n, c);
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: c, maximumFractionDigits: 0 }).format(n);
 
 export default function PayrollWorkbench() {
     const [countryFilter, setCountryFilter] = useState('');
@@ -96,7 +97,7 @@ export default function PayrollWorkbench() {
         { id: "country_code", header: "Country", width: "100px", cell: (row) => <span className="cbadge">{row.country_code}</span> },
         { id: "period", header: "Period", width: "200px", cell: (row) => <span className="date-cell">{row.period_start} – {row.period_end}</span> },
         { id: "pay_date", header: "Pay Date", width: "120px", cell: (row) => <span className="date-cell">{row.pay_date}</span> },
-        { id: "employee_count", header: "Employees", width: "100px", cell: (row) => <div className="num-cell w-full">{formatNumber(Number(row.employee_count).toLocaleString()}</div> },
+        { id: "employee_count", header: "Employees", width: "100px", cell: (row) => <div className="num-cell w-full">{formatNumber(Number(row.employee_count))}</div> },
         { id: "gross_total", header: "Gross", width: "120px", cell: (row) => <div className="amt-cell w-full">{fmt(row.gross_total, row.currency_code)}</div> },
         { id: "net_total", header: "Net", width: "120px", cell: (row) => <div className="amt-cell green w-full">{fmt(row.net_total, row.currency_code)}</div> },
         { id: "tax_total", header: "Tax", width: "120px", cell: (row) => <div className="amt-cell red w-full">{fmt(row.tax_total, row.currency_code)}</div> },
@@ -156,9 +157,9 @@ export default function PayrollWorkbench() {
 
             {/* KPI Strip */}
             <div className="pw-kpis">
-                <PWKpi label="Employees" value={formatNumber(totalEmp.toLocaleString()} icon={<Users size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
-                <PWKpi label="Gross Payroll" value={formatNumber(fmt(totalGross)} icon={<DollarSign size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
-                <PWKpi label="Net Pay" value={formatNumber(fmt(totalNet)} icon={<DollarSign size={18} />} colorClass="text-violet-600" borderClass="border-l-violet-600" />
+                <PWKpi label="Employees" value={formatNumber(totalEmp)} icon={<Users size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <PWKpi label="Gross Payroll" value={fmt(totalGross)} icon={<DollarSign size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <PWKpi label="Net Pay" value={fmt(totalNet)} icon={<DollarSign size={18} />} colorClass="text-violet-600" borderClass="border-l-violet-600" />
                 <PWKpi label="Active Runs" value={String(runs.filter(r => ['Draft', 'Processing', 'Review'].includes(r.status)).length)} icon={<RefreshCw size={18} />} colorClass="text-amber-600" borderClass="border-l-amber-600" />
             </div>
 
@@ -199,12 +200,12 @@ export default function PayrollWorkbench() {
                         <h2 className="modal-title">New Payroll Run</h2>
                         {(['payrollName', 'periodStart', 'periodEnd', 'payDate'] as const).map(field => (
                             <div key={field} className="mf">
-                                <label className="ml" htmlFor={`pr-${field}`}>{field.replace(/([A-Z])/g, ' $1').trim()}</label>
+                                <Label className="ml" htmlFor={`pr-${field}`}>{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
                                 <Input id={`pr-${field}`} className="h-9 px-2.5 text-[13px]" type={field.includes('Date') || field.includes('Start') || field.includes('End') ? 'date' : 'text'} value={createForm[field] as string} onChange={e => setCreateForm(p => ({ ...p, [field]: e.target.value }))} />
                             </div>
                         ))}
                         <div className="mf">
-                            <label className="ml" htmlFor="pr-country">Country</label>
+                            <Label className="ml" htmlFor="pr-country">Country</Label>
                             <Select value={createForm.countryCode} onValueChange={v => setCreateForm(p => ({ ...p, countryCode: v }))}>
                                 <SelectTrigger id="pr-country" className="mi" aria-label="Country"><SelectValue /></SelectTrigger>
                                 <SelectContent>

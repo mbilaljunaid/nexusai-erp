@@ -55,6 +55,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import type { MarketplaceApp } from "@/types/erp-types";
+import { formatNumber } from '@/lib/formatters';
 
 interface Widget {
   id: string;
@@ -439,7 +440,7 @@ function LeaderboardWidget() {
             <p className="text-xs text-muted-foreground">Level {entry.level}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm font-semibold">{entry.points.toLocaleString()}</p>
+            <p className="text-sm font-semibold">{formatNumber(entry.points)}</p>
             <p className="text-xs text-muted-foreground">pts</p>
           </div>
         </div>

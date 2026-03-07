@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 export default function EmailAutomation() {
     const campaigns = [
@@ -118,18 +119,18 @@ export default function EmailAutomation() {
                                             <div className="grid grid-cols-3 gap-4 text-sm">
                                                 <div>
                                                     <div className="text-muted-foreground">Sent</div>
-                                                    <div className="font-medium">{campaign.sent.toLocaleString()}</div>
+                                                    <div className="font-medium">{formatNumber(campaign.sent)}</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-muted-foreground">Opened</div>
                                                     <div className="font-medium">
-                                                        {campaign.opened.toLocaleString()} ({campaign.sent > 0 ? ((campaign.opened / campaign.sent) * 100).toFixed(1) : 0}%)
+                                                        {formatNumber(campaign.opened)} ({campaign.sent > 0 ? ((campaign.opened / campaign.sent) * 100).toFixed(1) : 0}%)
                                                     </div>
                                                 </div>
                                                 <div>
                                                     <div className="text-muted-foreground">Clicked</div>
                                                     <div className="font-medium">
-                                                        {campaign.clicked.toLocaleString()} ({campaign.sent > 0 ? ((campaign.clicked / campaign.sent) * 100).toFixed(1) : 0}%)
+                                                        {formatNumber(campaign.clicked)} ({campaign.sent > 0 ? ((campaign.clicked / campaign.sent) * 100).toFixed(1) : 0}%)
                                                     </div>
                                                 </div>
                                             </div>

@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, AlertCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { formatNumber } from '@/lib/formatters';
 
 interface ROUAssetCreatorProps {
     leaseId: string;
@@ -106,7 +107,7 @@ export function ROUAssetCreatorModal({
                             <div className="flex justify-between">
                                 <span className="text-sm text-muted-foreground">ROU Asset Value:</span>
                                 <span className="font-bold text-lg text-blue-600">
-                                    ${rouValue.toLocaleString()}
+                                    ${formatNumber(rouValue)}
                                 </span>
                             </div>
                             <div className="flex justify-between">

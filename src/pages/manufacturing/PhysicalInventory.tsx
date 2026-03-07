@@ -13,6 +13,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { PromptDialog } from "@/components/shared/PromptDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatNumber } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 
 interface Cycle { id: string; cycle_name: string; cycle_type: string; status: string; count_date: string; line_count: number; counted_lines: number; approved_by: string; created_at: string; }
@@ -83,11 +84,11 @@ export default function PhysicalInventory() {
                         <div className="text-xs font-bold mb-2.5">Create Count Cycle</div>
                         <div className="grid grid-cols-3 gap-2 mb-2.5">
                             <div className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-bold">Cycle Name</label>
+                                <Label className="text-[10px] font-bold">Cycle Name</Label>
                                 <Input value={cycleForm.cycleName} onChange={e => setCycleForm(p => ({ ...p, cycleName: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Cycle name" />
                             </div>
                             <div className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-bold">Type</label>
+                                <Label className="text-[10px] font-bold">Type</Label>
                                 <Select value={cycleForm.cycleType} onValueChange={v => setCycleForm(p => ({ ...p, cycleType: v }))}>
                                     <SelectTrigger className="px-2 py-1.5 text-xs" aria-label="Cycle type"><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -96,15 +97,15 @@ export default function PhysicalInventory() {
                                 </Select>
                             </div>
                             <div className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-bold">Count Date</label>
+                                <Label className="text-[10px] font-bold">Count Date</Label>
                                 <DatePicker value={cycleForm.countDate} onChange={v => setCycleForm(p => ({ ...p, countDate: v }))} aria-label="Count date" />
                             </div>
                             <div className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-bold">Location Filter</label>
+                                <Label className="text-[10px] font-bold">Location Filter</Label>
                                 <Input value={cycleForm.locationFilter} onChange={e => setCycleForm(p => ({ ...p, locationFilter: e.target.value }))} placeholder="e.g. WHSE-A" className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Location filter" />
                             </div>
                             <div className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-bold">Item Filter</label>
+                                <Label className="text-[10px] font-bold">Item Filter</Label>
                                 <Input value={cycleForm.itemFilter} onChange={e => setCycleForm(p => ({ ...p, itemFilter: e.target.value }))} placeholder="e.g. A-class items" className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Item filter" />
                             </div>
                         </div>

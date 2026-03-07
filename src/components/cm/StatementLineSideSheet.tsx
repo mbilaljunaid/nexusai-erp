@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { formatCurrency } from '@/lib/formatters';
 
 interface StatementLine {
     id: string;
@@ -27,8 +28,8 @@ export default function StatementLineSideSheet({ open, line, onClose }: Props) {
                 <div className="space-y-4 mt-4">
                     <p><strong>Date:</strong> {line.date}</p>
                     <p><strong>Description:</strong> {line.description}</p>
-                    <p><strong>Amount:</strong> {line.amount.toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</p>
-                    <p><strong>Balance:</strong> {line.balance.toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</p>
+                    <p><strong>Amount:</strong> {formatCurrency(line.amount)}</p>
+                    <p><strong>Balance:</strong> {formatCurrency(line.balance)}</p>
                 </div>
             </DialogContent>
         </Dialog>

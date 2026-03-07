@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, FileText, ArrowLeftRight, CheckCircle2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface CostDistribution {
     id: string;
@@ -55,7 +56,7 @@ export default function SlaEventMonitor() {
         },
         {
             id: "amount", header: "Amount", width: "12%", cell: (item: any) => (
-                <div className="p-2 font-mono font-medium">${parseFloat(item.amount).toLocaleString()}</div>
+                <div className="p-2 font-mono font-medium">${formatNumber(parseFloat(item.amount))}</div>
             )
         },
         {

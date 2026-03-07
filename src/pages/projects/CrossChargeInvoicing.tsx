@@ -16,6 +16,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Textarea } from "@/components/ui/textarea";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface CrossChargeInvoice {
     id?: number;
@@ -304,7 +305,7 @@ export default function CrossChargeInvoicing() {
                                 <div className="text-sm text-muted-foreground">
                                     Target: {projects?.find((p: any) => p.id === invoice.targetProjectId)?.projectNumber}
                                 </div>
-                                <div className="text-sm font-medium mt-2">${invoice.amount.toLocaleString()}</div>
+                                <div className="text-sm font-medium mt-2">${formatNumber(invoice.amount)}</div>
                                 <div className="text-xs text-muted-foreground">
                                     {invoice.createdDate && formatDate(invoice.createdDate)}
                                 </div>
@@ -384,7 +385,7 @@ export default function CrossChargeInvoicing() {
                                 <div></div>
                                 <div className="text-right">
                                     <span className="font-bold mr-4">TOTAL</span>
-                                    <span className="text-lg font-bold">${calculateTotal().toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    <span className="text-lg font-bold">${formatNumber(calculateTotal(), 2)}</span>
                                 </div>
                             </div>
                         </div>

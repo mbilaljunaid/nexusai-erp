@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { OrderToInvoiceForm } from "@/components/forms/OrderToInvoiceForm";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 export default function Page() {
@@ -53,7 +54,7 @@ export default function Page() {
               </div>
             </CardHeader>
             <CardContent className="grid grid-cols-3 gap-4 text-sm">
-              <p><span className="text-muted-foreground">Amount:</span> ${order.amount.toLocaleString()}</p>
+              <p><span className="text-muted-foreground">Amount:</span> ${formatNumber(order.amount)}</p>
               <p><span className="text-muted-foreground">Date:</span> {order.orderDate}</p>
               <p><span className="text-muted-foreground">Status:</span> {order.status}</p>
             </CardContent>

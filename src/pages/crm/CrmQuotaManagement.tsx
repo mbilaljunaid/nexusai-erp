@@ -38,6 +38,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 const QUARTERS = ["Q1-2026", "Q2-2026", "Q3-2026", "Q4-2026"];
 
@@ -193,10 +194,10 @@ export default function CrmQuotaManagement() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="font-bold text-sm text-slate-600 tracking-tight">${Number(perf.quota).toLocaleString()}</div>
+                                            <div className="font-bold text-sm text-slate-600 tracking-tight">${formatNumber(Number(perf.quota))}</div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="font-bold text-sm text-slate-900 dark:text-slate-200 tracking-tight">${Number(perf.actual).toLocaleString()}</div>
+                                            <div className="font-bold text-sm text-slate-900 dark:text-slate-200 tracking-tight">${formatNumber(Number(perf.actual))}</div>
                                         </TableCell>
                                         <TableCell className="px-8">
                                             <div className="space-y-2">

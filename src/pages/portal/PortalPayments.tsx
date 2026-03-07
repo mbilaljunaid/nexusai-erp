@@ -9,6 +9,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { formatNumber } from '@/lib/formatters';
 
 export default function PortalPayments() {
     const { data: payments, isLoading } = useQuery<any>({
@@ -39,7 +40,7 @@ export default function PortalPayments() {
         { id: "receiptNumber", header: "Receipt #", width: "150px", cell: (payment: any) => <span className="font-mono text-sm">{payment.receiptNumber}</span> },
         { id: "date", header: "Date", width: "150px", cell: (payment: any) => <span>{format(new Date(payment.receiptDate), "MMM dd, yyyy")}</span> },
         { id: "invoiceNumber", header: "Invoice #", width: "150px", cell: (payment: any) => <span>{payment.invoiceNumber || "-"}</span> },
-        { id: "amount", header: "Amount", width: "120px", cell: (payment: any) => <span className="font-semibold text-emerald-600">${Number(payment.amount).toLocaleString()}</span> },
+        { id: "amount", header: "Amount", width: "120px", cell: (payment: any) => <span className="font-semibold text-emerald-600">${formatNumber(Number(payment.amount))}</span> },
         { id: "method", header: "Method", width: "120px", cell: (payment: any) => <span>{payment.paymentMethod}</span> },
         {
             id: "status", header: "Status", width: "150px", cell: (payment: any) => (

@@ -8,6 +8,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface AutoInvRun {
     id: string;
@@ -92,7 +93,7 @@ export default function AutoInvoiceValidation() {
                     <div className="run-form">
                         <div className="rf-title">New Validation Run</div>
                         <div className="rf">
-                            <label className="rl">Source Type</label>
+                            <Label className="rl">Source Type</Label>
                             <Select value={sourceType} onValueChange={v => setSourceType(v as any)}>
                                 <SelectTrigger className="ri" aria-label="Source type"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -101,11 +102,11 @@ export default function AutoInvoiceValidation() {
                             </Select>
                         </div>
                         <div className="rf">
-                            <label className="rl">Source Ref</label>
+                            <Label className="rl">Source Ref</Label>
                             <Input className="h-9 text-[12px]" placeholder="e.g. ORD-2026-0042" value={sourceRef} onChange={e => setSourceRef(e.target.value)} aria-label="Source reference" />
                         </div>
                         <div className="rf">
-                            <label className="rl">Lines (JSON array)</label>
+                            <Label className="rl">Lines (JSON array)</Label>
                             <Textarea className="rb font-mono text-xs" value={linesJson} onChange={e => setLinesJson(e.target.value)} rows={10} aria-label="Lines JSON" />
                             {jsonError && <div className="json-err">{jsonError}</div>}
                         </div>

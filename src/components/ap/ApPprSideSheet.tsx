@@ -32,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface Props {
     isOpen: boolean;
@@ -182,7 +183,7 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                             <div className="grid grid-cols-2 gap-4">
                                 <Card className="p-4 bg-muted/20 border-none shadow-none">
                                     <p className="text-xs text-muted-foreground font-medium uppercase">Total Amount</p>
-                                    <p className="text-xl font-bold">${Number(batch?.totalAmount).toLocaleString()}</p>
+                                    <p className="text-xl font-bold">${formatNumber(Number(batch?.totalAmount))}</p>
                                 </Card>
                                 <Card className="p-4 bg-muted/20 border-none shadow-none">
                                     <p className="text-xs text-muted-foreground font-medium uppercase">Invoices</p>
@@ -208,7 +209,7 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                                                     <p className="font-medium">{inv.invoiceNumber}</p>
                                                     <p className="text-muted-foreground opacity-70">Due: {format(new Date(inv.dueDate), "MMM dd")}</p>
                                                 </div>
-                                                <p className="font-bold">${Number(inv.invoiceAmount).toLocaleString()}</p>
+                                                <p className="font-bold">${formatNumber(Number(inv.invoiceAmount))}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -259,7 +260,7 @@ export function ApPprSideSheet({ isOpen, onClose, batchId }: Props) {
                                                         </div>
                                                     </div>
                                                     <div className="text-right flex items-center gap-2">
-                                                        <span className="text-sm font-bold">${Number(payment.amount).toLocaleString()}</span>
+                                                        <span className="text-sm font-bold">${formatNumber(Number(payment.amount))}</span>
                                                         {payment.status === "NEGOTIABLE" && (
                                                             <>
                                                                 <Button

@@ -30,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Label } from "@/components/ui/label";
 
 export default function LcmWorkbench() {
     const { toast } = useToast();
@@ -103,11 +104,11 @@ export default function LcmWorkbench() {
                             </SheetHeader>
                             <div className="py-6 space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Operation Name</label>
+                                    <Label className="text-sm font-medium">Operation Name</Label>
                                     <Input placeholder="e.g. Q1 Europe Electronics Import" id="new-op-name" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Reference #</label>
+                                    <Label className="text-sm font-medium">Reference #</Label>
                                     <Input placeholder="Internal Ref / BL #" id="new-op-ref" />
                                 </div>
                                 <Button

@@ -10,6 +10,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { useFeatureFlags, useToggleFeatureFlag, useSystemConfig, useUpdateSystemConfig } from '@/hooks/admin/useAdminData';
 import { useToast } from '@/hooks/use-toast';
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 export default function SystemConfiguration() {
     const { toast } = useToast();
@@ -142,7 +143,7 @@ export default function SystemConfiguration() {
                                     <>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Platform Name *</label>
+                                                <Label className="text-sm font-medium">Platform Name *</Label>
                                                 <Input
                                                     value={formData.platformName}
                                                     onChange={(e) => handleInputChange('platformName', e.target.value)}
@@ -150,7 +151,7 @@ export default function SystemConfiguration() {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Support Email *</label>
+                                                <Label className="text-sm font-medium">Support Email *</Label>
                                                 <Input
                                                     type="email"
                                                     value={formData.supportEmail}
@@ -159,7 +160,7 @@ export default function SystemConfiguration() {
                                                 />
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Default Timezone</label>
+                                                <Label className="text-sm font-medium">Default Timezone</Label>
                                                 <Select
                                                     value={formData.defaultTimezone}
                                                     onValueChange={(value) => handleInputChange('defaultTimezone', value)}
@@ -180,7 +181,7 @@ export default function SystemConfiguration() {
                                                 </Select>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium">Default Currency</label>
+                                                <Label className="text-sm font-medium">Default Currency</Label>
                                                 <Select
                                                     value={formData.defaultCurrency}
                                                     onValueChange={(value) => handleInputChange('defaultCurrency', value)}
@@ -241,19 +242,19 @@ export default function SystemConfiguration() {
                             <CardContent className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">SMTP Host</label>
+                                        <Label className="text-sm font-medium">SMTP Host</Label>
                                         <Input defaultValue="smtp.sendgrid.net" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">SMTP Port</label>
+                                        <Label className="text-sm font-medium">SMTP Port</Label>
                                         <Input defaultValue="587" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">SMTP Username</label>
+                                        <Label className="text-sm font-medium">SMTP Username</Label>
                                         <Input defaultValue="apikey" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">SMTP Password</label>
+                                        <Label className="text-sm font-medium">SMTP Password</Label>
                                         <Input type="password" defaultValue="••••••••" />
                                     </div>
                                 </div>

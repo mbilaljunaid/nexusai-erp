@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 
 interface Carrier {
@@ -244,7 +245,7 @@ export default function CarrierScorecardDashboard() {
                                             <DollarSign className="h-4 w-4 text-blue-600" />
                                             <span className="text-xs font-medium text-blue-900 dark:text-blue-200">Total Shipments</span>
                                         </div>
-                                        <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{scorecard.totalShipments.toLocaleString()}</div>
+                                        <div className="text-2xl font-bold text-blue-900 dark:text-blue-200">{formatNumber(scorecard.totalShipments)}</div>
                                     </div>
 
                                     <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg border border-amber-200">

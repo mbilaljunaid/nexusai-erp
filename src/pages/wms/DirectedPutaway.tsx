@@ -7,6 +7,7 @@ import { MapPin, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 export default function DirectedPutaway() {
@@ -37,7 +38,7 @@ export default function DirectedPutaway() {
                 <CardContent>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-sm font-medium">Strategy</label>
+                            <Label className="text-sm font-medium">Strategy</Label>
                             <Select value={strategy} onValueChange={setStrategy}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -51,7 +52,7 @@ export default function DirectedPutaway() {
                             </Select>
                         </div>
                         <div>
-                            <label className="text-sm font-medium">Priority</label>
+                            <Label className="text-sm font-medium">Priority</Label>
                             <Select defaultValue="BALANCED">
                                 <SelectTrigger>
                                     <SelectValue />

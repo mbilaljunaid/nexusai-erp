@@ -8,6 +8,7 @@ import { Users, BookPlus, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 export default function ManagerLearningDashboard() {
     const { toast } = useToast();
@@ -130,7 +131,7 @@ export default function ManagerLearningDashboard() {
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Select Team Member</label>
+                                <Label className="text-sm font-medium">Select Team Member</Label>
                                 <Select onValueChange={setSelectedPerson}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a person..." />
@@ -145,7 +146,7 @@ export default function ManagerLearningDashboard() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Select Course</label>
+                                <Label className="text-sm font-medium">Select Course</Label>
                                 <Select onValueChange={setSelectedCourse}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a course..." />

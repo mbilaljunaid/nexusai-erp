@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { FileText, Save } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Label } from "@/components/ui/label";
 
 export default function LeaseModification() {
     const { toast } = useToast();
@@ -36,11 +37,11 @@ export default function LeaseModification() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <label className="text-sm font-medium">Lease</label>
+                        <Label className="text-sm font-medium">Lease</Label>
                         <Input value={leaseId} onChange={(e) => setLeaseId(e.target.value)} placeholder="Enter lease ID" />
                     </div>
                     <div>
-                        <label className="text-sm font-medium">Modification Type</label>
+                        <Label className="text-sm font-medium">Modification Type</Label>
                         <Select value={modificationType} onValueChange={setModificationType}>
                             <SelectTrigger>
                                 <SelectValue />
@@ -53,7 +54,7 @@ export default function LeaseModification() {
                         </Select>
                     </div>
                     <div>
-                        <label className="text-sm font-medium">New Amount</label>
+                        <Label className="text-sm font-medium">New Amount</Label>
                         <Input
                             type="number"
                             value={newAmount}

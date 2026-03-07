@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from '@/lib/formatters';
 
 interface Order {
   id: string;
@@ -101,7 +102,7 @@ export function OrderToInvoiceForm({ order, onClose }: { order: Order; onClose: 
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Order Amount:</span>
-              <span className="font-semibold">${parseFloat(amount).toLocaleString()}</span>
+              <span className="font-semibold">${formatNumber(parseFloat(amount))}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Order Date:</span>

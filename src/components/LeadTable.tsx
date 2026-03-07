@@ -27,6 +27,7 @@ import {
   Mail
 } from "lucide-react";
 import type { Lead } from "./LeadCard";
+import { formatNumber } from '@/lib/formatters';
 
 const statusColors: Record<Lead["status"], string> = {
   new: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -222,7 +223,7 @@ export function LeadTable({ leads, onSelectLead, onBulkAction }: LeadTableProps)
                     </div>
                   </TableCell>
                   <TableCell className="font-mono text-sm">
-                    ${lead.value.toLocaleString()}
+                    ${formatNumber(lead.value)}
                   </TableCell>
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center gap-1">

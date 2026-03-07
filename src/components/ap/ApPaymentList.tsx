@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { CreditCard, Calendar, Clock, DollarSign, ArrowRight } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
 
 export function ApPaymentList() {
     const { data: payments, isLoading } = useQuery({
@@ -53,7 +54,7 @@ export function ApPaymentList() {
                                     <DollarSign className="h-3 w-3" /> Total
                                 </span>
                                 <span className="font-bold text-lg">
-                                    ${Number(payment.amount).toLocaleString()}
+                                    ${formatNumber(Number(payment.amount))}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-xs text-muted-foreground">

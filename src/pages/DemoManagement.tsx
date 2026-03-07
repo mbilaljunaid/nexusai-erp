@@ -10,6 +10,7 @@ import { Plus, Download, RefreshCw, Trash2, Copy, Zap } from "lucide-react";
 import { Header, Footer } from "@/components/Navigation";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 
 export default function DemoManagement() {
@@ -132,7 +133,7 @@ export default function DemoManagement() {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold mb-2">Select Industry</label>
+                    <Label className="block text-sm font-semibold mb-2">Select Industry</Label>
                     <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
                       <SelectTrigger data-testid="select-industry">
                         <SelectValue placeholder="-- Choose Industry --" />
@@ -146,7 +147,7 @@ export default function DemoManagement() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold mb-2">User Email</label>
+                    <Label className="block text-sm font-semibold mb-2">User Email</Label>
                     <Input
                       type="email"
                       value={email}

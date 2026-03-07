@@ -8,6 +8,7 @@ import { Badge} from"@/components/ui/badge";
 import { Alert, AlertDescription} from"@/components/ui/alert";
 import { useToast} from"@/hooks/use-toast";
 import { CheckCircle, XCircle, FileDown, DollarSign, RefreshCw, AlertCircle} from"lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface APBulkOperationsProps {
     selectedInvoices: any[];
@@ -252,7 +253,7 @@ export function APBulkOperations({ selectedInvoices, onSuccess, onClearSelection
                     </DialogHeader>
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Rejection Reason *</label>
+                            <Label className="text-sm font-medium">Rejection Reason *</Label>
                             <Textarea
                                 placeholder="Enter reason for rejection..."
                                 value={rejectReason}

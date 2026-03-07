@@ -333,10 +333,10 @@ export default function APInvoiceEntry() {
                         </SelectContent>
                     </Select>
                     {line.lineType === 'ITEM' && (
-                        <label className="flex items-center gap-2 text-xs text-slate-600 px-1 hover:text-slate-900 dark:text-slate-200 cursor-pointer">
+                        <Label className="flex items-center gap-2 text-xs text-slate-600 px-1 hover:text-slate-900 dark:text-slate-200 cursor-pointer">
                             <Checkbox className="rounded text-primary focus:ring-primary h-3.5 w-3.5 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" checked={line.trackAsAssetFlag} onCheckedChange={c => updateRow("trackAsAssetFlag", !!c)} />
                             Track as Asset
-                        </label>
+                        </Label>
                     )}
                 </div>
             )

@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function BrandingCustomization() {
   return (
@@ -12,11 +13,11 @@ export default function BrandingCustomization() {
       <Card>
         <CardContent className="pt-6 space-y-4">
           <div>
-            <label className="text-sm font-medium">Company Logo</label>
+            <Label className="text-sm font-medium">Company Logo</Label>
             <Input type="file" data-testid="input-logo" />
           </div>
           <div>
-            <label className="text-sm font-medium">Primary Color</label>
+            <Label className="text-sm font-medium">Primary Color</Label>
             <Input type="color" data-testid="input-color" />
           </div>
           <Button data-testid="button-save-branding">Save Branding</Button>

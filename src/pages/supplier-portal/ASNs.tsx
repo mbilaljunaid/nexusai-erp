@@ -15,6 +15,7 @@ import { CreateASNModal } from "@/components/supplier-portal/CreateASNModal";
 import { toast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
+import { Label } from "@/components/ui/label";
 
 
 export default function SupplierASNs() {
@@ -147,7 +148,7 @@ export default function SupplierASNs() {
             {/* Filters */}
             <div className="flex gap-4 items-end flex-wrap">
                 <div className="flex-1 min-w-48">
-                    <label className="text-sm font-medium mb-2 block">Search</label>
+                    <Label className="text-sm font-medium mb-2 block">Search</Label>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -159,7 +160,7 @@ export default function SupplierASNs() {
                     </div>
                 </div>
                 <div className="w-48">
-                    <label className="text-sm font-medium mb-2 block">Shipped Date Range</label>
+                    <Label className="text-sm font-medium mb-2 block">Shipped Date Range</Label>
                     <Popover>
                         <PopoverTrigger asChild>
                             <Button variant="outline" className="w-full justify-start text-left font-normal">

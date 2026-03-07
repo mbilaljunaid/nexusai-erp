@@ -14,6 +14,7 @@ import { ViewAccountingModal } from "@/components/sla/ViewAccountingModal";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { formatNumber } from '@/lib/formatters';
 
 export default function APInvoiceDetail() {
     const [, params] = useRoute("/finance/ap/invoices/:id");
@@ -72,7 +73,7 @@ export default function APInvoiceDetail() {
     const distributionColumns: SpreadsheetColumn<any>[] = [
         { id: "account", header: "GL Account", width: "150px", cell: (row) => <span className="font-mono text-xs">{row.account}</span> },
         { id: "description", header: "Description", width: "250px", cell: (row) => <span className="text-muted-foreground">{row.description}</span> },
-        { id: "amount", header: "Amount", width: "150px", cell: (row) => <span className="font-medium flex justify-end">${parseFloat(row.amount).toLocaleString()}</span> }
+        { id: "amount", header: "Amount", width: "150px", cell: (row) => <span className="font-medium flex justify-end">${formatNumber(parseFloat(row.amount))}</span> }
     ];
 
     return (
@@ -110,7 +111,7 @@ export default function APInvoiceDetail() {
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Total Amount</CardTitle></CardHeader>
                     <CardContent>
-                        <div className="text-xl font-bold">${parseFloat(invoice.invoiceAmount || invoice.amount || 0).toLocaleString()}</div>
+                        <div className="text-xl font-bold">${formatNumber(parseFloat(invoice.invoiceAmount || invoice.amount || 0))}</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -141,7 +142,7 @@ export default function APInvoiceDetail() {
                                 { header: "Line #", id: "lineNumber", width: "10%" },
                                 { header: "Type", id: "lineType", width: "15%" },
                                 { header: "Description", id: "description", width: "35%" },
-                                { header: "Amount", cell: (r) => `$${parseFloat(r.amount || 0).toLocaleString()}`, width: "10%" },
+                                { header: "Amount", cell: (r) => `$${formatNumber(parseFloat(r.amount || 0))}`, width: "10%" },
                                 { header: "PO Header ID", id: "poHeaderId", width: "15%" },
                                 {
                                     header: "Actions",

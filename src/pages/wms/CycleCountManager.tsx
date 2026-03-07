@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Calendar, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Label } from "@/components/ui/label";
 
 export default function CycleCountManager() {
     const { toast } = useToast();
@@ -68,7 +69,7 @@ export default function CycleCountManager() {
                 </div>
 
                 <div>
-                    <label className="text-sm font-medium">Filter by ABC Class</label>
+                    <Label className="text-sm font-medium">Filter by ABC Class</Label>
                     <Select value={abcClass} onValueChange={setAbcClass}>
                         <SelectTrigger className="w-64">
                             <SelectValue />

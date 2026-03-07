@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowRightLeft, BookOpen, Building, Building2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { EnterpriseContextSwitcher } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { Label } from "@/components/ui/label";
 
 export default function EnterpriseMappings() {
     const { toast } = useToast();
@@ -106,7 +107,7 @@ export default function EnterpriseMappings() {
                     <CardContent className="space-y-6">
                         <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-500/10">
                             <div className="flex-1 space-y-2">
-                                <label className="text-sm font-medium">Legal Group</label>
+                                <Label className="text-sm font-medium">Legal Group</Label>
                                 <Select value={selectedLegalGroup} onValueChange={setSelectedLegalGroup}>
                                     <SelectTrigger><SelectValue placeholder="Select Legal Group" /></SelectTrigger>
                                     <SelectContent>
@@ -118,7 +119,7 @@ export default function EnterpriseMappings() {
                             </div>
                             <ArrowRightLeft className="h-5 w-5 mb-2 text-muted-foreground shrink-0" />
                             <div className="flex-1 space-y-2">
-                                <label className="text-sm font-medium">Business Unit</label>
+                                <Label className="text-sm font-medium">Business Unit</Label>
                                 <div className="pb-1 min-h-10 flex flex-col justify-end">
                                     <EnterpriseContextSwitcher
                                         type="business-unit"
@@ -172,7 +173,7 @@ export default function EnterpriseMappings() {
                     <CardContent className="space-y-6">
                         <div className="flex items-end gap-3 p-4 border rounded-lg bg-slate-500/10">
                             <div className="flex-1 space-y-2">
-                                <label className="text-sm font-medium">Business Unit</label>
+                                <Label className="text-sm font-medium">Business Unit</Label>
                                 <div className="pb-1 min-h-10 flex flex-col justify-end">
                                     <EnterpriseContextSwitcher
                                         type="business-unit"
@@ -183,7 +184,7 @@ export default function EnterpriseMappings() {
                             </div>
                             <ArrowRightLeft className="h-5 w-5 mb-2 text-muted-foreground shrink-0" />
                             <div className="flex-1 space-y-2">
-                                <label className="text-sm font-medium">GL Ledger</label>
+                                <Label className="text-sm font-medium">GL Ledger</Label>
                                 <div className="pb-1 min-h-10 flex flex-col justify-end">
                                     <EnterpriseContextSwitcher
                                         type="ledger"

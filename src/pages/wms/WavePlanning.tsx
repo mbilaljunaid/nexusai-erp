@@ -9,6 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Waves, Play, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Label } from "@/components/ui/label";
 
 export default function WavePlanning() {
     const { toast } = useToast();
@@ -57,7 +58,7 @@ export default function WavePlanning() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium">Picking Strategy</label>
+                            <Label className="text-sm font-medium">Picking Strategy</Label>
                             <Select value={strategy} onValueChange={setStrategy}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -72,15 +73,15 @@ export default function WavePlanning() {
                         </div>
                         <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <label className="text-sm font-medium">Max Orders per Wave</label>
+                                <Label className="text-sm font-medium">Max Orders per Wave</Label>
                                 <Input type="number" defaultValue="50" />
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Max Lines per Wave</label>
+                                <Label className="text-sm font-medium">Max Lines per Wave</Label>
                                 <Input type="number" defaultValue="200" />
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Priority</label>
+                                <Label className="text-sm font-medium">Priority</Label>
                                 <Select defaultValue="STANDARD">
                                     <SelectTrigger>
                                         <SelectValue />

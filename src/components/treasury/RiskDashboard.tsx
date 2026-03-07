@@ -50,6 +50,7 @@ import {
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { TreasuryFxDeal, TreasuryCounterparty } from "@/types/erp-types";
+import { formatNumber } from '@/lib/formatters';
 
 interface RiskLimit {
     id: string;
@@ -219,7 +220,7 @@ export function RiskDashboard() {
             width: "15%",
             className: "text-right",
             cell: (item) => (
-                <span className="font-mono">${item.exposure.toLocaleString()}</span>
+                <span className="font-mono">${formatNumber(item.exposure)}</span>
             ),
         },
         {
@@ -228,7 +229,7 @@ export function RiskDashboard() {
             className: "text-right",
             cell: (item) => (
                 <span className="font-mono text-muted-foreground">
-                    ${item.limit.toLocaleString()}
+                    ${formatNumber(item.limit)}
                 </span>
             ),
         },
@@ -451,7 +452,7 @@ export function RiskDashboard() {
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <span className="text-sm">
-                                                ${u.exposure.toLocaleString()} / ${u.limit.toLocaleString()}
+                                                ${formatNumber(u.exposure)} / ${formatNumber(u.limit)}
                                             </span>
                                             <Badge className="bg-red-600 text-white">{u.percentage.toFixed(0)}%</Badge>
                                         </div>
@@ -477,10 +478,7 @@ export function RiskDashboard() {
                                 }`)}
                         >
                             {metrics.totalMtM >= 0 ? "+" : ""}$
-                            {metrics.totalMtM.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                            })}
+                            {formatNumber(metrics.totalMtM, 2)}
                         </p>
                         <p className="text-[10px] text-muted-foreground mt-1">Unrealized P&L</p>
                     </CardContent>
@@ -521,7 +519,7 @@ export function RiskDashboard() {
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-black text-red-400">
-                            ${Number(riskMetrics?.valueAtRisk95 || 0).toLocaleString()}
+                            ${formatNumber(Number(riskMetrics?.valueAtRisk95 || 0))}
                         </p>
                         <p className="text-[10px] text-slate-400 mt-1">1-Day Potential Loss</p>
                     </CardContent>
@@ -591,7 +589,7 @@ export function RiskDashboard() {
                                 <XAxis dataKey="component" fontSize={10} />
                                 <YAxis fontSize={10} />
                                 <Tooltip
-                                    formatter={(value: number) => [`$${value.toLocaleString()}`, "VaR"]}
+                                    formatter={(value: number) => [`$${formatNumber(value)}`, "VaR"]}
                                     contentStyle={{
                                         borderRadius: "8px",
                                         border: "none",

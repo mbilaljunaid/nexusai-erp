@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash2, Edit } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 export default function WmsZoneManager() {
     const [isOpen, setIsOpen] = useState(false);
@@ -94,7 +95,7 @@ export default function WmsZoneManager() {
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Zone Code</label>
+                                <Label className="text-sm font-medium">Zone Code</Label>
                                 <Input
                                     placeholder="e.g. Z1-STORAGE"
                                     value={formData.zoneCode}
@@ -102,7 +103,7 @@ export default function WmsZoneManager() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Zone Name</label>
+                                <Label className="text-sm font-medium">Zone Name</Label>
                                 <Input
                                     placeholder="e.g. Main Storage Area"
                                     value={formData.zoneName}
@@ -111,7 +112,7 @@ export default function WmsZoneManager() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Type</label>
+                                    <Label className="text-sm font-medium">Type</Label>
                                     <Select
                                         value={formData.zoneType}
                                         onValueChange={(val) => setFormData({ ...formData, zoneType: val })}
@@ -126,7 +127,7 @@ export default function WmsZoneManager() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Priority (1=High)</label>
+                                    <Label className="text-sm font-medium">Priority (1=High)</Label>
                                     <Input
                                         type="number"
                                         value={formData.priority}

@@ -5,7 +5,8 @@ import { Truck, Send, CheckCircle2, XCircle, Plus, FileCode } from 'lucide-react
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
-import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 
 interface LoadTender {
@@ -36,7 +37,7 @@ const STATUS_CFG: Record<string, { bg: string; color: string; icon?: React.React
     Cancelled: { bg: '#fee2e2', color: '#9ca3af' },
 };
 
-const fmt = (n: number) => formatCurrency(n ?? 0);
+const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n ?? 0);
 
 export default function LoadTenderWorkbench() {
     const [selected, setSelected] = useState<LoadTender | null>(null);
@@ -45,7 +46,7 @@ export default function LoadTenderWorkbench() {
     const [statusFilter, setStatusFilter] = useState('');
     const [newForm, setNewForm] = useState({
         carrierId: '', originCity: '', originState: '', destCity: '', destState: '',
-        pickupDate: formatNumber(new Date().toISOString().slice(0, 10), equipmentType: 'TL',
+        pickupDate: new Date().toISOString().slice(0, 10), equipmentType: 'TL',
         weightLbs: 20000, palletCount: 20, freightCharge: 2500, referenceNumber: ''
     });
     const qc = useQueryClient();
@@ -108,12 +109,12 @@ export default function LoadTenderWorkbench() {
                             <div className="nf-g">
                                 {[['carrierId', 'Carrier SCAC', 'text'], ['referenceNumber', 'Reference #', 'text'], ['originCity', 'Origin City', 'text'], ['originState', 'Origin State', 'text'], ['destCity', 'Dest City', 'text'], ['destState', 'Dest State', 'text'], ['pickupDate', 'Pickup Date', 'date'], ['weightLbs', 'Weight (lbs)', 'number'], ['palletCount', '# Pallets', 'number'], ['freightCharge', 'Freight $', 'number']].map(([k, label, t]) => (
                                     <div key={k} className="nff">
-                                        <label className="nfl">{label}</label>
+                                        <Label className="nfl">{label}</Label>
                                         <Input type={t as string} value={(newForm as any)[k as string] ?? ''} onChange={e => setNewForm(p => ({ ...p, [k as string]: t === 'number' ? parseFloat(e.target.value) || 0 : e.target.value }))} className="h-8 text-[11px]" aria-label={label as string} />
                                     </div>
                                 ))}
                                 <div className="nff">
-                                    <label className="nfl">Equipment</label>
+                                    <Label className="nfl">Equipment</Label>
                                     <Select value={newForm.equipmentType} onValueChange={v => setNewForm(p => ({ ...p, equipmentType: v }))}>
                                         <SelectTrigger className="nfi" aria-label="Equipment type"><SelectValue /></SelectTrigger>
                                         <SelectContent>
@@ -137,7 +138,7 @@ export default function LoadTenderWorkbench() {
                                     <span className="tc-status" style={{ background: cfg.bg, color: cfg.color }}>{t.status}</span>
                                 </div>
                                 <div className="tc-route"><Truck size={10} /> {t.origin_city}, {t.origin_state} → {t.dest_city}, {t.dest_state}</div>
-                                <div className="tc-meta">{t.carrier_scac} · {t.equipment_type} · {formatNumber(fmt(t.freight_charge)}</div>
+                                <div className="tc-meta">{t.carrier_scac} · {t.equipment_type} · {fmt(t.freight_charge)}</div>
                                 <div className="tc-edi">
                                     <span className={t.edi_204_sent ? 'green' : 'grey'}>204 {t.edi_204_sent ? '✓' : '✗'}</span>
                                     <span className={t.edi_990_received ? 'green' : 'grey'}>990 {t.edi_990_received ? '✓' : '✗'}</span>
@@ -174,8 +175,8 @@ export default function LoadTenderWorkbench() {
                                 <div className="dkv"><span>Carrier</span><strong>{selected.carrier_scac}</strong></div>
                                 <div className="dkv"><span>Equipment</span><strong>{selected.equipment_type}</strong></div>
                                 <div className="dkv"><span>Pickup</span><strong>{selected.pickup_date}</strong></div>
-                                <div className="dkv"><span>Weight</span><strong>{formatNumber(Number(selected.weight_lbs).toLocaleString()} lbs</strong></div>
-                                <div className="dkv"><span>Freight</span><strong>{formatNumber(fmt(selected.freight_charge)}</strong></div>
+                                <div className="dkv"><span>Weight</span><strong>{formatNumber(Number(selected.weight_lbs))} lbs</strong></div>
+                                <div className="dkv"><span>Freight</span><strong>{fmt(selected.freight_charge)}</strong></div>
                                 <div className="dkv"><span>Response</span><strong>{selected.carrier_response ?? '—'}</strong></div>
                             </div>
                             {edi204 && (

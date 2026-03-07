@@ -7,7 +7,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { formatCurrency } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
 
 
 interface WHTRule {
@@ -47,7 +47,7 @@ interface RemittanceBatch {
 
 const INCOME_TYPES = ['Dividend', 'Interest', 'Royalty', 'Services', 'Other'];
 const fmtCcy = (n: number, ccy = 'USD') =>
-    formatCurrency(n, ccy);
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: ccy, maximumFractionDigits: 2 }).format(n);
 const fmtPct = (n: number) => `${(Number(n) * 100).toFixed(2)}%`;
 
 async function fetchRules(country?: string): Promise<WHTRule[]> {
@@ -231,12 +231,12 @@ export default function WHTRemittance() {
                         <div className="rule-form">
                             {(['countryCode', 'rate', 'treatyRate', 'thresholdAmount', 'effectiveFrom'] as const).map(f => (
                                 <div key={f} className="rule-field">
-                                    <label className="rule-label" htmlFor={`wht-${f}`}>{f.replace(/([A-Z])/g, ' $1').trim()}</label>
+                                    <Label className="rule-label" htmlFor={`wht-${f}`}>{f.replace(/([A-Z])/g, ' $1').trim()}</Label>
                                     <Input id={`wht-${f}`} className="rule-input" value={ruleForm[f]} onChange={e => setRuleForm(p => ({ ...p, [f]: e.target.value }))} />
                                 </div>
                             ))}
                             <div className="rule-field">
-                                <label className="rule-label" htmlFor="wht-incomeType">Income Type</label>
+                                <Label className="rule-label" htmlFor="wht-incomeType">Income Type</Label>
                                 <Select value={ruleForm.incomeType} onValueChange={v => setRuleForm(p => ({ ...p, incomeType: v }))}>
                                     <SelectTrigger id="wht-incomeType" className="rule-input">
                                         <SelectValue />

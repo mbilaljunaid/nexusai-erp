@@ -8,6 +8,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { CreditCard, Play } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function PaymentAutomation() {
     const { toast } = useToast();
@@ -35,7 +36,7 @@ export default function PaymentAutomation() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <label className="text-sm font-medium">Payment Method</label>
+                        <Label className="text-sm font-medium">Payment Method</Label>
                         <Select value={paymentMethod} onValueChange={setPaymentMethod}>
                             <SelectTrigger>
                                 <SelectValue />
@@ -50,15 +51,15 @@ export default function PaymentAutomation() {
                     </div>
                     <div className="flex items-center gap-2">
                         <Checkbox id="earlyPay" defaultChecked />
-                        <label htmlFor="earlyPay" className="text-sm cursor-pointer leading-none">
+                        <Label htmlFor="earlyPay" className="text-sm cursor-pointer leading-none">
                             Enable Early Payment Discounts
-                        </label>
+                        </Label>
                     </div>
                     <div className="flex items-center gap-2">
                         <Checkbox id="batchOptimize" defaultChecked />
-                        <label htmlFor="batchOptimize" className="text-sm cursor-pointer leading-none">
+                        <Label htmlFor="batchOptimize" className="text-sm cursor-pointer leading-none">
                             Batch Optimization (Group payments to same vendor)
-                        </label>
+                        </Label>
                     </div>
                     <Button
                         className="w-full"

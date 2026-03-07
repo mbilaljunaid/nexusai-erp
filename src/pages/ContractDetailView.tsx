@@ -16,7 +16,6 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PromptDialog } from "@/components/shared/PromptDialog";
-import { formatCurrency } from "@/lib/formatters";
 
 export default function ContractDetailView() {
     const [match, params] = useRoute("/contracts/:id");
@@ -110,31 +109,31 @@ export default function ContractDetailView() {
                             <CardHeader><CardTitle>Key Terms</CardTitle></CardHeader>
                             <CardContent className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm font-medium text-muted-foreground">Type</label>
+                                    <Label className="text-sm font-medium text-muted-foreground">Type</Label>
                                     <p>{contract.contractType}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-muted-foreground">Currency</label>
+                                    <Label className="text-sm font-medium text-muted-foreground">Currency</Label>
                                     <p>{contract.currency}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-muted-foreground">Start Date</label>
+                                    <Label className="text-sm font-medium text-muted-foreground">Start Date</Label>
                                     <p>{format(new Date(contract.startDate), "MMM d, yyyy")}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-muted-foreground">End Date</label>
+                                    <Label className="text-sm font-medium text-muted-foreground">End Date</Label>
                                     <p>{contract.endDate ? format(new Date(contract.endDate), "MMM d, yyyy") : 'Indefinite'}</p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-muted-foreground">Total Amount</label>
+                                    <Label className="text-sm font-medium text-muted-foreground">Total Amount</Label>
                                     <p className="text-lg font-bold">
                                         {contract.totalAmount ?
-                                            formatCurrency(Number(contract.totalAmount, contract.currency))
+                                            new Intl.NumberFormat('en-US', { style: 'currency', currency: contract.currency || 'USD' }).format(Number(contract.totalAmount))
                                             : '-'}
                                     </p>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-muted-foreground">Notice Period</label>
+                                    <Label className="text-sm font-medium text-muted-foreground">Notice Period</Label>
                                     <p>{contract.terminationNoticeDays || 30} Days</p>
                                 </div>
                             </CardContent>
@@ -149,7 +148,7 @@ export default function ContractDetailView() {
                                     </Badge>
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-muted-foreground">Next Renewal</label>
+                                    <Label className="text-sm font-medium text-muted-foreground">Next Renewal</Label>
                                     <p>{contract.renewalDate ? format(new Date(contract.renewalDate), "MMM d, yyyy") : 'N/A'}</p>
                                 </div>
                             </CardContent>
@@ -181,8 +180,8 @@ export default function ContractDetailView() {
                                                 <TableCell>{line.lineNumber}</TableCell>
                                                 <TableCell>{line.itemDescription}</TableCell>
                                                 <TableCell>{line.quantity}</TableCell>
-                                                <TableCell>${formatCurrency(Number(line.unitPrice))}</TableCell>
-                                                <TableCell>${formatCurrency(Number(line.lineAmount))}</TableCell>
+                                                <TableCell>${Number(line.unitPrice).toFixed(2)}</TableCell>
+                                                <TableCell>${Number(line.lineAmount).toFixed(2)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

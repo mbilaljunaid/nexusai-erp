@@ -17,6 +17,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardTable, Column } from "@/components/ui/StandardTable";
 import { api } from "@/lib/api";
+import { formatNumber } from '@/lib/formatters';
 
 interface ReconciliationWorkbenchProps {
     accountId: string;
@@ -113,7 +114,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
             className: "text-right font-mono font-bold",
             cell: (item) => (
                 <span className={Number(item.amount) < 0 ? "text-red-600" : "text-green-600"}>
-                    {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    {formatNumber(Number(item.amount), 2)}
                 </span>
             )
         }
@@ -151,7 +152,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
             className: "text-right font-mono font-bold",
             cell: (item) => (
                 <span className={Number(item.amount) < 0 ? "text-red-600" : "text-green-600"}>
-                    {Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    {formatNumber(Number(item.amount), 2)}
                 </span>
             )
         }

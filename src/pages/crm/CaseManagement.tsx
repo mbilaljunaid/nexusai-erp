@@ -16,6 +16,7 @@ import { ContextualSearch } from "@/components/ContextualSearch";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { getStatusVariant } from "@/lib/statusUtils";
+import { Label } from "@/components/ui/label";
 
 interface ServiceCase {
     id: string;
@@ -416,15 +417,15 @@ export default function CaseManagement() {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Subject</label>
+                                    <Label className="text-sm font-medium">Subject</Label>
                                     <Input defaultValue={selectedCase.subject} placeholder="Brief description" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Customer</label>
+                                    <Label className="text-sm font-medium">Customer</Label>
                                     <Input defaultValue={selectedCase.customer} placeholder="Customer name" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Priority</label>
+                                    <Label className="text-sm font-medium">Priority</Label>
                                     <Select defaultValue={selectedCase.priority}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -438,7 +439,7 @@ export default function CaseManagement() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Type</label>
+                                    <Label className="text-sm font-medium">Type</Label>
                                     <Select defaultValue={selectedCase.type}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -452,7 +453,7 @@ export default function CaseManagement() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2 col-span-2">
-                                    <label className="text-sm font-medium">Description</label>
+                                    <Label className="text-sm font-medium">Description</Label>
                                     <Textarea rows={4} defaultValue={selectedCase.description} placeholder="Detailed description..." />
                                 </div>
                             </div>

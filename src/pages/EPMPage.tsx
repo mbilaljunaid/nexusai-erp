@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { Plus, TrendingUp, Zap, AlertCircle, DollarSign, PieChart } from "lucide-react";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
+import { formatNumber } from '@/lib/formatters';
 
 export default function EPMPage() {
   const [activeNav, setActiveNav] = useState("budget");
@@ -126,7 +127,7 @@ export default function EPMPage() {
                           <p className="text-xs text-muted-foreground">{ctrl.period} · {ctrl.budget_version}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <p className="text-sm">${Number(ctrl.actual_amount ?? 0).toLocaleString()} / ${Number(ctrl.budget_amount ?? 0).toLocaleString()}</p>
+                          <p className="text-sm">${formatNumber(Number(ctrl.actual_amount ?? 0))} / ${formatNumber(Number(ctrl.budget_amount ?? 0))}</p>
                           <Badge variant={util > 100 ? "destructive" : util > 80 ? "secondary" : "default"}>
                             {util.toFixed(1)}%
                           </Badge>

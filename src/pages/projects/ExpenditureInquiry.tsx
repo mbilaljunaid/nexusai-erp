@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Download } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface ExpenditureItem {
     id: string;
@@ -50,8 +51,8 @@ export default function ExpenditureInquiry() {
         { id: "taskNumber", header: "Task", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center">{item.taskNumber}</div> },
         { id: "expenditureType", header: "Exp Type", width: "200px", cell: (item: any) => <div className="px-2 h-full flex items-center">{item.expenditureType}</div> },
         { id: "quantity", header: "Qty", width: "100px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end w-full">{parseFloat(item.quantity).toFixed(2)}</div> },
-        { id: "rawCost", header: "Raw Cost", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end font-medium w-full">${parseFloat(item.rawCost).toLocaleString()}</div> },
-        { id: "burdenedCost", header: "Burdened", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end w-full">{item.burdenedCost ? `$${parseFloat(item.burdenedCost).toLocaleString()}` : '-'}</div> },
+        { id: "rawCost", header: "Raw Cost", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end font-medium w-full">${formatNumber(parseFloat(item.rawCost))}</div> },
+        { id: "burdenedCost", header: "Burdened", width: "150px", cell: (item: any) => <div className="px-2 h-full flex items-center justify-end w-full">{item.burdenedCost ? `$${formatNumber(parseFloat(item.burdenedCost))}` : '-'}</div> },
         {
             id: "status", header: "Status", width: "150px", cell: (item: any) => (
                 <div className="px-2 h-full flex items-center">

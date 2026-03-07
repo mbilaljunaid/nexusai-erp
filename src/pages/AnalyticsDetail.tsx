@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LineChart, Line } from "recharts";
 import { Loader2, TrendingUp, AlertCircle, Users, Target, Activity } from "lucide-react";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { formatNumber } from '@/lib/formatters';
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"];
 
@@ -64,10 +65,10 @@ export default function AnalyticsDetail() {
                                     <XAxis type="number" hide />
                                     <YAxis dataKey="stage" type="category" width={100} fontSize={12} />
                                     <Tooltip
-                                        formatter={(value: any) => `$${Number(value).toLocaleString()}`}
+                                        formatter={(value: any) => `$${formatNumber(Number(value))}`}
                                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                     />
-                                    <Bar dataKey="value" fill="#6366f1" radius={[0, 4, 4, 0]} label={{ position: 'right', formatter: (v: any) => `$${Number(v).toLocaleString()}`, fontSize: 10 }} />
+                                    <Bar dataKey="value" fill="#6366f1" radius={[0, 4, 4, 0]} label={{ position: 'right', formatter: (v: any) => `$${formatNumber(Number(v))}`, fontSize: 10 }} />
                                 </BarChart>
                             </ResponsiveContainer>
                         ) : (
@@ -129,7 +130,7 @@ export default function AnalyticsDetail() {
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <XAxis dataKey="month" fontSize={12} />
                                     <YAxis fontSize={12} tickFormatter={(v: any) => `$${v}`} />
-                                    <Tooltip formatter={(v: any) => `$${Number(v).toLocaleString()}`} />
+                                    <Tooltip formatter={(v: any) => `$${formatNumber(Number(v))}`} />
                                     <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>

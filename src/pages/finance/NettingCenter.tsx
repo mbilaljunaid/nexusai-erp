@@ -8,6 +8,8 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface NettingSession { id: string; session_name: string; period: string; currency: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
 interface NetPos { id?: string; entity: string; payable: number; receivable: number; net: number; }
@@ -44,9 +46,9 @@ export default function NettingCenter() {
 
     const netPosColumns: SpreadsheetColumn<NetPos>[] = [
         { id: "entity", header: "Entity", width: "150px", cell: (row) => <div className="font-bold">{row.entity}</div> },
-        { id: "payable", header: "Payable", width: "120px", cell: (row) => <div className="font-mono text-red-600">${Number(row.payable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
-        { id: "receivable", header: "Receivable", width: "120px", cell: (row) => <div className="font-mono text-emerald-600">${Number(row.receivable).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
-        { id: "net", header: "Net Position", width: "150px", cell: (row) => <div className={cn(`font-mono font-bold ${Number(row.net) >= 0 ? 'text-emerald-600' : 'text-red-600'}`)}>{Number(row.net) >= 0 ? '+' : ''}{Number(row.net).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div> },
+        { id: "payable", header: "Payable", width: "120px", cell: (row) => <div className="font-mono text-red-600">${formatNumber(Number(row.payable), 2)}</div> },
+        { id: "receivable", header: "Receivable", width: "120px", cell: (row) => <div className="font-mono text-emerald-600">${formatNumber(Number(row.receivable), 2)}</div> },
+        { id: "net", header: "Net Position", width: "150px", cell: (row) => <div className={cn(`font-mono font-bold ${Number(row.net) >= 0 ? 'text-emerald-600' : 'text-red-600'}`)}>{Number(row.net) >= 0 ? '+' : ''}{formatNumber(Number(row.net), 2)}</div> },
         { id: "flow", header: "Flow", width: "100px", cell: (row) => <div>{Number(row.net) > 0 ? <span className="text-emerald-600"><TrendingUp size={12} /></span> : Number(row.net) < 0 ? <span className="text-red-600"><TrendingDown size={12} /></span> : '—'}</div> }
     ];
 
@@ -84,13 +86,13 @@ export default function NettingCenter() {
                                 <div className="grid grid-cols-4 gap-2 mb-2.5">
                                     {[['Session Name', 'sessionName', 'text'], ['Period (YYYY-MM)', 'period', 'text'], ['Currency', 'currency', 'text'], ['Settlement Date', 'settlementDate', 'date']].map(([lbl, key, type]) => (
                                         <div key={key} className="flex flex-col gap-0.5">
-                                            <label className="text-[10px] font-bold">{lbl}</label>
+                                            <Label className="text-[10px] font-bold">{lbl}</Label>
                                             <Input type={type} value={(form as any)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="h-8 text-[12px]" aria-label={lbl} />
                                         </div>
                                     ))}
                                 </div>
                                 <div className="flex flex-col gap-0.5 mb-2.5">
-                                    <label className="text-[10px] font-bold">Entities (one per line)</label>
+                                    <Label className="text-[10px] font-bold">Entities (one per line)</Label>
                                     <Textarea rows={3} value={form.entitiesText} onChange={e => setForm(p => ({ ...p, entitiesText: e.target.value }))} className="font-mono text-xs" aria-label="Entities" />
                                 </div>
                                 <div className="flex gap-1.5 justify-end">
@@ -149,7 +151,7 @@ export default function NettingCenter() {
                                     <Card className="bg-slate-500/10 p-2.5 mb-2 shadow-sm">
                                         {[['Policy Name', 'policyName', 'text'], ['Category', 'transactionCategory', 'select'], ['Method', 'method', 'select'], ['Range Low %', 'benchmarkRangeLow', 'number'], ['Range High %', 'benchmarkRangeHigh', 'number'], ['Effective From', 'effectiveFrom', 'date']].map(([lbl, key, type]) => (
                                             <div key={key} className="mb-1">
-                                                <label className="text-[9px] font-bold block">{lbl}</label>
+                                                <Label className="text-[9px] font-bold block">{lbl}</Label>
                                                 {type === 'select' && key === 'transactionCategory'
                                                     ? <Select value={(policyForm as any)[key]} onValueChange={v => setPolicyForm(p => ({ ...p, [key]: v }))}><SelectTrigger aria-label={lbl} className="text-[11px]"><SelectValue /></SelectTrigger><SelectContent>{['GOODS', 'SERVICES', 'IP_ROYALTIES', 'LOANS', 'COST_SHARING'].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent></Select>
                                                     : type === 'select' && key === 'method'

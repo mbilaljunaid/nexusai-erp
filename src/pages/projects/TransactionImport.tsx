@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Import, CheckCircle2, AlertTriangle, FileText, ArrowRight } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { formatNumber } from '@/lib/formatters';
 
 interface PendingTransaction {
     id: number;
@@ -70,7 +71,7 @@ export default function TransactionImport() {
         { id: "description", header: "Description", width: "300px", cell: (item: any) => <div className="px-2 h-full flex items-center">{item.description}</div> },
         {
             id: "amount", header: "Amount", width: "200px", cell: (item: any) => (
-                <div className="px-2 h-full flex items-center justify-end font-mono font-medium w-full">${parseFloat(item.amount).toLocaleString()} {item.currency}</div>
+                <div className="px-2 h-full flex items-center justify-end font-mono font-medium w-full">${formatNumber(parseFloat(item.amount))} {item.currency}</div>
             )
         },
         {

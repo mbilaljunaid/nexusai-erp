@@ -22,6 +22,7 @@ import { SubscriptionDetailSheet } from "./components/SubscriptionDetailSheet";
 
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { useEnterpriseStore } from "@/lib/enterpriseStore";
+import { formatNumber } from '@/lib/formatters';
 
 export function SubscriptionWorkbench() {
     const { businessUnitId } = useEnterpriseStore();
@@ -140,7 +141,7 @@ export function SubscriptionWorkbench() {
                             { id: "contractNumber", header: "Contract #", width: "150px", cell: (item: any) => <div className="p-2 font-medium">{item.contractNumber}</div> },
                             { id: "customerId", header: "Customer", width: "200px", cell: (item: any) => <div className="p-2">{getCustomerName(item.customerId)}</div> },
                             { id: "status", header: "Status", width: "150px", cell: (item: any) => <div className="p-2"><Badge variant="outline">{item.status}</Badge></div> },
-                            { id: "totalMrr", header: "MRR", width: "150px", cell: (item: any) => <div className="p-2">${Number(item.totalMrr).toLocaleString()}</div> },
+                            { id: "totalMrr", header: "MRR", width: "150px", cell: (item: any) => <div className="p-2">${formatNumber(Number(item.totalMrr))}</div> },
                             {
                                 id: "actions", header: "Actions", width: "150px",
                                 cell: (item: any) => (

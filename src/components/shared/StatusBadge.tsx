@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { getStatusVariant, formatStatusLabel } from "@/lib/statusUtils";
 import { cn } from "@/lib/utils";
@@ -14,8 +13,7 @@ interface StatusBadgeProps {
 
 // StatusBadge — renders a Shadcn <Badge> with the correct semantic variant
 // for the given status string. Replaces all local getStatus/getColor helpers.
-// Wrapped in React.memo — rendered inside .map() across 139+ pages.
-export const StatusBadge = memo(function StatusBadge({ status, label, className }: StatusBadgeProps) {
+export function StatusBadge({ status, label, className }: StatusBadgeProps) {
     const variant = getStatusVariant(status);
     const displayLabel = label ?? formatStatusLabel(status);
 
@@ -24,4 +22,4 @@ export const StatusBadge = memo(function StatusBadge({ status, label, className 
             {displayLabel}
         </Badge>
     );
-});
+}

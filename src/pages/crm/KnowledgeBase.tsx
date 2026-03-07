@@ -11,6 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Search, ThumbsUp, Eye, Edit, Star, TrendingUp, Users } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Label } from "@/components/ui/label";
+import { formatNumber } from '@/lib/formatters';
 
 interface KnowledgeArticle {
     id: string;
@@ -140,7 +142,7 @@ export default function KnowledgeBase() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{totalViews.toLocaleString()}</div>
+                            <div className="text-2xl font-bold text-purple-900 dark:text-purple-200">{formatNumber(totalViews)}</div>
                             <div className="text-xs text-purple-700">All time</div>
                         </CardContent>
                     </Card>
@@ -322,7 +324,7 @@ export default function KnowledgeBase() {
                                                     <div className="text-sm font-medium line-clamp-2">{article.title}</div>
                                                     <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                                                         <Eye className="h-3 w-3" />
-                                                        {article.views.toLocaleString()} views
+                                                        {formatNumber(article.views)} views
                                                     </div>
                                                 </div>
                                             </div>
@@ -385,12 +387,12 @@ export default function KnowledgeBase() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Title</label>
+                                <Label className="text-sm font-medium">Title</Label>
                                 <Input defaultValue={selectedArticle.title} placeholder="Article title" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Category</label>
+                                    <Label className="text-sm font-medium">Category</Label>
                                     <Select defaultValue={selectedArticle.category}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select category..." />
@@ -403,7 +405,7 @@ export default function KnowledgeBase() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Status</label>
+                                    <Label className="text-sm font-medium">Status</Label>
                                     <Select defaultValue={selectedArticle.status}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -417,11 +419,11 @@ export default function KnowledgeBase() {
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Summary</label>
+                                <Label className="text-sm font-medium">Summary</Label>
                                 <Textarea rows={2} defaultValue={selectedArticle.summary} placeholder="Brief summary..." />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Content</label>
+                                <Label className="text-sm font-medium">Content</Label>
                                 <Textarea rows={10} defaultValue={selectedArticle.content} placeholder="Full article content..." />
                             </div>
                             <div className="flex justify-end gap-2">

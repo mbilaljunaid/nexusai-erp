@@ -17,6 +17,7 @@ import {
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Label } from "@/components/ui/label";
 
 
 interface TrainingResource {
@@ -194,7 +195,7 @@ export default function TrainingContent() {
                 <CardContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="text-sm text-slate-400 mb-2 block">Module</label>
+                      <Label className="text-sm text-slate-400 mb-2 block">Module</Label>
                       <Select value={selectedModule} onValueChange={setSelectedModule}>
                         <SelectTrigger className="bg-slate-900 border-slate-600" data-testid="select-module">
                           <SelectValue placeholder="All Modules" />
@@ -208,7 +209,7 @@ export default function TrainingContent() {
                       </Select>
                     </div>
                     <div>
-                      <label className="text-sm text-slate-400 mb-2 block">Industry</label>
+                      <Label className="text-sm text-slate-400 mb-2 block">Industry</Label>
                       <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
                         <SelectTrigger className="bg-slate-900 border-slate-600" data-testid="select-industry">
                           <SelectValue placeholder="All Industries" />
@@ -222,7 +223,7 @@ export default function TrainingContent() {
                       </Select>
                     </div>
                     <div>
-                      <label className="text-sm text-slate-400 mb-2 block">Difficulty</label>
+                      <Label className="text-sm text-slate-400 mb-2 block">Difficulty</Label>
                       <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
                         <SelectTrigger className="bg-slate-900 border-slate-600" data-testid="select-difficulty">
                           <SelectValue placeholder="All Levels" />

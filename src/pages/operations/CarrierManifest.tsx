@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface Manifest { id: string; manifest_number: string; carrier_scac: string; ship_date: string; total_packages: number; total_weight_kg: number; status: string; }
 interface ManifestPackage { id: string; tracking_number: string; customer_name: string; ship_to_city: string; ship_to_state: string; ship_to_zip: string; weight_kg: number; service_code: string; label_printed: boolean; label_zpl: string; }
@@ -86,7 +87,7 @@ export default function CarrierManifest() {
                     <div className="grid grid-cols-3 gap-2">
                         {[['carrierScac', 'Carrier SCAC', 'text'], ['shipDate', 'Ship Date', 'date'], ['originWarehouse', 'Warehouse', 'text']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-1">
-                                <label className="text-[10px] font-semibold">{l}</label>
+                                <Label className="text-[10px] font-semibold">{l}</Label>
                                 <Input type={t} value={(newMfst as any)[k] ?? ''} onChange={e => setNewMfst(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
@@ -139,12 +140,12 @@ export default function CarrierManifest() {
                                     <div className="grid grid-cols-2 gap-1.5">
                                         {[['customerName', 'Customer Name', 'text'], ['address', 'Address', 'text'], ['city', 'City', 'text'], ['state', 'State', 'text'], ['zip', 'ZIP', 'text'], ['weightKg', 'Weight (kg)', 'number']].map(([k, l, t]) => (
                                             <div key={k} className="flex flex-col gap-1">
-                                                <label className="text-[10px] font-semibold">{l}</label>
+                                                <Label className="text-[10px] font-semibold">{l}</Label>
                                                 <Input type={t} value={(newPkg as any)[k] ?? ''} onChange={e => setNewPkg(p => ({ ...p, [k]: t === 'number' ? parseFloat(e.target.value) || 0 : e.target.value }))} className="px-2 py-1 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                                             </div>
                                         ))}
                                         <div className="flex flex-col gap-1">
-                                            <label className="text-[10px] font-semibold">Service</label>
+                                            <Label className="text-[10px] font-semibold">Service</Label>
                                             <Select value={newPkg.serviceCode} onValueChange={v => setNewPkg(p => ({ ...p, serviceCode: v }))}>
                                                 <SelectTrigger className="px-2 py-1 text-[11px]" aria-label="Service code"><SelectValue /></SelectTrigger>
                                                 <SelectContent>

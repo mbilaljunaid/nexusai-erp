@@ -59,7 +59,8 @@ interface ReportGrid {
 }
 
 import { VarianceAnalysisWidget } from "@/components/gl/VarianceAnalysisWidget";
-import { formatNumber } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
+import { formatNumber, formatCurrency } from '@/lib/formatters';
 
 export default function FinancialReports() {
     const { toast } = useToast();
@@ -134,7 +135,7 @@ export default function FinancialReports() {
     const handleExport = (format: 'pdf' | 'excel') => {
         toast({
             title: "Export Started",
-            description: `Exporting to ${formatNumber(format.toUpperCase()}... (Simulated)`,
+            description: `Exporting to ${format.toUpperCase()}... (Simulated)`,
         });
     };
 
@@ -219,7 +220,7 @@ export default function FinancialReports() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Report Definition</label>
+                            <Label className="text-sm font-medium">Report Definition</Label>
                             <Select value={selectedReportId} onValueChange={setSelectedReportId}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Report..." />
@@ -235,7 +236,7 @@ export default function FinancialReports() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Ledger (Read Only)</label>
+                            <Label className="text-sm font-medium">Ledger (Read Only)</Label>
                             <Input
                                 value={activeLedger?.name || "Loading..."}
                                 disabled
@@ -245,7 +246,7 @@ export default function FinancialReports() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Period</label>
+                            <Label className="text-sm font-medium">Period</Label>
                             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select Period" />
@@ -294,7 +295,7 @@ export default function FinancialReports() {
                                             <span>Currency: USD</span>
                                         </CardDescription>
                                     </div>
-                                    <Badge variant="outline" className="font-mono">Generated: {formatNumber(formatTime(new Date())}</Badge>
+                                    <Badge variant="outline" className="font-mono">Generated: {formatTime(new Date())}</Badge>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-0 overflow-x-auto">
@@ -376,7 +377,7 @@ export default function FinancialReports() {
                                     <div className="col-span-2 pt-2 border-t border-blue-200 dark:border-blue-800">
                                         <p className="text-muted-foreground text-xs">Balance Amount</p>
                                         <p className="text-2xl font-bold font-mono text-blue-700 dark:text-blue-400">
-                                            {formatNumber(drillCell.value)}
+                                            {formatCurrency(drillCell.value)}
                                         </p>
                                     </div>
                                 </div>
@@ -396,7 +397,7 @@ export default function FinancialReports() {
                                         </div>
                                         <p className="text-muted-foreground line-clamp-1">Monthly allocation for {drillCell.row} - Batch #{100 + i}</p>
                                         <div className="mt-2 text-right font-mono text-xs">
-                                            {(drillCell.value / 3), 2)}
+                                            {(drillCell.value / 3).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                         </div>
                                     </div>
                                 ))}

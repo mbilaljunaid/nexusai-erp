@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Code, Save } from "lucide-react";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Label } from "@/components/ui/label";
 
 export default function TaxCodeBuilder() {
     const { toast } = useToast();
@@ -37,7 +38,7 @@ export default function TaxCodeBuilder() {
                 <Card>
                     <CardContent className="space-y-4 pt-6">
                         <div>
-                            <label className="text-sm font-medium">Tax Code</label>
+                            <Label className="text-sm font-medium">Tax Code</Label>
                             <Input
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
@@ -45,7 +46,7 @@ export default function TaxCodeBuilder() {
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium">Description</label>
+                            <Label className="text-sm font-medium">Description</Label>
                             <Textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -55,7 +56,7 @@ export default function TaxCodeBuilder() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-sm font-medium">Tax Type</label>
+                                <Label className="text-sm font-medium">Tax Type</Label>
                                 <Select value={taxType} onValueChange={setTaxType}>
                                     <SelectTrigger>
                                         <SelectValue />
@@ -69,7 +70,7 @@ export default function TaxCodeBuilder() {
                                 </Select>
                             </div>
                             <div>
-                                <label className="text-sm font-medium">Applicability</label>
+                                <Label className="text-sm font-medium">Applicability</Label>
                                 <Select defaultValue="ALL">
                                     <SelectTrigger>
                                         <SelectValue />

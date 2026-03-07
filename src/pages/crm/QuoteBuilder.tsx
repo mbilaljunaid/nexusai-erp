@@ -231,7 +231,7 @@ export default function QuoteBuilder() {
 
                 {/* Price Book Selection */}
                 <div className="flex items-center gap-4">
-                    <label className="text-sm font-medium">Price Book:</label>
+                    <Label className="text-sm font-medium">Price Book:</Label>
                     <Select value={selectedPriceBook} onValueChange={setSelectedPriceBook}>
                         <SelectTrigger className="w-60">
                             <SelectValue />

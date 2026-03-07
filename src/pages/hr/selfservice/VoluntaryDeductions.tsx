@@ -39,6 +39,7 @@ import {
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatNumber } from '@/lib/formatters';
 
 interface VoluntaryDeduction {
     id: string;
@@ -149,7 +150,7 @@ export default function VoluntaryDeductions() {
             header: "Amount",
             cell: (item: any) => (
                 <span className="font-mono font-medium text-destructive">
-                    -{Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    -{formatNumber(Number(item.amount), 2)}
                 </span>
             )
         },
@@ -196,7 +197,7 @@ export default function VoluntaryDeductions() {
                             <TrendingDown className="w-3 h-3 text-destructive" />
                         )}
                         <span className={isPositive ? "text-green-600" : "text-destructive"}>
-                            {isPositive ? "+" : ""}{Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            {isPositive ? "+" : ""}{formatNumber(Number(item.amount), 2)}
                         </span>
                     </div>
                 );

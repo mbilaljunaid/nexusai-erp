@@ -8,6 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 
 interface Cert { id: string; supplier_id: string; cert_type: string; cert_number: string; issuing_body: string; issue_date: string; expiry_date: string; status: string; verified_by: string; days_remaining?: number; }
 interface Portfolio { cert_type: string; suppliers_with_cert: number; active: number; expired: number; earliest_expiry: string; }
@@ -93,7 +94,7 @@ export default function CertificationStatus() {
                     <div className="text-[13px] font-bold mb-2.5">Add Certificate</div>
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-0.5">
-                            <label className="text-[10px] font-semibold">Cert Type</label>
+                            <Label className="text-[10px] font-semibold">Cert Type</Label>
                             <Select value={form.certType} onValueChange={v => setForm(p => ({ ...p, certType: v }))}>
                                 <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Certificate type"><SelectValue /></SelectTrigger>
                                 <SelectContent>{CERT_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
@@ -101,7 +102,7 @@ export default function CertificationStatus() {
                         </div>
                         {[['supplierId', 'Supplier ID', 'text'], ['certNumber', 'Cert Number', 'text'], ['issuingBody', 'Issuing Body', 'text'], ['issueDate', 'Issue Date', 'date'], ['expiryDate', 'Expiry Date', 'date']].map(([k, l, t]) => (
                             <div key={k} className="flex flex-col gap-0.5">
-                                <label className="text-[10px] font-semibold">{l}</label>
+                                <Label className="text-[10px] font-semibold">{l}</Label>
                                 <Input type={t} value={(form as any)[k] ?? ''} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-[11px]" aria-label={l} />
                             </div>
                         ))}
