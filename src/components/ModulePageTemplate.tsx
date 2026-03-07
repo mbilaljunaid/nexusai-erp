@@ -123,7 +123,7 @@ export function ModulePageTemplate({
                     }}
                 >
                     <div className="flex gap-2 flex-wrap">
-                        <Badge className="bg-white/20 text-white border-white/30">
+                        <Badge className="bg-card/20 text-white border-white/30">
                             {category}
                         </Badge>
                         {pricing && (

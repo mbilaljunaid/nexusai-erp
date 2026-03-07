@@ -104,7 +104,7 @@ export default function ContributorDashboard() {
 
   const getTrustLevelBadge = (level: number) => {
     const levels: Record<number, { label: string; color: string }> = {
-      0: { label: "New Member", color: "bg-gray-500/10 text-gray-600 dark:text-gray-400" },
+      0: { label: "New Member", color: "bg-gray-500/10 text-muted-foreground dark:text-muted-foreground/70" },
       1: { label: "Basic", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
       2: { label: "Member", color: "bg-green-500/10 text-green-600 dark:text-green-400" },
       3: { label: "Regular", color: "bg-purple-500/10 text-purple-600 dark:text-purple-400" },

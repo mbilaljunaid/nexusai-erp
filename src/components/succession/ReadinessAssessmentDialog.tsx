@@ -87,7 +87,7 @@ export function ReadinessAssessmentDialog({
 
                 <div className="space-y-6">
                     {/* Candidate Info */}
-                    <Card className="bg-slate-500/10 border-slate-200">
+                    <Card className="bg-slate-500/10 border-border">
                         <CardContent className="p-4">
                             <div className="grid grid-cols-2 gap-4 text-sm">
                                 <div>

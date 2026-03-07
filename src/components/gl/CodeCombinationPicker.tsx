@@ -108,7 +108,7 @@ export function CodeCombinationPicker({ value, onChange, ledgerId = "primary-led
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <div className="text-[10px] text-gray-400 truncate">
+                                    <div className="text-[10px] text-muted-foreground/70 truncate">
                                         {seg.options.find((o: any) => o.val === segments[idx])?.desc || "Select a value"}
                                     </div>
                                 </div>

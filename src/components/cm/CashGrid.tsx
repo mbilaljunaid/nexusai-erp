@@ -66,22 +66,22 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
                 </div>
             </div>
 
-            <div className="overflow-x-auto rounded-lg border border-slate-300 bg-white">
+            <div className="overflow-x-auto rounded-lg border border-slate-300 bg-card">
                 <Table className="min- text-sm">
-                    <TableHeader className="bg-slate-100 border-b">
+                    <TableHeader className="bg-muted border-b">
                         <TableRow>
-                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Date</TableHead>
-                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Reference</TableHead>
-                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Description</TableHead>
-                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Source</TableHead>
-                            <TableHead className="px-4 py-3 text-right font-medium text-slate-600">Amount</TableHead>
-                            <TableHead className="px-4 py-3 text-center font-medium text-slate-600">Status</TableHead>
+                            <TableHead className="px-4 py-3 text-left font-medium text-muted-foreground">Date</TableHead>
+                            <TableHead className="px-4 py-3 text-left font-medium text-muted-foreground">Reference</TableHead>
+                            <TableHead className="px-4 py-3 text-left font-medium text-muted-foreground">Description</TableHead>
+                            <TableHead className="px-4 py-3 text-left font-medium text-muted-foreground">Source</TableHead>
+                            <TableHead className="px-4 py-3 text-right font-medium text-muted-foreground">Amount</TableHead>
+                            <TableHead className="px-4 py-3 text-center font-medium text-muted-foreground">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody className="divide-y divide-slate-200">
                         {transactions?.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={6} className="px-4 py-8 text-center text-slate-500">
+                                <TableCell colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                                     No transactions found.
                                 </TableCell>
                             </TableRow>
@@ -92,11 +92,11 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
                                 className="hover:bg-slate-500/10 transition-colors cursor-pointer"
                                 onClick={() => onEditTransaction && onEditTransaction(row)}
                             >
-                                <TableCell className="px-4 py-2 text-slate-900 dark:text-slate-200">
+                                <TableCell className="px-4 py-2 text-foreground dark:text-slate-200">
                                     {formatDate(row.transactionDate)}
                                 </TableCell>
-                                <TableCell className="px-4 py-2 text-slate-600 font-mono text-xs">{row.reference || '-'}</TableCell>
-                                <TableCell className="px-4 py-2 text-slate-700">{row.description || '-'}</TableCell>
+                                <TableCell className="px-4 py-2 text-muted-foreground font-mono text-xs">{row.reference || '-'}</TableCell>
+                                <TableCell className="px-4 py-2 text-foreground/90">{row.description || '-'}</TableCell>
                                 <TableCell className="px-4 py-2">
                                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
                                         {row.sourceModule}
@@ -123,7 +123,7 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
             {/* Pagination Placeholder */}
             {transactions && transactions.length > 0 && (
                 <div className="flex items-center justify-between px-2">
-                    <p className="text-xs text-slate-500">Showing {transactions.length} records</p>
+                    <p className="text-xs text-muted-foreground">Showing {transactions.length} records</p>
                     <div className="flex gap-1">
                         <Button variant="outline" size="sm" disabled>Previous</Button>
                         <Button variant="outline" size="sm" disabled>Next</Button>

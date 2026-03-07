@@ -127,23 +127,24 @@ export default function BankReconciliation() {
                         ) : (
                             <div className="divide-y divide-border/50">
                                 {unreconciledLines.map((line: any) => (
-                                    <div role="button" tabIndex={0}
-                                        key={line.id}
-                                        onClick={() => setSelectedStatementLine(line.id)}
-                                        className={cn(`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${selectedStatementLine === line.id ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <div className="flex justify-between items-start mb-1">
-                                            <span className="font-semibold">{line.description}</span>
-                                            <span className="font-mono font-bold">{formatNumber(parseFloat(line.amount), 2)}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center text-xs text-muted-foreground">
-                                            <div className="flex gap-3">
-                                                <span>{formatDate(line.transactionDate)}</span>
-                                                <span className="uppercase">{line.referenceNumber}</span>
-                                            </div>
-                                            {line.reconciled && <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Reconciled</Badge>}
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedStatementLine(line.id)}>
+                                    <div
+                                                                            key={line.id}
+                                                                            className={cn(`p-4 cursor-pointer transition-colors hover:bg-muted/50 ${selectedStatementLine === line.id ? 'bg-blue-50/50 border-l-4 border-blue-500' : ''}`)}
+                                                                        >
+                                                                            <div className="flex justify-between items-start mb-1">
+                                                                                <span className="font-semibold">{line.description}</span>
+                                                                                <span className="font-mono font-bold">{formatNumber(parseFloat(line.amount), 2)}</span>
+                                                                            </div>
+                                                                            <div className="flex justify-between items-center text-xs text-muted-foreground">
+                                                                                <div className="flex gap-3">
+                                                                                    <span>{formatDate(line.transactionDate)}</span>
+                                                                                    <span className="uppercase">{line.referenceNumber}</span>
+                                                                                </div>
+                                                                                {line.reconciled && <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Reconciled</Badge>}
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 ))}
                             </div>
                         )}

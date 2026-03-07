@@ -58,9 +58,9 @@ import {
 
 const tierConfig = {
   diamond: { bg: "bg-cyan-500/10", text: "text-cyan-600", label: "Diamond" },
-  platinum: { bg: "bg-slate-400/10", text: "text-slate-600", label: "Platinum" },
+  platinum: { bg: "bg-slate-400/10", text: "text-muted-foreground", label: "Platinum" },
   gold: { bg: "bg-yellow-500/10", text: "text-yellow-600", label: "Gold" },
-  silver: { bg: "bg-gray-400/10", text: "text-gray-600", label: "Silver" },
+  silver: { bg: "bg-gray-400/10", text: "text-muted-foreground", label: "Silver" },
 };
 
 const partnerApplySchema = z.object({

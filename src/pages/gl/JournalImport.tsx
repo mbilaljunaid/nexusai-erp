@@ -172,7 +172,7 @@ export default function JournalImport() {
                                                 job.status === "Processed" ? "bg-green-100 text-green-800" :
                                                     job.status === "Error" ? "bg-red-100 text-red-800" :
                                                         job.status === "Validated" ? "bg-blue-100 text-blue-800" :
-                                                            "bg-gray-100 text-gray-800"
+                                                            "bg-muted text-foreground"
                                             }>
                                                 {job.status === "Processed" && <CheckCircle2 className="w-3 h-3 mr-1 inline" />}
                                                 {job.status === "Error" && <AlertCircle className="w-3 h-3 mr-1 inline" />}

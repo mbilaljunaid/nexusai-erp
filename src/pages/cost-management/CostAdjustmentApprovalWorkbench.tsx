@@ -65,7 +65,7 @@ function StatusBadge({ status }: { status: string }) {
             icon: <XCircle className="h-3 w-3 mr-1" />,
         },
     };
-    const cfg = map[status] ?? { label: status, className: "bg-gray-100 text-gray-700 border-gray-200", icon: null };
+    const cfg = map[status] ?? { label: status, className: "bg-muted text-foreground/90 border-border", icon: null };
     return (
         <Badge variant="outline" className={cn(`flex items-center text-xs font-medium ${cfg.className}`)}>
             {cfg.icon}

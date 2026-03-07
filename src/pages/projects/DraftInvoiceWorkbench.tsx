@@ -200,21 +200,22 @@ export default function DraftInvoiceWorkbench() {
                                     </TableHeader>
                                     <TableBody>
                                         {invoices.map((invoice) => (
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedInvoiceId(invoice.id)}>
                                             <TableRow
-                                                key={invoice.id}
-                                                className={selectedInvoiceId === invoice.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
-                                                onClick={() => setSelectedInvoiceId(invoice.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <TableCell className="font-mono font-medium">{invoice.invoiceNumber}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">
-                                                    {format(new Date(invoice.invoiceDate), "MMM dd, yyyy")}
-                                                </TableCell>
-                                                <TableCell className="text-right font-mono font-bold">
-                                                    ${invoice.amount.toFixed(2)}
-                                                </TableCell>
-                                                <TableCell><StatusBadge status={invoice.status} /></TableCell>
-                                                <TableCell><StatusBadge status={invoice.transferStatus} /></TableCell>
-                                            </TableRow>
+                                                                                            key={invoice.id}
+                                                                                            className={selectedInvoiceId === invoice.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
+                                                                                        >
+                                                                                            <TableCell className="font-mono font-medium">{invoice.invoiceNumber}</TableCell>
+                                                                                            <TableCell className="text-xs text-muted-foreground">
+                                                                                                {format(new Date(invoice.invoiceDate), "MMM dd, yyyy")}
+                                                                                            </TableCell>
+                                                                                            <TableCell className="text-right font-mono font-bold">
+                                                                                                ${invoice.amount.toFixed(2)}
+                                                                                            </TableCell>
+                                                                                            <TableCell><StatusBadge status={invoice.status} /></TableCell>
+                                                                                            <TableCell><StatusBadge status={invoice.transferStatus} /></TableCell>
+                                                                                        </TableRow>
+                                            </Button>
                                         ))}
                                     </TableBody>
                                 </Table>
@@ -303,7 +304,7 @@ export default function DraftInvoiceWorkbench() {
                                             <Label className="text-xs font-bold uppercase text-muted-foreground">Invoice Lines</Label>
                                             <div className="max-h-48 overflow-y-auto space-y-1">
                                                 {invoiceLines.map((line) => (
-                                                    <div key={line.id} className="p-2 bg-white rounded border text-xs">
+                                                    <div key={line.id} className="p-2 bg-card rounded border text-xs">
                                                         <div className="flex justify-between mb-1">
                                                             <span className="text-muted-foreground">Line {line.lineNumber}</span>
                                                             <span className="font-mono font-bold">${line.amount.toFixed(2)}</span>

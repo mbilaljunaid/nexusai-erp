@@ -62,7 +62,7 @@ export default function Certification() {
             <DashboardWidget title="Issue %" colSpan={1}>
                 <div className="flex items-center gap-4">
                     <div className="p-2 rounded-full bg-/15">
-                        <Percent className="h-4 w-4 text-slate-600" />
+                        <Percent className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
                         <div className="text-2xl font-bold tracking-tight">{issuePercent.toFixed(0)}%</div>

@@ -340,42 +340,43 @@ export default function ContactsDetail() {
                 ) : filteredContacts.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredContacts.map((c) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedContact(c)}>
                             <Card
-                                key={c.id}
-                                className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
-                                onClick={() => setSelectedContact(c)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardContent className="p-6">
-                                    <div className="flex items-start justify-between mb-4">
-                                        <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
-                                            <AvatarFallback className="bg-primary/5 text-primary font-bold">
-                                                {c.firstName?.charAt(0)}{c.lastName.charAt(0)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <MoreVertical className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    </div>
+                                                            key={c.id}
+                                                            className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
+                                                        >
+                                                            <CardContent className="p-6">
+                                                                <div className="flex items-start justify-between mb-4">
+                                                                    <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
+                                                                        <AvatarFallback className="bg-primary/5 text-primary font-bold">
+                                                                            {c.firstName?.charAt(0)}{c.lastName.charAt(0)}
+                                                                        </AvatarFallback>
+                                                                    </Avatar>
+                                                                    <MoreVertical className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                                </div>
 
-                                    <div className="space-y-1">
-                                        <h3 className="font-bold text-lg group-hover:text-primary transition-colors line-clamp-1">
-                                            {c.salutation} {c.firstName} {c.lastName}
-                                        </h3>
-                                        <p className="text-sm text-muted-foreground italic line-clamp-1">{c.title || "Contact"}</p>
-                                    </div>
+                                                                <div className="space-y-1">
+                                                                    <h3 className="font-bold text-lg group-hover:text-primary transition-colors line-clamp-1">
+                                                                        {c.salutation} {c.firstName} {c.lastName}
+                                                                    </h3>
+                                                                    <p className="text-sm text-muted-foreground italic line-clamp-1">{c.title || "Contact"}</p>
+                                                                </div>
 
-                                    <div className="mt-6 pt-6 border-t border-muted/50 flex flex-col gap-2">
-                                        <div className="flex items-center gap-2 text-xs text-muted-foreground truncate font-medium">
-                                            <Mail className="h-3 w-3" />
-                                            <span>{c.email || "No email"}</span>
-                                        </div>
-                                        {c.phone && (
-                                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                <Phone className="h-3 w-3" />
-                                                <span>{c.phone}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                                <div className="mt-6 pt-6 border-t border-muted/50 flex flex-col gap-2">
+                                                                    <div className="flex items-center gap-2 text-xs text-muted-foreground truncate font-medium">
+                                                                        <Mail className="h-3 w-3" />
+                                                                        <span>{c.email || "No email"}</span>
+                                                                    </div>
+                                                                    {c.phone && (
+                                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                                            <Phone className="h-3 w-3" />
+                                                                            <span>{c.phone}</span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ))}
                     </div>
                 ) : (

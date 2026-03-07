@@ -27,7 +27,7 @@ interface PayrollRun {
 }
 
 const STATUS_CFG: Record<string, { color: string; bg: string; label: string }> = {
-    Draft: { color: 'text-gray-500', bg: 'bg-gray-100', label: 'Draft' },
+    Draft: { color: 'text-muted-foreground', bg: 'bg-muted', label: 'Draft' },
     Processing: { color: 'text-amber-600', bg: 'bg-amber-100', label: 'Processing' },
     Review: { color: 'text-blue-600', bg: 'bg-blue-100', label: 'Under Review' },
     Approved: { color: 'text-emerald-600', bg: 'bg-emerald-100', label: 'Approved' },
@@ -104,7 +104,7 @@ export default function PayrollWorkbench() {
         { id: "tax_total", header: "Tax", width: "120px", cell: (row) => <div className="amt-cell red w-full">{fmt(row.tax_total, row.currency_code)}</div> },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
-                const cfg = STATUS_CFG[row.status] ?? { color: 'text-gray-500', bg: 'bg-gray-100', label: row.status };
+                const cfg = STATUS_CFG[row.status] ?? { color: 'text-muted-foreground', bg: 'bg-muted', label: row.status };
                 return <span className={cn(`status-pill ${cfg.bg} ${cfg.color}`)}>{cfg.label}</span>;
             }
         },

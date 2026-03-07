@@ -214,38 +214,39 @@ export default function RevenueRecognitionDashboard() {
                             ) : (
                                 <div className="space-y-3">
                                     {contracts.map((contract) => (
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedContractId(contract.id)}>
                                         <Card
-                                            key={contract.id}
-                                            className={cn(`cursor-pointer transition-colors ${selectedContractId === contract.id ? "bg-blue-500/10 border-blue-200" : "hover:bg-muted/50"
-                                                }`)}
-                                            onClick={() => setSelectedContractId(contract.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <CardContent className="pt-4 pb-4">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div>
-                                                        <h4 className="font-bold text-sm">{contract.contractNumber}</h4>
-                                                        <p className="text-xs text-muted-foreground">{contract.customerName}</p>
-                                                    </div>
-                                                    <Badge variant={contract.status === "ACTIVE" ? "default" : "secondary"}>
-                                                        {contract.status}
-                                                    </Badge>
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-2 text-xs mt-3">
-                                                    <div>
-                                                        <span className="text-muted-foreground">Recognized:</span>
-                                                        <div className="font-bold text-green-600">{formatCurrency(contract.recognizedRevenue)}</div>
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-muted-foreground">Deferred:</span>
-                                                        <div className="font-bold text-orange-600">{formatCurrency(contract.deferredRevenue)}</div>
-                                                    </div>
-                                                </div>
-                                                <Progress
-                                                    value={(contract.recognizedRevenue / contract.totalValue) * 100}
-                                                    className="mt-3"
-                                                />
-                                            </CardContent>
-                                        </Card>
+                                                                                    key={contract.id}
+                                                                                    className={cn(`cursor-pointer transition-colors ${selectedContractId === contract.id ? "bg-blue-500/10 border-blue-200" : "hover:bg-muted/50"
+                                                                                        }`)}
+                                                                                >
+                                                                                    <CardContent className="pt-4 pb-4">
+                                                                                        <div className="flex justify-between items-start mb-2">
+                                                                                            <div>
+                                                                                                <h4 className="font-bold text-sm">{contract.contractNumber}</h4>
+                                                                                                <p className="text-xs text-muted-foreground">{contract.customerName}</p>
+                                                                                            </div>
+                                                                                            <Badge variant={contract.status === "ACTIVE" ? "default" : "secondary"}>
+                                                                                                {contract.status}
+                                                                                            </Badge>
+                                                                                        </div>
+                                                                                        <div className="grid grid-cols-2 gap-2 text-xs mt-3">
+                                                                                            <div>
+                                                                                                <span className="text-muted-foreground">Recognized:</span>
+                                                                                                <div className="font-bold text-green-600">{formatCurrency(contract.recognizedRevenue)}</div>
+                                                                                            </div>
+                                                                                            <div>
+                                                                                                <span className="text-muted-foreground">Deferred:</span>
+                                                                                                <div className="font-bold text-orange-600">{formatCurrency(contract.deferredRevenue)}</div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <Progress
+                                                                                            value={(contract.recognizedRevenue / contract.totalValue) * 100}
+                                                                                            className="mt-3"
+                                                                                        />
+                                                                                    </CardContent>
+                                                                                </Card>
+                                        </Button>
                                     ))}
                                 </div>
                             )}

@@ -122,31 +122,32 @@ export default function CoursePlayer() {
                 <div className="w-80 border-r overflow-y-auto p-4 space-y-2">
                     <h3 className="font-semibold mb-3">Course Modules</h3>
                     {modules.map((module, idx) => (
-                        <div role="button" tabIndex={0}
-                            key={module.id}
-                            className={cn(`p-3 border rounded-lg cursor-pointer transition-colors ${idx === currentModuleIndex
-                                ? "bg-primary text-primary-foreground"
-                                : "hover:bg-accent"
-                                }`)}
-                            onClick={() => setCurrentModuleIndex(idx)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                            <div className="flex items-start justify-between gap-2">
-                                <div className="flex-1">
-                                    <div className="font-medium text-sm">{module.title}</div>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <Badge variant="outline" className="text-xs">
-                                            {module.type}
-                                        </Badge>
-                                        {module.duration && (
-                                            <span className="text-xs text-muted-foreground">{module.duration}min</span>
-                                        )}
-                                    </div>
-                                </div>
-                                {module.completed && (
-                                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                                )}
-                            </div>
-                        </div>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setCurrentModuleIndex(idx)}>
+                        <div
+                                                    key={module.id}
+                                                    className={cn(`p-3 border rounded-lg cursor-pointer transition-colors ${idx === currentModuleIndex
+                                                        ? "bg-primary text-primary-foreground"
+                                                        : "hover:bg-accent"
+                                                        }`)}
+                                                >
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <div className="flex-1">
+                                                            <div className="font-medium text-sm">{module.title}</div>
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <Badge variant="outline" className="text-xs">
+                                                                    {module.type}
+                                                                </Badge>
+                                                                {module.duration && (
+                                                                    <span className="text-xs text-muted-foreground">{module.duration}min</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        {module.completed && (
+                                                            <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                                        )}
+                                                    </div>
+                                                </div>
+                        </Button>
                     ))}
                 </div>
 

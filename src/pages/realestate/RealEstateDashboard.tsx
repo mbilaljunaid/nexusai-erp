@@ -108,7 +108,7 @@ export default function RealEstateDashboard() {
                                     <div key={property.id} className="flex items-center justify-between p-3 border rounded">
                                         <div>
                                             <div className="font-medium">{property.property_name}</div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="text-sm text-muted-foreground">
                                                 {property.city}, {property.state} • {property.total_units} units
                                             </div>
                                         </div>
@@ -131,10 +131,10 @@ export default function RealEstateDashboard() {
                                     <div key={lease.id} className="flex items-center justify-between p-3 border rounded">
                                         <div>
                                             <div className="font-medium">{lease.lease_number}</div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="text-sm text-muted-foreground">
                                                 {lease.properties?.property_name} - Unit {lease.property_units?.unit_number}
                                             </div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="text-sm text-muted-foreground">
                                                 ${lease.monthly_rent}/mo • Ends {formatDate(lease.end_date)}
                                             </div>
                                         </div>
@@ -155,18 +155,18 @@ export default function RealEstateDashboard() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {listings.map(listing => (
                                     <div key={listing.id} className="border rounded-lg overflow-hidden">
-                                        <div className="aspect-video bg-gray-100 flex items-center justify-center">
-                                            <Building className="h-12 w-12 text-gray-400" />
+                                        <div className="aspect-video bg-muted flex items-center justify-center">
+                                            <Building className="h-12 w-12 text-muted-foreground/70" />
                                         </div>
                                         <div className="p-4">
                                             <div className="font-medium">{listing.listing_title}</div>
-                                            <div className="text-sm text-gray-500 mt-1">
+                                            <div className="text-sm text-muted-foreground mt-1">
                                                 {listing.properties?.city}, {listing.properties?.state}
                                             </div>
                                             <div className="text-lg font-bold mt-2">
                                                 ${formatNumber(listing.list_price)}/mo
                                             </div>
-                                            <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                                            <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
                                                 <span>{listing.property_units?.bedrooms} bed</span>
                                                 <span>•</span>
                                                 <span>{listing.property_units?.bathrooms} bath</span>

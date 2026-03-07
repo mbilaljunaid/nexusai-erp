@@ -71,7 +71,7 @@ export default function OfferManagementWorkbench() {
                     <CardContent className="p-4 pt-0 text-2xl font-bold">6</CardContent>
                 </Card>
                 <Card className="bg-slate-500/10">
-                    <CardHeader className="p-4 pb-2"><CardTitle className="text-xs font-semibold uppercase text-slate-600">Drafts</CardTitle></CardHeader>
+                    <CardHeader className="p-4 pb-2"><CardTitle className="text-xs font-semibold uppercase text-muted-foreground">Drafts</CardTitle></CardHeader>
                     <CardContent className="p-4 pt-0 text-2xl font-bold">2</CardContent>
                 </Card>
             </div>
@@ -87,8 +87,8 @@ export default function OfferManagementWorkbench() {
                             <div key={offer.id} className="p-4 border rounded-xl hover:bg-muted/30 transition-colors">
                                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <div className="flex items-start gap-4">
-                                        <div className="p-2 bg-slate-100 rounded-lg">
-                                            <FileCheck className="h-5 w-5 text-slate-600" />
+                                        <div className="p-2 bg-muted rounded-lg">
+                                            <FileCheck className="h-5 w-5 text-muted-foreground" />
                                         </div>
                                         <div>
                                             <h3 className="font-bold flex items-center gap-2">
@@ -112,7 +112,7 @@ export default function OfferManagementWorkbench() {
                                             className={
                                                 offer.status === "APPROVED" ? "bg-green-100 text-green-700 hover:bg-green-500/15" :
                                                     offer.status === "PENDING_APPROVAL" ? "bg-orange-100 text-orange-700 hover:bg-orange-500/15" :
-                                                        "bg-slate-100 text-slate-700 hover:bg-slate-500/15"
+                                                        "bg-muted text-foreground/90 hover:bg-slate-500/15"
                                             }
                                         >
                                             {offer.status.replace("_", " ")}

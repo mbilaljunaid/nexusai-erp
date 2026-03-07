@@ -135,7 +135,7 @@ export default function PlaybookBuilder() {
             <div className="flex justify-between items-center">
                 <div>
 
-                    <p className="text-gray-500 mt-1">
+                    <p className="text-muted-foreground mt-1">
                         Create automated workflows for customer success
                     </p>
                 </div>
@@ -154,30 +154,31 @@ export default function PlaybookBuilder() {
                     <CardContent>
                         <div className="space-y-2">
                             {playbooks.map((playbook) => (
-                                <div role="button" tabIndex={0}
-                                    key={playbook.id}
-                                    className={cn(`p-3 border rounded-lg cursor-pointer hover:bg-gray-500/10 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-500/10 border-blue-500' : ''
-                                        }`)}
-                                    onClick={() => {
-                                        setSelectedPlaybook(playbook);
-                                        setIsCreating(false);
-                                    }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="font-medium">{playbook.name}</div>
-                                            <div className="text-xs text-gray-500 mt-1">
-                                                {playbook.trigger_type.replace('_', ' ')}
-                                            </div>
-                                        </div>
-                                        <Badge variant={playbook.is_active ? 'default' : 'secondary'}>
-                                            {playbook.is_active ? 'Active' : 'Inactive'}
-                                        </Badge>
-                                    </div>
-                                    <div className="text-xs text-gray-500 mt-2">
-                                        {playbook.actions.length} actions · Executed {playbook.execution_count} times
-                                    </div>
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                                                        setSelectedPlaybook(playbook);
+                                                                        setIsCreating(false);
+                                                                    }}>
+                                <div
+                                                                    key={playbook.id}
+                                                                    className={cn(`p-3 border rounded-lg cursor-pointer hover:bg-gray-500/10 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-500/10 border-blue-500' : ''
+                                                                        }`)}
+                                                                >
+                                                                    <div className="flex items-start justify-between">
+                                                                        <div className="flex-1">
+                                                                            <div className="font-medium">{playbook.name}</div>
+                                                                            <div className="text-xs text-muted-foreground mt-1">
+                                                                                {playbook.trigger_type.replace('_', ' ')}
+                                                                            </div>
+                                                                        </div>
+                                                                        <Badge variant={playbook.is_active ? 'default' : 'secondary'}>
+                                                                            {playbook.is_active ? 'Active' : 'Inactive'}
+                                                                        </Badge>
+                                                                    </div>
+                                                                    <div className="text-xs text-muted-foreground mt-2">
+                                                                        {playbook.actions.length} actions · Executed {playbook.execution_count} times
+                                                                    </div>
+                                                                </div>
+                                </Button>
                             ))}
                         </div>
                     </CardContent>
@@ -392,7 +393,7 @@ export default function PlaybookBuilder() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center text-gray-400 py-12">
+                            <div className="text-center text-muted-foreground/70 py-12">
                                 Select a playbook to edit or create a new one
                             </div>
                         )}

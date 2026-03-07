@@ -134,8 +134,8 @@ export default function RoutePlanningWorkbench() {
                     {/* Additional workbench features placeholder */}
                     <div className="grid grid-cols-1 gap-6">
                         <RouteMapOverlay shipments={shipments || []} height="300px" />
-                        <Card className="border-none shadow-premium bg-slate-500/10 backdrop-blur-sm h-48 flex items-center justify-center border-2 border-dashed border-slate-200">
-                            <div className="text-center text-slate-400">
+                        <Card className="border-none shadow-premium bg-slate-500/10 backdrop-blur-sm h-48 flex items-center justify-center border-2 border-dashed border-border">
+                            <div className="text-center text-muted-foreground/70">
                                 <Truck className="h-10 w-10 mx-auto mb-2 opacity-30" />
                                 <p className="text-sm font-semibold">Fleet Utilization (Phase 6)</p>
                             </div>
@@ -155,11 +155,11 @@ export default function RoutePlanningWorkbench() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-slate-400">Total Savings Target</span>
+                                <span className="text-muted-foreground/70">Total Savings Target</span>
                                 <span className="font-bold text-emerald-400">+$24,500</span>
                             </div>
                             <div className="flex justify-between items-center text-xs">
-                                <span className="text-slate-400">Lanes Analyzed</span>
+                                <span className="text-muted-foreground/70">Lanes Analyzed</span>
                                 <span className="font-bold">142</span>
                             </div>
                             <Button className="w-full text-xs h-10 bg-indigo-600 hover:bg-indigo-700 text-white">Run Optimization Cycle</Button>

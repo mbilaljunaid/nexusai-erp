@@ -60,7 +60,7 @@ export default function PermitToWork() {
                 {[{ lbl: 'Active', val: active, clr: '#059669' }, { lbl: 'Pending Approval', val: pending, clr: '#d97706' }, { lbl: 'Expiring 24h', val: expiring.length, clr: '#f59e0b' }, { lbl: 'CBM Alerts', val: cbmAlerts.length, clr: '#dc2626' }].map(k => (
                     <Card key={k.lbl} className="px-4 py-2.5 min-w-24 shadow-sm">
                         <div className="text-xl font-extrabold" style={{ color: k.clr }}>{k.val}</div>
-                        <div className="text-[10px] text-gray-400">{k.lbl}</div>
+                        <div className="text-[10px] text-muted-foreground/70">{k.lbl}</div>
                     </Card>
                 ))}
             </div>
@@ -82,7 +82,7 @@ export default function PermitToWork() {
             )}
 
             {showNew && (
-                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-gray-200">
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-border">
                     <div className="font-bold text-xs mb-2">Create Permit</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         <div className="flex flex-col gap-0.5">
@@ -116,7 +116,7 @@ export default function PermitToWork() {
 
             <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending_Approval', 'Approved', 'Active', 'Suspended', 'Closed', 'Cancelled'].map(s => (
-                    <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-border rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>{s || 'All'}</Button>
                 ))}
             </div>
 
@@ -127,33 +127,35 @@ export default function PermitToWork() {
                         const tclr = TYPE_CLR[p.permit_type] ?? '#6b7280';
                         const hrs = hoursLeft(p);
                         return (
-                            <Card key={p.id} onClick={() => setSelected(selected?.id === p.id ? null : p)} className="px-3.5 py-2.5 mb-1.5 cursor-pointer shadow-sm relative overflow-hidden" style={{ border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}` }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: tclr }}></div>
-                                <div className="flex justify-between mb-0.5">
-                                    <div className="flex gap-1.5 items-center">
-                                        <HardHat className="h-3 w-3"  color={tclr} />
-                                        <span className="font-bold text-[13px]">{p.permit_number}</span>
-                                        <span className="text-[9px] px-1 py-px rounded font-bold" style={{ background: tclr + '18', color: tclr }}>{p.permit_type.replace(/_/g, ' ')}</span>
-                                    </div>
-                                    <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: clr + '18', color: clr }}>{p.status}</span>
-                                </div>
-                                <div className="text-[10px] text-gray-500 mb-0.5">{p.description ?? '—'} · Asset: {p.asset_id ?? '—'} · {p.location ?? '—'}</div>
-                                <div className="text-[9px] text-gray-400">By: {p.requested_by} {p.contractor ? `· Contractor: ${p.contractor}` : ''} {hrs !== null && p.status === 'Active' ? `· ${hrs}h remaining` : ''}</div>
-                                {(ACTIONS[p.status] ?? []).length > 0 && (
-                                    <div className="flex gap-1 mt-1.5">
-                                        {(ACTIONS[p.status] ?? []).map(a => <Button variant="destructive" key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={cn(`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-500/10 text-blue-700' : 'bg-red-500/10 text-red-600'}`)}>{a}</Button>)}
-                                    </div>
-                                )}
-                            </Card>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelected(selected?.id === p.id ? null : p)}>
+                            <Card key={p.id} className="px-3.5 py-2.5 mb-1.5 cursor-pointer shadow-sm relative overflow-hidden" style={{ border: `1px solid ${selected?.id === p.id ? '#dc2626' : '#e5e7eb'}` }}>
+                                                            <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: tclr }}></div>
+                                                            <div className="flex justify-between mb-0.5">
+                                                                <div className="flex gap-1.5 items-center">
+                                                                    <HardHat className="h-3 w-3"  color={tclr} />
+                                                                    <span className="font-bold text-[13px]">{p.permit_number}</span>
+                                                                    <span className="text-[9px] px-1 py-px rounded font-bold" style={{ background: tclr + '18', color: tclr }}>{p.permit_type.replace(/_/g, ' ')}</span>
+                                                                </div>
+                                                                <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: clr + '18', color: clr }}>{p.status}</span>
+                                                            </div>
+                                                            <div className="text-[10px] text-muted-foreground mb-0.5">{p.description ?? '—'} · Asset: {p.asset_id ?? '—'} · {p.location ?? '—'}</div>
+                                                            <div className="text-[9px] text-muted-foreground/70">By: {p.requested_by} {p.contractor ? `· Contractor: ${p.contractor}` : ''} {hrs !== null && p.status === 'Active' ? `· ${hrs}h remaining` : ''}</div>
+                                                            {(ACTIONS[p.status] ?? []).length > 0 && (
+                                                                <div className="flex gap-1 mt-1.5">
+                                                                    {(ACTIONS[p.status] ?? []).map(a => <Button variant="destructive" key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={cn(`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-500/10 text-blue-700' : 'bg-red-500/10 text-red-600'}`)}>{a}</Button>)}
+                                                                </div>
+                                                            )}
+                                                        </Card>
+                            </Button>
                         );
                     })}
-                    {permits.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No permits</div>}
+                    {permits.length === 0 && <div className="text-center text-muted-foreground/70 p-8 bg-card rounded-xl">No permits</div>}
                 </div>
 
                 {selected && (
                     <Card className="w-64 shrink-0 p-3.5 shadow-sm">
                         <div className="font-bold text-[13px] mb-2">{selected.permit_number}</div>
-                        <div className="text-[10px] leading-[1.8] text-gray-700">
+                        <div className="text-[10px] leading-[1.8] text-foreground/90">
                             <strong>Type:</strong> {selected.permit_type}<br />
                             <strong>Asset:</strong> {selected.asset_id ?? '—'}<br />
                             <strong>Location:</strong> {selected.location ?? '—'}<br />
@@ -164,10 +166,10 @@ export default function PermitToWork() {
                         <div className="mt-2.5 text-[11px] font-bold mb-1.5">Event Log</div>
                         <div className="max-h-48 overflow-y-auto flex flex-col gap-1">
                             {(selected.events ?? []).map((ev, i) => (
-                                <div key={i} className="text-[9px] border-l-2 border-gray-200 pl-1.5">
-                                    <div className="font-bold text-gray-500">{ev.action} · {ev.by}</div>
-                                    <div className="text-gray-700">{ev.note}</div>
-                                    <div className="text-gray-400">{formatDateTime(ev.at)}</div>
+                                <div key={i} className="text-[9px] border-l-2 border-border pl-1.5">
+                                    <div className="font-bold text-muted-foreground">{ev.action} · {ev.by}</div>
+                                    <div className="text-foreground/90">{ev.note}</div>
+                                    <div className="text-muted-foreground/70">{formatDateTime(ev.at)}</div>
                                 </div>
                             ))}
                         </div>

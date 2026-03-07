@@ -69,7 +69,7 @@ export default function PortalStatements() {
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-xs text-muted-foreground">Balance</p>
-                                                    <p className={cn(`font-semibold ${stmt.balance > 0 ? "text-red-600" : "text-slate-900 dark:text-slate-200"}`)}>
+                                                    <p className={cn(`font-semibold ${stmt.balance > 0 ? "text-red-600" : "text-foreground dark:text-slate-200"}`)}>
                                                         {formatCurrency(Number(stmt.balance))}
                                                     </p>
                                                 </div>
@@ -111,7 +111,7 @@ export default function PortalStatements() {
                     ) : (
                         <div className="text-center py-12">
                             <FileText className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                            <p className="text-slate-500">No statements available</p>
+                            <p className="text-muted-foreground">No statements available</p>
                         </div>
                     )}
                 </CardContent>

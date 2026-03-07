@@ -1,6 +1,7 @@
 import React from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export interface KanbanColumn {
     id: string;
@@ -82,19 +83,20 @@ export function KanbanBoard<T extends { id: string }>({
                                         {columnItems.map((item, index) => (
                                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                                 {(provided, snapshot) => (
-                                                    <div role="button" tabIndex={0}
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        className={`transition-all duration-200 outline-none ${snapshot.isDragging ? "opacity-90 scale-[1.02] shadow-xl z-50 ring-2 ring-primary/20 rounded-xl" : ""
-                                                            }`}
-                                                        style={{
-                                                            ...provided.draggableProps.style,
-                                                        }}
-                                                        onClick={() => onCardClick?.(item)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                                    >
-                                                        {renderCard(item)}
-                                                    </div>
+                                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => onCardClick?.(item)}>
+                                                    <div
+                                                                                                            ref={provided.innerRef}
+                                                                                                            {...provided.draggableProps}
+                                                                                                            {...provided.dragHandleProps}
+                                                                                                            className={`transition-all duration-200 outline-none ${snapshot.isDragging ? "opacity-90 scale-[1.02] shadow-xl z-50 ring-2 ring-primary/20 rounded-xl" : ""
+                                                                                                                }`}
+                                                                                                            style={{
+                                                                                                                ...provided.draggableProps.style,
+                                                                                                            }}
+                                                                                                        >
+                                                                                                            {renderCard(item)}
+                                                                                                        </div>
+                                                    </Button>
                                                 )}
                                             </Draggable>
                                         ))}

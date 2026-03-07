@@ -20,7 +20,7 @@ interface BGCOrder {
 interface BGCDetail extends BGCOrder { components: { component_type: string; status: string; result: string; details: string }[]; }
 interface BGCSummary { initiated: number; in_progress: number; clear: number; consider: number; adverse_action: number; withdrawn: number; }
 
-const STATUS_CLR: Record<string, string> = { Initiated: 'bg-blue-700/10 text-blue-700', In_Progress: 'bg-amber-600/10 text-amber-600', Complete: 'bg-emerald-600/10 text-emerald-600', Adverse_Action: 'bg-red-600/10 text-red-600', Cancelled: 'bg-gray-500/10 text-gray-500' };
+const STATUS_CLR: Record<string, string> = { Initiated: 'bg-blue-700/10 text-blue-700', In_Progress: 'bg-amber-600/10 text-amber-600', Complete: 'bg-emerald-600/10 text-emerald-600', Adverse_Action: 'bg-red-600/10 text-red-600', Cancelled: 'bg-gray-500/10 text-muted-foreground' };
 const ADJ_CLR: Record<string, string> = { Clear: 'text-emerald-600', Consider: 'text-amber-600', Adverse: 'text-red-600' };
 const RESULT_CLR: Record<string, string> = { Clear: 'text-emerald-600', Hit: 'text-red-600', Unable_To_Verify: 'text-amber-600' };
 
@@ -52,24 +52,26 @@ export default function BackgroundCheckStatus() {
     const orderColumns: SpreadsheetColumn<any>[] = [
         {
             id: "candidate", header: "Candidate", width: "200px", cell: (row) => (
-                <div onClick={() => loadDetail(row.id)} className="cursor-pointer" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                    <div className="font-bold">{row.candidate_name ?? row.applicant_id}</div>
-                    <div className="text-[10px] text-gray-400">{row.applicant_id}</div>
-                </div>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => loadDetail(row.id)}>
+                <div className="cursor-pointer">
+                                    <div className="font-bold">{row.candidate_name ?? row.applicant_id}</div>
+                                    <div className="text-[10px] text-muted-foreground/70">{row.applicant_id}</div>
+                                </div>
+                </Button>
             )
         },
-        { id: "package", header: "Package", width: "120px", cell: (row) => <div className="font-mono text-[10px] font-bold text-gray-700">{row.package_type}</div> },
+        { id: "package", header: "Package", width: "120px", cell: (row) => <div className="font-mono text-[10px] font-bold text-foreground/90">{row.package_type}</div> },
         {
             id: "progress", header: "Progress", width: "200px", cell: (row) => {
                 const pct = row.total_components > 0 ? Math.round(Number(row.completed_components) / Number(row.total_components) * 100) : 0;
                 return (
                     <div>
-                        <div className="flex justify-between text-[9px] text-gray-500">
+                        <div className="flex justify-between text-[9px] text-muted-foreground">
                             <span>{row.completed_components}/{row.total_components}</span>
                             {Number(row.hits) > 0 && <span className="text-red-600 font-bold">⚑ {row.hits} hit{Number(row.hits) > 1 ? 's' : ''}</span>}
                         </div>
                         <style>{`.bgc-pct-${row.id} { width: ${pct}%; }`}</style>
-                        <div className="bg-gray-100 rounded-full h-1 mt-0.5">
+                        <div className="bg-muted rounded-full h-1 mt-0.5">
                             {/* eslint-disable-next-line react/forbid-dom-props */}
                             <div className={cn(`h-full rounded-full bgc-pct-${row.id} ${pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'}`)} />
                         </div>
@@ -77,12 +79,12 @@ export default function BackgroundCheckStatus() {
                 );
             }
         },
-        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span className={cn(`font-bold ${ADJ_CLR[row.adjudication] ?? 'text-gray-500'}`)}>{row.adjudication}</span> : <span className="text-gray-400 text-[10px]">—</span> },
-        { id: "status", header: "Status", width: "150px", cell: (row) => <span className={cn(`px-2 py-0.5 rounded text-[10px] font-bold ${STATUS_CLR[row.status] ?? 'bg-gray-500/10 text-gray-500'}`)}>{row.status.replace(/_/g, ' ')}</span> },
+        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span className={cn(`font-bold ${ADJ_CLR[row.adjudication] ?? 'text-muted-foreground'}`)}>{row.adjudication}</span> : <span className="text-muted-foreground/70 text-[10px]">—</span> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => <span className={cn(`px-2 py-0.5 rounded text-[10px] font-bold ${STATUS_CLR[row.status] ?? 'bg-gray-500/10 text-muted-foreground'}`)}>{row.status.replace(/_/g, ' ')}</span> },
         {
             id: "actions", header: "", width: "160px", cell: (row) => (
                 <div className="flex gap-1.5 justify-end w-full">
-                    <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} className="text-gray-700 ] text-[10px]">View</Button>
+                    <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} className="text-foreground/90 ] text-[10px]">View</Button>
                     {row.status === 'Initiated' && <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); consentMut.mutate(row.id); }} className="text-white ] text-[10px]">Get Consent</Button>}
                 </div>
             )
@@ -98,10 +100,10 @@ export default function BackgroundCheckStatus() {
             {/* KPIs */}
             {summary && (
                 <div className="flex gap-2.5 mb-3.5">
-                    {([['Initiated', summary.initiated, 'border-gray-500', 'text-gray-500'], ['In Progress', summary.in_progress, 'border-amber-600', 'text-amber-600'], ['Clear', summary.clear, 'border-emerald-600', 'text-emerald-600'], ['Consider', summary.consider, 'border-amber-500', 'text-amber-500'], ['Adverse Action', summary.adverse_action, 'border-red-600', 'text-red-600'], ['Withdrawn', summary.withdrawn, 'border-gray-400', 'text-gray-400']] as [string, number, string, string][]).map(([l, v, bc, tc]) => (
+                    {([['Initiated', summary.initiated, 'border-gray-500', 'text-muted-foreground'], ['In Progress', summary.in_progress, 'border-amber-600', 'text-amber-600'], ['Clear', summary.clear, 'border-emerald-600', 'text-emerald-600'], ['Consider', summary.consider, 'border-amber-500', 'text-amber-500'], ['Adverse Action', summary.adverse_action, 'border-red-600', 'text-red-600'], ['Withdrawn', summary.withdrawn, 'border-gray-400', 'text-muted-foreground/70']] as [string, number, string, string][]).map(([l, v, bc, tc]) => (
                         <Card key={l} className={cn(`flex-1 border-l-4 p-2.5 shadow-sm rounded-xl ${bc}`)}>
                             <div className={cn(`text-xl font-extrabold font-mono ${tc}`)}>{v ?? 0}</div>
-                            <div className="text-[10px] text-gray-400">{l}</div>
+                            <div className="text-[10px] text-muted-foreground/70">{l}</div>
                         </Card>
                     ))}
                 </div>
@@ -110,13 +112,13 @@ export default function BackgroundCheckStatus() {
             {/* Filter row */}
             <div className="flex gap-1.5 mb-3">
                 {['', 'Initiated', 'In_Progress', 'Complete', 'Adverse_Action'].map(s => (
-                    <Button variant="secondary" size="sm" key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-border rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>{s || 'All'}</Button>
                 ))}
             </div>
 
             {/* New order form */}
             {showNew && (
-                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-gray-200">
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-border">
                     <div className="text-[13px] font-bold mb-2.5">Initiate Background Check</div>
                     <div className="grid grid-cols-3 gap-2">
                         <div className="flex flex-col gap-0.5">
@@ -144,7 +146,7 @@ export default function BackgroundCheckStatus() {
                 {/* Orders list */}
                 <Card className="flex-1 h-[600px] overflow-hidden shadow-sm">
                     {orders.length === 0 ? (
-                        <div className="text-center text-gray-400 p-6">No orders</div>
+                        <div className="text-center text-muted-foreground/70 p-6">No orders</div>
                     ) : (
                         <InteractiveSpreadsheet
                             columns={orderColumns}
@@ -162,7 +164,7 @@ export default function BackgroundCheckStatus() {
                             <div className="text-[13px] font-bold">{selectedOrder.candidate_name ?? selectedOrder.applicant_id}</div>
                             <Button variant="outline" onClick={() => setSelectedOrder(null)} className="text-sm">✕</Button>
                         </div>
-                        <div className="text-[11px] text-gray-500 mb-2.5">
+                        <div className="text-[11px] text-muted-foreground mb-2.5">
                             <div>Package: <strong>{selectedOrder.package_type}</strong></div>
                             <div>Consent: {fmtDate(selectedOrder.consent_signed_at)}</div>
                             <div>Ordered: {fmtDate(selectedOrder.ordered_at)}</div>
@@ -172,12 +174,12 @@ export default function BackgroundCheckStatus() {
                         </div>
 
                         {/* Components */}
-                        <div className="text-[11px] font-bold mb-1.5 text-gray-700">Component Results</div>
+                        <div className="text-[11px] font-bold mb-1.5 text-foreground/90">Component Results</div>
                         <div className="flex flex-col gap-1 mb-3">
                             {selectedOrder.components.map(c => (
                                 <div key={c.component_type} className="flex justify-between px-2 py-1 bg-gray-500/10 rounded-md">
                                     <span className="text-[10px]">{c.component_type}</span>
-                                    <span className={cn(`text-[10px] font-bold ${c.result ? (RESULT_CLR[c.result] ?? 'text-gray-500') : 'text-gray-400'}`)}>{c.result ?? c.status}</span>
+                                    <span className={cn(`text-[10px] font-bold ${c.result ? (RESULT_CLR[c.result] ?? 'text-muted-foreground') : 'text-muted-foreground/70'}`)}>{c.result ?? c.status}</span>
                                 </div>
                             ))}
                         </div>

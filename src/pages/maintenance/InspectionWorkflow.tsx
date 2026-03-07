@@ -190,7 +190,7 @@ export function InspectionWorkflow() {
             case "IN_PROGRESS":
                 return { color: "bg-blue-100 text-blue-800", icon: ClipboardCheck };
             default:
-                return { color: "bg-gray-100 text-gray-800", icon: FileText };
+                return { color: "bg-muted text-foreground", icon: FileText };
         }
     };
 

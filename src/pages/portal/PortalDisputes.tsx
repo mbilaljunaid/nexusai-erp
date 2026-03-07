@@ -289,7 +289,7 @@ export default function PortalDisputes() {
                     ) : (
                         <div className="text-center py-12">
                             <CheckCircle className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                            <p className="text-slate-500 font-medium text-lg">No disputes found</p>
+                            <p className="text-muted-foreground font-medium text-lg">No disputes found</p>
                             <p className="text-sm text-muted-foreground mt-1">You have no active or past disputes.</p>
                         </div>
                     )}

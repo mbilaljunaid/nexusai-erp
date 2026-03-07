@@ -177,13 +177,13 @@ export default function RevenuePeriodClose() {
             description="Manage fiscal period status for Revenue Management."
         >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="bg-white border-none shadow-sm">
+                <Card className="bg-card border-none shadow-sm">
                     <CardHeader className="pb-2">
                         <CardDescription>Active Period</CardDescription>
                         <CardTitle className="text-2xl">{periods?.find((p: any) => p.status === "Open")?.periodName || "None"}</CardTitle>
                     </CardHeader>
                 </Card>
-                <Card className="bg-white border-none shadow-sm text-green-600">
+                <Card className="bg-card border-none shadow-sm text-green-600">
                     <CardHeader className="pb-2">
                         <CardDescription>Ready to Close</CardDescription>
                         <CardTitle className="text-2xl flex items-center gap-2">
@@ -194,7 +194,7 @@ export default function RevenuePeriodClose() {
             </div>
 
             <Card className="border-none shadow-sm overflow-hidden">
-                <CardHeader className="bg-white border-b flex flex-row items-center justify-between">
+                <CardHeader className="bg-card border-b flex flex-row items-center justify-between">
                     <div>
                         <CardTitle>Revenue Fiscal Calendar</CardTitle>
                         <CardDescription>Transactions are only allowed in Open periods.</CardDescription>

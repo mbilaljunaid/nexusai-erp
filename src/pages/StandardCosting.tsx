@@ -135,8 +135,8 @@ export default function StandardCosting() {
       breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "Standard Costing" }]}
     >
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200 border-none">Standard Costing</h1>
-        <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-slate-600">Manage standard costs and cost variances</p>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200 border-none">Standard Costing</h1>
+        <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-muted-foreground">Manage standard costs and cost variances</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">

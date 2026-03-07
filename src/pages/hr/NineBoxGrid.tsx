@@ -50,14 +50,14 @@ export default function NineBoxGrid() {
         { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <span className="font-semibold">{row.employee_id}</span> },
         {
             id: "box_label", header: "Box", width: "150px", cell: (row) => {
-                const cfg = BOX_CONFIG[row.box_label] ?? { bg: 'bg-gray-500/10', border: 'border-gray-200', label: row.box_label };
+                const cfg = BOX_CONFIG[row.box_label] ?? { bg: 'bg-gray-500/10', border: 'border-border', label: row.box_label };
                 return <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold border ${cfg.bg} ${cfg.border}`)}>{cfg.label}</span>
             }
         },
         { id: "performance", header: "Performance", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.performance] },
         { id: "potential", header: "Potential", width: "100px", cell: (row) => ['', '🔴 Low', '🟡 Medium', '🟢 High'][row.potential] },
-        { id: "assessed_by", header: "Assessed By", width: "150px", cell: (row) => <span className="text-gray-500">{row.assessed_by || '—'}</span> },
-        { id: "notes", header: "Notes", width: "250px", cell: (row) => <span className="text-gray-500 block max-w-48 overflow-hidden text-ellipsis whitespace-nowrap">{row.notes || '—'}</span> }
+        { id: "assessed_by", header: "Assessed By", width: "150px", cell: (row) => <span className="text-muted-foreground">{row.assessed_by || '—'}</span> },
+        { id: "notes", header: "Notes", width: "250px", cell: (row) => <span className="text-muted-foreground block max-w-48 overflow-hidden text-ellipsis whitespace-nowrap">{row.notes || '—'}</span> }
     ];
 
     return (
@@ -68,7 +68,7 @@ export default function NineBoxGrid() {
                 <div className="flex gap-2">
                     <Input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" className="h-7 rounded-[7px] text-xs w-20" aria-label="Year" />
                     <Button variant="default" size="sm" onClick={() => setShowAdd(true)} className="text-white text-[11px] hover:">+ Add Assessment</Button>
-                    <Button variant="secondary" size="sm" onClick={() => purgeMut.mutate()} className="text-gray-500 text-[11px] hover:" title="GDPR purge expired records">🔒 GDPR Purge</Button>
+                    <Button variant="secondary" size="sm" onClick={() => purgeMut.mutate()} className="text-muted-foreground text-[11px] hover:" title="GDPR purge expired records">🔒 GDPR Purge</Button>
                 </div>
             }
         >
@@ -107,28 +107,28 @@ export default function NineBoxGrid() {
             <div className="flex gap-2">
                 {/* Performance Y-label */}
                 <div className="flex flex-col justify-center items-center w-7">
-                    <span className="text-[9px] text-gray-500 [writing-mode:vertical-rl] rotate-180 tracking-[2px]">PERFORMANCE ↑</span>
+                    <span className="text-[9px] text-muted-foreground [writing-mode:vertical-rl] rotate-180 tracking-[2px]">PERFORMANCE ↑</span>
                 </div>
                 <div className="flex-1">
                     {/* Potential X-label */}
-                    <div className="text-center text-[9px] text-gray-500 mb-1 tracking-[2px]">← LOW · POTENTIAL · HIGH →</div>
+                    <div className="text-center text-[9px] text-muted-foreground mb-1 tracking-[2px]">← LOW · POTENTIAL · HIGH →</div>
                     <div className="grid grid-cols-3 gap-2">
                         {GRID_MAP.map((cell, i) => {
                             const entries = boxEntries(cell.perf, cell.pot);
-                            const cfg = BOX_CONFIG[cell.key] ?? { bg: 'bg-gray-500/10', border: 'border-gray-200', label: cell.key };
+                            const cfg = BOX_CONFIG[cell.key] ?? { bg: 'bg-gray-500/10', border: 'border-border', label: cell.key };
                             return (
                                 <div key={i} className={cn(`rounded-xl p-2.5 min-h-24 border-[2px] ${cfg.bg} ${cfg.border}`)}>
-                                    <div className="text-[10px] font-extrabold text-gray-700 mb-1.5">{cfg.label}</div>
+                                    <div className="text-[10px] font-extrabold text-foreground/90 mb-1.5">{cfg.label}</div>
                                     <div className="flex flex-wrap gap-1">
                                         {entries.map((e, j) => (
-                                            <div key={j} className={cn(`bg-white rounded-md px-1.5 py-0.5 text-[9px] border ${cfg.border}`)}>
+                                            <div key={j} className={cn(`bg-card rounded-md px-1.5 py-0.5 text-[9px] border ${cfg.border}`)}>
                                                 <div className="font-bold">{e.employee_id}</div>
-                                                {e.assessed_by && <div className="text-gray-400">by {e.assessed_by}</div>}
+                                                {e.assessed_by && <div className="text-muted-foreground/70">by {e.assessed_by}</div>}
                                             </div>
                                         ))}
                                         {entries.length === 0 && <div className="text-gray-300 text-[9px] italic">empty</div>}
                                     </div>
-                                    <div className="mt-1 text-[8px] text-gray-400">P={cell.perf} × pt={cell.pot}</div>
+                                    <div className="mt-1 text-[8px] text-muted-foreground/70">P={cell.perf} × pt={cell.pot}</div>
                                 </div>
                             );
                         })}
@@ -144,7 +144,7 @@ export default function NineBoxGrid() {
                     onChange={() => { }}
                     containerHeight="400px"
                 />
-                {grid.length === 0 && <div className="p-6 text-center text-gray-400 border-t border-gray-200">No assessments for {period}</div>}
+                {grid.length === 0 && <div className="p-6 text-center text-muted-foreground/70 border-t border-border">No assessments for {period}</div>}
             </Card>
         </StandardPage>
     );

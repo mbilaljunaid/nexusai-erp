@@ -139,7 +139,7 @@ export function PaymentTransmissionHub() {
                             <div className="h-full bg-blue-500 w-[45%]" />
                         </div>
                     </div>
-                    <p className="text-[10px] text-slate-400 mt-4 italic text-center">
+                    <p className="text-[10px] text-muted-foreground/70 mt-4 italic text-center">
                         Currently at HSM UK. Estimated time to final credit: 2h 15m
                     </p>
                 </CardContent>

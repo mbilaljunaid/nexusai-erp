@@ -79,7 +79,7 @@ export function ProjectHealthCard({ metrics, alerts }: ProjectHealthCardProps) {
                         <CardTitle className="text-xs font-semibold text-muted-foreground">Est. at Completion (EAC)</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-slate-700">
+                        <div className="text-2xl font-bold text-foreground/90">
                             {formatCurrency(metrics.eac)}
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-1">Budget: {formatCurrency(metrics.budget)}</p>

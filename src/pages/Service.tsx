@@ -19,7 +19,7 @@ export default function Service() {
     { id: "sla", label: "SLA Tracking", icon: Clock, color: "text-pink-500" },
     { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-cyan-500" },
     { id: "queue", label: "Queue Manager", icon: Zap, color: "text-indigo-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-muted-foreground" },
   ];
 
   return (

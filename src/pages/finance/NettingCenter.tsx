@@ -18,7 +18,7 @@ interface TPPolicy { id: string; policy_name: string; transaction_category: stri
 interface TPAnalysis { id: string; policy_name: string; transaction_category: string; period: string; actual_margin_pct: number; benchmark_margin_pct: number; variance_pct: number; in_range: boolean; flagged: boolean; transactions_reviewed: number; analysis_notes: string; }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-    Draft: { text: 'text-gray-500', bg: 'bg-gray-100', border: 'border-gray-500' },
+    Draft: { text: 'text-muted-foreground', bg: 'bg-muted', border: 'border-gray-500' },
     Running: { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-600' },
     Completed: { text: 'text-blue-700', bg: 'bg-blue-500/10', border: 'border-blue-700' },
     Settled: { text: 'text-emerald-600', bg: 'bg-emerald-500/10', border: 'border-emerald-600' },
@@ -55,10 +55,10 @@ export default function NettingCenter() {
 
     const analysesColumns: SpreadsheetColumn<TPAnalysis>[] = [
         { id: "policy", header: "Policy", width: "200px", cell: (row) => <div className="font-semibold">{row.policy_name}</div> },
-        { id: "category", header: "Category", width: "120px", cell: (row) => <div className="text-gray-500 text-[10px]">{row.transaction_category}</div> },
+        { id: "category", header: "Category", width: "120px", cell: (row) => <div className="text-muted-foreground text-[10px]">{row.transaction_category}</div> },
         { id: "period", header: "Period", width: "100px", cell: (row) => <div className="font-mono">{row.period}</div> },
         { id: "actual", header: "Actual %", width: "100px", cell: (row) => <div className="font-mono">{Number(row.actual_margin_pct).toFixed(2)}%</div> },
-        { id: "benchmark", header: "Benchmark %", width: "100px", cell: (row) => <div className="font-mono text-gray-500">{Number(row.benchmark_margin_pct).toFixed(2)}%</div> },
+        { id: "benchmark", header: "Benchmark %", width: "100px", cell: (row) => <div className="font-mono text-muted-foreground">{Number(row.benchmark_margin_pct).toFixed(2)}%</div> },
         { id: "variance", header: "Variance", width: "100px", cell: (row) => <div className={cn(`font-mono font-bold ${Number(row.variance_pct) < 0 ? 'text-red-600' : 'text-emerald-600'}`)}>{Number(row.variance_pct) > 0 ? '+' : ''}{Number(row.variance_pct).toFixed(2)}%</div> },
         { id: "inRange", header: "In Range", width: "100px", cell: (row) => <div><span className={cn(`text-[9px] px-1 py-0.5 rounded-[3px] ${row.in_range ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`)}>{row.in_range ? '✓ Yes' : '✗ No'}</span></div> },
         { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.flagged && <span className="text-[9px] px-1 py-0.5 rounded-[3px] bg-yellow-100 text-amber-600 font-bold">⚠ Flagged</span>}</div> }
@@ -70,7 +70,7 @@ export default function NettingCenter() {
             description="Multilateral netting · Transfer pricing · Arm-length analysis"
             actions={
                 <div className="flex gap-2">
-                    {['netting', 'tp'].map(t => <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t as any)} data-active={tab === t} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer hover:bg-gray-200 hover:text-gray-800 ${tab === t ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white' : 'bg-gray-100 text-gray-500'}`)}>{t === 'netting' ? 'Netting' : 'Transfer Pricing'}</Button>)}
+                    {['netting', 'tp'].map(t => <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t as any)} data-active={tab === t} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer hover:bg-gray-200 hover:text-foreground ${tab === t ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white' : 'bg-muted text-muted-foreground'}`)}>{t === 'netting' ? 'Netting' : 'Transfer Pricing'}</Button>)}
                 </div>
             }
         >
@@ -107,18 +107,20 @@ export default function NettingCenter() {
                                 {sessions.map(s => {
                                     const style = STATUS_STYLES[s.status] ?? STATUS_STYLES['Draft'];
                                     return (
-                                        <Card key={s.id} onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)} className={cn(`p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid shadow-sm mb-2 ${selectedSession?.id === s.id ? 'border-l-blue-700' : 'border-l-gray-200'} ${style.border}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                            <div className="flex justify-between mb-0.5">
-                                                <div className="font-bold text-[13px]">{s.session_name}</div>
-                                                <span className={cn(`px-1.5 py-0.5 rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`)}>{s.status}</span>
-                                            </div>
-                                            <div className="text-[10px] text-gray-400">{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
-                                            {s.status === 'Draft' && <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-1.5 /10 ] text-[9px] text-blue-700 hover:/15">▶ Run Netting</Button>}
-                                            {s.status === 'Completed' && <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 /10 ] text-[9px] text-emerald-600 hover:/15 flex items-center gap-1"><CheckCircle2 className="h-[9px] w-[9px]"  /> Settle</Button>}
-                                        </Card>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedSession(selectedSession?.id === s.id ? null : s)}>
+                                        <Card key={s.id} className={cn(`p-[10px_12px] cursor-pointer outline-none border-l-[4px] border-l-solid shadow-sm mb-2 ${selectedSession?.id === s.id ? 'border-l-blue-700' : 'border-l-gray-200'} ${style.border}`)}>
+                                                                                    <div className="flex justify-between mb-0.5">
+                                                                                        <div className="font-bold text-[13px]">{s.session_name}</div>
+                                                                                        <span className={cn(`px-1.5 py-0.5 rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`)}>{s.status}</span>
+                                                                                    </div>
+                                                                                    <div className="text-[10px] text-muted-foreground/70">{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
+                                                                                    {s.status === 'Draft' && <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-1.5 /10 ] text-[9px] text-blue-700 hover:/15">▶ Run Netting</Button>}
+                                                                                    {s.status === 'Completed' && <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 /10 ] text-[9px] text-emerald-600 hover:/15 flex items-center gap-1"><CheckCircle2 className="h-[9px] w-[9px]"  /> Settle</Button>}
+                                                                                </Card>
+                                        </Button>
                                     );
                                 })}
-                                {sessions.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-[10px]">No sessions — create one</div>}
+                                {sessions.length === 0 && <div className="text-center text-muted-foreground/70 p-8 bg-card rounded-[10px]">No sessions — create one</div>}
                             </div>
                             {selectedSession && (
                                 <div className="flex-1">
@@ -132,7 +134,7 @@ export default function NettingCenter() {
                                                 containerHeight="100%"
                                             />
                                         </Card>
-                                    ) : <div className="text-center text-gray-400 p-10">Run netting to compute positions</div>}
+                                    ) : <div className="text-center text-muted-foreground/70 p-10">Run netting to compute positions</div>}
                                 </div>
                             )}
                         </div>
@@ -169,8 +171,8 @@ export default function NettingCenter() {
                                 {policies.map(p => (
                                     <Card key={p.id} className="p-[8px_10px] mb-1 shadow-sm">
                                         <div className="font-bold text-[12px]">{p.policy_name}</div>
-                                        <div className="text-[9px] text-gray-400 mb-0.5">{p.method} · {p.transaction_category}</div>
-                                        <div className="text-[10px] text-gray-700">Range: {p.benchmark_range_low ?? '—'}% – {p.benchmark_range_high ?? '—'}%</div>
+                                        <div className="text-[9px] text-muted-foreground/70 mb-0.5">{p.method} · {p.transaction_category}</div>
+                                        <div className="text-[10px] text-foreground/90">Range: {p.benchmark_range_low ?? '—'}% – {p.benchmark_range_high ?? '—'}%</div>
                                         <Button variant="default" onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} className="mt-1 /10 ] text-[9px] text-blue-700 hover:/15">Select for Analysis</Button>
                                     </Card>
                                 ))}
@@ -195,7 +197,7 @@ export default function NettingCenter() {
                                             containerHeight="100%"
                                         />
                                     ) : (
-                                        <div className="p-5 text-center text-gray-400">No analyses — select a policy and run</div>
+                                        <div className="p-5 text-center text-muted-foreground/70">No analyses — select a policy and run</div>
                                     )}
                                 </Card>
                             </div>

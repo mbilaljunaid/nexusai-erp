@@ -27,12 +27,12 @@ export function AuditDiffViewer({ changes }: AuditDiffViewerProps) {
         <ScrollArea className="h-full pr-4">
             <div className="space-y-3">
                 {fields.map((field) => (
-                    <div key={field} className="bg-white rounded-lg border shadow-sm overflow-hidden">
+                    <div key={field} className="bg-card rounded-lg border shadow-sm overflow-hidden">
                         <div className="px-3 py-1.5 bg-slate-500/10 border-b flex justify-between items-center">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-600">{field}</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{field}</span>
                             <Badge variant="outline" className="text-[10px] h-4 px-1.5">MUTATION</Badge>
                         </div>
-                        <div className="p-3 bg-white grid grid-cols-[1fr,auto,1fr] gap-3 items-center">
+                        <div className="p-3 bg-card grid grid-cols-[1fr,auto,1fr] gap-3 items-center">
                             <div className="space-y-1">
                                 <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium">
                                     <MinusCircle className="h-3 w-3 text-red-400" />

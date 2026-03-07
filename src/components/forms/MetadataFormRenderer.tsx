@@ -132,13 +132,13 @@ export function MetadataFormRenderer({
       {metadata.theme?.showHeader !== false && (
         <div className="mb-6">
           <h1 className="text-3xl font-bold">{metadata.name}</h1>
-          {metadata.description && <p className="text-gray-500 mt-2">{metadata.description}</p>}
+          {metadata.description && <p className="text-muted-foreground mt-2">{metadata.description}</p>}
         </div>
       )}
 
       {/* Breadcrumbs */}
       {metadata.theme?.showBreadcrumbs !== false && (
-        <div className="flex gap-2 mb-6 text-sm text-gray-600">
+        <div className="flex gap-2 mb-6 text-sm text-muted-foreground">
           {metadata.breadcrumbs?.map((crumb: any, i: number) => (
             <div key={i} className="flex items-center gap-2">
               {i > 0 && <span>/</span>}
@@ -171,7 +171,7 @@ export function MetadataFormRenderer({
             metadata.sections.map((section: MetadataSection) => (
               <Card key={section.name} className="p-6">
                 <h2 className="text-xl font-semibold mb-4">{section.title}</h2>
-                {section.description && <p className="text-gray-600 mb-4">{section.description}</p>}
+                {section.description && <p className="text-muted-foreground mb-4">{section.description}</p>}
 
                 <div
                   className={cn(`grid gap-4 ${

@@ -307,7 +307,7 @@ export default function MultiPeriodQuery() {
                         <CardTitle>Analysis Results</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="min-h-[400px] h-full border border-gray-200 rounded-lg">
+                        <div className="min-h-[400px] h-full border border-border rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={queryColumns}
                                 data={tableData}

@@ -473,7 +473,7 @@ function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, o
                             value={workOrder.failureProblemId || ""}
                             onValueChange={(val) => updateFailureMutation.mutate({ problemId: val, causeId: null, remedyId: null })}
                         >
-                            <SelectTrigger className="h-8 text-xs bg-white">
+                            <SelectTrigger className="h-8 text-xs bg-card">
                                 <SelectValue placeholder="Select Problem" />
                             </SelectTrigger>
                             <SelectContent>
@@ -491,7 +491,7 @@ function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, o
                             onValueChange={(val) => updateFailureMutation.mutate({ causeId: val, remedyId: null })}
                             disabled={!workOrder.failureProblemId}
                         >
-                            <SelectTrigger className="h-8 text-xs bg-white">
+                            <SelectTrigger className="h-8 text-xs bg-card">
                                 <SelectValue placeholder="Select Cause" />
                             </SelectTrigger>
                             <SelectContent>
@@ -509,7 +509,7 @@ function ReliabilityAnalysisSection({ workOrder, onUpdate }: { workOrder: any, o
                             onValueChange={(val) => updateFailureMutation.mutate({ remedyId: val })}
                             disabled={!workOrder.failureCauseId}
                         >
-                            <SelectTrigger className="h-8 text-xs bg-white">
+                            <SelectTrigger className="h-8 text-xs bg-card">
                                 <SelectValue placeholder="Select Remedy" />
                             </SelectTrigger>
                             <SelectContent>

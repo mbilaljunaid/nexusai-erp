@@ -160,7 +160,7 @@ export default function PayrollRunDetails({ runId, isOpen, onClose }: PayrollRun
                             ) : (
                                 <div className="space-y-3">
                                     {anomalies.map((a: any, i: number) => (
-                                        <div key={i} className="flex items-start gap-4 p-4 border rounded-lg bg-white/50 dark:bg-zinc-900/50 hover:bg-slate-500/10 transition-colors">
+                                        <div key={i} className="flex items-start gap-4 p-4 border rounded-lg bg-card/50 dark:bg-zinc-900/50 hover:bg-slate-500/10 transition-colors">
                                             <div className="mt-1 p-2 bg-amber-100 dark:bg-amber-900/20 rounded-full text-amber-600">
                                                 <AlertCircle className="w-5 h-5" />
                                             </div>

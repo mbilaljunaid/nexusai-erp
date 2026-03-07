@@ -130,7 +130,7 @@ export default function JournalEntries() {
             formId="gl/journals/import"
             templateColumns={['Journal Number', 'Description', 'Ledger', 'Currency', 'Account', 'Debit', 'Credit', 'Line Description']}
           />
-          <Button variant="outline" className="border-slate-200 hover:bg-slate-500/10 text-slate-600">
+          <Button variant="outline" className="border-border hover:bg-slate-500/10 text-muted-foreground">
             <Download className="h-4 w-4 mr-2" /> Export
           </Button>
           <Button onClick={() => setLocation("/gl/journals/new")} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100 px-6">
@@ -147,40 +147,40 @@ export default function JournalEntries() {
           value={`$${((stats?.postedJournals || 0) * 0.12).toFixed(1)}M`} // Mock derivation for visual
           trend="up"
           trendValue="+12%"
-          className="shadow-sm border-slate-200"
+          className="shadow-sm border-border"
         />
         <MetricCard
           title="Active Batches"
           value={journalResponse?.total || 0}
           description="Across all ledgers"
-          className="shadow-sm border-slate-200"
+          className="shadow-sm border-border"
         />
         <MetricCard
           title="Unposted"
           value={stats?.unpostedJournals || 0}
-          className="shadow-sm border-slate-200"
+          className="shadow-sm border-border"
         />
         <MetricCard
           title="Open Periods"
           value={stats?.openPeriods || 0}
-          className="shadow-sm border-slate-200"
+          className="shadow-sm border-border"
         />
       </div>
 
       {/* Premium Table Card */}
-      <Card className="border-none shadow-xl shadow-slate-200/50 bg-white/80 backdrop-blur-sm overflow-hidden">
+      <Card className="border-none shadow-xl shadow-slate-200/50 bg-card/80 backdrop-blur-sm overflow-hidden">
         <CardHeader className="border-b border-slate-50 bg-slate-500/10 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle className="text-xl font-bold text-slate-800">Recent Transactions</CardTitle>
-              <CardDescription className="text-slate-400 mt-1">Audit-ready journal entries from all ledger sources.</CardDescription>
+              <CardTitle className="text-xl font-bold text-foreground">Recent Transactions</CardTitle>
+              <CardDescription className="text-muted-foreground/70 mt-1">Audit-ready journal entries from all ledger sources.</CardDescription>
             </div>
             <div className="flex gap-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
                 <Input
                   placeholder="Search batches..."
-                  className="pl-9 w-64 bg-white border-slate-200 focus-visible:ring-indigo-500 rounded-full h-10 text-sm"
+                  className="pl-9 w-64 bg-card border-border focus-visible:ring-indigo-500 rounded-full h-10 text-sm"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
@@ -188,7 +188,7 @@ export default function JournalEntries() {
                   }}
                 />
               </div>
-              <Button variant="outline" size="icon" className="rounded-full border-slate-200 text-slate-400 hover:text-indigo-600" aria-label="Filter">
+              <Button variant="outline" size="icon" className="rounded-full border-border text-muted-foreground/70 hover:text-indigo-600" aria-label="Filter">
                 <Filter className="h-4 w-4" />
               </Button>
             </div>

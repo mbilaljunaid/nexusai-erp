@@ -87,11 +87,12 @@ export function GuidedTourOverlay() {
 
   return (
     <>
-      <div role="button" tabIndex={0}
-        className="fixed inset-0 bg-black/50 z-50"
-        onClick={skipTour}
-        data-testid="tour-overlay" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-      />
+      <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={skipTour}>
+          <div
+                  className="fixed inset-0 bg-black/50 z-50"
+                  data-testid="tour-overlay"
+                />
+          </Button>
 
       {highlightRect && (
         <div

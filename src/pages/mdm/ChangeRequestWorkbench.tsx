@@ -98,43 +98,44 @@ export default function ChangeRequestWorkbench() {
                             {/* Requests List */}
                             <div className="space-y-3">
                                 {filteredRequests.map((request: ChangeRequest) => (
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRequest(request)}>
                                     <Card
-                                        key={request.id}
-                                        className={cn(`cursor-pointer transition-all ${selectedRequest?.id === request.id
-                                                ? "border-primary ring-2 ring-primary"
-                                                : "hover:border-primary/50"
-                                            }`)}
-                                        onClick={() => setSelectedRequest(request)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <CardHeader className="pb-3">
-                                            <div className="flex items-start justify-between">
-                                                <div>
-                                                    <CardTitle className="text-base">
-                                                        {request.changeType} {request.entityType}
-                                                    </CardTitle>
-                                                    <CardDescription className="text-xs">
-                                                        Requested by {request.requestedBy}
-                                                    </CardDescription>
-                                                </div>
-                                                <Badge
-                                                    variant={
-                                                        request.status === "PENDING"
-                                                            ? "outline"
-                                                            : request.status === "APPROVED"
-                                                                ? "default"
-                                                                : "destructive"
-                                                    }
-                                                >
-                                                    {request.status}
-                                                </Badge>
-                                            </div>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <p className="text-xs text-muted-foreground">
-                                                {formatDateTime(request.requestedAt)}
-                                            </p>
-                                        </CardContent>
-                                    </Card>
+                                                                            key={request.id}
+                                                                            className={cn(`cursor-pointer transition-all ${selectedRequest?.id === request.id
+                                                                                    ? "border-primary ring-2 ring-primary"
+                                                                                    : "hover:border-primary/50"
+                                                                                }`)}
+                                                                        >
+                                                                            <CardHeader className="pb-3">
+                                                                                <div className="flex items-start justify-between">
+                                                                                    <div>
+                                                                                        <CardTitle className="text-base">
+                                                                                            {request.changeType} {request.entityType}
+                                                                                        </CardTitle>
+                                                                                        <CardDescription className="text-xs">
+                                                                                            Requested by {request.requestedBy}
+                                                                                        </CardDescription>
+                                                                                    </div>
+                                                                                    <Badge
+                                                                                        variant={
+                                                                                            request.status === "PENDING"
+                                                                                                ? "outline"
+                                                                                                : request.status === "APPROVED"
+                                                                                                    ? "default"
+                                                                                                    : "destructive"
+                                                                                        }
+                                                                                    >
+                                                                                        {request.status}
+                                                                                    </Badge>
+                                                                                </div>
+                                                                            </CardHeader>
+                                                                            <CardContent>
+                                                                                <p className="text-xs text-muted-foreground">
+                                                                                    {formatDateTime(request.requestedAt)}
+                                                                                </p>
+                                                                            </CardContent>
+                                                                        </Card>
+                                    </Button>
                                 ))}
                             </div>
 

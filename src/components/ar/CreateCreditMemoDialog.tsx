@@ -107,7 +107,7 @@ export function CreateCreditMemoDialog({ invoiceId, invoiceNumber, maxAmount }: 
                                     <FormLabel>Credit Amount</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <span className="absolute left-3 top-2.5 text-gray-500">$</span>
+                                            <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
                                             <Input type="number" step="0.01" className="pl-7" {...field} />
                                         </div>
                                     </FormControl>

@@ -95,25 +95,26 @@ export default function LeaseApprovalsWorkbench() {
                             ) : (
                                 <div className="space-y-3">
                                     {pendingLeases.map((lease) => (
-                                        <div role="button" tabIndex={0}
-                                            key={lease.id}
-                                            className={cn(`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${selectedLeaseId === lease.id ? "border-primary bg-primary/5 ring-1 ring-primary" : ""
-                                                }`)}
-                                            onClick={() => setSelectedLeaseId(lease.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <div className="flex justify-between items-start">
-                                                <div>
-                                                    <p className="font-semibold text-lg">{lease.leaseName}</p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        Submitted by {lease.submittedBy} • {formatDate(lease.submittedAt)}
-                                                    </p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="font-bold">{formatCurrency(lease.totalValue, lease.currency)}</p>
-                                                    <Badge variant="outline" className="mt-1">Pending Approval</Badge>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedLeaseId(lease.id)}>
+                                        <div
+                                                                                    key={lease.id}
+                                                                                    className={cn(`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${selectedLeaseId === lease.id ? "border-primary bg-primary/5 ring-1 ring-primary" : ""
+                                                                                        }`)}
+                                                                                >
+                                                                                    <div className="flex justify-between items-start">
+                                                                                        <div>
+                                                                                            <p className="font-semibold text-lg">{lease.leaseName}</p>
+                                                                                            <p className="text-sm text-muted-foreground">
+                                                                                                Submitted by {lease.submittedBy} • {formatDate(lease.submittedAt)}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                        <div className="text-right">
+                                                                                            <p className="font-bold">{formatCurrency(lease.totalValue, lease.currency)}</p>
+                                                                                            <Badge variant="outline" className="mt-1">Pending Approval</Badge>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                        </Button>
                                     ))}
                                 </div>
                             )}

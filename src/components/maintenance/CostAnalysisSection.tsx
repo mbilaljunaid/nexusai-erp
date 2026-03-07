@@ -138,7 +138,7 @@ export function CostAnalysisSection({ workOrderId }: Props) {
                                     <TableCell>
                                         {cost.glJournalId ?
                                             <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Posted</span> :
-                                            <span className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">Unposted</span>
+                                            <span className="text-xs bg-muted text-foreground px-2 py-1 rounded-full">Unposted</span>
                                         }
                                     </TableCell>
                                     <TableCell className="text-xs">{Number(cost.quantity)}</TableCell>

@@ -118,7 +118,7 @@ export default function FieldServiceDashboard() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2"><Map className="h-4 w-4" /> Technician Visualizer</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[400px] bg-slate-100 flex items-center justify-center rounded-md border text-muted-foreground">
+                    <CardContent className="h-[400px] bg-muted flex items-center justify-center rounded-md border text-muted-foreground">
                         Map View Placeholder
                     </CardContent>
                 </Card>

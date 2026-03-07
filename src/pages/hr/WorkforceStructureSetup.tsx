@@ -154,7 +154,7 @@ export default function WorkforceStructureSetup() {
                                         <div className="flex items-center justify-between p-3 rounded-lg border bg-card hover:border-indigo-500/30 transition-colors">
                                             <div className="flex items-start gap-3">
                                                 <div className="p-2 bg-gray-500/10 rounded-md">
-                                                    <span className="text-xs font-bold font-mono text-gray-600">FTE</span>
+                                                    <span className="text-xs font-bold font-mono text-muted-foreground">FTE</span>
                                                 </div>
                                                 <div>
                                                     <Label className="text-base font-semibold">FTE & Working Hours</Label>

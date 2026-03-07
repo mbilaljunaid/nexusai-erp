@@ -89,7 +89,7 @@ export default function TeamLearningDashboard() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {complianceAlerts.map((alert: any, idx: number) => (
-                            <div key={idx} className="p-3 border rounded-lg bg-white">
+                            <div key={idx} className="p-3 border rounded-lg bg-card">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="font-medium">{alert.memberName}</p>

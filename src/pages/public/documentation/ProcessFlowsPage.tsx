@@ -203,7 +203,7 @@ export default function ProcessFlowsPage() {
               Visit our Process Hub for detailed documentation and interactive flowcharts.
             </p>
             <Link to="/public/processes">
-              <Button size="lg" className="bg-white text-purple-600 hover:bg-slate-500/15" data-testid="button-process-hub">
+              <Button size="lg" className="bg-card text-purple-600 hover:bg-slate-500/15" data-testid="button-process-hub">
                 Go to Process Hub <ExternalLink className="ml-2 w-4 h-4" />
               </Button>
             </Link>

@@ -98,32 +98,33 @@ export default function DuplicateDetection() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 max-h-[60vh] overflow-y-auto p-1">
             {selectedSet?.parties?.map((p: any) => (
-              <Card
-                key={p.partyId}
-                className={cn(`cursor-pointer transition-all border-2 ${survivorId === p.partyId ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-transparent hover:border-slate-200 bg-slate-500/10'}`)}
-                onClick={() => setSurvivorId(p.partyId)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-              >
-                <CardContent className="p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    {p.party.partyType === 'ORGANIZATION' ? <Building2 className="w-5 h-5 text-gray-500" /> : <User className="w-5 h-5 text-gray-500" />}
-                    <Badge variant={p.party.status === 'A' ? 'default' : 'secondary'}>{p.party.status}</Badge>
-                  </div>
-                  <div>
-                    <p className="font-bold text-lg">{p.party.partyName}</p>
-                    <p className="text-xs font-mono text-muted-foreground">{p.party.partyNumber}</p>
-                  </div>
-                  <div className="text-sm space-y-1">
-                    <p><span className="text-muted-foreground">Score:</span> {p.score}%</p>
-                    <p><span className="text-muted-foreground">Email:</span> {p.party.email || '-'}</p>
-                    <p><span className="text-muted-foreground">Phone:</span> {p.party.primaryPhone || '-'}</p>
-                  </div>
-                  {survivorId === p.partyId && (
-                    <div className="mt-2 flex items-center gap-2 text-primary text-sm font-medium">
-                      <Check className="w-4 h-4" /> Selected as Survivor
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSurvivorId(p.partyId)}>
+                <Card
+                                key={p.partyId}
+                                className={cn(`cursor-pointer transition-all border-2 ${survivorId === p.partyId ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-transparent hover:border-border bg-slate-500/10'}`)}
+                              >
+                                <CardContent className="p-4 space-y-3">
+                                  <div className="flex justify-between items-start">
+                                    {p.party.partyType === 'ORGANIZATION' ? <Building2 className="w-5 h-5 text-muted-foreground" /> : <User className="w-5 h-5 text-muted-foreground" />}
+                                    <Badge variant={p.party.status === 'A' ? 'default' : 'secondary'}>{p.party.status}</Badge>
+                                  </div>
+                                  <div>
+                                    <p className="font-bold text-lg">{p.party.partyName}</p>
+                                    <p className="text-xs font-mono text-muted-foreground">{p.party.partyNumber}</p>
+                                  </div>
+                                  <div className="text-sm space-y-1">
+                                    <p><span className="text-muted-foreground">Score:</span> {p.score}%</p>
+                                    <p><span className="text-muted-foreground">Email:</span> {p.party.email || '-'}</p>
+                                    <p><span className="text-muted-foreground">Phone:</span> {p.party.primaryPhone || '-'}</p>
+                                  </div>
+                                  {survivorId === p.partyId && (
+                                    <div className="mt-2 flex items-center gap-2 text-primary text-sm font-medium">
+                                      <Check className="w-4 h-4" /> Selected as Survivor
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                </Button>
             ))}
           </div>
 

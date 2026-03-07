@@ -119,7 +119,7 @@ export default function TemplateManagement() {
             hr: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
             scheduling: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
         };
-        return colors[category || 'other'] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+        return colors[category || 'other'] || 'bg-muted text-foreground dark:bg-gray-700 dark:text-gray-300';
     };
 
     const filteredTemplates = templates.filter((template) => {
@@ -295,7 +295,7 @@ export default function TemplateManagement() {
                                                 {template.isActive ? (
                                                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                                                 ) : (
-                                                    <XCircle className="w-4 h-4 text-gray-400" />
+                                                    <XCircle className="w-4 h-4 text-muted-foreground/70" />
                                                 )}
                                                 {template.isDefault && (
                                                     <Badge variant="outline" className="text-xs">

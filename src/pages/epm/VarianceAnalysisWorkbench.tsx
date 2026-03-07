@@ -209,31 +209,32 @@ export default function VarianceAnalysisWorkbench() {
                                     variances.map((item) => {
                                         const isSignificant = Math.abs(item.variancePct) > 5;
                                         return (
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedAccount(item.account)}>
                                             <TableRow
-                                                key={item.account}
-                                                className="cursor-pointer hover:bg-muted/50"
-                                                onClick={() => setSelectedAccount(item.account)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <TableCell className="font-medium">{item.account}</TableCell>
-                                                <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
-                                                <TableCell className="text-right font-mono">${formatNumber(item.currentAmount)}</TableCell>
-                                                <TableCell className="text-right font-mono">${formatNumber(item.priorAmount)}</TableCell>
-                                                <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
-                                                    ${formatNumber(Math.abs(item.variance))}
-                                                </TableCell>
-                                                <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
-                                                    {item.variancePct.toFixed(1)}%
-                                                </TableCell>
-                                                <TableCell>
-                                                    {isSignificant ? (
-                                                        <Badge variant={item.variance >= 0 ? "default" : "destructive"}>
-                                                            {Math.abs(item.variancePct) > 10 ? "High" : "Moderate"}
-                                                        </Badge>
-                                                    ) : (
-                                                        <Badge variant="outline">Normal</Badge>
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
+                                                                                            key={item.account}
+                                                                                            className="cursor-pointer hover:bg-muted/50"
+                                                                                        >
+                                                                                            <TableCell className="font-medium">{item.account}</TableCell>
+                                                                                            <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
+                                                                                            <TableCell className="text-right font-mono">${formatNumber(item.currentAmount)}</TableCell>
+                                                                                            <TableCell className="text-right font-mono">${formatNumber(item.priorAmount)}</TableCell>
+                                                                                            <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
+                                                                                                ${formatNumber(Math.abs(item.variance))}
+                                                                                            </TableCell>
+                                                                                            <TableCell className={cn(`text-right font-mono ${item.variance >= 0 ? 'text-green-600' : 'text-red-600'}`)}>
+                                                                                                {item.variancePct.toFixed(1)}%
+                                                                                            </TableCell>
+                                                                                            <TableCell>
+                                                                                                {isSignificant ? (
+                                                                                                    <Badge variant={item.variance >= 0 ? "default" : "destructive"}>
+                                                                                                        {Math.abs(item.variancePct) > 10 ? "High" : "Moderate"}
+                                                                                                    </Badge>
+                                                                                                ) : (
+                                                                                                    <Badge variant="outline">Normal</Badge>
+                                                                                                )}
+                                                                                            </TableCell>
+                                                                                        </TableRow>
+                                            </Button>
                                         );
                                     })
                                 )}

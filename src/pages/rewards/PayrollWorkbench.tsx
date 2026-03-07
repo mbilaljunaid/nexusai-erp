@@ -189,7 +189,7 @@ export default function PayrollWorkbench() {
         <div className="p-8 space-y-6 bg-muted/50 min-h-screen">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200">Payroll Command Center</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200">Payroll Command Center</h1>
                     <p className="text-muted-foreground mt-1">Execute payroll runs, manage groups, and analyze performance.</p>
                 </div>
                 <div className="flex gap-2">

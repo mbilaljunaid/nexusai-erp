@@ -8,7 +8,7 @@ export function Header() {
   const [isDocsOpen, setIsDocsOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+    <header className="sticky top-0 w-full bg-card dark:bg-slate-900 border-b border-border dark:border-slate-800">
       <nav className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-blue-600 dark:text-blue-400">
@@ -37,7 +37,7 @@ export function Header() {
             {/* Dropdown Menu */}
             {isDocsOpen && (
               <div
-                className="absolute left-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-2"
+                className="absolute left-0 mt-2 w-56 bg-card dark:bg-slate-800 rounded-lg shadow-xl border border-border dark:border-slate-700 py-2"
                 onMouseEnter={() => setIsDocsOpen(true)}
                 onMouseLeave={() => setIsDocsOpen(false)}
               >
@@ -183,7 +183,7 @@ export function Footer() {
                 <Link 
                   key={process.href} 
                   href={process.href}
-                  className="text-sm text-slate-400 hover:text-blue-400 transition-colors flex items-center gap-2"
+                  className="text-sm text-muted-foreground/70 hover:text-blue-400 transition-colors flex items-center gap-2"
                   data-testid={`link-process-${process.name.toLowerCase().replace(/\s+/g,'-')}`}
                 >
                   <span className="text-blue-500">→</span> {process.name}
@@ -194,7 +194,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
+        <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground/70">
           <p>&copy; 2025 NexusAIFirst. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link href="#" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>

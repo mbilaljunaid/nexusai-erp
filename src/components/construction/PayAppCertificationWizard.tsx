@@ -56,7 +56,7 @@ export function PayAppCertificationWizard({ open, onOpenChange, payApp, onCertif
                 label: "Submit for Review",
                 status: currentIndex > 0 ? "completed" : "current",
                 icon: User,
-                color: "text-gray-600"
+                color: "text-muted-foreground"
             },
             {
                 id: "architect",
@@ -160,13 +160,13 @@ export function PayAppCertificationWizard({ open, onOpenChange, payApp, onCertif
                                         "flex items-center gap-4 p-4 rounded-lg border-2 transition-all",
                                         isCurrent && "border-primary bg-primary/5",
                                         isCompleted && "border-green-200 bg-green-500/10",
-                                        isPending && "border-gray-200 bg-gray-500/10 opacity-60"
+                                        isPending && "border-border bg-gray-500/10 opacity-60"
                                     )}>
                                         <div className={cn(
                                             "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center",
                                             isCompleted && "bg-green-600 text-white",
                                             isCurrent && "bg-primary text-white",
-                                            isPending && "bg-gray-300 text-gray-600"
+                                            isPending && "bg-gray-300 text-muted-foreground"
                                         )}>
                                             {isCompleted ? (
                                                 <CheckCircle2 className="h-6 w-6" />

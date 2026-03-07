@@ -79,7 +79,7 @@ export function PersonSearch() {
                     <p className="text-muted-foreground">Search and manage person records.</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-md border text-sm">
+                    <div className="flex items-center gap-2 bg-muted p-1 rounded-md border text-sm">
                         <span className="pl-2 text-muted-foreground">As Of:</span>
                         <DatePicker
                             value={effectiveDate}

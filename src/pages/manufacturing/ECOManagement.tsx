@@ -19,10 +19,10 @@ interface ECO {
 interface ECOSummary { status: string; priority: string; count: number; }
 
 const PRIORITY_CLR: Record<string, string> = { CRITICAL: 'text-red-600 bg-red-600/20', HIGH: 'text-amber-600 bg-amber-600/20', MEDIUM: 'text-blue-700 bg-blue-700/20', LOW: 'text-emerald-600 bg-emerald-600/20' };
-const STATUS_CLR: Record<string, string> = { Draft: 'text-gray-400 bg-gray-400/20', Under_Review: 'text-amber-600 bg-amber-600/20', Approved: 'text-blue-700 bg-blue-700/20', Released: 'text-violet-600 bg-violet-600/20', Implemented: 'text-emerald-600 bg-emerald-600/20', Cancelled: 'text-red-600 bg-red-600/20' };
+const STATUS_CLR: Record<string, string> = { Draft: 'text-muted-foreground/70 bg-gray-400/20', Under_Review: 'text-amber-600 bg-amber-600/20', Approved: 'text-blue-700 bg-blue-700/20', Released: 'text-violet-600 bg-violet-600/20', Implemented: 'text-emerald-600 bg-emerald-600/20', Cancelled: 'text-red-600 bg-red-600/20' };
 
 const STATUS_BORDER_CLR: Record<string, string> = { Draft: 'border-x-gray-400/40 border-b-gray-400/40 border-t-gray-400', Under_Review: 'border-x-amber-600/40 border-b-amber-600/40 border-t-amber-600', Approved: 'border-x-blue-700/40 border-b-blue-700/40 border-t-blue-700', Released: 'border-x-violet-600/40 border-b-violet-600/40 border-t-violet-600', Implemented: 'border-x-emerald-600/40 border-b-emerald-600/40 border-t-emerald-600', Cancelled: 'border-x-red-600/40 border-b-red-600/40 border-t-red-600' };
-const STATUS_TEXT_CLR: Record<string, string> = { Draft: 'text-gray-400', Under_Review: 'text-amber-600', Approved: 'text-blue-700', Released: 'text-violet-600', Implemented: 'text-emerald-600', Cancelled: 'text-red-600' };
+const STATUS_TEXT_CLR: Record<string, string> = { Draft: 'text-muted-foreground/70', Under_Review: 'text-amber-600', Approved: 'text-blue-700', Released: 'text-violet-600', Implemented: 'text-emerald-600', Cancelled: 'text-red-600' };
 
 const ACTIONS: Record<string, { label: string; action: string; color: string }[]> = {
     Draft: [{ label: 'Submit for Review', action: 'submit', color: 'bg-blue-700' }],
@@ -55,11 +55,11 @@ export default function ECOManagement() {
             id: "title", header: "Title", width: "300px", cell: (e) => (
                 <>
                     <div className="font-semibold">{e.title}</div>
-                    <div className="text-[10px] text-gray-400">Requested by: {e.requested_by ?? '—'}</div>
+                    <div className="text-[10px] text-muted-foreground/70">Requested by: {e.requested_by ?? '—'}</div>
                 </>
             )
         },
-        { id: "type", header: "Type", width: "120px", cell: (e) => <span className="text-[10px] text-gray-500">{e.change_type}</span> },
+        { id: "type", header: "Type", width: "120px", cell: (e) => <span className="text-[10px] text-muted-foreground">{e.change_type}</span> },
         {
             id: "priority", header: "Priority", width: "120px", cell: (e) => (
                 <span className={cn(`py-0.5 px-2 rounded font-bold text-[10px] ${PRIORITY_CLR[e.priority]}`)}>{e.priority}</span>
@@ -86,7 +86,7 @@ export default function ECOManagement() {
             <div className="flex justify-between mb-4">
                 <div>
 
-                    <p className="text-[13px] text-gray-500 mt-1 mb-0">Change lifecycle · Approval workflow · BOM impact tracking</p>
+                    <p className="text-[13px] text-muted-foreground mt-1 mb-0">Change lifecycle · Approval workflow · BOM impact tracking</p>
                 </div>
                 <Button variant="default" size="sm" onClick={() => setShowNew(true)} className="text-white text-xs">+ New ECO</Button>
             </div>
@@ -94,16 +94,18 @@ export default function ECOManagement() {
             {/* Status strip */}
             <div className="flex gap-2 mb-3.5">
                 {statusTotals.map(s => (
-                    <Card key={s.status} onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)} className={cn(`flex-1 rounded-xl py-2 px-2.5 cursor-pointer border-t-[3px] shadow-sm ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <div className={cn(`text-lg font-extrabold font-mono ${STATUS_TEXT_CLR[s.status]}`)}>{s.count}</div>
-                        <div className="text-[9px] text-gray-400 font-semibold">{s.status.replace(/_/g, ' ')}</div>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setStatusFilter(statusFilter === s.status ? '' : s.status)}>
+                    <Card key={s.status} className={cn(`flex-1 rounded-xl py-2 px-2.5 cursor-pointer border-t-[3px] shadow-sm ${STATUS_BORDER_CLR[s.status]} ${statusFilter && statusFilter !== s.status ? 'opacity-50' : 'opacity-100'}`)}>
+                                            <div className={cn(`text-lg font-extrabold font-mono ${STATUS_TEXT_CLR[s.status]}`)}>{s.count}</div>
+                                            <div className="text-[9px] text-muted-foreground/70 font-semibold">{s.status.replace(/_/g, ' ')}</div>
+                                        </Card>
+                    </Button>
                 ))}
             </div>
 
             {/* New ECO form */}
             {showNew && (
-                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-gray-200">
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-border">
                     <div className="text-[13px] font-bold mb-2.5">Create ECO</div>
                     <div className="grid grid-cols-4 gap-2 mb-2">
                         {(
@@ -159,9 +161,9 @@ export default function ECOManagement() {
                             <div className="font-bold text-xs">{selected.eco_number}</div>
                             <Button variant="outline" onClick={() => setSelected(null)} >✕</Button>
                         </div>
-                        <div className="text-[11px] text-gray-700 mb-2.5">{selected.title}</div>
-                        <div className="text-[10px] text-gray-500 mb-2.5">
-                            <div>Type: <strong className="font-bold text-gray-900 dark:text-gray-200">{selected.change_type}</strong></div>
+                        <div className="text-[11px] text-foreground/90 mb-2.5">{selected.title}</div>
+                        <div className="text-[10px] text-muted-foreground mb-2.5">
+                            <div>Type: <strong className="font-bold text-foreground dark:text-gray-200">{selected.change_type}</strong></div>
                             <div>Approved by: {selected.approved_by ?? '—'}</div>
                             <div>Effective: {selected.effective_date ?? '—'}</div>
                         </div>

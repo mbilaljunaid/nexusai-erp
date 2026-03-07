@@ -95,7 +95,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     {getRiskIcon(row.risk_level)}
                     <div>
                         <div className="font-medium">{row.customers?.name || 'Unknown'}</div>
-                        <div className="text-sm text-gray-500">{row.customers?.email}</div>
+                        <div className="text-sm text-muted-foreground">{row.customers?.email}</div>
                     </div>
                 </div>
             )
@@ -130,7 +130,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             header: 'Last Engagement',
             width: "150px",
             cell: (row: any) => (
-                <div className="p-2 text-sm text-gray-600">
+                <div className="p-2 text-sm text-muted-foreground">
                     {row.last_engagement ? format(new Date(row.last_engagement), "MMM d, yyyy") : 'Never'}
                 </div>
             )
@@ -140,7 +140,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             header: 'Days Inactive',
             width: "120px",
             cell: (row: any) => (
-                <div className={cn(`p-2 text-sm ${row.days_since_last_activity > 30 ? 'text-red-600 font-semibold' : 'text-gray-600'}`)}>
+                <div className={cn(`p-2 text-sm ${row.days_since_last_activity > 30 ? 'text-red-600 font-semibold' : 'text-muted-foreground'}`)}>
                     {row.days_since_last_activity || 0}
                 </div>
             )
@@ -166,7 +166,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             cell: (row: any) => (
                 <div className="p-2">
                     <div className="font-medium">{row.customers?.name || 'Unknown'}</div>
-                    <div className="text-sm text-gray-500">ARR: ${formatNumber(row.current_arr)}</div>
+                    <div className="text-sm text-muted-foreground">ARR: ${formatNumber(row.current_arr)}</div>
                 </div>
             )
         },
@@ -176,7 +176,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             width: "150px",
             cell: (row: any) => (
                 <div className="flex items-center space-x-2 p-2">
-                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span>{format(new Date(row.renewal_date), "MMM d, yyyy")}</span>
                 </div>
             )
@@ -214,7 +214,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             header: 'CSM Confidence',
             width: "150px",
             cell: (row: any) => (
-                <div className="p-2 text-sm text-gray-600 capitalize">
+                <div className="p-2 text-sm text-muted-foreground capitalize">
                     {row.csm_confidence || 'Not set'}
                 </div>
             )
@@ -246,7 +246,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             <div className="flex justify-between items-center">
                 <div>
 
-                    <p className="text-gray-500 mt-1">
+                    <p className="text-muted-foreground mt-1">
                         {customerId ? 'Customer Health Overview' : 'Portfolio Health & Risk Management'}
                     </p>
                 </div>
@@ -262,43 +262,43 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500">Critical Risk</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Critical Risk</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-red-600">
                             {atRiskCustomers.filter(c => c.risk_level === 'critical').length}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Customers</p>
+                        <p className="text-xs text-muted-foreground mt-1">Customers</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500">High Risk</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">High Risk</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-orange-600">
                             {atRiskCustomers.filter(c => c.risk_level === 'high').length}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Customers</p>
+                        <p className="text-xs text-muted-foreground mt-1">Customers</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500">Upcoming Renewals</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Upcoming Renewals</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">
                             {renewalPipeline.length}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Next 90 days</p>
+                        <p className="text-xs text-muted-foreground mt-1">Next 90 days</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500">At-Risk ARR</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">At-Risk ARR</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">
@@ -307,7 +307,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                                 .reduce((sum, r) => sum + (r.current_arr || 0), 0)
                                 .toLocaleString()}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">High churn risk</p>
+                        <p className="text-xs text-muted-foreground mt-1">High churn risk</p>
                     </CardContent>
                 </Card>
             </div>
@@ -324,7 +324,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     <Card>
                         <CardHeader>
                             <CardTitle>At-Risk Customers</CardTitle>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                                 Customers with high or critical health risk levels requiring immediate attention
                             </p>
                         </CardHeader>
@@ -342,7 +342,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     <Card>
                         <CardHeader>
                             <CardTitle>Renewal Pipeline (Next 90 Days)</CardTitle>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                                 Upcoming renewals with churn risk assessment
                             </p>
                         </CardHeader>
@@ -360,12 +360,12 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     <Card>
                         <CardHeader>
                             <CardTitle>Health Score Trends</CardTitle>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-muted-foreground">
                                 Historical health score trends (Coming Soon)
                             </p>
                         </CardHeader>
                         <CardContent className="h-96 flex items-center justify-center">
-                            <p className="text-gray-400">Chart visualization will be implemented here</p>
+                            <p className="text-muted-foreground/70">Chart visualization will be implemented here</p>
                         </CardContent>
                     </Card>
                 </TabsContent>

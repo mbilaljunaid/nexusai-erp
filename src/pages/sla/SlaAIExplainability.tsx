@@ -154,44 +154,45 @@ export default function SlaAIExplainability() {
                                             </TableRow>
                                         ) : (
                                             recentTraces?.map((trace: any) => (
+                                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => handleViewTrace({ entityId: trace.entityId, entityTable: trace.entityTable })}>
                                                 <TableRow
-                                                    key={trace.id}
-                                                    className="cursor-pointer hover:bg-purple-50/30 transition-colors group"
-                                                    onClick={() => handleViewTrace({ entityId: trace.entityId, entityTable: trace.entityTable })} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                                >
-                                                    <TableCell className="font-mono text-sm font-medium">{trace.entityId}</TableCell>
-                                                    <TableCell><Badge variant="outline" className="text-[10px]">{trace.entityTable}</Badge></TableCell>
-                                                    <TableCell className="text-xs text-muted-foreground">{format(new Date(trace.date), 'h:mm a')}</TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="flex-1 h-1.5 w-16 bg-muted rounded-full overflow-hidden">
-                                                                <div
-                                                                    className={cn(`h-full bg-purple-500 transition-all duration-500 ${trace.confidence > 0.9 ? 'w-[95%]' :
-                                                                        trace.confidence > 0.8 ? 'w-[85%]' :
-                                                                            trace.confidence > 0.6 ? 'w-[70%]' : 'w-[50%]'
-                                                                        }`)}
-                                                                ></div>
-                                                            </div>
-                                                            <span className="text-xs font-bold">{(trace.confidence * 100).toFixed(0)}%</span>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {trace.status === 'SUCCESS' ? (
-                                                            <div className="flex items-center gap-1.5 text-green-600 text-[10px] font-bold">
-                                                                <CheckCircle2 className="h-3 w-3" /> VERIFIED
-                                                            </div>
-                                                        ) : (
-                                                            <div className="flex items-center gap-1.5 text-orange-600 text-[10px] font-bold">
-                                                                <AlertCircle className="h-3 w-3" /> ANOMALY
-                                                            </div>
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell className="text-right">
-                                                        <Button variant="ghost" size="icon" className="group-hover:text-purple-600" aria-label="View">
-                                                            <Eye className="h-4 w-4" />
-                                                        </Button>
-                                                    </TableCell>
-                                                </TableRow>
+                                                                                                    key={trace.id}
+                                                                                                    className="cursor-pointer hover:bg-purple-50/30 transition-colors group"
+                                                                                                >
+                                                                                                    <TableCell className="font-mono text-sm font-medium">{trace.entityId}</TableCell>
+                                                                                                    <TableCell><Badge variant="outline" className="text-[10px]">{trace.entityTable}</Badge></TableCell>
+                                                                                                    <TableCell className="text-xs text-muted-foreground">{format(new Date(trace.date), 'h:mm a')}</TableCell>
+                                                                                                    <TableCell>
+                                                                                                        <div className="flex items-center gap-2">
+                                                                                                            <div className="flex-1 h-1.5 w-16 bg-muted rounded-full overflow-hidden">
+                                                                                                                <div
+                                                                                                                    className={cn(`h-full bg-purple-500 transition-all duration-500 ${trace.confidence > 0.9 ? 'w-[95%]' :
+                                                                                                                        trace.confidence > 0.8 ? 'w-[85%]' :
+                                                                                                                            trace.confidence > 0.6 ? 'w-[70%]' : 'w-[50%]'
+                                                                                                                        }`)}
+                                                                                                                ></div>
+                                                                                                            </div>
+                                                                                                            <span className="text-xs font-bold">{(trace.confidence * 100).toFixed(0)}%</span>
+                                                                                                        </div>
+                                                                                                    </TableCell>
+                                                                                                    <TableCell>
+                                                                                                        {trace.status === 'SUCCESS' ? (
+                                                                                                            <div className="flex items-center gap-1.5 text-green-600 text-[10px] font-bold">
+                                                                                                                <CheckCircle2 className="h-3 w-3" /> VERIFIED
+                                                                                                            </div>
+                                                                                                        ) : (
+                                                                                                            <div className="flex items-center gap-1.5 text-orange-600 text-[10px] font-bold">
+                                                                                                                <AlertCircle className="h-3 w-3" /> ANOMALY
+                                                                                                            </div>
+                                                                                                        )}
+                                                                                                    </TableCell>
+                                                                                                    <TableCell className="text-right">
+                                                                                                        <Button variant="ghost" size="icon" className="group-hover:text-purple-600" aria-label="View">
+                                                                                                            <Eye className="h-4 w-4" />
+                                                                                                        </Button>
+                                                                                                    </TableCell>
+                                                                                                </TableRow>
+                                                </Button>
                                             ))
                                         )}
                                     </TableBody>
@@ -210,7 +211,7 @@ export default function SlaAIExplainability() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 {insights.map((insight: any, idx: number) => (
-                                    <div key={idx} className="bg-white/10 p-3 rounded-lg border border-white/20">
+                                    <div key={idx} className="bg-card/10 p-3 rounded-lg border border-white/20">
                                         <div className="flex justify-between items-start mb-1">
                                             <h4 className="text-xs font-bold uppercase text-purple-200">{insight.title}</h4>
                                             <Badge className={insight.severity === 'HIGH' ? 'bg-red-500' : 'bg-orange-500'}>
@@ -222,7 +223,7 @@ export default function SlaAIExplainability() {
                                             <Button
                                                 size="sm"
                                                 variant="secondary"
-                                                className="h-7 text-[10px] bg-white text-purple-900 dark:text-purple-200 hover:bg-purple-500/10"
+                                                className="h-7 text-[10px] bg-card text-purple-900 dark:text-purple-200 hover:bg-purple-500/10"
                                                 onClick={() => handleApplyInsight(insight)}
                                             >
                                                 {insight.actionLabel}

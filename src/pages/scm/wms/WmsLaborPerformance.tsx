@@ -45,7 +45,7 @@ export default function WmsLaborPerformance() {
 
     const performanceColumns: SpreadsheetColumn<any>[] = [
         { id: "name", header: "Worker Name", width: "150px", cell: (row) => <span className="font-semibold text-white">{row.name}</span> },
-        { id: "tasks", header: "Tasks Completed", width: "150px", cell: (row) => <span className="text-slate-400">{row.tasks}</span> },
+        { id: "tasks", header: "Tasks Completed", width: "150px", cell: (row) => <span className="text-muted-foreground/70">{row.tasks}</span> },
         {
             id: "efficiency", header: "Efficiency %", width: "200px", cell: (row) => (
                 <div className="flex items-center gap-2">
@@ -59,7 +59,7 @@ export default function WmsLaborPerformance() {
                 </div>
             )
         },
-        { id: "errorRate", header: "Error Rate %", width: "150px", cell: (row) => <span className="text-slate-400">{row.errorRate}%</span> },
+        { id: "errorRate", header: "Error Rate %", width: "150px", cell: (row) => <span className="text-muted-foreground/70">{row.errorRate}%</span> },
         {
             id: "tier", header: "Incentive Tier", width: "150px", cell: (row) => (
                 <Badge variant="outline" className={row.efficiency > 100 ? 'border-yellow-500/20 text-yellow-400 bg-yellow-500/5' : 'border-slate-800'}>
@@ -85,7 +85,7 @@ export default function WmsLaborPerformance() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 <Card className="bg-slate-900/50 border-slate-800">
                     <CardContent className="p-6">
-                        <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Active Staff</p>
+                        <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Active Staff</p>
                         <div className="flex items-center justify-between mt-1">
                             <p className="text-3xl font-bold text-white">24</p>
                             <Users className="w-6 h-6 text-blue-400 opacity-50" />
@@ -94,7 +94,7 @@ export default function WmsLaborPerformance() {
                 </Card>
                 <Card className="bg-slate-900/50 border-slate-800">
                     <CardContent className="p-6">
-                        <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Avg Efficiency</p>
+                        <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Avg Efficiency</p>
                         <div className="flex items-center justify-between mt-1">
                             <p className="text-3xl font-bold text-green-400">94.2%</p>
                             <Activity className="w-6 h-6 text-green-400 opacity-50" />
@@ -103,7 +103,7 @@ export default function WmsLaborPerformance() {
                 </Card>
                 <Card className="bg-slate-900/50 border-slate-800">
                     <CardContent className="p-6">
-                        <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Tasks / Hour</p>
+                        <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Tasks / Hour</p>
                         <div className="flex items-center justify-between mt-1">
                             <p className="text-3xl font-bold text-orange-400">18.5</p>
                             <Clock className="w-6 h-6 text-orange-400 opacity-50" />
@@ -112,7 +112,7 @@ export default function WmsLaborPerformance() {
                 </Card>
                 <Card className="bg-slate-900/50 border-slate-800">
                     <CardContent className="p-6">
-                        <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Error Rate</p>
+                        <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Error Rate</p>
                         <div className="flex items-center justify-between mt-1">
                             <p className="text-3xl font-bold text-red-400">0.45%</p>
                             <AlertTriangle className="w-6 h-6 text-red-400 opacity-50" />

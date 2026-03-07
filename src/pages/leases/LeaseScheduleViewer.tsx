@@ -37,7 +37,7 @@ export default function LeaseScheduleViewer() {
                     <CardTitle>Payment Schedule</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="min-h-72 h-full border border-gray-200 rounded-lg">
+                    <div className="min-h-72 h-full border border-border rounded-lg">
                         <InteractiveSpreadsheet
                             columns={scheduleColumns}
                             data={schedule?.payments || []}

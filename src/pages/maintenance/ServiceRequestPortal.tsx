@@ -187,7 +187,7 @@ export function ServiceRequestPortal() {
             case "REJECTED":
                 return { color: "bg-red-100 text-red-800", icon: AlertCircle, label: "Rejected" };
             default:
-                return { color: "bg-gray-100 text-gray-800", icon: FileText, label: "Submitted" };
+                return { color: "bg-muted text-foreground", icon: FileText, label: "Submitted" };
         }
     };
 

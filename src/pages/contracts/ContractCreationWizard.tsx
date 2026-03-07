@@ -98,7 +98,7 @@ export default function ContractCreationWizard() {
                     ].map((s) => (
                         <div key={s.num} className="flex items-center gap-2">
                             <div className={cn(`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
-                ${step >= s.num ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'}`)}>
+                ${step >= s.num ? 'bg-blue-600 text-white' : 'bg-slate-200 text-muted-foreground'}`)}>
                                 {step > s.num ? <CheckCircle className="h-5 w-5" /> : s.num}
                             </div>
                             <span className={cn(`text-sm ${step >= s.num ? 'font-medium' : 'text-muted-foreground'}`)}>

@@ -69,40 +69,40 @@ export default function UsageAnalyticsDashboard() {
         <div className="space-y-6">
             <div>
                 
-                <p className="text-gray-500 mt-1">Product usage, feature adoption, and engagement metrics</p>
+                <p className="text-muted-foreground mt-1">Product usage, feature adoption, and engagement metrics</p>
             </div>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <Users className="h-4 w-4 mr-2" />
                             Daily Active Users
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{formatNumber(stickiness?.dau) || 0}</div>
-                        <p className="text-xs text-gray-500 mt-1">Last 24 hours</p>
+                        <p className="text-xs text-muted-foreground mt-1">Last 24 hours</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <Activity className="h-4 w-4 mr-2" />
                             DAU/MAU Ratio
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{stickiness?.dau_mau_ratio?.toFixed(1) || 0}%</div>
-                        <p className="text-xs text-gray-500 mt-1">Product stickiness</p>
+                        <p className="text-xs text-muted-foreground mt-1">Product stickiness</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <Target className="h-4 w-4 mr-2" />
                             Avg Session Duration
                         </CardTitle>
@@ -111,13 +111,13 @@ export default function UsageAnalyticsDashboard() {
                         <div className="text-3xl font-bold">
                             {sessionMetrics ? Math.floor(sessionMetrics.avg_duration_seconds / 60) : 0}m
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Per session</p>
+                        <p className="text-xs text-muted-foreground mt-1">Per session</p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <TrendingUp className="h-4 w-4 mr-2" />
                             Conversion Rate
                         </CardTitle>
@@ -126,7 +126,7 @@ export default function UsageAnalyticsDashboard() {
                         <div className="text-3xl font-bold">
                             {sessionMetrics?.conversion_rate?.toFixed(1) || 0}%
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Sessions with conversion</p>
+                        <p className="text-xs text-muted-foreground mt-1">Sessions with conversion</p>
                     </CardContent>
                 </Card>
             </div>
@@ -160,7 +160,7 @@ export default function UsageAnalyticsDashboard() {
                             <CardTitle>Cohort Retention Analysis</CardTitle>
                         </CardHeader>
                         <CardContent className="h-96 flex items-center justify-center">
-                            <p className="text-gray-400">Cohort retention matrix will be implemented here</p>
+                            <p className="text-muted-foreground/70">Cohort retention matrix will be implemented here</p>
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -171,7 +171,7 @@ export default function UsageAnalyticsDashboard() {
                             <CardTitle>Conversion Funnels</CardTitle>
                         </CardHeader>
                         <CardContent className="h-96 flex items-center justify-center">
-                            <p className="text-gray-400">Funnel visualization will be implemented here</p>
+                            <p className="text-muted-foreground/70">Funnel visualization will be implemented here</p>
                         </CardContent>
                     </Card>
                 </TabsContent>

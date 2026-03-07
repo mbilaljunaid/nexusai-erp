@@ -162,15 +162,17 @@ export default function PayslipGrossToNet() {
 
                                 {/* Earnings Section */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('earnings')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                        <div className="flex items-center gap-2 font-bold text-teal-700 dark:text-teal-400">
-                                            {expandedSections.earnings ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                            Earnings
-                                        </div>
-                                        <div className="font-bold">{formatCurrency(payslipData.summary.grossPay)}</div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleSection('earnings')}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors">
+                                                                            <div className="flex items-center gap-2 font-bold text-teal-700 dark:text-teal-400">
+                                                                                {expandedSections.earnings ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                                                                Earnings
+                                                                            </div>
+                                                                            <div className="font-bold">{formatCurrency(payslipData.summary.grossPay)}</div>
+                                                                        </div>
+                                    </Button>
                                     {expandedSections.earnings && (
-                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-white dark:bg-zinc-950">
+                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-card dark:bg-zinc-950">
                                             {payslipData.earnings.map(e => <BreakdownRow key={e.id} item={e} />)}
                                         </div>
                                     )}
@@ -178,15 +180,17 @@ export default function PayslipGrossToNet() {
 
                                 {/* Pre-Tax Deductions */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('preTax')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                        <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-500">
-                                            {expandedSections.preTax ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                            Pre-Tax Deductions
-                                        </div>
-                                        <div className="font-bold text-amber-700 dark:text-amber-500">-{formatCurrency(payslipData.summary.preTaxDeductions)}</div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleSection('preTax')}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors">
+                                                                            <div className="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-500">
+                                                                                {expandedSections.preTax ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                                                                Pre-Tax Deductions
+                                                                            </div>
+                                                                            <div className="font-bold text-amber-700 dark:text-amber-500">-{formatCurrency(payslipData.summary.preTaxDeductions)}</div>
+                                                                        </div>
+                                    </Button>
                                     {expandedSections.preTax && (
-                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-white dark:bg-zinc-950">
+                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-card dark:bg-zinc-950">
                                             {payslipData.preTax.map(e => <BreakdownRow key={e.id} item={e} isSubRow />)}
                                         </div>
                                     )}
@@ -194,15 +198,17 @@ export default function PayslipGrossToNet() {
 
                                 {/* Taxes */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('taxes')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                        <div className="flex items-center gap-2 font-bold text-red-700 dark:text-red-500">
-                                            {expandedSections.taxes ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                            Taxes
-                                        </div>
-                                        <div className="font-bold text-red-700 dark:text-red-500">-{formatCurrency(payslipData.summary.taxes)}</div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleSection('taxes')}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors">
+                                                                            <div className="flex items-center gap-2 font-bold text-red-700 dark:text-red-500">
+                                                                                {expandedSections.taxes ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                                                                Taxes
+                                                                            </div>
+                                                                            <div className="font-bold text-red-700 dark:text-red-500">-{formatCurrency(payslipData.summary.taxes)}</div>
+                                                                        </div>
+                                    </Button>
                                     {expandedSections.taxes && (
-                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-white dark:bg-zinc-950">
+                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-card dark:bg-zinc-950">
                                             {payslipData.taxes.map(e => <BreakdownRow key={e.id} item={e} isSubRow />)}
                                         </div>
                                     )}
@@ -210,15 +216,17 @@ export default function PayslipGrossToNet() {
 
                                 {/* Post-Tax Deductions */}
                                 <div className="border-b group">
-                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors" onClick={() => toggleSection('postTax')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                        <div className="flex items-center gap-2 font-bold text-indigo-700 dark:text-indigo-400">
-                                            {expandedSections.postTax ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                            Post-Tax Deductions
-                                        </div>
-                                        <div className="font-bold text-indigo-700 dark:text-indigo-400">-{formatCurrency(payslipData.summary.postTaxDeductions)}</div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleSection('postTax')}>
+                                    <div className="px-6 py-3 flex items-center justify-between cursor-pointer hover:bg-zinc-500/10 dark:hover:bg-zinc-900/50 transition-colors">
+                                                                            <div className="flex items-center gap-2 font-bold text-indigo-700 dark:text-indigo-400">
+                                                                                {expandedSections.postTax ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                                                                Post-Tax Deductions
+                                                                            </div>
+                                                                            <div className="font-bold text-indigo-700 dark:text-indigo-400">-{formatCurrency(payslipData.summary.postTaxDeductions)}</div>
+                                                                        </div>
+                                    </Button>
                                     {expandedSections.postTax && (
-                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-white dark:bg-zinc-950">
+                                        <div className="px-6 pb-4 pt-1 space-y-1 bg-card dark:bg-zinc-950">
                                             {payslipData.postTax.map(e => <BreakdownRow key={e.id} item={e} isSubRow />)}
                                         </div>
                                     )}

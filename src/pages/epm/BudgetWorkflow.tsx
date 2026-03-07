@@ -236,12 +236,12 @@ export default function BudgetWorkflow() {
                                 <div key={item.id} className="flex gap-4 border-b pb-4 last:border-b-0">
                                     <div className={cn(`p-2 rounded-full h-10 w-10 flex items-center justify-center ${item.action === "APPROVE" ? "bg-green-100" :
                                         item.action === "REJECT" ? "bg-red-100" :
-                                            item.action === "SUBMIT" ? "bg-blue-100" : "bg-gray-100"
+                                            item.action === "SUBMIT" ? "bg-blue-100" : "bg-muted"
                                         }`)}>
                                         {item.action === "APPROVE" && <CheckCircle className="h-5 w-5 text-green-600" />}
                                         {item.action === "REJECT" && <XCircle className="h-5 w-5 text-red-600" />}
                                         {item.action === "SUBMIT" && <Send className="h-5 w-5 text-blue-600" />}
-                                        {item.action === "COMMENT" && <MessageSquare className="h-5 w-5 text-gray-600" />}
+                                        {item.action === "COMMENT" && <MessageSquare className="h-5 w-5 text-muted-foreground" />}
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2">

@@ -225,7 +225,7 @@ const badgeColorClasses: Record<string, { bg: string; border: string; text: stri
   pink: { bg: "bg-pink-500/10", border: "border-pink-500/30", text: "text-pink-500" },
   amber: { bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-500" },
   gold: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-500" },
-  silver: { bg: "bg-gray-400/10", border: "border-gray-400/30", text: "text-gray-400" },
+  silver: { bg: "bg-gray-400/10", border: "border-gray-400/30", text: "text-muted-foreground/70" },
   bronze: { bg: "bg-amber-600/10", border: "border-amber-600/30", text: "text-amber-600" },
 };
 
@@ -419,7 +419,7 @@ function LeaderboardWidget() {
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="w-4 h-4 text-yellow-500" />;
-    if (rank === 2) return <Medal className="w-4 h-4 text-gray-400" />;
+    if (rank === 2) return <Medal className="w-4 h-4 text-muted-foreground/70" />;
     if (rank === 3) return <Medal className="w-4 h-4 text-amber-600" />;
     return <span className="w-4 text-center text-xs text-muted-foreground font-medium">{rank}</span>;
   };

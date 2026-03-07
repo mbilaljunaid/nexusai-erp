@@ -15,7 +15,7 @@ interface Dispute { id: string; dispute_number: string; from_entity: string; to_
 interface DEvent { at: string; by: string; action: string; note: string; }
 interface Summary { status: string; reason: string; count: number; total_disputed: number; }
 
-const STATUS_CFG: Record<string, string> = { Open: 'text-amber-600 bg-amber-500/10', Under_Review: 'text-blue-700 bg-blue-500/10', Escalated: 'text-red-600 bg-red-500/10', Resolved: 'text-emerald-600 bg-emerald-500/10', Closed: 'text-gray-500 bg-gray-500/10' };
+const STATUS_CFG: Record<string, string> = { Open: 'text-amber-600 bg-amber-500/10', Under_Review: 'text-blue-700 bg-blue-500/10', Escalated: 'text-red-600 bg-red-500/10', Resolved: 'text-emerald-600 bg-emerald-500/10', Closed: 'text-muted-foreground bg-gray-500/10' };
 const STATUS_CLR: Record<string, string> = { Open: '#d97706', Under_Review: '#1d4ed8', Escalated: '#dc2626', Resolved: '#059669', Closed: '#6b7280' };
 const REASONS = ['AMOUNT_MISMATCH', 'MISSING_INVOICE', 'DUPLICATE', 'CURRENCY_DIFF', 'OTHER'];
 
@@ -54,7 +54,7 @@ export default function ICDisputeWorkbench() {
         { id: "entities", header: "From → To", width: "150px", cell: (row) => <div className="ic-col-entities">{row.from_entity} → {row.to_entity}</div> },
         { id: "reason", header: "Reason", width: "120px", cell: (row) => <div className="ic-col-reason">{row.reason}</div> },
         { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="font-mono">{row.disputed_amount ? `$${formatNumber(Number(row.disputed_amount), 2)}` : '—'}</div> },
-        { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-gray-500 bg-gray-500/10'; return <span className={cn(`ic-stat-badge ${clrClass}`)}>{row.status}</span>; } },
+        { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-muted-foreground bg-gray-500/10'; return <span className={cn(`ic-stat-badge ${clrClass}`)}>{row.status}</span>; } },
         { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div className="ic-col-date">{formatDate(row.opened_at)}</div> },
         { id: "actions", header: "Actions", width: "200px", cell: (row) => <div className="ic-act-btns"><Button variant="default" onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} className="ic-btn-view">{selected?.id === row.id ? 'Unselect' : 'View'}</Button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><Button variant="default" onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} className="ic-btn-review">Review</Button><Button variant="default" onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} className="ic-btn-escalate">Escalate</Button></>}</div> }
     ];
@@ -76,7 +76,7 @@ export default function ICDisputeWorkbench() {
                     </div>
                 ))}
                 {safeSummary.map(s => {
-                    const clrClass = STATUS_CFG[s.status]?.split(' ')[0] ?? 'text-gray-700';
+                    const clrClass = STATUS_CFG[s.status]?.split(' ')[0] ?? 'text-foreground/90';
                     return (
                         <div key={s.status + s.reason} className="ic-kpi-sum">
                             <div className="ic-kpi-sum-label">{s.reason}</div>

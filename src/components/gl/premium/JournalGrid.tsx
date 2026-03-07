@@ -56,45 +56,46 @@ export function JournalGrid({ data, onRowClick, loading }: JournalGridProps) {
                         </TableRow>
                     ) : (
                         data.map((journal) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => onRowClick(journal)}>
                             <TableRow
-                                key={journal.id}
-                                className="cursor-pointer hover:bg-muted/50 transition-colors"
-                                onClick={() => onRowClick(journal)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <TableCell className="font-medium">{journal.journalNumber}</TableCell>
-                                <TableCell>{journal.category}</TableCell>
-                                <TableCell>
-                                    {formatDate(journal.effectiveDate)}
-                                </TableCell>
-                                <TableCell className="max-w-72 truncate">{journal.description}</TableCell>
-                                <TableCell className="text-right font-mono">
-                                    {formatNumber(Number(journal.totalDebit), 2)} {journal.currencyCode}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    <Badge variant={
-                                        journal.status === "Posted" ? "default" :
-                                            journal.status === "Unposted" ? "secondary" : "outline"
-                                    }>
-                                        {journal.status}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell onClick={(e) => e.stopPropagation()}>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <span className="sr-only">Open menu</span>
-                                                <MoreHorizontal className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem onClick={() => onRowClick(journal)}>View Details</DropdownMenuItem>
-                                            <DropdownMenuItem>Reverse</DropdownMenuItem>
-                                            <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
-                            </TableRow>
+                                                            key={journal.id}
+                                                            className="cursor-pointer hover:bg-muted/50 transition-colors"
+                                                        >
+                                                            <TableCell className="font-medium">{journal.journalNumber}</TableCell>
+                                                            <TableCell>{journal.category}</TableCell>
+                                                            <TableCell>
+                                                                {formatDate(journal.effectiveDate)}
+                                                            </TableCell>
+                                                            <TableCell className="max-w-72 truncate">{journal.description}</TableCell>
+                                                            <TableCell className="text-right font-mono">
+                                                                {formatNumber(Number(journal.totalDebit), 2)} {journal.currencyCode}
+                                                            </TableCell>
+                                                            <TableCell className="text-center">
+                                                                <Badge variant={
+                                                                    journal.status === "Posted" ? "default" :
+                                                                        journal.status === "Unposted" ? "secondary" : "outline"
+                                                                }>
+                                                                    {journal.status}
+                                                                </Badge>
+                                                            </TableCell>
+                                                            <TableCell onClick={(e) => e.stopPropagation()}>
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                            <span className="sr-only">Open menu</span>
+                                                                            <MoreHorizontal className="h-4 w-4" />
+                                                                        </Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end">
+                                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                                        <DropdownMenuItem onClick={() => onRowClick(journal)}>View Details</DropdownMenuItem>
+                                                                        <DropdownMenuItem>Reverse</DropdownMenuItem>
+                                                                        <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
+                                                            </TableCell>
+                                                        </TableRow>
+                            </Button>
                         ))
                     )}
                 </TableBody>

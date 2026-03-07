@@ -122,7 +122,7 @@ export default function LeasePortfolioWorkbench() {
                     </Card>
                 </div>
 
-                <div className="flex items-center space-x-2 bg-white p-4 rounded-lg border">
+                <div className="flex items-center space-x-2 bg-card p-4 rounded-lg border">
                     <Search className="h-5 w-5 text-muted-foreground" />
                     <Input
                         placeholder="Search by Lease Number or Vendor..."

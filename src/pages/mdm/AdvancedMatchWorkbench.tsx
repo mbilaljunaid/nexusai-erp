@@ -93,7 +93,7 @@ export default function AdvancedMatchWorkbench() {
             PHONETIC: "bg-purple-100 text-purple-700",
             RULE_BASED: "bg-orange-100 text-orange-700",
         };
-        return colors[type] || "bg-gray-100 text-gray-700";
+        return colors[type] || "bg-muted text-foreground/90";
     };
 
     return (
@@ -148,35 +148,36 @@ export default function AdvancedMatchWorkbench() {
                     </CardHeader>
                     <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
                         {matchCandidates?.map((match: MatchCandidate) => (
-                            <div role="button" tabIndex={0}
-                                key={match.id}
-                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedMatch?.id === match.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
-                                    }`)}
-                                onClick={() => setSelectedMatch(match)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <div className="font-medium">Match #{match.id}</div>
-                                    <div className="flex gap-2">
-                                        <Badge className={getMatchTypeColor(match.matchType)}>{match.matchType}</Badge>
-                                        <Badge variant={match.matchScore >= 95 ? "default" : "secondary"}>
-                                            {match.matchScore}%
-                                        </Badge>
-                                    </div>
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                    Master ID: {match.masterRecordId} ↔ Candidate ID: {match.candidateRecordId}
-                                </div>
-                                <div className="text-sm mt-1">
-                                    Matched fields: {match.matchedFields?.join(", ")}
-                                </div>
-                                {match.conflicts?.length > 0 && (
-                                    <div className="flex items-center gap-1 text-xs text-orange-600 mt-1">
-                                        <AlertCircle className="h-3 w-3" />
-                                        {match.conflicts.length} conflict(s)
-                                    </div>
-                                )}
-                                <Progress value={match.matchScore} className="h-1 mt-2" />
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedMatch(match)}>
+                            <div
+                                                            key={match.id}
+                                                            className={cn(`p-3 rounded-lg cursor-pointer border ${selectedMatch?.id === match.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
+                                                                }`)}
+                                                        >
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <div className="font-medium">Match #{match.id}</div>
+                                                                <div className="flex gap-2">
+                                                                    <Badge className={getMatchTypeColor(match.matchType)}>{match.matchType}</Badge>
+                                                                    <Badge variant={match.matchScore >= 95 ? "default" : "secondary"}>
+                                                                        {match.matchScore}%
+                                                                    </Badge>
+                                                                </div>
+                                                            </div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                Master ID: {match.masterRecordId} ↔ Candidate ID: {match.candidateRecordId}
+                                                            </div>
+                                                            <div className="text-sm mt-1">
+                                                                Matched fields: {match.matchedFields?.join(", ")}
+                                                            </div>
+                                                            {match.conflicts?.length > 0 && (
+                                                                <div className="flex items-center gap-1 text-xs text-orange-600 mt-1">
+                                                                    <AlertCircle className="h-3 w-3" />
+                                                                    {match.conflicts.length} conflict(s)
+                                                                </div>
+                                                            )}
+                                                            <Progress value={match.matchScore} className="h-1 mt-2" />
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>
@@ -211,32 +212,34 @@ export default function AdvancedMatchWorkbench() {
                                                 <div key={i} className="border rounded-lg p-4">
                                                     <div className="font-medium mb-2">{conflict.field}</div>
                                                     <div className="grid grid-cols-2 gap-4">
-                                                        <div role="button" tabIndex={0}
-                                                            className={cn(`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'KEEP_MASTER'
-                                                                ? "border-primary bg-primary/5"
-                                                                : "border-border"
-                                                                }`)}
-                                                            onClick={() => resolveConflict(conflict.field, 'KEEP_MASTER')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                                        >
-                                                            <div className="text-xs text-muted-foreground mb-1">Master Value</div>
-                                                            <div className="font-medium">{conflict.masterValue || '(empty)'}</div>
-                                                            {resolutions[conflict.field] === 'KEEP_MASTER' && (
-                                                                <Check className="h-4 w-4 text-primary mt-2" />
-                                                            )}
-                                                        </div>
-                                                        <div role="button" tabIndex={0}
-                                                            className={cn(`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'USE_CANDIDATE'
-                                                                ? "border-primary bg-primary/5"
-                                                                : "border-border"
-                                                                }`)}
-                                                            onClick={() => resolveConflict(conflict.field, 'USE_CANDIDATE')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                                        >
-                                                            <div className="text-xs text-muted-foreground mb-1">Candidate Value</div>
-                                                            <div className="font-medium">{conflict.candidateValue || '(empty)'}</div>
-                                                            {resolutions[conflict.field] === 'USE_CANDIDATE' && (
-                                                                <Check className="h-4 w-4 text-primary mt-2" />
-                                                            )}
-                                                        </div>
+                                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => resolveConflict(conflict.field, 'KEEP_MASTER')}>
+                                                        <div
+                                                                                                                    className={cn(`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'KEEP_MASTER'
+                                                                                                                        ? "border-primary bg-primary/5"
+                                                                                                                        : "border-border"
+                                                                                                                        }`)}
+                                                                                                                >
+                                                                                                                    <div className="text-xs text-muted-foreground mb-1">Master Value</div>
+                                                                                                                    <div className="font-medium">{conflict.masterValue || '(empty)'}</div>
+                                                                                                                    {resolutions[conflict.field] === 'KEEP_MASTER' && (
+                                                                                                                        <Check className="h-4 w-4 text-primary mt-2" />
+                                                                                                                    )}
+                                                                                                                </div>
+                                                        </Button>
+                                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => resolveConflict(conflict.field, 'USE_CANDIDATE')}>
+                                                        <div
+                                                                                                                    className={cn(`p-3 rounded border-2 cursor-pointer ${resolutions[conflict.field] === 'USE_CANDIDATE'
+                                                                                                                        ? "border-primary bg-primary/5"
+                                                                                                                        : "border-border"
+                                                                                                                        }`)}
+                                                                                                                >
+                                                                                                                    <div className="text-xs text-muted-foreground mb-1">Candidate Value</div>
+                                                                                                                    <div className="font-medium">{conflict.candidateValue || '(empty)'}</div>
+                                                                                                                    {resolutions[conflict.field] === 'USE_CANDIDATE' && (
+                                                                                                                        <Check className="h-4 w-4 text-primary mt-2" />
+                                                                                                                    )}
+                                                                                                                </div>
+                                                        </Button>
                                                     </div>
                                                 </div>
                                             ))}

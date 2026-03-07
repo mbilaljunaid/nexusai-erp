@@ -133,26 +133,28 @@ export default function SourcingWorkbench() {
                         </TableHeader>
                         <TableBody>
                             {rfqs?.map((rfq: any) => (
-                                <TableRow key={rfq.id} className="hover:bg-muted/30 transition-colors group cursor-pointer" onClick={() => setSelectedRFQ(rfq)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <TableCell className="font-mono text-xs font-medium text-primary">{rfq.rfqNumber}</TableCell>
-                                    <TableCell className="text-xs font-semibold">{rfq.title}</TableCell>
-                                    <TableCell>
-                                        <Badge
-                                            variant={rfq.status === 'PUBLISHED' ? 'default' : rfq.status === 'AWARDED' ? 'outline' : 'secondary'}
-                                            className="text-[10px] px-2 py-0 h-5"
-                                        >
-                                            {rfq.status}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-[11px] text-muted-foreground">
-                                        {rfq.closeDate ? formatDate(rfq.closeDate) : 'No Limit'}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <ChevronRight className="w-4 h-4" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRFQ(rfq)}>
+                                <TableRow key={rfq.id} className="hover:bg-muted/30 transition-colors group cursor-pointer">
+                                                                    <TableCell className="font-mono text-xs font-medium text-primary">{rfq.rfqNumber}</TableCell>
+                                                                    <TableCell className="text-xs font-semibold">{rfq.title}</TableCell>
+                                                                    <TableCell>
+                                                                        <Badge
+                                                                            variant={rfq.status === 'PUBLISHED' ? 'default' : rfq.status === 'AWARDED' ? 'outline' : 'secondary'}
+                                                                            className="text-[10px] px-2 py-0 h-5"
+                                                                        >
+                                                                            {rfq.status}
+                                                                        </Badge>
+                                                                    </TableCell>
+                                                                    <TableCell className="text-[11px] text-muted-foreground">
+                                                                        {rfq.closeDate ? formatDate(rfq.closeDate) : 'No Limit'}
+                                                                    </TableCell>
+                                                                    <TableCell className="text-right">
+                                                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                            <ChevronRight className="w-4 h-4" />
+                                                                        </Button>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                </Button>
                             ))}
                         </TableBody>
                     </Table>
@@ -341,7 +343,7 @@ export default function SourcingWorkbench() {
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="bg-white/50 rounded-lg border overflow-hidden">
+                                                    <div className="bg-card/50 rounded-lg border overflow-hidden">
                                                         <Table>
                                                             <TableHeader className="bg-muted/30">
                                                                 <TableRow>

@@ -152,7 +152,7 @@ function ProvisioningStepItem({ icon: Icon, label, isComplete, isActive }: Provi
                         ? "bg-green-100 text-green-600"
                         : isActive
                             ? "bg-primary/10 text-primary"
-                            : "bg-gray-100 text-gray-400"
+                            : "bg-muted text-muted-foreground/70"
                     }`)}
             >
                 {isComplete ? (

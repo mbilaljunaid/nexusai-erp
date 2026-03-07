@@ -38,7 +38,7 @@ export default function Finance() {
             </CardHeader>
             <CardContent className="space-y-4 relative">
               <p className="text-sm text-indigo-100/70">NexusAI GL is running with Oracle-grade Segment Value Security (SVS) and enhanced audit trails enabled.</p>
-              <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-none text-white text-xs" onClick={() => setLocation("/gl/audit")}>
+              <Button variant="secondary" className="bg-card/10 hover:bg-card/20 border-none text-white text-xs" onClick={() => setLocation("/gl/audit")}>
                 View Audit Trail
               </Button>
             </CardContent>
@@ -52,8 +52,8 @@ export default function Finance() {
               <CardTitle className="text-lg">Period Close Status</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 relative">
-              <p className="text-sm text-slate-400">Successfully close fiscal periods with automated diagnostics and exception reporting.</p>
-              <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-none text-white text-xs" onClick={() => setLocation("/gl/period-close")}>
+              <p className="text-sm text-muted-foreground/70">Successfully close fiscal periods with automated diagnostics and exception reporting.</p>
+              <Button variant="secondary" className="bg-card/10 hover:bg-card/20 border-none text-white text-xs" onClick={() => setLocation("/gl/period-close")}>
                 Go to Close Dashboard
               </Button>
             </CardContent>

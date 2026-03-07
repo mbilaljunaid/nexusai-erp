@@ -270,7 +270,7 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <div className="min-h-72 h-full border border-gray-200 rounded-xl">
+                <div className="min-h-72 h-full border border-border rounded-xl">
                   <InteractiveSpreadsheet
                     columns={analyticsColumns}
                     data={dashboardData}

@@ -232,7 +232,7 @@ export default function CrmAnalyticsDashboard() {
                                             {repPerformance.map((rep: any, index: number) => (
                                                 <TableRow key={rep.id}>
                                                     <TableCell>
-                                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 font-bold text-xs">
+                                                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-muted font-bold text-xs">
                                                             {index + 1}
                                                         </div>
                                                     </TableCell>

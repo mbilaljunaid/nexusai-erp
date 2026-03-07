@@ -86,7 +86,7 @@ export default function LearningPlayer() {
 
             {/* Footer / Controls */}
             <div className="h-20 border-t border-slate-800 bg-slate-900 flex items-center justify-between px-8">
-                <div className="text-sm text-slate-400">
+                <div className="text-sm text-muted-foreground/70">
                     Status: <span className="text-white font-medium">{launchData.initialStatus}</span>
                 </div>
 

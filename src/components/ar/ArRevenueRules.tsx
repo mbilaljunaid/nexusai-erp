@@ -108,7 +108,7 @@ export function ArRevenueRules() {
                                 </TableCell>
                                 <TableCell>{rule.duration} Months</TableCell>
                                 <TableCell>
-                                    <Badge className={rule.status === "Active" ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-800"}>
+                                    <Badge className={rule.status === "Active" ? "bg-emerald-100 text-emerald-800" : "bg-muted text-foreground"}>
                                         {rule.status}
                                     </Badge>
                                 </TableCell>

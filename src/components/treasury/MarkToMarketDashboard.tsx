@@ -220,7 +220,7 @@ export function MarkToMarketDashboard() {
             width: "10%",
             cell: (item) => {
                 const colors: Record<string, string> = {
-                    DRAFT: "bg-slate-100 text-slate-700",
+                    DRAFT: "bg-muted text-foreground/90",
                     CONFIRMED: "bg-blue-500/10 text-blue-700",
                     ACTIVE: "bg-emerald-500/10 text-emerald-700",
                     SETTLED: "bg-purple-500/10 text-purple-700",

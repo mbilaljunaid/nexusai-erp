@@ -308,30 +308,33 @@ export default function Settings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
-                <div role="button" tabIndex={0}
-                  className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'light' ? 'border-primary' : 'border-transparent'}`)}
-                  onClick={() => setTheme('light')}
-                  data-testid="button-theme-light" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                >
-                  <div className="h-20 rounded bg-white border mb-2" />
-                  <p className="text-sm font-medium text-center">Light</p>
-                </div>
-                <div role="button" tabIndex={0}
-                  className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'dark' ? 'border-primary' : 'border-transparent'}`)}
-                  onClick={() => setTheme('dark')}
-                  data-testid="button-theme-dark" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                >
-                  <div className="h-20 rounded bg-gray-900 border border-gray-700 mb-2" />
-                  <p className="text-sm font-medium text-center">Dark</p>
-                </div>
-                <div role="button" tabIndex={0}
-                  className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'system' ? 'border-primary' : 'border-transparent'}`)}
-                  onClick={() => setTheme('system')}
-                  data-testid="button-theme-system" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                >
-                  <div className="h-20 rounded bg-gradient-to-r from-white to-gray-900 border mb-2" />
-                  <p className="text-sm font-medium text-center">System</p>
-                </div>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setTheme('light')}>
+                              <div
+                                                className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'light' ? 'border-primary' : 'border-transparent'}`)}
+                                                data-testid="button-theme-light"
+                                              >
+                                                <div className="h-20 rounded bg-card border mb-2" />
+                                                <p className="text-sm font-medium text-center">Light</p>
+                                              </div>
+                              </Button>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setTheme('dark')}>
+                              <div
+                                                className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'dark' ? 'border-primary' : 'border-transparent'}`)}
+                                                data-testid="button-theme-dark"
+                                              >
+                                                <div className="h-20 rounded bg-gray-900 border border-gray-700 mb-2" />
+                                                <p className="text-sm font-medium text-center">Dark</p>
+                                              </div>
+                              </Button>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setTheme('system')}>
+                              <div
+                                                className={cn(`p-4 rounded-md border-2 cursor-pointer hover-elevate ${theme === 'system' ? 'border-primary' : 'border-transparent'}`)}
+                                                data-testid="button-theme-system"
+                                              >
+                                                <div className="h-20 rounded bg-gradient-to-r from-white to-gray-900 border mb-2" />
+                                                <p className="text-sm font-medium text-center">System</p>
+                                              </div>
+                              </Button>
               </div>
             </CardContent>
           </Card>

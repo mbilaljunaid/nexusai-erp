@@ -60,7 +60,7 @@ export function PublicProcessPageTemplate({
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-mono bg-white/20 px-3 py-1 rounded">{processCode}</span>
+                  <span className="text-sm font-mono bg-card/20 px-3 py-1 rounded">{processCode}</span>
                   <span className={cn(`text-sm font-semibold ${criticality === 'CRITICAL' ? 'bg-red-500' : 'bg-orange-500'} px-3 py-1 rounded`)}>
                     {criticality}
                   </span>
@@ -71,19 +71,19 @@ export function PublicProcessPageTemplate({
             </div>
             
             <div className="grid grid-cols-4 gap-4 mt-8">
-              <div className="bg-white/10 backdrop-blur rounded p-3">
+              <div className="bg-card/10 backdrop-blur rounded p-3">
                 <div className="text-blue-200 text-sm">Category</div>
                 <div className="text-white font-semibold">{category}</div>
               </div>
-              <div className="bg-white/10 backdrop-blur rounded p-3">
+              <div className="bg-card/10 backdrop-blur rounded p-3">
                 <div className="text-blue-200 text-sm">Cycle Time</div>
                 <div className="text-white font-semibold">{cycletime}</div>
               </div>
-              <div className="bg-white/10 backdrop-blur rounded p-3">
+              <div className="bg-card/10 backdrop-blur rounded p-3">
                 <div className="text-blue-200 text-sm">GL Accounts</div>
                 <div className="text-white font-semibold">{glAccounts.length}+ Mapped</div>
               </div>
-              <div className="bg-white/10 backdrop-blur rounded p-3">
+              <div className="bg-card/10 backdrop-blur rounded p-3">
                 <div className="text-blue-200 text-sm">Status</div>
                 <div className="text-white font-semibold">Documented</div>
               </div>
@@ -103,7 +103,7 @@ export function PublicProcessPageTemplate({
 
             {/* Process Flow Tab */}
             <TabsContent value="flow" className="space-y-6">
-              <Card className="p-8 bg-white dark:bg-slate-800">
+              <Card className="p-8 bg-card dark:bg-slate-800">
                 <h2 className="text-2xl font-bold mb-6 text-foreground">Process Flow</h2>
                 
                 {/* Flow Diagram */}
@@ -132,7 +132,7 @@ export function PublicProcessPageTemplate({
             <TabsContent value="modules" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {moduleMappings.map((mapping, idx) => (
-                  <Card key={idx} className="p-6 bg-white dark:bg-slate-800">
+                  <Card key={idx} className="p-6 bg-card dark:bg-slate-800">
                     <div className="flex items-center gap-2 mb-3">
                       <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                       <h3 className="font-bold text-lg text-foreground">{mapping.module}</h3>
@@ -153,7 +153,7 @@ export function PublicProcessPageTemplate({
 
             {/* Benefits Tab */}
             <TabsContent value="benefits" className="space-y-6">
-              <Card className="p-8 bg-white dark:bg-slate-800">
+              <Card className="p-8 bg-card dark:bg-slate-800">
                 <h2 className="text-2xl font-bold mb-6 text-foreground">Key Benefits & KPIs</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {keyBenefits.map((benefit, idx) => (
@@ -168,12 +168,12 @@ export function PublicProcessPageTemplate({
 
             {/* GL Integration Tab */}
             <TabsContent value="gl" className="space-y-6">
-              <Card className="p-8 bg-white dark:bg-slate-800">
+              <Card className="p-8 bg-card dark:bg-slate-800">
                 <h2 className="text-2xl font-bold mb-6 text-foreground">GL Account Integration</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {glAccounts.map((account, idx) => (
-                    <div key={idx} className="p-4 bg-slate-100 dark:bg-slate-900 rounded text-center">
-                      <Database className="w-5 h-5 text-slate-600 dark:text-slate-400 mx-auto mb-2" />
+                    <div key={idx} className="p-4 bg-muted dark:bg-slate-900 rounded text-center">
+                      <Database className="w-5 h-5 text-muted-foreground dark:text-muted-foreground/70 mx-auto mb-2" />
                       <div className="font-mono font-bold text-foreground">{account}</div>
                     </div>
                   ))}

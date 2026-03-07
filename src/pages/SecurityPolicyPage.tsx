@@ -180,7 +180,7 @@ export default function SecurityPolicyPage() {
               We appreciate the work of security researchers who help keep NexusAIFirst safe.
               Responsible disclosure reporters will be credited in our security acknowledgments.
             </p>
-            <Button size="lg" className="bg-white text-green-600 hover:bg-slate-500/15" asChild data-testid="button-report-vulnerability">
+            <Button size="lg" className="bg-card text-green-600 hover:bg-slate-500/15" asChild data-testid="button-report-vulnerability">
               <a href="/contact?subject=security">
                 <Mail className="mr-2 w-5 h-5" /> Report a Vulnerability
               </a>

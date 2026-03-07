@@ -170,7 +170,7 @@ export default function AccrualTesting() {
                             <h3 className="font-semibold text-teal-900 dark:text-teal-300 flex items-center gap-2">
                                 <CheckCircle2 className="h-5 w-5 text-teal-600" /> Calculation Results
                             </h3>
-                            <Badge variant="outline" className="border-teal-500 text-teal-700 bg-white dark:bg-zinc-900">Success</Badge>
+                            <Badge variant="outline" className="border-teal-500 text-teal-700 bg-card dark:bg-zinc-900">Success</Badge>
                         </div>
                         <CardContent className="p-0">
 
@@ -203,7 +203,7 @@ export default function AccrualTesting() {
                                             {result?.hoursEarned.toFixed(4)}
                                             <span className="text-xl font-medium text-teal-600/60 ml-2 tracking-normal">hrs</span>
                                         </p>
-                                        <div className="mt-4 inline-flex items-center gap-2 text-xs bg-white dark:bg-zinc-900 px-3 py-1.5 rounded-full border shadow-sm">
+                                        <div className="mt-4 inline-flex items-center gap-2 text-xs bg-card dark:bg-zinc-900 px-3 py-1.5 rounded-full border shadow-sm">
                                             <span className="font-semibold text-muted-foreground">Carryover Math Limit:</span>
                                             <span className="font-mono">{result?.carryoverLimit} hrs</span>
                                         </div>

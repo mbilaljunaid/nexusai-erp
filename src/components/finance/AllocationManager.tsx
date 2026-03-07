@@ -74,12 +74,12 @@ export function AllocationManager() {
                             <Layers className="h-6 w-6 text-indigo-400" />
                             Mass Allocations Manager
                         </CardTitle>
-                        <CardDescription className="text-gray-400 mt-1">
+                        <CardDescription className="text-muted-foreground/70 mt-1">
                             Distribute costs or revenues across cost centers using complex basis rules.
                         </CardDescription>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline" className="border-white/10 bg-white/5">
+                        <Button variant="outline" className="border-white/10 bg-card/5">
                             <History className="w-4 h-4 mr-2" /> History
                         </Button>
                         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
@@ -98,14 +98,14 @@ export function AllocationManager() {
                                             <FormField control={form.control} name="name" render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Rule Name</FormLabel>
-                                                    <FormControl><Input placeholder="e.g. IT Overheads Dist" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                    <FormControl><Input placeholder="e.g. IT Overheads Dist" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )} />
                                             <FormField control={form.control} name="ledgerId" render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Ledger</FormLabel>
-                                                    <FormControl><Input {...field} disabled className="bg-white/5 border-white/10 opacity-50" /></FormControl>
+                                                    <FormControl><Input {...field} disabled className="bg-card/5 border-white/10 opacity-50" /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )} />
@@ -116,7 +116,7 @@ export function AllocationManager() {
                                             <FormField control={form.control} name="poolAccountFilter" render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Pool Filter</FormLabel>
-                                                    <FormControl><Input placeholder="Segment3=5000:5999" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                    <FormControl><Input placeholder="Segment3=5000:5999" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                     <FormDescription>Identify accounts to be cleared/distributed.</FormDescription>
                                                     <FormMessage />
                                                 </FormItem>
@@ -128,7 +128,7 @@ export function AllocationManager() {
                                             <FormField control={form.control} name="basisAccountFilter" render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel>Basis Filter</FormLabel>
-                                                    <FormControl><Input placeholder="Segment3=STAT-1001" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                    <FormControl><Input placeholder="Segment3=STAT-1001" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                     <FormDescription>Statistical or monetary accounts used as allocation ratio.</FormDescription>
                                                     <FormMessage />
                                                 </FormItem>
@@ -141,14 +141,14 @@ export function AllocationManager() {
                                                 <FormField control={form.control} name="targetAccountPattern" render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>Target Account Pattern</FormLabel>
-                                                        <FormControl><Input placeholder="Segment3=7100, Segment2={driver}" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                        <FormControl><Input placeholder="Segment3=7100, Segment2={driver}" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )} />
                                                 <FormField control={form.control} name="offsetAccount" render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>Offset Account (Contra)</FormLabel>
-                                                        <FormControl><Input placeholder="01-000-5999-0000" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                        <FormControl><Input placeholder="01-000-5999-0000" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )} />
@@ -156,7 +156,7 @@ export function AllocationManager() {
                                         </div>
 
                                         <div className="flex justify-end gap-3 pt-4">
-                                            <Button type="button" variant="ghost" className="hover:bg-white/5" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+                                            <Button type="button" variant="ghost" className="hover:bg-card/5" onClick={() => setIsAddOpen(false)}>Cancel</Button>
                                             <Button type="button" className="premium-button bg-indigo-600" onClick={() => toast({ title: "Rule saved (Demo)" })}>
                                                 Create Rule
                                             </Button>
@@ -170,26 +170,26 @@ export function AllocationManager() {
             </CardHeader>
             <CardContent className="p-0">
                 <Table>
-                    <TableHeader className="bg-white/5">
+                    <TableHeader className="bg-card/5">
                         <TableRow className="border-white/5 hover:bg-transparent">
-                            <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-gray-400">Rule Name</TableHead>
+                            <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Rule Name</TableHead>
                             <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-indigo-400">Pool (A)</TableHead>
                             <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-teal-400">Basis (B)</TableHead>
                             <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-orange-400">Target Type</TableHead>
-                            <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-gray-400">Last Run</TableHead>
+                            <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Last Run</TableHead>
                             <TableHead className="py-4 text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
-                            <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-40 text-center text-gray-500">Loading rules...</TableCell></TableRow>
+                            <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-40 text-center text-muted-foreground">Loading rules...</TableCell></TableRow>
                         ) : (
                             allocations.map((rule) => (
-                                <TableRow key={rule.id} className="border-white/5 hover:bg-white/5 group transition-all">
+                                <TableRow key={rule.id} className="border-white/5 hover:bg-card/5 group transition-all">
                                     <TableCell className="py-4 font-semibold text-white">
                                         <div className="flex flex-col">
                                             <span>{rule.name}</span>
-                                            <span className="text-xs text-gray-500 font-normal">{rule.description}</span>
+                                            <span className="text-xs text-muted-foreground font-normal">{rule.description}</span>
                                         </div>
                                     </TableCell>
                                     <TableCell className="py-4">
@@ -199,11 +199,11 @@ export function AllocationManager() {
                                         <code className="text-[10px] bg-teal-500/10 text-teal-400 px-2 py-1 rounded">{rule.basisAccountFilter}</code>
                                     </TableCell>
                                     <TableCell className="py-4">
-                                        <div className="flex items-center gap-1 text-xs text-gray-400">
+                                        <div className="flex items-center gap-1 text-xs text-muted-foreground/70">
                                             <Calculator className="h-3 w-3" /> Step-Down
                                         </div>
                                     </TableCell>
-                                    <TableCell className="py-4 text-gray-400 text-xs italic">Never</TableCell>
+                                    <TableCell className="py-4 text-muted-foreground/70 text-xs italic">Never</TableCell>
                                     <TableCell className="py-4 text-right">
                                         <div className="flex items-center justify-end gap-2">
                                             <Button
@@ -215,7 +215,7 @@ export function AllocationManager() {
                                             >
                                                 <Play className="h-3 w-3 mr-1 fill-emerald-400" /> Run
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-white" aria-label="Settings">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-white" aria-label="Settings">
                                                 <Settings2 className="h-4 w-4" />
                                             </Button>
                                         </div>

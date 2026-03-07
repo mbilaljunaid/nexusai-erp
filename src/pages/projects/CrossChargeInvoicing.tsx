@@ -289,27 +289,28 @@ export default function CrossChargeInvoicing() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {invoices?.map((invoice: CrossChargeInvoice) => (
-                            <div role="button" tabIndex={0}
-                                key={invoice.id}
-                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedInvoice === invoice.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
-                                    }`)}
-                                onClick={() => loadInvoice(invoice)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <div className="font-medium">{invoice.invoiceNumber || "Draft"}</div>
-                                    <StatusBadge status={invoice.approvalStatus} />
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                    Source: {projects?.find((p: any) => p.id === invoice.sourceProjectId)?.projectNumber}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                    Target: {projects?.find((p: any) => p.id === invoice.targetProjectId)?.projectNumber}
-                                </div>
-                                <div className="text-sm font-medium mt-2">${formatNumber(invoice.amount)}</div>
-                                <div className="text-xs text-muted-foreground">
-                                    {invoice.createdDate && formatDate(invoice.createdDate)}
-                                </div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => loadInvoice(invoice)}>
+                            <div
+                                                            key={invoice.id}
+                                                            className={cn(`p-3 rounded-lg cursor-pointer border ${selectedInvoice === invoice.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
+                                                                }`)}
+                                                        >
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <div className="font-medium">{invoice.invoiceNumber || "Draft"}</div>
+                                                                <StatusBadge status={invoice.approvalStatus} />
+                                                            </div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                Source: {projects?.find((p: any) => p.id === invoice.sourceProjectId)?.projectNumber}
+                                                            </div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                Target: {projects?.find((p: any) => p.id === invoice.targetProjectId)?.projectNumber}
+                                                            </div>
+                                                            <div className="text-sm font-medium mt-2">${formatNumber(invoice.amount)}</div>
+                                                            <div className="text-xs text-muted-foreground">
+                                                                {invoice.createdDate && formatDate(invoice.createdDate)}
+                                                            </div>
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>

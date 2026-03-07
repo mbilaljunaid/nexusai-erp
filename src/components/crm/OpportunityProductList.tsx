@@ -210,26 +210,27 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                                             <div className="p-4 text-center text-sm text-muted-foreground">No active products found</div>
                                         ) : (
                                             displayProducts.map((item: any) => (
-                                                <div role="button" tabIndex={0}
-                                                    key={item.id}
-                                                    className="p-2 hover:bg-muted cursor-pointer flex items-center justify-between"
-                                                    onClick={() => handleSelect(item)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                                >
-                                                    <div>
-                                                        <p className="font-medium text-sm">
-                                                            {'productName' in item ? item.productName : item.name}
-                                                        </p>
-                                                        <p className="text-xs text-muted-foreground">
-                                                            {'productCode' in item ? item.productCode : item.productCode}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        {'unitPrice' in item && (
-                                                            <span className="block text-sm font-semibold">${Number(item.unitPrice).toFixed(2)}</span>
-                                                        )}
-                                                        <Badge variant="secondary" className="text-xs">Select</Badge>
-                                                    </div>
-                                                </div>
+                                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => handleSelect(item)}>
+                                                <div
+                                                                                                    key={item.id}
+                                                                                                    className="p-2 hover:bg-muted cursor-pointer flex items-center justify-between"
+                                                                                                >
+                                                                                                    <div>
+                                                                                                        <p className="font-medium text-sm">
+                                                                                                            {'productName' in item ? item.productName : item.name}
+                                                                                                        </p>
+                                                                                                        <p className="text-xs text-muted-foreground">
+                                                                                                            {'productCode' in item ? item.productCode : item.productCode}
+                                                                                                        </p>
+                                                                                                    </div>
+                                                                                                    <div className="text-right">
+                                                                                                        {'unitPrice' in item && (
+                                                                                                            <span className="block text-sm font-semibold">${Number(item.unitPrice).toFixed(2)}</span>
+                                                                                                        )}
+                                                                                                        <Badge variant="secondary" className="text-xs">Select</Badge>
+                                                                                                    </div>
+                                                                                                </div>
+                                                </Button>
                                             ))
                                         )}
                                     </div>

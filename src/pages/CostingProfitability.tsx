@@ -64,7 +64,7 @@ export default function CostingProfitability() {
             <DashboardWidget title="Collections" colSpan={1}>
                 <div className="flex items-center gap-4">
                     <div className="p-2 rounded-full bg-/15">
-                        <TrendingUp className="h-4 w-4 text-slate-600" />
+                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
                         <div className="text-2xl font-bold tracking-tight">{uniqueCollections}</div>

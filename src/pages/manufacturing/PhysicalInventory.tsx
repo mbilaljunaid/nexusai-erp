@@ -51,19 +51,19 @@ export default function PhysicalInventory() {
     const varianceColumns: SpreadsheetColumn<Line>[] = [
         { id: "item", header: "Item", width: "120px", cell: (l) => <span className="font-bold">{l.item_number}</span> },
         { id: "location", header: "Location", width: "120px", cell: (l) => <span className="text-muted-foreground">{l.location ?? '—'}</span> },
-        { id: "lot", header: "Lot", width: "120px", cell: (l) => <span className="font-mono text-[10px] text-gray-400">{l.lot_number ?? '—'}</span> },
+        { id: "lot", header: "Lot", width: "120px", cell: (l) => <span className="font-mono text-[10px] text-muted-foreground/70">{l.lot_number ?? '—'}</span> },
         { id: "bookQty", header: "Book Qty", width: "100px", cell: (l) => <span className="font-mono">{formatNumber(l.book_quantity, 2)}</span> },
-        { id: "countQty", header: "Count Qty", width: "100px", cell: (l) => <span className={cn(`font-mono ${l.count_quantity == null ? 'text-gray-400' : 'text-gray-700'}`)}>{l.count_quantity != null ? formatNumber(l.count_quantity, 2) : '—'}</span> },
+        { id: "countQty", header: "Count Qty", width: "100px", cell: (l) => <span className={cn(`font-mono ${l.count_quantity == null ? 'text-muted-foreground/70' : 'text-foreground/90'}`)}>{l.count_quantity != null ? formatNumber(l.count_quantity, 2) : '—'}</span> },
         {
             id: "variance", header: "Variance", width: "100px", cell: (l) => {
                 const vqty = Number(l.variance_quantity ?? 0);
-                return <span className={cn(`font-mono font-bold ${vqty < 0 ? 'text-red-600' : vqty > 0 ? 'text-green-600' : 'text-gray-400'}`)}>{vqty !== 0 ? (vqty > 0 ? '+' : '') + formatNumber(vqty, 2) : '0'}</span>;
+                return <span className={cn(`font-mono font-bold ${vqty < 0 ? 'text-red-600' : vqty > 0 ? 'text-green-600' : 'text-muted-foreground/70'}`)}>{vqty !== 0 ? (vqty > 0 ? '+' : '') + formatNumber(vqty, 2) : '0'}</span>;
             }
         },
         {
             id: "valueDelta", header: "Value Δ", width: "100px", cell: (l) => {
                 const vval = Number(l.variance_value ?? 0);
-                return <span className={cn(`font-mono text-[10px] ${vval < 0 ? 'text-red-600' : vval > 0 ? 'text-green-600' : 'text-gray-400'}`)}>{vval !== 0 ? (vval > 0 ? '+' : '') + formatCurrency(Math.abs(vval)) : '—'}</span>;
+                return <span className={cn(`font-mono text-[10px] ${vval < 0 ? 'text-red-600' : vval > 0 ? 'text-green-600' : 'text-muted-foreground/70'}`)}>{vval !== 0 ? (vval > 0 ? '+' : '') + formatCurrency(Math.abs(vval)) : '—'}</span>;
             }
         },
         { id: "status", header: "Status", width: "100px", cell: (l) => <div className="px-1"><StatusBadge status={l.count_status} /></div> },
@@ -81,7 +81,7 @@ export default function PhysicalInventory() {
 
                 {/* New cycle form */}
                 {showNewCycle && (
-                    <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3.5 mb-3">
+                    <div className="bg-gray-500/10 border border-border rounded-xl p-3.5 mb-3">
                         <div className="text-xs font-bold mb-2.5">Create Count Cycle</div>
                         <div className="grid grid-cols-3 gap-2 mb-2.5">
                             <div className="flex flex-col gap-0.5">
@@ -120,7 +120,7 @@ export default function PhysicalInventory() {
                 {/* Status filter */}
                 <div className="flex gap-1.5 mb-3">
                     {['', 'Planned', 'Counting', 'Under_Review', 'Approved', 'Posted', 'Cancelled'].map(s => (
-                        <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
+                        <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-border rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>{s || 'All'}</Button>
                     ))}
                 </div>
 
@@ -132,24 +132,26 @@ export default function PhysicalInventory() {
                                 const clr = CYCLE_STATUS_CLR[c.status] ?? '#6b7280';
                                 const pct = c.line_count > 0 ? Math.round(Number(c.counted_lines) / Number(c.line_count) * 100) : 0;
                                 return (
-                                    <div key={c.id} onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)} className="bg-white rounded-xl px-3.5 py-3 cursor-pointer" style={{ border: `1px solid ${selectedCycle?.id === c.id ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}` }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                        <div className="flex justify-between mb-1">
-                                            <div className="font-bold text-[13px]">{c.cycle_name}</div>
-                                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ background: clr + '18', color: clr }}>{c.status}</span>
-                                        </div>
-                                        <div className="text-[10px] text-gray-500 mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {formatDate(c.count_date)} · {c.counted_lines}/{c.line_count} lines</div>
-                                        <div className="bg-gray-100 rounded-full h-1">
-                                            <Progress value={pct} className="h-full" indicatorClassName={pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'} />
-                                        </div>
-                                        {c.status === 'Counting' && (
-                                            <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 text-white rounded text-[10px] flex items-center gap-1">
-                                                <CheckCircle2 className="h-[9px] w-[9px]"  /> Approve
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)}>
+                                    <div key={c.id} className="bg-card rounded-xl px-3.5 py-3 cursor-pointer" style={{ border: `1px solid ${selectedCycle?.id === c.id ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}` }}>
+                                                                            <div className="flex justify-between mb-1">
+                                                                                <div className="font-bold text-[13px]">{c.cycle_name}</div>
+                                                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ background: clr + '18', color: clr }}>{c.status}</span>
+                                                                            </div>
+                                                                            <div className="text-[10px] text-muted-foreground mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {formatDate(c.count_date)} · {c.counted_lines}/{c.line_count} lines</div>
+                                                                            <div className="bg-muted rounded-full h-1">
+                                                                                <Progress value={pct} className="h-full" indicatorClassName={pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'} />
+                                                                            </div>
+                                                                            {c.status === 'Counting' && (
+                                                                                <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 text-white rounded text-[10px] flex items-center gap-1">
+                                                                                    <CheckCircle2 className="h-[9px] w-[9px]"  /> Approve
+                                                                                </Button>
+                                                                            )}
+                                                                        </div>
+                                    </Button>
                                 );
                             })}
-                            {cycles.length === 0 && <div className="text-center text-gray-400 p-8 bg-white rounded-xl">No cycles — create a count cycle to start</div>}
+                            {cycles.length === 0 && <div className="text-center text-muted-foreground/70 p-8 bg-card rounded-xl">No cycles — create a count cycle to start</div>}
                         </div>
                     </div>
 
@@ -161,7 +163,7 @@ export default function PhysicalInventory() {
                                 <div className="flex gap-2">
                                     <div className="text-[11px] bg-red-100 text-red-600 font-bold px-2.5 py-1 rounded-md">Short: {negCount}</div>
                                     <div className="text-[11px] bg-green-100 text-green-700 font-bold px-2.5 py-1 rounded-md">Over: {posCount}</div>
-                                    <div className={cn(`text-[11px] font-bold px-2.5 py-1 rounded-md ${Math.abs(totalVariance) > 0 ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-500'}`)}>
+                                    <div className={cn(`text-[11px] font-bold px-2.5 py-1 rounded-md ${Math.abs(totalVariance) > 0 ? 'bg-amber-100 text-amber-600' : 'bg-muted text-muted-foreground'}`)}>
                                         Net: {totalVariance < 0 ? '-' : '+'}{formatCurrency(Math.abs(totalVariance))}
                                     </div>
                                 </div>
@@ -171,8 +173,8 @@ export default function PhysicalInventory() {
                                 <Input value={countBy} onChange={e => setCountBy(e.target.value)} placeholder="Counted by…" className="px-2 py-1 border border-gray-300 rounded-md text-[11px] w-28" aria-label="Counted by" />
                             </div>
                             {showAddLines && (
-                                <div className="bg-gray-500/10 border border-gray-200 rounded-lg p-2.5 mb-2.5">
-                                    <div className="text-[10px] text-gray-500 mb-1">CSV format: ItemNumber, Location, BookQty, UnitCost (one per line)</div>
+                                <div className="bg-gray-500/10 border border-border rounded-lg p-2.5 mb-2.5">
+                                    <div className="text-[10px] text-muted-foreground mb-1">CSV format: ItemNumber, Location, BookQty, UnitCost (one per line)</div>
                                     <Textarea rows={4} value={linesText} onChange={e => setLinesText(e.target.value)} className="font-mono text-[10px] box-border" aria-label="CSV lines" />
                                     <Button variant="default" size="sm" onClick={() => addLinesMut.mutate({ cycleId: selectedCycle.id, lines: parseLines() })} disabled={!linesText.trim()} className="mt-1.5 text-white text-[11px] disabled:opacity-50">Add Lines</Button>
                                 </div>

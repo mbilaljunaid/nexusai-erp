@@ -151,7 +151,7 @@ export default function ComplianceGovernance() {
       width: "250px",
       cell: (r: any) => (
         <div className="flex flex-col p-2">
-          <span className="font-medium text-slate-900 dark:text-slate-200">{r.name}</span>
+          <span className="font-medium text-foreground dark:text-slate-200">{r.name}</span>
           <span className="text-xs text-muted-foreground font-mono">{r.id.substring(0, 8)}</span>
         </div>
       )
@@ -178,7 +178,7 @@ export default function ComplianceGovernance() {
       id: "category",
       header: "Category",
       width: "150px",
-      cell: (r: any) => <div className="p-2"><span className="text-xs font-semibold text-slate-500">{r.category}</span></div>
+      cell: (r: any) => <div className="p-2"><span className="text-xs font-semibold text-muted-foreground">{r.category}</span></div>
     },
     {
       id: "status",
@@ -213,7 +213,7 @@ export default function ComplianceGovernance() {
       width: "300px",
       cell: (v: any) => (
         <div className="flex flex-col p-2">
-          <span className="font-medium text-slate-900 dark:text-slate-200">{v.ruleName}</span>
+          <span className="font-medium text-foreground dark:text-slate-200">{v.ruleName}</span>
           <span className="text-xs text-muted-foreground truncate max-w-72">{v.description}</span>
         </div>
       )
@@ -236,7 +236,7 @@ export default function ComplianceGovernance() {
       width: "150px",
       cell: (v: any) => (
         <div className="flex items-center gap-2 p-2">
-          <span className="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded">{v.entityType}</span>
+          <span className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded">{v.entityType}</span>
           <span className="text-sm font-medium">{v.entityId}</span>
         </div>
       )
@@ -260,7 +260,7 @@ export default function ComplianceGovernance() {
           <Badge
             className={
               v.status === 'resolved' ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-500/15' :
-                v.status === 'dismissed' ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-500/15' :
+                v.status === 'dismissed' ? 'bg-muted text-foreground/90 border-border hover:bg-slate-500/15' :
                   'bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-500/15'
             }
           >
@@ -285,7 +285,7 @@ export default function ComplianceGovernance() {
             Remediate
           </Button>
           <Link href={`/hr/persons/${v.entityId}`}>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-slate-900 dark:text-slate-200">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground dark:text-slate-200">
               <ExternalLink className="h-4 w-4" />
             </Button>
           </Link>
@@ -339,9 +339,9 @@ export default function ComplianceGovernance() {
       )}
 
       <Tabs defaultValue="rules" className="w-full">
-        <TabsList className="grid w-[600px] grid-cols-3 mb-4 bg-slate-100 p-1 rounded-lg">
-          <TabsTrigger value="rules" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Governance Rules</TabsTrigger>
-          <TabsTrigger value="violations" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+        <TabsList className="grid w-[600px] grid-cols-3 mb-4 bg-muted p-1 rounded-lg">
+          <TabsTrigger value="rules" className="data-[state=active]:bg-card data-[state=active]:shadow-sm">Governance Rules</TabsTrigger>
+          <TabsTrigger value="violations" className="data-[state=active]:bg-card data-[state=active]:shadow-sm">
             Active Violations
             {violations.filter(v => v.status === 'open').length > 0 && (
               <Badge variant="destructive" className="ml-2 h-5 w-5 p-0 flex items-center justify-center rounded-full text-[10px]">
@@ -349,23 +349,23 @@ export default function ComplianceGovernance() {
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="readiness" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Regulatory Readiness</TabsTrigger>
-          <TabsTrigger value="risk-config" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Risk Configuration</TabsTrigger>
+          <TabsTrigger value="readiness" className="data-[state=active]:bg-card data-[state=active]:shadow-sm">Regulatory Readiness</TabsTrigger>
+          <TabsTrigger value="risk-config" className="data-[state=active]:bg-card data-[state=active]:shadow-sm">Risk Configuration</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rules">
           <Card className="overflow-hidden">
             <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <Gavel className="h-5 w-5 text-slate-500" />
-                <h3 className="font-bold text-slate-700 italic">Governance Policy Registry</h3>
+                <Gavel className="h-5 w-5 text-muted-foreground" />
+                <h3 className="font-bold text-foreground/90 italic">Governance Policy Registry</h3>
               </div>
               <div className="flex gap-2">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search rules..."
-                    className="pl-9 h-9 w-64 bg-white border-slate-200"
+                    className="pl-9 h-9 w-64 bg-card border-border"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -432,7 +432,7 @@ export default function ComplianceGovernance() {
                       </div>
 
                       <div className="space-y-4">
-                        <Label className="text-sm font-extrabold text-slate-900 dark:text-slate-200 italic">Rule Configuration</Label>
+                        <Label className="text-sm font-extrabold text-foreground dark:text-slate-200 italic">Rule Configuration</Label>
                         <RuleBuilder
                           legislationCode={newRule.legislationCode}
                           onSave={(logic) => {
@@ -442,7 +442,7 @@ export default function ComplianceGovernance() {
                         />
                       </div>
                     </div>
-                    <SheetFooter className="border-t pt-6 bg-slate-50/50 -mx-6 px-6 -mb-6 pb-6">
+                    <SheetFooter className="border-t pt-6 bg-muted/50/50 -mx-6 px-6 -mb-6 pb-6">
                       <Button
                         className="w-full h-12 text-lg font-bold bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-lg ring-offset-2 ring-indigo-500 focus:ring-2"
                         onClick={() => createMutation.mutate(newRule)}
@@ -468,7 +468,7 @@ export default function ComplianceGovernance() {
             <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-orange-500" />
-                <h3 className="font-bold text-slate-700 italic">Active Violations & Remediation Queue</h3>
+                <h3 className="font-bold text-foreground/90 italic">Active Violations & Remediation Queue</h3>
               </div>
             </div>
             <InteractiveSpreadsheet
@@ -490,12 +490,12 @@ export default function ComplianceGovernance() {
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-6">
               <Sliders className="h-5 w-5 text-indigo-500" />
-              <h3 className="font-bold text-slate-700 italic">Heuristic Risk Weights</h3>
+              <h3 className="font-bold text-foreground/90 italic">Heuristic Risk Weights</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h4 className="font-semibold text-sm text-slate-500 uppercase">Tenure & Stability</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground uppercase">Tenure & Stability</h4>
                 <div className="p-4 border rounded-lg bg-slate-500/10 space-y-4">
                   <div className="flex justify-between items-center">
                     <Label>High Frequency Job Hopping</Label>
@@ -506,7 +506,7 @@ export default function ComplianceGovernance() {
               </div>
 
               <div className="space-y-4">
-                <h4 className="font-semibold text-sm text-slate-500 uppercase">Role & Access</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground uppercase">Role & Access</h4>
                 <div className="p-4 border rounded-lg bg-slate-500/10 space-y-4">
                   <div className="flex justify-between items-center">
                     <Label>Sensitive Role Keywords</Label>
@@ -517,7 +517,7 @@ export default function ComplianceGovernance() {
               </div>
 
               <div className="space-y-4">
-                <h4 className="font-semibold text-sm text-slate-500 uppercase">Transaction Timing</h4>
+                <h4 className="font-semibold text-sm text-muted-foreground uppercase">Transaction Timing</h4>
                 <div className="p-4 border rounded-lg bg-slate-500/10 space-y-4">
                   <div className="flex justify-between items-center">
                     <Label>Off-Hours Activity</Label>

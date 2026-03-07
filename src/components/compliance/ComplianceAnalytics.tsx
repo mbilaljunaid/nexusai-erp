@@ -122,7 +122,7 @@ export function ComplianceAnalytics({ data }: ComplianceAnalyticsProps) {
                             {pieData.map((d, i) => (
                                 <div key={i} className="flex items-center gap-2">
                                     <div className={cn(`h-3 w-3 rounded-full ${d.bgClass}`)} />
-                                    <span className="text-xs font-medium text-slate-700">{d.name}</span>
+                                    <span className="text-xs font-medium text-foreground/90">{d.name}</span>
                                     <span className="text-xs text-muted-foreground ml-auto">{d.value}</span>
                                 </div>
                             ))}

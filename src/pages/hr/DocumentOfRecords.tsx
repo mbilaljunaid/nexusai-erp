@@ -86,7 +86,7 @@ export default function DocumentOfRecords() {
             <div className="max-w-6xl mx-auto space-y-6 pb-12">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 rounded-lg">
                             <FileText className="h-6 w-6" />
@@ -203,7 +203,7 @@ export default function DocumentOfRecords() {
                                                     <div>
                                                         <Label className="text-xs text-muted-foreground">Notification Lead Time</Label>
                                                         <Select defaultValue="30">
-                                                            <SelectTrigger className="h-8 text-xs bg-white dark:bg-zinc-950 mt-1"><SelectValue /></SelectTrigger>
+                                                            <SelectTrigger className="h-8 text-xs bg-card dark:bg-zinc-950 mt-1"><SelectValue /></SelectTrigger>
                                                             <SelectContent>
                                                                 <SelectItem value="15">15 Days Before</SelectItem>
                                                                 <SelectItem value="30">30 Days Before</SelectItem>

@@ -181,8 +181,8 @@ export default function RevenueAccountingSetup() {
             title="Revenue Policy Center"
             description="Configure ASC 606 identification, allocation, and recognition rules."
             actions={
-                <div className="bg-white p-1 rounded-lg border shadow-sm flex items-center gap-2 pr-2">
-                    <span className="text-xs font-bold text-slate-500 px-2 uppercase">Ledger context</span>
+                <div className="bg-card p-1 rounded-lg border shadow-sm flex items-center gap-2 pr-2">
+                    <span className="text-xs font-bold text-muted-foreground px-2 uppercase">Ledger context</span>
                     <div className="w-48 flex flex-col justify-center">
                         <EnterpriseContextSwitcher
                             type="ledger"
@@ -194,7 +194,7 @@ export default function RevenueAccountingSetup() {
             }
         >
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="bg-white border p-1 shadow-sm h-12">
+                <TabsList className="bg-card border p-1 shadow-sm h-12">
                     <TabsTrigger value="accounts" className="gap-2 h-10 px-6">
                         <BookOpen className="h-4 w-4" /> GL Mapping
                     </TabsTrigger>
@@ -209,9 +209,9 @@ export default function RevenueAccountingSetup() {
                 {/* 1. GL MAPPINGS TAB */}
                 <TabsContent value="accounts" className="space-y-6">
                     <Card className="max-w-3xl border-none shadow-sm overflow-hidden">
-                        <CardHeader className="bg-white border-b">
+                        <CardHeader className="bg-card border-b">
                             <CardTitle className="text-lg flex items-center gap-2">
-                                <Settings className="h-5 w-5 text-slate-400" />
+                                <Settings className="h-5 w-5 text-muted-foreground/70" />
                                 Subledger Settings (SLA)
                             </CardTitle>
                             <CardDescription>
@@ -227,11 +227,11 @@ export default function RevenueAccountingSetup() {
                                             name="revenueAccountCCID"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-3">
-                                                    <FormLabel className="text-slate-600">Revenue Account (Credit)</FormLabel>
+                                                    <FormLabel className="text-muted-foreground">Revenue Account (Credit)</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="e.g. 4000-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                        <Input placeholder="e.g. 4000-00-000" className="border-border focus:ring-indigo-500" {...field} />
                                                     </FormControl>
-                                                    <p className="text-[10px] text-slate-400 italic mt-1">Used for realized revenue recognized in period.</p>
+                                                    <p className="text-[10px] text-muted-foreground/70 italic mt-1">Used for realized revenue recognized in period.</p>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -241,11 +241,11 @@ export default function RevenueAccountingSetup() {
                                             name="deferredRevenueAccountCCID"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-3">
-                                                    <FormLabel className="text-slate-600">Deferred Revenue (Liability)</FormLabel>
+                                                    <FormLabel className="text-muted-foreground">Deferred Revenue (Liability)</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="e.g. 2100-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                        <Input placeholder="e.g. 2100-00-000" className="border-border focus:ring-indigo-500" {...field} />
                                                     </FormControl>
-                                                    <p className="text-[10px] text-slate-400 italic mt-1">Holds unearned revenue balances.</p>
+                                                    <p className="text-[10px] text-muted-foreground/70 italic mt-1">Holds unearned revenue balances.</p>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -255,11 +255,11 @@ export default function RevenueAccountingSetup() {
                                             name="contractAssetAccountCCID"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-3">
-                                                    <FormLabel className="text-slate-600">Contract Asset (Unbilled)</FormLabel>
+                                                    <FormLabel className="text-muted-foreground">Contract Asset (Unbilled)</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="e.g. 1200-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                        <Input placeholder="e.g. 1200-00-000" className="border-border focus:ring-indigo-500" {...field} />
                                                     </FormControl>
-                                                    <p className="text-[10px] text-slate-400 italic mt-1">Balances recognized but not yet invoiced.</p>
+                                                    <p className="text-[10px] text-muted-foreground/70 italic mt-1">Balances recognized but not yet invoiced.</p>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -269,11 +269,11 @@ export default function RevenueAccountingSetup() {
                                             name="clearingAccountCCID"
                                             render={({ field }) => (
                                                 <FormItem className="space-y-3">
-                                                    <FormLabel className="text-slate-600">Clearing Account</FormLabel>
+                                                    <FormLabel className="text-muted-foreground">Clearing Account</FormLabel>
                                                     <FormControl>
-                                                        <Input placeholder="e.g. 1900-00-000" className="border-slate-200 focus:ring-indigo-500" {...field} />
+                                                        <Input placeholder="e.g. 1900-00-000" className="border-border focus:ring-indigo-500" {...field} />
                                                     </FormControl>
-                                                    <p className="text-[10px] text-slate-400 italic mt-1">Temporary account for inter-module reconciliation.</p>
+                                                    <p className="text-[10px] text-muted-foreground/70 italic mt-1">Temporary account for inter-module reconciliation.</p>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -302,7 +302,7 @@ export default function RevenueAccountingSetup() {
                 <TabsContent value="pob" className="space-y-6">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h2 className="text-xl font-semibold text-slate-800">POB Satisfaction Rules</h2>
+                            <h2 className="text-xl font-semibold text-foreground">POB Satisfaction Rules</h2>
                             <p className="text-sm text-muted-foreground">Define how different products and services recognize revenue.</p>
                         </div>
                         <Button className="bg-slate-900 border-none">
@@ -316,12 +316,12 @@ export default function RevenueAccountingSetup() {
                                 data={pobRules}
                                 columns={[
                                     { id: "priority", header: "Priority", width: "100px", cell: (info: any) => <div className="px-2 h-full flex items-center justify-center w-full"><Badge variant="secondary">{info.priority}</Badge></div> },
-                                    { id: "name", header: "Rule Name", width: "250px", cell: (info: any) => <div className="px-2 h-full flex items-center font-semibold text-slate-800">{info.name}</div> },
+                                    { id: "name", header: "Rule Name", width: "250px", cell: (info: any) => <div className="px-2 h-full flex items-center font-semibold text-foreground">{info.name}</div> },
                                     {
                                         id: "attributeValue", header: "Condition", width: "300px", cell: (info: any) => (
                                             <div className="px-2 h-full flex items-center gap-1 text-xs">
-                                                <span className="text-slate-400 font-mono italic">{info.attributeName}</span>
-                                                <span className="px-1 bg-slate-100 border text-slate-600">EQUALS</span>
+                                                <span className="text-muted-foreground/70 font-mono italic">{info.attributeName}</span>
+                                                <span className="px-1 bg-muted border text-muted-foreground">EQUALS</span>
                                                 <span className="px-2 py-0.5 bg-indigo-500/10 text-indigo-700 font-bold rounded">"{info.attributeValue}"</span>
                                             </div>
                                         )
@@ -338,7 +338,7 @@ export default function RevenueAccountingSetup() {
                                     {
                                         id: "actions", header: "Actions", width: "100px", cell: () => (
                                             <div className="px-2 h-full flex items-center justify-end w-full">
-                                                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-red-600">
+                                                <Button variant="ghost" size="sm" className="text-muted-foreground/70 hover:text-red-600">
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
                                             </div>
@@ -357,7 +357,7 @@ export default function RevenueAccountingSetup() {
                 <TabsContent value="id" className="space-y-6">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h2 className="text-xl font-semibold text-slate-800">Contract Identification Rules</h2>
+                            <h2 className="text-xl font-semibold text-foreground">Contract Identification Rules</h2>
                             <p className="text-sm text-muted-foreground">Configure logic for grouping multiple source events into single ASC 606 contracts.</p>
                         </div>
                         <Button className="bg-slate-900 border-none">
@@ -380,11 +380,11 @@ export default function RevenueAccountingSetup() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="p-4 bg-slate-500/10 rounded-lg flex flex-wrap gap-4 items-center">
-                                        <span className="text-xs font-bold text-slate-500 uppercase">Group orders by:</span>
+                                        <span className="text-xs font-bold text-muted-foreground uppercase">Group orders by:</span>
                                         {rule.groupingCriteria.map((crit: string) => (
-                                            <div key={crit} className="flex items-center gap-2 bg-white px-3 py-1.5 border rounded-md shadow-sm">
+                                            <div key={crit} className="flex items-center gap-2 bg-card px-3 py-1.5 border rounded-md shadow-sm">
                                                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                                <span className="text-sm font-medium text-slate-700">{crit}</span>
+                                                <span className="text-sm font-medium text-foreground/90">{crit}</span>
                                             </div>
                                         ))}
                                     </div>

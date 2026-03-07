@@ -157,32 +157,34 @@ export default function YardManagement() {
                         {appts.map(a => {
                             const cfg = STATUS_CFG[a.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={a.id} onClick={() => setSelected(selected?.id === a.id ? null : a)} style={{ background: '#fff', border: `1px solid ${selected?.id === a.id ? '#1d4ed8' : '#e5e7eb'}`, borderRadius: 10, padding: '10px 12px', cursor: 'pointer' }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <div className="flex justify-between mb-[3px]">
-                                        <span className="text-[12px] font-bold font-mono">Dock {a.dock_number}</span>
-                                        <span className="py-[2px] px-[6px] rounded-1 text-[9px] font-bold" style={{background: cfg.bg, color: cfg.color}}>{a.status}</span>
-                                    </div>
-                                    <div className="text-[11px] text-foreground flex items-center gap-1 mb-[2px]"><Truck className="h-2.5 w-2.5" /> {a.carrier_scac} · {a.direction}</div>
-                                    <div className="text-[10px] text-muted-foreground"><Clock className="h-2.5 w-2.5" style={{ display: 'inline' }} /> {fmtTime(a.scheduled_start)} – {fmtTime(a.scheduled_end)}</div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelected(selected?.id === a.id ? null : a)}>
+                                <div key={a.id} style={{ background: '#fff', border: `1px solid ${selected?.id === a.id ? '#1d4ed8' : '#e5e7eb'}`, borderRadius: 10, padding: '10px 12px', cursor: 'pointer' }}>
+                                                                    <div className="flex justify-between mb-[3px]">
+                                                                        <span className="text-[12px] font-bold font-mono">Dock {a.dock_number}</span>
+                                                                        <span className="py-[2px] px-[6px] rounded-1 text-[9px] font-bold" style={{background: cfg.bg, color: cfg.color}}>{a.status}</span>
+                                                                    </div>
+                                                                    <div className="text-[11px] text-foreground flex items-center gap-1 mb-[2px]"><Truck className="h-2.5 w-2.5" /> {a.carrier_scac} · {a.direction}</div>
+                                                                    <div className="text-[10px] text-muted-foreground"><Clock className="h-2.5 w-2.5" style={{ display: 'inline' }} /> {fmtTime(a.scheduled_start)} – {fmtTime(a.scheduled_end)}</div>
 
-                                    {selected?.id === a.id && (
-                                        <div className="flex gap-[6px] mt-2" style={{flexWrap: 'wrap'}}>
-                                            {a.status === 'Scheduled' && <>
-                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'checkin' }); }} >Check In</Button>
-                                                <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'noshow' }); }} >No Show</Button>
-                                            </>}
-                                            {a.status === 'CheckedIn' && <>
-                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'activity', body: { activity: 'Unloading' } }); }} >Unloading</Button>
-                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'activity', body: { activity: 'Loading' } }); }} >Loading</Button>
-                                            </>}
-                                            {(a.status === 'Loading' || a.status === 'Unloading') && (
-                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'depart' }); }} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                                    <CheckCircle2 className="h-[11px] w-[11px]" /> Depart
-                                                </Button>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
+                                                                    {selected?.id === a.id && (
+                                                                        <div className="flex gap-[6px] mt-2" style={{flexWrap: 'wrap'}}>
+                                                                            {a.status === 'Scheduled' && <>
+                                                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'checkin' }); }} >Check In</Button>
+                                                                                <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'noshow' }); }} >No Show</Button>
+                                                                            </>}
+                                                                            {a.status === 'CheckedIn' && <>
+                                                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'activity', body: { activity: 'Unloading' } }); }} >Unloading</Button>
+                                                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'activity', body: { activity: 'Loading' } }); }} >Loading</Button>
+                                                                            </>}
+                                                                            {(a.status === 'Loading' || a.status === 'Unloading') && (
+                                                                                <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'depart' }); }} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                                                                    <CheckCircle2 className="h-[11px] w-[11px]" /> Depart
+                                                                                </Button>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                </Button>
                             );
                         })}
                         {appts.length === 0 && <div className="text-center text-muted-foreground p-6">No appointments for this date</div>}

@@ -145,7 +145,7 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+            <div className="p-6 rounded-2xl bg-card/5 border border-white/10 backdrop-blur-sm">
               <div className="flex gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Star key={s} className="w-5 h-5 text-yellow-400 fill-current" />
@@ -214,7 +214,7 @@ export default function LoginPage() {
                                 <Input
                                   type="email"
                                   placeholder="name@company.com"
-                                  className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
+                                  className="pl-10 h-11 bg-card/5 border-white/10 focus:border-primary/50 transition-all"
                                   {...field}
                                 />
                               </div>
@@ -236,7 +236,7 @@ export default function LoginPage() {
                                 <Input
                                   type={showPassword ?"text" :"password"}
                                   placeholder="••••••••"
-                                  className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
+                                  className="pl-10 h-11 bg-card/5 border-white/10 focus:border-primary/50 transition-all"
                                   {...field}
                                 />
                                 <Button variant="default"
@@ -263,7 +263,7 @@ export default function LoginPage() {
                             <FormControl>
                               <Checkbox
                                 id="rememberMe"
-                                className="rounded bg-white/10 border-white/20"
+                                className="rounded bg-card/10 border-white/20"
                                 aria-label="Remember me"
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
@@ -298,7 +298,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={handleQuickAdminLogin}
                   variant="outline"
-                  className="w-full border-white/10 hover:bg-white/5"
+                  className="w-full border-white/10 hover:bg-card/5"
                 >
                   Quick Admin Demo
                 </Button>

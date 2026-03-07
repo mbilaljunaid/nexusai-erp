@@ -178,30 +178,31 @@ export default function AssessmentBuilder() {
                         </Card>
                     ) : (
                         assessments.map((assessment: Assessment) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedAssessmentId(assessment.id)}>
                             <Card
-                                key={assessment.id}
-                                className={cn(`cursor-pointer transition-all ${selectedAssessmentId === assessment.id
-                                        ? "border-primary ring-2 ring-primary"
-                                        : "hover:border-primary/50"
-                                    }`)}
-                                onClick={() => setSelectedAssessmentId(assessment.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader>
-                                    <CardTitle className="text-lg">{assessment.title}</CardTitle>
-                                    {assessment.courseTitle && (
-                                        <CardDescription>Course: {assessment.courseTitle}</CardDescription>
-                                    )}
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex flex-wrap gap-2">
-                                        <Badge variant="outline">{assessment.questionCount} questions</Badge>
-                                        <Badge variant="secondary">{assessment.passingScore}% pass</Badge>
-                                        {assessment.timeLimit && (
-                                            <Badge variant="outline">{assessment.timeLimit}min</Badge>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                            key={assessment.id}
+                                                            className={cn(`cursor-pointer transition-all ${selectedAssessmentId === assessment.id
+                                                                    ? "border-primary ring-2 ring-primary"
+                                                                    : "hover:border-primary/50"
+                                                                }`)}
+                                                        >
+                                                            <CardHeader>
+                                                                <CardTitle className="text-lg">{assessment.title}</CardTitle>
+                                                                {assessment.courseTitle && (
+                                                                    <CardDescription>Course: {assessment.courseTitle}</CardDescription>
+                                                                )}
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    <Badge variant="outline">{assessment.questionCount} questions</Badge>
+                                                                    <Badge variant="secondary">{assessment.passingScore}% pass</Badge>
+                                                                    {assessment.timeLimit && (
+                                                                        <Badge variant="outline">{assessment.timeLimit}min</Badge>
+                                                                    )}
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ))
                     )}
                 </div>

@@ -77,7 +77,7 @@ export function ArReceiptList() {
                     <Card key={receipt.id} className="group hover:border-emerald-500/50 transition-all duration-300 shadow-sm hover:shadow-md overflow-hidden bg-gradient-to-br from-white to-emerald-50/30">
                         <CardContent className="p-5">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-2 bg-white rounded-lg shadow-sm border border-emerald-100 group-hover:border-emerald-200 transition-colors">
+                                <div className="p-2 bg-card rounded-lg shadow-sm border border-emerald-100 group-hover:border-emerald-200 transition-colors">
                                     {getPaymentIcon(receipt.paymentMethod || "")}
                                 </div>
                                 <div className="flex gap-2">
@@ -114,7 +114,7 @@ export function ArReceiptList() {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-6 text-[10px] px-2 bg-white hover:bg-amber-500/15 text-amber-600"
+                                            className="h-6 text-[10px] px-2 bg-card hover:bg-amber-500/15 text-amber-600"
                                             onClick={() => {
                                                 setSelectedReceipt(receipt);
                                                 setApplicationDialogOpen(true);
@@ -131,7 +131,7 @@ export function ArReceiptList() {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-6 text-[10px] px-2 bg-white hover:bg-red-500/15 text-red-600"
+                                            className="h-6 text-[10px] px-2 bg-card hover:bg-red-500/15 text-red-600"
                                             disabled={unapplyMutation.isPending}
                                             onClick={() => unapplyMutation.mutate(receipt.id)}
                                         >

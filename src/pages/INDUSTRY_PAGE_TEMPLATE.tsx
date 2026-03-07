@@ -63,7 +63,7 @@ export default function IndustryPage({
         <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">{description}</p>
         <div className="flex gap-4 justify-center">
           <Button size="lg" className="bg-blue-600 hover:bg-blue-700">Explore Now</Button>
-          <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">Learn More</Button>
+          <Button size="lg" variant="outline" className="text-white border-white hover:bg-card/10">Learn More</Button>
         </div>
       </section>
 
@@ -131,7 +131,7 @@ export default function IndustryPage({
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white/10 border-white/20 text-white placeholder:text-blue-200"
+              className="w-full bg-card/10 border-white/20 text-white placeholder:text-blue-200"
               data-testid="input-demo-email"
             />
             <Input
@@ -139,12 +139,12 @@ export default function IndustryPage({
               placeholder="Your Company"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="w-full bg-white/10 border-white/20 text-white placeholder:text-blue-200"
+              className="w-full bg-card/10 border-white/20 text-white placeholder:text-blue-200"
               data-testid="input-demo-company"
             />
             <Button
               onClick={handleDemoRequest}
-              className="w-full bg-white text-blue-600 hover:bg-blue-500/10 font-bold"
+              className="w-full bg-card text-blue-600 hover:bg-blue-500/10 font-bold"
               data-testid="button-demo-request"
             >
               {demoRequested ? "Demo Request Sent!" : "Click Here to See Demo"} <ArrowRight className="ml-2 w-4 h-4" />

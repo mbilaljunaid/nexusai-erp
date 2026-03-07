@@ -42,28 +42,29 @@ export default function LearningCommunities() {
 
         return (
             <StandardPage title="Learning Communities">
-                <div role="button" tabIndex={0}
-                    className={cn(`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${selected ? "bg-primary text-primary-foreground" : "hover:bg-accent"
-                        }`)}
-                    style={{ paddingLeft: `${depth * 1.5 + 0.75}rem` }}
-                    onClick={() => setSelectedCommunityId(community.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                >
-                    {community.children && community.children.length > 0 && (
-                        <ChevronRight className="w-4 h-4" />
-                    )}
-                    <FolderTree className="w-4 h-4" />
-                    <span className="flex-1 font-medium">{community.name}</span>
-                    <div className="flex items-center gap-3 text-sm">
-                        <div className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {community.memberCount}
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <BookOpen className="w-3 h-3" />
-                            {community.courseCount}
-                        </div>
-                    </div>
-                </div>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCommunityId(community.id)}>
+                <div
+                                    className={cn(`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors ${selected ? "bg-primary text-primary-foreground" : "hover:bg-accent"
+                                        }`)}
+                                    style={{ paddingLeft: `${depth * 1.5 + 0.75}rem` }}
+                                >
+                                    {community.children && community.children.length > 0 && (
+                                        <ChevronRight className="w-4 h-4" />
+                                    )}
+                                    <FolderTree className="w-4 h-4" />
+                                    <span className="flex-1 font-medium">{community.name}</span>
+                                    <div className="flex items-center gap-3 text-sm">
+                                        <div className="flex items-center gap-1">
+                                            <Users className="w-3 h-3" />
+                                            {community.memberCount}
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <BookOpen className="w-3 h-3" />
+                                            {community.courseCount}
+                                        </div>
+                                    </div>
+                                </div>
+                </Button>
                 {community.children && community.children.map((child) => renderCommunity(child, depth + 1))}
             </StandardPage>
         );

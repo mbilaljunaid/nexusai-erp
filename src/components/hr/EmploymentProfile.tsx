@@ -256,7 +256,7 @@ function ManagerChain({ managerId }: { managerId?: string | null }) {
             <CardContent>
                 <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center">
-                        <User className="h-6 w-6 text-slate-500" />
+                        <User className="h-6 w-6 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="font-medium text-lg">{manager?.lastName}, {manager?.firstName}</p>

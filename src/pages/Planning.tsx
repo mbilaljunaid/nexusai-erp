@@ -178,7 +178,7 @@ export default function Planning() {
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <p data-testid="text-no-forecasts" className="text-center text-gray-500">No forecasts yet</p>
+                <p data-testid="text-no-forecasts" className="text-center text-muted-foreground">No forecasts yet</p>
               )}
             </CardContent>
           </Card>
@@ -241,7 +241,7 @@ export default function Planning() {
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <p data-testid="text-no-budgets" className="text-center text-gray-500">No budgets yet</p>
+                <p data-testid="text-no-budgets" className="text-center text-muted-foreground">No budgets yet</p>
               )}
             </CardContent>
           </Card>
@@ -259,11 +259,11 @@ export default function Planning() {
                 scenarios.map((scenario: any) => (
                   <div key={scenario.id} className="p-4 border rounded-lg" data-testid={`scenario-card-${scenario.id}`}>
                     <h3 className="font-semibold" data-testid={`text-scenario-${scenario.id}`}>{scenario.name}</h3>
-                    <p className="text-sm text-gray-600">{scenario.description}</p>
+                    <p className="text-sm text-muted-foreground">{scenario.description}</p>
                   </div>
                 ))
               ) : (
-                <p data-testid="text-no-scenarios" className="text-gray-500">No scenarios created yet</p>
+                <p data-testid="text-no-scenarios" className="text-muted-foreground">No scenarios created yet</p>
               )}
             </div>
           </CardContent>

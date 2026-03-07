@@ -108,7 +108,7 @@ export function TreasuryWorkbench() {
             width: "10%",
             cell: (item) => {
                 const colors: Record<string, string> = {
-                    DRAFT: "bg-slate-100 text-slate-600",
+                    DRAFT: "bg-muted text-muted-foreground",
                     CONFIRMED: "bg-blue-100 text-blue-600",
                     ACTIVE: "bg-emerald-100 text-emerald-600",
                     MATURED: "bg-purple-100 text-purple-600"

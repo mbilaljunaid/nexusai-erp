@@ -105,7 +105,7 @@ export default function RetroEventGroupSetup() {
             <div className="max-w-6xl mx-auto pb-12 space-y-6">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 rounded-lg">
                             <Zap className="h-6 w-6" />

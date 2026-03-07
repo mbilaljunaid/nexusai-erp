@@ -62,7 +62,7 @@ export default function SalesDistribution() {
             <DashboardWidget title="Fulfillment %" colSpan={1}>
                 <div className="flex items-center gap-4">
                     <div className="p-2 rounded-full bg-/15">
-                        <BarChart3 className="h-4 w-4 text-slate-600" />
+                        <BarChart3 className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
                         <div className="text-2xl font-bold tracking-tight">{fulfillmentPercent.toFixed(0)}%</div>

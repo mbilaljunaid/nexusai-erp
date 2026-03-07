@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 interface EquipmentStatus {
     id: string;
@@ -172,9 +173,9 @@ export function EquipmentTelemetry({ projectId }: EquipmentTelemetryProps) {
             case "maintenance":
                 return { color: "bg-orange-100 text-orange-800 border-orange-200", icon: Settings, label: "Maintenance" };
             case "offline":
-                return { color: "bg-gray-100 text-gray-800 border-gray-200", icon: XCircle, label: "Offline" };
+                return { color: "bg-muted text-foreground border-border", icon: XCircle, label: "Offline" };
             default:
-                return { color: "bg-gray-100 text-gray-800 border-gray-200", icon: Activity, label: "Unknown" };
+                return { color: "bg-muted text-foreground border-border", icon: Activity, label: "Unknown" };
         }
     };
 
@@ -187,7 +188,7 @@ export function EquipmentTelemetry({ projectId }: EquipmentTelemetryProps) {
             case "info":
                 return "text-blue-600";
             default:
-                return "text-gray-600";
+                return "text-muted-foreground";
         }
     };
 
@@ -349,115 +350,116 @@ function EquipmentCard({ equipment, isSelected, onClick }: EquipmentCardProps) {
         active: { color: "bg-green-100 text-green-800 border-green-200", icon: CheckCircle2 },
         idle: { color: "bg-yellow-100 text-yellow-800 border-yellow-200", icon: Clock },
         maintenance: { color: "bg-orange-100 text-orange-800 border-orange-200", icon: Settings },
-        offline: { color: "bg-gray-100 text-gray-800 border-gray-200", icon: XCircle }
+        offline: { color: "bg-muted text-foreground border-border", icon: XCircle }
     }[equipment.status];
 
     const StatusIcon = statusConfig.icon;
 
     return (
+        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={onClick}>
         <Card
-            className={cn(
-                "hover:shadow-lg transition-all cursor-pointer",
-                isSelected && "ring-2 ring-blue-500"
-            )}
-            onClick={onClick} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-        >
-            <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                    <div>
-                        <CardTitle className="text-base font-semibold">{equipment.equipmentNumber}</CardTitle>
-                        <div className="text-sm text-muted-foreground">{equipment.type} • {equipment.model}</div>
-                    </div>
-                    <Badge variant="outline" className={statusConfig.color}>
-                        <StatusIcon className="h-3 w-3 mr-1" />
-                        {equipment.status.toUpperCase()}
-                    </Badge>
-                </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-                {/* Location & Operator */}
-                <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span>{equipment.location}</span>
-                </div>
-                {equipment.operator && (
-                    <div className="flex items-center gap-2 text-sm">
-                        <Activity className="h-4 w-4 text-muted-foreground" />
-                        <span>{equipment.operator}</span>
-                    </div>
-                )}
-
-                {/* Metrics */}
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                        <div className="text-muted-foreground text-xs mb-1">Hours Today</div>
-                        <div className="font-mono font-semibold">{equipment.hoursToday.toFixed(1)}h</div>
-                    </div>
-                    <div>
-                        <div className="text-muted-foreground text-xs mb-1">Utilization</div>
-                        <div className="font-mono font-semibold">{equipment.utilization}%</div>
-                    </div>
-                </div>
-
-                {/* Fuel Level */}
-                <div>
-                    <div className="flex justify-between text-xs mb-1">
-                        <span className="text-muted-foreground flex items-center gap-1">
-                            <Fuel className="h-3 w-3" />
-                            Fuel Level
-                        </span>
-                        <span className="font-semibold">{equipment.fuelLevel}%</span>
-                    </div>
-                    <Progress
-                        value={equipment.fuelLevel}
-                        className={cn(
-                            "h-2",
-                            equipment.fuelLevel < 30 ? "bg-red-200" :
-                                equipment.fuelLevel < 50 ? "bg-yellow-200" :
-                                    "bg-green-200"
+                    className={cn(
+                        "hover:shadow-lg transition-all cursor-pointer",
+                        isSelected && "ring-2 ring-blue-500"
+                    )}
+                >
+                    <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <CardTitle className="text-base font-semibold">{equipment.equipmentNumber}</CardTitle>
+                                <div className="text-sm text-muted-foreground">{equipment.type} • {equipment.model}</div>
+                            </div>
+                            <Badge variant="outline" className={statusConfig.color}>
+                                <StatusIcon className="h-3 w-3 mr-1" />
+                                {equipment.status.toUpperCase()}
+                            </Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        {/* Location & Operator */}
+                        <div className="flex items-center gap-2 text-sm">
+                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                            <span>{equipment.location}</span>
+                        </div>
+                        {equipment.operator && (
+                            <div className="flex items-center gap-2 text-sm">
+                                <Activity className="h-4 w-4 text-muted-foreground" />
+                                <span>{equipment.operator}</span>
+                            </div>
                         )}
-                    />
-                </div>
 
-                {/* Alerts */}
-                {equipment.alerts.length > 0 && (
-                    <div className="pt-2 border-t space-y-1">
-                        {equipment.alerts.map(alert => {
-                            const AlertIcon = {
-                                critical: XCircle,
-                                warning: AlertTriangle,
-                                info: Activity
-                            }[alert.severity];
-                            const alertColor = {
-                                critical: "text-red-600",
-                                warning: "text-orange-600",
-                                info: "text-blue-600"
-                            }[alert.severity];
+                        {/* Metrics */}
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                                <div className="text-muted-foreground text-xs mb-1">Hours Today</div>
+                                <div className="font-mono font-semibold">{equipment.hoursToday.toFixed(1)}h</div>
+                            </div>
+                            <div>
+                                <div className="text-muted-foreground text-xs mb-1">Utilization</div>
+                                <div className="font-mono font-semibold">{equipment.utilization}%</div>
+                            </div>
+                        </div>
 
-                            return (
-                                <div key={alert.id} className={cn("flex items-start gap-2 text-xs", alertColor)}>
-                                    <AlertIcon className="h-3 w-3 mt-0.5" />
-                                    <span>{alert.message}</span>
+                        {/* Fuel Level */}
+                        <div>
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-muted-foreground flex items-center gap-1">
+                                    <Fuel className="h-3 w-3" />
+                                    Fuel Level
+                                </span>
+                                <span className="font-semibold">{equipment.fuelLevel}%</span>
+                            </div>
+                            <Progress
+                                value={equipment.fuelLevel}
+                                className={cn(
+                                    "h-2",
+                                    equipment.fuelLevel < 30 ? "bg-red-200" :
+                                        equipment.fuelLevel < 50 ? "bg-yellow-200" :
+                                            "bg-green-200"
+                                )}
+                            />
+                        </div>
+
+                        {/* Alerts */}
+                        {equipment.alerts.length > 0 && (
+                            <div className="pt-2 border-t space-y-1">
+                                {equipment.alerts.map(alert => {
+                                    const AlertIcon = {
+                                        critical: XCircle,
+                                        warning: AlertTriangle,
+                                        info: Activity
+                                    }[alert.severity];
+                                    const alertColor = {
+                                        critical: "text-red-600",
+                                        warning: "text-orange-600",
+                                        info: "text-blue-600"
+                                    }[alert.severity];
+
+                                    return (
+                                        <div key={alert.id} className={cn("flex items-start gap-2 text-xs", alertColor)}>
+                                            <AlertIcon className="h-3 w-3 mt-0.5" />
+                                            <span>{alert.message}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {/* Expanded Details */}
+                        {isSelected && (
+                            <div className="pt-3 border-t space-y-2 text-xs">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Last Maintenance:</span>
+                                    <span className="font-medium">{format(new Date(equipment.lastMaintenance), "MMM d, yyyy")}</span>
                                 </div>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {/* Expanded Details */}
-                {isSelected && (
-                    <div className="pt-3 border-t space-y-2 text-xs">
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Last Maintenance:</span>
-                            <span className="font-medium">{format(new Date(equipment.lastMaintenance), "MMM d, yyyy")}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Next Due:</span>
-                            <span className="font-medium">{format(new Date(equipment.nextMaintenanceDue), "MMM d, yyyy")}</span>
-                        </div>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Next Due:</span>
+                                    <span className="font-medium">{format(new Date(equipment.nextMaintenanceDue), "MMM d, yyyy")}</span>
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+        </Button>
     );
 }

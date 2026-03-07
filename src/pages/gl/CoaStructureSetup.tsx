@@ -139,7 +139,7 @@ function SegmentManager({ structureId, structureName }: { structureId: string, s
                     Save Segments
                 </Button>
             </div>
-            <div className="flex-1 border rounded-b-md overflow-hidden bg-white">
+            <div className="flex-1 border rounded-b-md overflow-hidden bg-card">
                 <InteractiveSpreadsheet
                     data={segments}
                     columns={columns}

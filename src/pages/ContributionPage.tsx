@@ -164,7 +164,7 @@ export default function ContributionPage() {
   const badgeColumns: SpreadsheetColumn<any>[] = [
     { id: "badge", header: "Badge", width: "200px", cell: (row) => <div><div className="font-bold">{row.name}</div><div className="text-sm text-muted-foreground">{row.description}</div></div> },
     { id: "bronze", header: <span className="text-orange-400">Bronze</span>, width: "100px", cell: (row) => <div className="text-center">{row.bronze}</div> },
-    { id: "silver", header: <span className="text-slate-400">Silver</span>, width: "100px", cell: (row) => <div className="text-center">{row.silver}</div> },
+    { id: "silver", header: <span className="text-muted-foreground/70">Silver</span>, width: "100px", cell: (row) => <div className="text-center">{row.silver}</div> },
     { id: "gold", header: <span className="text-yellow-400">Gold</span>, width: "100px", cell: (row) => <div className="text-center">{row.gold}</div> },
     { id: "platinum", header: <span className="text-purple-400">Platinum</span>, width: "100px", cell: (row) => <div className="text-center">{row.platinum}</div> },
     { id: "legendary", header: <span className="text-cyan-400">Legendary</span>, width: "100px", cell: (row) => <div className="text-center">{row.legendary}</div> },
@@ -251,9 +251,9 @@ export default function ContributionPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {benefits.map((benefit, index) => (
-                <Card key={index} className="p-8 bg-white/10 backdrop-blur border-white/20" data-testid={`card-benefit-${benefit.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}`}>
+                <Card key={index} className="p-8 bg-card/10 backdrop-blur border-white/20" data-testid={`card-benefit-${benefit.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-card/20 flex items-center justify-center shrink-0">
                       <benefit.icon className={cn(`w-6 h-6 ${benefit.color}`)} />
                     </div>
                     <div>
@@ -261,7 +261,7 @@ export default function ContributionPage() {
                       <p className="text-white/80 mb-4">{benefit.description}</p>
                       <div className="flex flex-wrap gap-2">
                         {benefit.highlights.map((highlight, i) => (
-                          <Badge key={i} className="bg-white/20 text-white border-0">
+                          <Badge key={i} className="bg-card/20 text-white border-0">
                             {highlight}
                           </Badge>
                         ))}
@@ -459,7 +459,7 @@ export default function ContributionPage() {
                   </Button>
                 </Link>
                 <Link to="/marketplace/services">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-browse-marketplace">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-card/10" data-testid="button-browse-marketplace">
                     <DollarSign className="mr-2 w-5 h-5" /> Service Marketplace
                   </Button>
                 </Link>

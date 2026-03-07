@@ -190,7 +190,7 @@ export default function BudgetControlRules() {
                                     <div className="text-sm font-semibold">Affected Accounts:</div>
                                     <div className="flex flex-wrap gap-2">
                                         {simResult.affectedAccounts.map(acc => (
-                                            <Badge key={acc} variant="outline" className="bg-slate-100 text-slate-700">{acc}</Badge>
+                                            <Badge key={acc} variant="outline" className="bg-muted text-foreground/90">{acc}</Badge>
                                         ))}
                                     </div>
                                 </div>

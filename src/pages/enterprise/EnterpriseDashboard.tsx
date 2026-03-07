@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Building, Building2, BookOpen, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function EnterpriseDashboard() {
     const [, setLocation] = useLocation();
@@ -66,27 +67,28 @@ export default function EnterpriseDashboard() {
                     <h3 className="text-lg font-semibold mb-4">Enterprise Architecture Elements</h3>
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         {navigationCards.map((card) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation(card.href)}>
                             <Card
-                                key={card.href}
-                                className="cursor-pointer hover:shadow-md transition-shadow"
-                                onClick={() => setLocation(card.href)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <div className="flex items-center gap-3">
-                                        <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
-                                        <CardTitle className="text-base">{card.title}</CardTitle>
-                                    </div>
-                                    <span className="text-2xl font-bold text-muted-foreground">{card.count}</span>
-                                </CardHeader>
-                                <CardContent>
-                                    <CardDescription>{card.description}</CardDescription>
-                                </CardContent>
-                            </Card>
+                                                            key={card.href}
+                                                            className="cursor-pointer hover:shadow-md transition-shadow"
+                                                        >
+                                                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                                                <div className="flex items-center gap-3">
+                                                                    <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
+                                                                    <CardTitle className="text-base">{card.title}</CardTitle>
+                                                                </div>
+                                                                <span className="text-2xl font-bold text-muted-foreground">{card.count}</span>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <CardDescription>{card.description}</CardDescription>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ))}
                     </div>
                 </div>
 
-                <Card className="bg-slate-500/10 border-slate-200">
+                <Card className="bg-slate-500/10 border-border">
                     <CardHeader>
                         <CardTitle>Enterprise Architecture Overview</CardTitle>
                         <CardDescription>Core structural components and their scoping boundaries</CardDescription>

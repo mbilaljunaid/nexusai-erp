@@ -21,12 +21,12 @@ const STATUS_STYLES: Record<string, { bg: string, text: string, borderLeft: stri
     Active: { bg: 'bg-emerald-100', text: 'text-emerald-600', borderLeft: 'border-l-emerald-600' },
     Exhausted: { bg: 'bg-red-100', text: 'text-red-600', borderLeft: 'border-l-red-600' },
     Suspended: { bg: 'bg-amber-100', text: 'text-amber-600', borderLeft: 'border-l-amber-600' },
-    Closed: { bg: 'bg-gray-100', text: 'text-gray-500', borderLeft: 'border-l-gray-500' },
+    Closed: { bg: 'bg-muted', text: 'text-muted-foreground', borderLeft: 'border-l-gray-500' },
     Open: { bg: 'bg-blue-100', text: 'text-blue-700', borderLeft: 'border-l-blue-700' },
     PartiallyInvoiced: { bg: 'bg-amber-100', text: 'text-amber-600', borderLeft: 'border-l-amber-600' },
     FullyInvoiced: { bg: 'bg-emerald-100', text: 'text-emerald-600', borderLeft: 'border-l-emerald-600' }
 };
-const DEFAULT_STYLE = { bg: 'bg-gray-100', text: 'text-gray-500', borderLeft: 'border-l-gray-500' };
+const DEFAULT_STYLE = { bg: 'bg-muted', text: 'text-muted-foreground', borderLeft: 'border-l-gray-500' };
 
 export default function FundingLimits() {
     const [tab, setTab] = useState<'funding' | 'commitments'>('funding');
@@ -48,7 +48,7 @@ export default function FundingLimits() {
 
     const commitColumns: SpreadsheetColumn<Commitment>[] = [
         { id: "type", header: "Type", width: "120px", cell: (c) => <span className="font-bold text-[10px] font-mono">{c.commitment_type}</span> },
-        { id: "reference", header: "Reference", width: "150px", cell: (c) => <span className="text-gray-500">{c.reference_number ?? '—'}</span> },
+        { id: "reference", header: "Reference", width: "150px", cell: (c) => <span className="text-muted-foreground">{c.reference_number ?? '—'}</span> },
         { id: "vendor", header: "Vendor", width: "150px", cell: (c) => <span>{c.vendor_id ?? '—'}</span> },
         { id: "committed", header: "Committed", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.committed_amount)}</span> },
         { id: "invoiced", header: "Invoiced", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.invoiced_amount)}</span> },
@@ -66,7 +66,7 @@ export default function FundingLimits() {
         <StandardPage title="Funding Limits &amp; Commitment Tracking">
             <div className="mb-4">
 
-                <p className="text-[13px] text-gray-500 mt-1 mb-0">Funding source limits · PO &amp; subcontract commitments · Spending controls</p>
+                <p className="text-[13px] text-muted-foreground mt-1 mb-0">Funding source limits · PO &amp; subcontract commitments · Spending controls</p>
             </div>
 
             {/* Project selector */}
@@ -82,7 +82,7 @@ export default function FundingLimits() {
                         <div className="flex gap-1">
                             {/* eslint-disable-next-line react/forbid-dom-props */}
                             {(['funding', 'commitments'] as const).map(t => (
-                                <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer capitalize ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</Button>
+                                <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-border rounded-lg text-xs font-semibold cursor-pointer capitalize ${tab === t ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</Button>
                             ))}
                         </div>
                         <Button variant="default" size="sm" onClick={() => tab === 'funding' ? setShowNewFL(true) : setShowNewCommit(true)} className="ml-auto text-white text-xs">+ Add</Button>
@@ -129,28 +129,28 @@ export default function FundingLimits() {
                                     const pct = Math.min(100, Number(fl.utilization_pct));
                                     const s = STATUS_STYLES[fl.status] || DEFAULT_STYLE;
                                     return (
-                                        <Card key={fl.id} className={cn(`p-3 px-4 border border-x border-y border-l-[4px] shadow-sm ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-gray-200'} ${s.borderLeft}`)}>
+                                        <Card key={fl.id} className={cn(`p-3 px-4 border border-x border-y border-l-[4px] shadow-sm ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-border'} ${s.borderLeft}`)}>
                                             <div className="flex justify-between mb-1.5">
-                                                <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-gray-500 text-xs font-normal">(Limit: {fmt(fl.limit_amount)})</span></div>
+                                                <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-muted-foreground text-xs font-normal">(Limit: {fmt(fl.limit_amount)})</span></div>
                                                 <span className={cn(`text-[10px] py-0.5 px-1.5 rounded-sm font-bold ${s.bg} ${s.text}`)}>{fl.status}</span>
                                             </div>
-                                            <div className="flex gap-4 text-[11px] text-gray-500 mb-1.5">
+                                            <div className="flex gap-4 text-[11px] text-muted-foreground mb-1.5">
                                                 <span>Utilized: <strong>{fmt(fl.utilized_amount)}</strong></span>
                                                 <span>Available: <strong className="text-emerald-600">{fmt(fl.available)}</strong></span>
                                                 <span>Alert at: {fl.alert_threshold_pct}%</span>
                                                 {fl.restrict_charges && <span className="text-amber-600 font-semibold">⚑ Charges blocked at 100%</span>}
                                             </div>
-                                            <div className="bg-gray-100 rounded-full h-2">
+                                            <div className="bg-muted rounded-full h-2">
                                                 <style>{`
                                                     .fl-progress-${fl.id} { width: ${pct}%; }
                                                 `}</style>
                                                 <div className={cn(`h-full rounded-full transition-all duration-300 fl-progress-${fl.id} ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`)} />
                                             </div>
-                                            <div className="text-[10px] text-gray-500 mt-0.5">{pct.toFixed(1)}% utilized</div>
+                                            <div className="text-[10px] text-muted-foreground mt-0.5">{pct.toFixed(1)}% utilized</div>
                                         </Card>
                                     );
                                 })}
-                                {fundingLimits.length === 0 && <div className="text-center text-gray-400 p-6">No funding limits defined</div>}
+                                {fundingLimits.length === 0 && <div className="text-center text-muted-foreground/70 p-6">No funding limits defined</div>}
                             </div>
                         </>
                     )}
@@ -163,7 +163,7 @@ export default function FundingLimits() {
                                 <div className="flex gap-2 mb-2.5">
                                     {commitSummary.map(s => (
                                         <Card key={s.commitment_type} className="py-2.5 px-4 flex-1 shadow-sm">
-                                            <div className="text-[11px] text-gray-500 mb-0.5">{s.commitment_type}</div>
+                                            <div className="text-[11px] text-muted-foreground mb-0.5">{s.commitment_type}</div>
                                             <div className="text-[15px] font-extrabold font-mono">{fmt(s.total_committed)}</div>
                                             <div className="text-[10px] text-emerald-600">Remaining: {fmt(s.total_remaining)}</div>
                                         </Card>

@@ -102,7 +102,7 @@ export default function CompetitorIntelligence() {
             case "TIER1": return "bg-red-100 text-red-800 border-red-200";
             case "TIER2": return "bg-amber-100 text-amber-800 border-amber-200";
             case "TIER3": return "bg-blue-100 text-blue-800 border-blue-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
+            default: return "bg-muted text-foreground border-border";
         }
     };
 
@@ -183,57 +183,58 @@ export default function CompetitorIntelligence() {
                     <TabsContent value="competitors" className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {competitors.map((competitor) => (
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCompetitor(competitor)}>
                                 <Card
-                                    key={competitor.id}
-                                    className="cursor-pointer hover:shadow-lg transition-shadow"
-                                    onClick={() => setSelectedCompetitor(competitor)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <CardHeader>
-                                        <div className="flex items-start justify-between">
-                                            <CardTitle className="text-lg">{competitor.name}</CardTitle>
-                                            <Badge className={getTierColor(competitor.tier)}>
-                                                {competitor.tier}
-                                            </Badge>
-                                        </div>
-                                        <CardDescription className="text-xs mt-2">
-                                            {competitor.positioning}
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-3">
-                                        <div className="space-y-2">
-                                            <div className="text-xs font-semibold text-green-700 flex items-center gap-1">
-                                                <CheckCircle className="h-3 w-3" />
-                                                Strengths
-                                            </div>
-                                            <ul className="text-xs space-y-1">
-                                                {competitor.strengths.slice(0, 2).map((s, i) => (
-                                                    <li key={i} className="text-muted-foreground">• {s}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="text-xs font-semibold text-red-700 flex items-center gap-1">
-                                                <AlertCircle className="h-3 w-3" />
-                                                Weaknesses
-                                            </div>
-                                            <ul className="text-xs space-y-1">
-                                                {competitor.weaknesses.slice(0, 2).map((w, i) => (
-                                                    <li key={i} className="text-muted-foreground">• {w}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div className="pt-2 border-t flex justify-between text-xs">
-                                            <div>
-                                                <div className="text-muted-foreground">Avg Deal</div>
-                                                <div className="font-bold">${formatNumber(competitor.avgDealSize / 1000, 0)}K</div>
-                                            </div>
-                                            <div>
-                                                <div className="text-muted-foreground">Market Share</div>
-                                                <div className="font-bold">{competitor.marketShare}%</div>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                                                    key={competitor.id}
+                                                                    className="cursor-pointer hover:shadow-lg transition-shadow"
+                                                                >
+                                                                    <CardHeader>
+                                                                        <div className="flex items-start justify-between">
+                                                                            <CardTitle className="text-lg">{competitor.name}</CardTitle>
+                                                                            <Badge className={getTierColor(competitor.tier)}>
+                                                                                {competitor.tier}
+                                                                            </Badge>
+                                                                        </div>
+                                                                        <CardDescription className="text-xs mt-2">
+                                                                            {competitor.positioning}
+                                                                        </CardDescription>
+                                                                    </CardHeader>
+                                                                    <CardContent className="space-y-3">
+                                                                        <div className="space-y-2">
+                                                                            <div className="text-xs font-semibold text-green-700 flex items-center gap-1">
+                                                                                <CheckCircle className="h-3 w-3" />
+                                                                                Strengths
+                                                                            </div>
+                                                                            <ul className="text-xs space-y-1">
+                                                                                {competitor.strengths.slice(0, 2).map((s, i) => (
+                                                                                    <li key={i} className="text-muted-foreground">• {s}</li>
+                                                                                ))}
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div className="space-y-2">
+                                                                            <div className="text-xs font-semibold text-red-700 flex items-center gap-1">
+                                                                                <AlertCircle className="h-3 w-3" />
+                                                                                Weaknesses
+                                                                            </div>
+                                                                            <ul className="text-xs space-y-1">
+                                                                                {competitor.weaknesses.slice(0, 2).map((w, i) => (
+                                                                                    <li key={i} className="text-muted-foreground">• {w}</li>
+                                                                                ))}
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div className="pt-2 border-t flex justify-between text-xs">
+                                                                            <div>
+                                                                                <div className="text-muted-foreground">Avg Deal</div>
+                                                                                <div className="font-bold">${formatNumber(competitor.avgDealSize / 1000, 0)}K</div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <div className="text-muted-foreground">Market Share</div>
+                                                                                <div className="font-bold">{competitor.marketShare}%</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </CardContent>
+                                                                </Card>
+                                </Button>
                             ))}
                         </div>
                     </TabsContent>

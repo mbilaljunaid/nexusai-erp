@@ -209,7 +209,7 @@ export default function FreightSettlementConsole() {
                         "Freight charges are automatically accrued upon shipment planning and reversed during settlement to ensure accurate financial reporting at every stage of the lifecycle."
                     </p>
                 </div>
-                <Button className="bg-white text-indigo-600 hover:bg-white/90 font-bold px-8 shadow-lg">
+                <Button className="bg-card text-indigo-600 hover:bg-card/90 font-bold px-8 shadow-lg">
                     Reconcile GL
                 </Button>
             </div>

@@ -75,7 +75,7 @@ export default function ConstructionExecutiveDashboard() {
         : 0;
 
     return (
-        <div className="p-6 space-y-6 bg-slate-50/50 min-h-screen">
+        <div className="p-6 space-y-6 bg-muted/50/50 min-h-screen">
             <Breadcrumbs items={[
                 { label: "ERP", path: "/erp" },
                 { label: "Construction", path: "/construction/insights" }
@@ -234,7 +234,7 @@ export default function ConstructionExecutiveDashboard() {
                                     )}
 
                                     <div className="space-y-2">
-                                        <h4 className="text-sm font-semibold text-slate-400">Recurring Risk Factors</h4>
+                                        <h4 className="text-sm font-semibold text-muted-foreground/70">Recurring Risk Factors</h4>
                                         <ul className="text-xs space-y-2">
                                             <li className="flex items-center gap-2">
                                                 <div className="h-1 w-1 bg-amber-400 rounded-full" />
@@ -248,7 +248,7 @@ export default function ConstructionExecutiveDashboard() {
                                     </div>
 
                                     <Button
-                                        className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 gap-2 mt-4"
+                                        className="w-full bg-card/10 hover:bg-card/20 text-white border-white/20 gap-2 mt-4"
                                         variant="outline"
                                         onClick={open}
                                     >

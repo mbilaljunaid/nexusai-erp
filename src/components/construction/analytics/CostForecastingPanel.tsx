@@ -259,7 +259,7 @@ export function CostForecastingPanel({ projectId }: CostForecastingPanelProps) {
                                         </div>
                                     </div>
                                     <div className="flex gap-2 h-2">
-                                        <div className="w-full bg-gray-100 rounded-full flex overflow-hidden">
+                                        <div className="w-full bg-muted rounded-full flex overflow-hidden">
                                             <svg width={`${(item.budgeted / totalBudgeted) * 100}%`} height="100%">
                                                 <rect width="100%" height="100%" className="fill-blue-500" />
                                             </svg>

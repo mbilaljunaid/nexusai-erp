@@ -34,17 +34,17 @@ export default function FeatureDetailPage() {
           <div className="absolute inset-0 bg-black/20" />
           <div className="container mx-auto px-4 relative">
             <Link href="/features">
-              <Button variant="ghost" className="mb-6 text-white/80 hover:text-white hover:bg-white/10" data-testid="link-back-features">
+              <Button variant="ghost" className="mb-6 text-white/80 hover:text-white hover:bg-card/10" data-testid="link-back-features">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Features
               </Button>
             </Link>
             
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-4 bg-white/20 rounded-xl">
+              <div className="p-4 bg-card/20 rounded-xl">
                 <Icon className="w-10 h-10" />
               </div>
-              <Badge variant="secondary" className="bg-white/20 text-white border-0">
+              <Badge variant="secondary" className="bg-card/20 text-white border-0">
                 {feature.module}
               </Badge>
             </div>
@@ -64,7 +64,7 @@ export default function FeatureDetailPage() {
                 </Button>
               </Link>
               <Link href="/pricing">
-                <Button size="lg" variant="outline" className="gap-2 border-white text-white hover:bg-white/10" data-testid="button-view-pricing">
+                <Button size="lg" variant="outline" className="gap-2 border-white text-white hover:bg-card/10" data-testid="button-view-pricing">
                   View Pricing
                 </Button>
               </Link>

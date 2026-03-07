@@ -64,7 +64,7 @@ export default function ModuleIndustryMapping() {
             id:"industry",
             header:"Industry",
             width:"200px",
-            cell: (row: any) => <div className="font-medium bg-white sticky left-0">{row.industry}</div>
+            cell: (row: any) => <div className="font-medium bg-card sticky left-0">{row.industry}</div>
        },
         ...modules.map(module => ({
             id: module,

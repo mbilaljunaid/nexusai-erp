@@ -170,7 +170,7 @@ export default function HedgeEffectiveness() {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="border rounded-md bg-white">
+                            <div className="border rounded-md bg-card">
                                 <InteractiveSpreadsheet
                                     data={localHedges}
                                     columns={[
@@ -179,9 +179,11 @@ export default function HedgeEffectiveness() {
                                             header: "Hedge ID",
                                             width: "120px",
                                             cell: (row, index, updateRow) => (
-                                                <div role="button" tabIndex={0} onClick={() => setTestForm(p => ({ ...p, hedgeRelId: row.id }))} className="w-full h-full cursor-pointer" onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-medium" placeholder="ID" value={row.hedge_id || ''} onChange={(e) => updateRow("hedge_id", e.target.value)} />
-                                                </div>
+                                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setTestForm(p => ({ ...p, hedgeRelId: row.id }))}>
+                                                <div className="w-full h-full cursor-pointer">
+                                                                                                    <Input className="h-9 w-full border-0 focus-visible:ring-0 bg-transparent font-medium" placeholder="ID" value={row.hedge_id || ''} onChange={(e) => updateRow("hedge_id", e.target.value)} />
+                                                                                                </div>
+                                                </Button>
                                             )
                                         },
                                         {
@@ -304,7 +306,7 @@ export default function HedgeEffectiveness() {
                     <h3 className="card-title">Covenants Due (Next 30 Days)</h3>
                     <div className="flex-1 mt-4">
                         {dueCovs.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No covenants due in next 30 days</div>
+                            <div className="p-8 text-center text-muted-foreground h-full flex items-center justify-center">No covenants due in next 30 days</div>
                         ) : (
                             <InteractiveSpreadsheet
                                 columns={dueCovsnColumns}
@@ -418,11 +420,11 @@ export default function HedgeEffectiveness() {
 
 function HeKpi({ label, value, icon, colorClass, borderClass }: { label: string; value: string; icon: React.ReactNode; colorClass: string; borderClass: string }) {
     return (
-        <div className={cn(`bg-white border flex items-center gap-3 min-w-40 px-4 py-3 rounded-xl border-gray-200 border-l-4 ${borderClass}`)}>
+        <div className={cn(`bg-card border flex items-center gap-3 min-w-40 px-4 py-3 rounded-xl border-border border-l-4 ${borderClass}`)}>
             <div className={colorClass}>{icon}</div>
             <div>
                 <div className={cn(`text-xl font-extrabold ${colorClass}`)}>{value}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{label}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
             </div>
         </div>
     );

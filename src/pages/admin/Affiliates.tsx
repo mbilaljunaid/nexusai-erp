@@ -336,7 +336,7 @@ export default function Affiliates() {
                                 {/* Empty State */}
                                 {!isLoading && !error && affiliates.length === 0 && (
                                     <div className="p-12 text-center">
-                                        <Users className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                                        <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground/70" />
                                         <p className="text-muted-foreground">No affiliates yet</p>
                                     </div>
                                 )}

@@ -153,19 +153,20 @@ export default function TerritoryManager() {
                 <div className="md:col-span-1 space-y-4">
                     {isLoading && <TableSkeleton rows={4} />}
                     {territories?.map((t) => (
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedTerritory(t)}>
                         <Card
-                            key={t.id}
-                            className={cn(`cursor-pointer transition-colors hover:bg-accent/50 ${selectedTerritory?.id === t.id ? 'border-primary bg-accent' : ''}`)}
-                            onClick={() => setSelectedTerritory(t)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                            <CardHeader className="p-4">
-                                <CardTitle className="text-lg flex justify-between">
-                                    {t.name}
-                                    {selectedTerritory?.id === t.id && <Map className="h-4 w-4 text-primary" />}
-                                </CardTitle>
-                                <CardDescription>{t.description || "No description"}</CardDescription>
-                            </CardHeader>
-                        </Card>
+                                                    key={t.id}
+                                                    className={cn(`cursor-pointer transition-colors hover:bg-accent/50 ${selectedTerritory?.id === t.id ? 'border-primary bg-accent' : ''}`)}
+                                                >
+                                                    <CardHeader className="p-4">
+                                                        <CardTitle className="text-lg flex justify-between">
+                                                            {t.name}
+                                                            {selectedTerritory?.id === t.id && <Map className="h-4 w-4 text-primary" />}
+                                                        </CardTitle>
+                                                        <CardDescription>{t.description || "No description"}</CardDescription>
+                                                    </CardHeader>
+                                                </Card>
+                        </Button>
                     ))}
                     {!isLoading && territories?.length === 0 && (
                         <div className="text-muted-foreground italic p-4 border rounded-lg border-dashed text-center">

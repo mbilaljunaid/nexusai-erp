@@ -17,7 +17,7 @@ interface VarianceRow { cost_center: string; gl_account: string; budget_amount: 
 
 const CATEGORY_CLR: Record<string, string> = { ENVIRONMENTAL: 'bg-emerald-600', SOCIAL: 'bg-blue-500', GOVERNANCE: 'bg-purple-600' };
 const BORDER_CLR: Record<string, string> = { ENVIRONMENTAL: 'border-l-emerald-600', SOCIAL: 'border-l-blue-500', GOVERNANCE: 'border-l-purple-600' };
-const STATUS_CLR: Record<string, string> = { On_Track: 'bg-emerald-100 text-emerald-600', At_Risk: 'bg-amber-100 text-amber-600', Off_Track: 'bg-red-100 text-red-600', Achieved: 'bg-purple-100 text-purple-600', Active: 'bg-gray-100 text-gray-500', Draft: 'bg-gray-100 text-gray-400' };
+const STATUS_CLR: Record<string, string> = { On_Track: 'bg-emerald-100 text-emerald-600', At_Risk: 'bg-amber-100 text-amber-600', Off_Track: 'bg-red-100 text-red-600', Achieved: 'bg-purple-100 text-purple-600', Active: 'bg-muted text-muted-foreground', Draft: 'bg-muted text-muted-foreground/70' };
 
 export default function ESGPlanning() {
     const [tab, setTab] = useState<'goals' | 'budget'>('goals');
@@ -44,7 +44,7 @@ export default function ESGPlanning() {
 
     const varianceColumns: SpreadsheetColumn<any>[] = [
         { id: "cost_center", header: "Cost Center", width: "150px", cell: (v: any) => <span className="font-semibold">{v.cost_center}</span> },
-        { id: "gl_account", header: "GL Account", width: "150px", cell: (v: any) => <span className="font-mono text-[10px] text-gray-500">{v.gl_account}</span> },
+        { id: "gl_account", header: "GL Account", width: "150px", cell: (v: any) => <span className="font-mono text-[10px] text-muted-foreground">{v.gl_account}</span> },
         { id: "budget", header: "Budget", width: "120px", cell: (v: any) => <span className="font-mono">${formatNumber(Number(v.budget_amount))}</span> },
         { id: "actual", header: "Actual", width: "120px", cell: (v: any) => <span className="font-mono">${formatNumber(Number(v.actual_amount))}</span> },
         { id: "committed", header: "Committed", width: "120px", cell: (v: any) => <span className="font-mono text-amber-600">${formatNumber(Number(v.committed_amount))}</span> },
@@ -57,7 +57,7 @@ export default function ESGPlanning() {
                 const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
                 return (
                     <div className="flex items-center gap-1">
-                        <div className="w-14 bg-gray-100 h-1 rounded-full">
+                        <div className="w-14 bg-muted h-1 rounded-full">
                             <div className={cn(`${wcls} ${barClr.split(' ')[0]} h-full rounded-full`)} />
                         </div>
                         <span className={cn(`${barClr.split(' ')[1]} font-bold`)}>{pct.toFixed(1)}%</span>
@@ -65,7 +65,7 @@ export default function ESGPlanning() {
                 );
             }
         },
-        { id: "control", header: "Control", width: "120px", cell: (v: any) => <span className={cn(`px-1 py-0.5 rounded-[3px] text-[9px] ${v.control_action === 'HARD_STOP' ? 'bg-red-100 text-red-600' : v.control_action === 'HOLD' ? 'bg-yellow-100 text-gray-500' : 'bg-gray-100 text-gray-500'}`)}>{v.control_action}</span> },
+        { id: "control", header: "Control", width: "120px", cell: (v: any) => <span className={cn(`px-1 py-0.5 rounded-[3px] text-[9px] ${v.control_action === 'HARD_STOP' ? 'bg-red-100 text-red-600' : v.control_action === 'HOLD' ? 'bg-yellow-100 text-muted-foreground' : 'bg-muted text-muted-foreground'}`)}>{v.control_action}</span> },
         {
             id: "status", header: "Status", width: "80px", cell: (v: any) => {
                 const pct = Number(v.utilization_pct ?? 0);
@@ -80,7 +80,7 @@ export default function ESGPlanning() {
             description="ESG goal tracking · Budgetary control · Variance analysis"
             actions={
                 <div className="flex gap-1.5">
-                    {['goals', 'budget'].map(t => <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`)}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</Button>)}
+                    {['goals', 'budget'].map(t => <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-muted text-muted-foreground'}`)}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</Button>)}
                 </div>
             }
         >
@@ -93,7 +93,7 @@ export default function ESGPlanning() {
                             <Card key={k.lbl} className="px-4 py-2.5 min-w-24 shadow-sm">
                                 <div className="text-base">{k.icon}</div>
                                 <div className={cn(`text-xl font-extrabold ${k.clr}`)}>{k.val}</div>
-                                <div className="text-[10px] text-gray-400">{k.lbl}</div>
+                                <div className="text-[10px] text-muted-foreground/70">{k.lbl}</div>
                             </Card>
                         ))}
                     </div>
@@ -101,7 +101,7 @@ export default function ESGPlanning() {
                     {/* Category filter + New */}
                     <div className="flex gap-1.5 mb-2.5 justify-between">
                         <div className="flex gap-1.5">
-                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <Button variant="secondary" size="sm" key={c} onClick={() => setCatFilter(c)} className={cn(`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${catFilter === c ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{c || 'All'}</Button>)}
+                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <Button variant="secondary" size="sm" key={c} onClick={() => setCatFilter(c)} className={cn(`px-2.5 py-1.5 border border-border rounded-md text-[10px] font-semibold cursor-pointer ${catFilter === c ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>{c || 'All'}</Button>)}
                         </div>
                         <Button variant="default" size="sm" onClick={() => setShowNew(true)} className="text-white text-[11px]">+ New Goal</Button>
                     </div>
@@ -136,7 +136,7 @@ export default function ESGPlanning() {
                         <div className="flex-1">
                             <div className="flex flex-col gap-1.5">
                                 {goals.map(g => {
-                                    const clr = STATUS_CLR[g.status] ?? 'bg-gray-100 text-gray-500';
+                                    const clr = STATUS_CLR[g.status] ?? 'bg-muted text-muted-foreground';
                                     const catClr = CATEGORY_CLR[g.category] ?? 'bg-gray-500';
                                     const bdrClr = BORDER_CLR[g.category] ?? 'border-l-gray-500';
                                     const pct = g.target_value && g.baseline_value
@@ -146,22 +146,24 @@ export default function ESGPlanning() {
                                     const wcls = p >= 100 ? 'w-full' : p >= 90 ? 'w-[90%]' : p >= 80 ? 'w-[80%]' : p >= 70 ? 'w-[70%]' : p >= 60 ? 'w-[60%]' : p >= 50 ? 'w-[50%]' : p >= 40 ? 'w-[40%]' : p >= 30 ? 'w-[30%]' : p >= 20 ? 'w-[20%]' : p >= 10 ? 'w-[10%]' : 'w-0';
 
                                     return (
-                                        <Card key={g.id} onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }} className={cn(`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 shadow-sm ${selectedGoal?.id === g.id ? 'border-y-emerald-600 border-r-emerald-600' : ''} ${bdrClr}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                            <div className="flex justify-between mb-1">
-                                                <div className="font-bold text-[13px]">{g.goal_name}</div>
-                                                <span className={cn(`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`)}>{g.status}</span>
-                                            </div>
-                                            <div className="text-[10px] text-gray-400 mb-1.5">{g.goal_code} · {g.category} · {g.unit} · Owner: {g.owner ?? '—'}</div>
-                                            <div className="flex items-center gap-1.5">
-                                                <div className="flex-1 bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                                    <div className={cn(`${wcls} ${catClr} h-full rounded-full`)} />
-                                                </div>
-                                                <div className="text-[9px] text-gray-400 whitespace-nowrap">Target: {g.target_value ?? '—'} {g.unit} by {g.target_year}</div>
-                                            </div>
-                                        </Card>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => { setSelectedGoal(selectedGoal?.id === g.id ? null : g); setActualForm(a => ({ ...a, goalId: g.id })); }}>
+                                        <Card key={g.id} className={cn(`hover:shadow-md cursor-pointer border-l-[4px] px-3.5 py-2.5 shadow-sm ${selectedGoal?.id === g.id ? 'border-y-emerald-600 border-r-emerald-600' : ''} ${bdrClr}`)}>
+                                                                                    <div className="flex justify-between mb-1">
+                                                                                        <div className="font-bold text-[13px]">{g.goal_name}</div>
+                                                                                        <span className={cn(`text-[9px] px-1.5 py-0.5 rounded font-bold ${clr}`)}>{g.status}</span>
+                                                                                    </div>
+                                                                                    <div className="text-[10px] text-muted-foreground/70 mb-1.5">{g.goal_code} · {g.category} · {g.unit} · Owner: {g.owner ?? '—'}</div>
+                                                                                    <div className="flex items-center gap-1.5">
+                                                                                        <div className="flex-1 bg-muted h-1.5 rounded-full overflow-hidden">
+                                                                                            <div className={cn(`${wcls} ${catClr} h-full rounded-full`)} />
+                                                                                        </div>
+                                                                                        <div className="text-[9px] text-muted-foreground/70 whitespace-nowrap">Target: {g.target_value ?? '—'} {g.unit} by {g.target_year}</div>
+                                                                                    </div>
+                                                                                </Card>
+                                        </Button>
                                     );
                                 })}
-                                {goals.length === 0 && <Card className="text-center text-gray-400 p-8 shadow-sm">No ESG goals — create one</Card>}
+                                {goals.length === 0 && <Card className="text-center text-muted-foreground/70 p-8 shadow-sm">No ESG goals — create one</Card>}
                             </div>
                         </div>
 
@@ -170,14 +172,14 @@ export default function ESGPlanning() {
                             <div className="w-72 flex-shrink-0">
                                 <Card className="p-3.5 mb-2.5 shadow-sm">
                                     <div className="font-bold text-[13px] mb-2">{selectedGoal.goal_name}</div>
-                                    <div className="text-[11px] leading-relaxed text-gray-700">
+                                    <div className="text-[11px] leading-relaxed text-foreground/90">
                                         Baseline: <strong>{selectedGoal.baseline_value ?? '—'} {selectedGoal.unit}</strong><br />
                                         Target: <strong>{selectedGoal.target_value ?? '—'} {selectedGoal.unit}</strong> by <strong>{selectedGoal.target_year}</strong>
                                     </div>
                                     <div className="mt-2.5 text-[11px] font-bold mb-1.5">Actuals</div>
                                     {(performance?.actuals ?? []).map((a, i) => (
-                                        <div key={i} className="flex justify-between text-[10px] border-b border-gray-100 pb-0.5 mb-0.5">
-                                            <span className="text-gray-500">{a.period}</span>
+                                        <div key={i} className="flex justify-between text-[10px] border-b border-border pb-0.5 mb-0.5">
+                                            <span className="text-muted-foreground">{a.period}</span>
                                             <span className="font-bold">{Number(a.actual_value).toFixed(2)} {selectedGoal.unit}</span>
                                         </div>
                                     ))}
@@ -202,7 +204,7 @@ export default function ESGPlanning() {
                 <div>
                     <div className="flex items-center gap-2 mb-3">
                         <Input value={budgetPeriod} onChange={e => setBudgetPeriod(e.target.value)} placeholder="YYYY-MM" className="px-2.5 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Budget period" />
-                        <span className="text-[11px] text-gray-400">Approved budget variance by cost center / GL account</span>
+                        <span className="text-[11px] text-muted-foreground/70">Approved budget variance by cost center / GL account</span>
                     </div>
                     <Card className="overflow-hidden shadow-sm">
                         {variance.length > 0 ? (
@@ -214,7 +216,7 @@ export default function ESGPlanning() {
                                 onChange={() => { }}
                             />
                         ) : (
-                            <div className="p-6 text-center text-gray-400">No approved budget controls for {budgetPeriod}</div>
+                            <div className="p-6 text-center text-muted-foreground/70">No approved budget controls for {budgetPeriod}</div>
                         )}
                     </Card>
                 </div>

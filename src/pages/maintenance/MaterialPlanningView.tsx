@@ -155,7 +155,7 @@ export function MaterialPlanningView() {
             case "SUBMITTED":
                 return { color: "bg-yellow-100 text-yellow-800", icon: Clock, label: "Submitted" };
             case "DRAFT":
-                return { color: "bg-gray-100 text-gray-800", icon: FileText, label: "Draft" };
+                return { color: "bg-muted text-foreground", icon: FileText, label: "Draft" };
         }
     };
 
@@ -480,7 +480,7 @@ export function MaterialPlanningView() {
                                                     <span className="font-mono font-bold">{reservation.woNumber}</span>
                                                     <Badge variant="outline" className={
                                                         reservation.status === "ISSUED" ? "bg-green-100 text-green-800" :
-                                                            reservation.status === "CANCELLED" ? "bg-gray-100 text-gray-800" :
+                                                            reservation.status === "CANCELLED" ? "bg-muted text-foreground" :
                                                                 "bg-blue-100 text-blue-800"
                                                     }>
                                                         {reservation.status === "ACTIVE" && <Lock className="h-3 w-3 mr-1" />}

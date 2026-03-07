@@ -104,7 +104,7 @@ export default function PerformanceTemplateBuilder() {
             <div className="max-w-6xl mx-auto space-y-6 pb-12">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-lg">
                             <FileSignature className="h-6 w-6" />
@@ -188,7 +188,7 @@ export default function PerformanceTemplateBuilder() {
                                     Total Weight: {totalWeight}%
                                     {totalWeight !== 100 && <span className="text-xs font-normal">(Must equal 100%)</span>}
                                 </div>
-                                <Button size="sm" variant="outline" onClick={addSection} className="bg-white dark:bg-zinc-950">
+                                <Button size="sm" variant="outline" onClick={addSection} className="bg-card dark:bg-zinc-950">
                                     <Plus className="h-4 w-4 mr-2" /> Add Section
                                 </Button>
                             </div>

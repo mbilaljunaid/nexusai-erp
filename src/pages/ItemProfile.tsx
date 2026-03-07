@@ -47,7 +47,7 @@ export default function ItemProfile() {
         >
             <div className="grid gap-6">
                 {/* Header Stats */}
-                <div className="flex gap-6 p-4 bg-white border rounded-lg shadow-sm">
+                <div className="flex gap-6 p-4 bg-card border rounded-lg shadow-sm">
                     <div>
                         <Label className="text-muted-foreground">Status</Label>
                         <div className="mt-1">

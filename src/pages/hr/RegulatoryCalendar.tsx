@@ -92,12 +92,14 @@ export default function RegulatoryCalendar() {
             {/* Summary cards by regulation */}
             <div className="summary-grid">
                 {regSummary.map((r, i) => (
-                    <div key={r.regulation} onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)} className={cn(`summary-card summary-card-color reg-color-${i % REG_COLORS.length} ${regFilter && regFilter !== r.regulation ? 'summary-card-dim' : 'summary-card-active'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <div className={cn(`summary-card-title summary-card-title-color reg-color-${i % REG_COLORS.length}`)}>{r.regulation ?? 'Other'}</div>
-                        <div className="summary-card-count">{r.total} events</div>
-                        {Number(r.overdue) > 0 && <div className="summary-card-overdue">⚑ {r.overdue} overdue</div>}
-                        {r.next_due && <div className="summary-card-next">Next: {fmtDate(r.next_due)}</div>}
-                    </div>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setRegFilter(regFilter === r.regulation ? '' : r.regulation)}>
+                    <div key={r.regulation} className={cn(`summary-card summary-card-color reg-color-${i % REG_COLORS.length} ${regFilter && regFilter !== r.regulation ? 'summary-card-dim' : 'summary-card-active'}`)}>
+                                            <div className={cn(`summary-card-title summary-card-title-color reg-color-${i % REG_COLORS.length}`)}>{r.regulation ?? 'Other'}</div>
+                                            <div className="summary-card-count">{r.total} events</div>
+                                            {Number(r.overdue) > 0 && <div className="summary-card-overdue">⚑ {r.overdue} overdue</div>}
+                                            {r.next_due && <div className="summary-card-next">Next: {fmtDate(r.next_due)}</div>}
+                                        </div>
+                    </Button>
                 ))}
             </div>
 
@@ -172,7 +174,7 @@ export default function RegulatoryCalendar() {
                     <div className="fcpa-header">
                         <Button variant="default" onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw className="h-[11px] w-[11px]"  /> Sweep Overdue</Button>
                     </div>
-                    <div className="min-h-72 h-full border border-gray-200 rounded-lg">
+                    <div className="min-h-72 h-full border border-border rounded-lg">
                         <InteractiveSpreadsheet
                             columns={fcpaColumns}
                             data={fcpaSummary}

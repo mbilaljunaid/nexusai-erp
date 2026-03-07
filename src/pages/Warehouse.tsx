@@ -93,7 +93,7 @@ export default function Warehouse() {
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <div className="border rounded-md bg-white">
+                                <div className="border rounded-md bg-card">
                                     <InteractiveSpreadsheet
                                         data={localWarehouses}
                                         columns={[

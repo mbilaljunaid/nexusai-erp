@@ -62,7 +62,7 @@ export default function ConstructionSetup() {
     };
 
     return (
-        <div className="p-6 space-y-6 bg-slate-50/50 min-h-screen">
+        <div className="p-6 space-y-6 bg-muted/50/50 min-h-screen">
             <Breadcrumbs items={[
                 { label: "ERP", path: "/erp" },
                 { label: "Construction", path: "/construction/insights" },
@@ -195,7 +195,7 @@ export default function ConstructionSetup() {
                 </Card>
                 <Card className="shadow-sm">
                     <CardHeader className="flex flex-row items-center space-y-0 gap-4">
-                        <Settings2 className="h-5 w-5 text-slate-600" />
+                        <Settings2 className="h-5 w-5 text-muted-foreground" />
                         <div>
                             <CardTitle className="text-base font-bold">Billing Cycles</CardTitle>
                             <CardDescription className="text-xs">Define standard period ends.</CardDescription>

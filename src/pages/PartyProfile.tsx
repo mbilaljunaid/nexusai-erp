@@ -48,7 +48,7 @@ export default function PartyProfile() {
             <div className="space-y-6">
                 <Card>
                     <CardContent className="pt-6 flex gap-6 items-start">
-                        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center border">
+                        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border">
                             {party.partyType === 'ORGANIZATION' ? <Building2 className="w-8 h-8 text-blue-600" /> : <User className="w-8 h-8 text-green-600" />}
                         </div>
                         <div className="space-y-1">
@@ -112,7 +112,7 @@ export default function PartyProfile() {
                                             <Button variant="ghost" size="sm">Edit</Button>
                                         </div>
                                         <div className="flex items-start gap-4">
-                                            <MapPin className="w-5 h-5 text-gray-400 mt-1" />
+                                            <MapPin className="w-5 h-5 text-muted-foreground/70 mt-1" />
                                             <div>
                                                 <p className="font-medium">{site.location?.address1}</p>
                                                 {site.location?.address2 && <p>{site.location?.address2}</p>}

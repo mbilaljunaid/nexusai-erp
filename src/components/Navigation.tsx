@@ -76,7 +76,7 @@ export function Header() {
 
                     {/* Finance & Ops */}
                     <div>
-                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">Finance & Operations</p>
+                      <p className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Finance & Operations</p>
                       <Link to="/gl/journals" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <BookOpen className="w-3.5 h-3.5 text-blue-400" /> General Ledger
@@ -161,7 +161,7 @@ export function Header() {
 
                     {/* SCM & Manufacturing */}
                     <div>
-                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">SCM & Manufacturing</p>
+                      <p className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider mb-1">SCM & Manufacturing</p>
                       <Link to="/modules/manufacturing" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <Factory className="w-3.5 h-3.5 text-orange-400" /> Manufacturing
@@ -184,7 +184,7 @@ export function Header() {
                       </Link>
                       <Link to="/modules/maintenance" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
-                          <Wrench className="w-3.5 h-3.5 text-slate-400" /> Maintenance
+                          <Wrench className="w-3.5 h-3.5 text-muted-foreground/70" /> Maintenance
                         </div>
                       </Link>
                       <Link to="/modules/landed-cost" className="block rounded hover:bg-slate-700 p-2 transition-colors">
@@ -201,7 +201,7 @@ export function Header() {
 
                     {/* HR & CRM */}
                     <div>
-                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">HR & CRM</p>
+                      <p className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider mb-1">HR & CRM</p>
                       <Link to="/modules/core-hr" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <Users className="w-3.5 h-3.5 text-pink-400" /> Core HR & Payroll
@@ -241,7 +241,7 @@ export function Header() {
 
                     {/* Industries */}
                     <div>
-                      <p className="px-2 py-1 text-[10px] text-slate-500 uppercase tracking-wider mb-1">Specialized</p>
+                      <p className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Specialized</p>
                       <Link to="/modules/construction" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <HardHat className="w-3.5 h-3.5 text-amber-400" /> Construction
@@ -296,7 +296,7 @@ export function Header() {
                         <Briefcase className="w-4 h-4 text-green-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Service Marketplace</div>
-                          <div className="text-xs text-slate-400">Expert consulting & services</div>
+                          <div className="text-xs text-muted-foreground/70">Expert consulting & services</div>
                         </div>
                       </div>
                     </Link>
@@ -305,7 +305,7 @@ export function Header() {
                         <ShoppingBag className="w-4 h-4 text-purple-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">App Marketplace</div>
-                          <div className="text-xs text-slate-400">Extensions & integrations</div>
+                          <div className="text-xs text-muted-foreground/70">Extensions & integrations</div>
                         </div>
                       </div>
                     </Link>
@@ -314,7 +314,7 @@ export function Header() {
                         <Users className="w-4 h-4 text-cyan-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Job Board</div>
-                          <div className="text-xs text-slate-400">Find work or hire experts</div>
+                          <div className="text-xs text-muted-foreground/70">Find work or hire experts</div>
                         </div>
                       </div>
                     </Link>
@@ -367,14 +367,14 @@ export function Header() {
                   className="absolute left-0 top-full pt-1 w-72"
                 >
                   <div className="bg-slate-800 rounded-lg shadow-xl border border-slate-700 py-2">
-                    <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Official Documentation</p>
+                    <p className="px-4 py-1 text-[10px] text-muted-foreground uppercase tracking-wider">Official Documentation</p>
 
                     <Link to="/docs/process-flows" className="block">
                       <div className="px-4 py-2.5 hover:bg-slate-700 transition-colors flex items-center gap-3">
                         <Compass className="w-4 h-4 text-blue-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Process Flows</div>
-                          <div className="text-xs text-slate-400">All 18 end-to-end business processes</div>
+                          <div className="text-xs text-muted-foreground/70">All 18 end-to-end business processes</div>
                         </div>
                       </div>
                     </Link>
@@ -384,7 +384,7 @@ export function Header() {
                         <Zap className="w-4 h-4 text-orange-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Implementation Playbooks</div>
-                          <div className="text-xs text-slate-400">Go-live preparation & best practices</div>
+                          <div className="text-xs text-muted-foreground/70">Go-live preparation & best practices</div>
                         </div>
                       </div>
                     </Link>
@@ -394,7 +394,7 @@ export function Header() {
                         <Code2 className="w-4 h-4 text-purple-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Technical Reference</div>
-                          <div className="text-xs text-slate-400">API specs & developer documentation</div>
+                          <div className="text-xs text-muted-foreground/70">API specs & developer documentation</div>
                         </div>
                       </div>
                     </Link>
@@ -404,13 +404,13 @@ export function Header() {
                         <BookOpen className="w-4 h-4 text-green-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Governance Policies</div>
-                          <div className="text-xs text-slate-400">Compliance & security standards</div>
+                          <div className="text-xs text-muted-foreground/70">Compliance & security standards</div>
                         </div>
                       </div>
                     </Link>
 
                     <div className="border-t border-slate-600 mt-1 pt-1">
-                      <p className="px-4 py-1 text-[10px] text-slate-500 uppercase tracking-wider">Community Academy</p>
+                      <p className="px-4 py-1 text-[10px] text-muted-foreground uppercase tracking-wider">Community Academy</p>
                     </div>
 
                     <Link to="/training/videos" className="block">
@@ -418,7 +418,7 @@ export function Header() {
                         <Video className="w-4 h-4 text-red-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Video Tutorials</div>
-                          <div className="text-xs text-slate-400">Community-contributed video guides</div>
+                          <div className="text-xs text-muted-foreground/70">Community-contributed video guides</div>
                         </div>
                       </div>
                     </Link>
@@ -428,7 +428,7 @@ export function Header() {
                         <FileCode2 className="w-4 h-4 text-cyan-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">API & Integrations</div>
-                          <div className="text-xs text-slate-400">Sample code & integration guides</div>
+                          <div className="text-xs text-muted-foreground/70">Sample code & integration guides</div>
                         </div>
                       </div>
                     </Link>
@@ -438,7 +438,7 @@ export function Header() {
                         <FileText className="w-4 h-4 text-yellow-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">User Guides</div>
-                          <div className="text-xs text-slate-400">Step-by-step how-to tutorials</div>
+                          <div className="text-xs text-muted-foreground/70">Step-by-step how-to tutorials</div>
                         </div>
                       </div>
                     </Link>
@@ -448,7 +448,7 @@ export function Header() {
                         <FolderOpen className="w-4 h-4 text-emerald-400" />
                         <div>
                           <div className="font-semibold text-sm text-slate-100">Training Materials</div>
-                          <div className="text-xs text-slate-400">Courses & learning paths</div>
+                          <div className="text-xs text-muted-foreground/70">Courses & learning paths</div>
                         </div>
                       </div>
                     </Link>
@@ -513,7 +513,7 @@ export function Header() {
 
             {/* Mobile Modules Map (Simplified) */}
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
-              <p className="px-4 text-xs text-slate-500 uppercase">Modules</p>
+              <p className="px-4 text-xs text-muted-foreground uppercase">Modules</p>
               <Link to="/modules/general-ledger">
                 <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Finance
@@ -543,7 +543,7 @@ export function Header() {
             </Link>
             {/* Mobile Marketplace */}
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
-              <p className="px-4 text-xs text-slate-500 uppercase">Marketplace</p>
+              <p className="px-4 text-xs text-muted-foreground uppercase">Marketplace</p>
               <Link to="/marketplace/services">
                 <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:" data-testid="link-mobile-marketplace-services">
                   Service Marketplace
@@ -570,7 +570,7 @@ export function Header() {
             </Link>
             {/* Mobile Documentation */}
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
-              <p className="px-4 text-xs text-slate-500 uppercase">Documentation</p>
+              <p className="px-4 text-xs text-muted-foreground uppercase">Documentation</p>
               <Link to="/docs/process-flows">
                 <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Process Flows
@@ -591,7 +591,7 @@ export function Header() {
                   Implementation
                 </Button>
               </Link>
-              <p className="px-4 pt-2 text-xs text-slate-500 uppercase">Community Content</p>
+              <p className="px-4 pt-2 text-xs text-muted-foreground uppercase">Community Content</p>
               <Link to="/training/videos">
                 <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Training Videos
@@ -645,7 +645,7 @@ export function Footer() {
             <h3 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
               NexusAIFirst
             </h3>
-            <p className="text-slate-400 text-sm">
+            <p className="text-muted-foreground/70 text-sm">
               Transform your enterprise with AI-powered ERP solutions for 41+ industries.
             </p>
           </div>
@@ -653,7 +653,7 @@ export function Footer() {
           {/* Products */}
           <div>
             <h4 className="text-white font-semibold mb-4">Products</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
+            <ul className="space-y-2 text-sm text-muted-foreground/70">
               <li><Link to="/features" className="hover:text-white transition" data-testid="link-footer-features">Features</Link></li>
               <li><Link to="/use-cases" className="hover:text-white transition" data-testid="link-footer-usecases">Use Cases</Link></li>
               <li><Link to="/industries" className="hover:text-white transition" data-testid="link-footer-industries">Industries</Link></li>
@@ -666,7 +666,7 @@ export function Footer() {
           {/* Resources */}
           <div>
             <h4 className="text-white font-semibold mb-4">Resources</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
+            <ul className="space-y-2 text-sm text-muted-foreground/70">
               <li><Link to="/blog" className="hover:text-white transition" data-testid="link-footer-blog">Blog</Link></li>
               <li><Link to="/contribution" className="hover:text-white transition" data-testid="link-footer-contribution">Contribute</Link></li>
               <li><Link to="/community" className="hover:text-white transition" data-testid="link-footer-community">Community</Link></li>
@@ -679,7 +679,7 @@ export function Footer() {
           {/* Company */}
           <div>
             <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
+            <ul className="space-y-2 text-sm text-muted-foreground/70">
               <li><Link to="/about" className="hover:text-white transition" data-testid="link-footer-about">About</Link></li>
               <li><Link to="/partners" className="hover:text-white transition" data-testid="link-footer-partners">Partners</Link></li>
               <li><Link to="/careers" className="hover:text-white transition" data-testid="link-footer-careers">Careers</Link></li>
@@ -691,7 +691,7 @@ export function Footer() {
           {/* Open Source */}
           <div>
             <h4 className="text-white font-semibold mb-4">Open Source</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
+            <ul className="space-y-2 text-sm text-muted-foreground/70">
               <li><a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer" className="hover:text-white transition" data-testid="link-footer-github">GitHub</a></li>
               <li><Link to="/open-source" className="hover:text-white transition" data-testid="link-footer-opensource">About Open Source</Link></li>
               <li><Link to="/license" className="hover:text-white transition" data-testid="link-footer-license">License (AGPL-3.0)</Link></li>
@@ -702,7 +702,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center text-slate-400 text-sm">
+        <div className="pt-8 border-t border-slate-700 flex flex-col md:flex-row justify-between items-center text-muted-foreground/70 text-sm">
           <p>&copy; 2025 NexusAIFirst Contributors. Licensed under AGPL-3.0.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link to="/privacy" className="hover:text-white transition">Privacy</Link>

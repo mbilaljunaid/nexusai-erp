@@ -81,27 +81,28 @@ export default function CandidateMatchingView() {
                     </CardHeader>
                     <CardContent className="p-0">
                         {matches.map((c: any) => (
-                            <div role="button" tabIndex={0}
-                                key={c.id}
-                                onClick={() => setSelectedCandidate(c.id)}
-                                className={cn(`p-4 border-b cursor-pointer transition-colors hover:bg-slate-500/10 ${selectedCandidate === c.id ? "bg-indigo-500/10 border-l-4 border-l-indigo-600" : ""}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <div className="space-y-0.5">
-                                        <p className="font-bold text-sm">{c.name}</p>
-                                        <p className="text-xs text-muted-foreground">{c.experience}</p>
-                                    </div>
-                                    <div className={cn(`p-1.5 rounded-lg text-xs font-bold ${c.score > 90 ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"}`)}>
-                                        {c.score}%
-                                    </div>
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {c.skills.slice(0, 3).map((s: string) => (
-                                        <Badge key={s} variant="secondary" className="px-1 text-[9px] uppercase">{s}</Badge>
-                                    ))}
-                                    {c.skills.length > 3 && <span className="text-[10px] text-muted-foreground">+{c.skills.length - 3}</span>}
-                                </div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCandidate(c.id)}>
+                            <div
+                                                            key={c.id}
+                                                            className={cn(`p-4 border-b cursor-pointer transition-colors hover:bg-slate-500/10 ${selectedCandidate === c.id ? "bg-indigo-500/10 border-l-4 border-l-indigo-600" : ""}`)}
+                                                        >
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <div className="space-y-0.5">
+                                                                    <p className="font-bold text-sm">{c.name}</p>
+                                                                    <p className="text-xs text-muted-foreground">{c.experience}</p>
+                                                                </div>
+                                                                <div className={cn(`p-1.5 rounded-lg text-xs font-bold ${c.score > 90 ? "bg-green-100 text-green-700" : "bg-muted text-foreground/90"}`)}>
+                                                                    {c.score}%
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {c.skills.slice(0, 3).map((s: string) => (
+                                                                    <Badge key={s} variant="secondary" className="px-1 text-[9px] uppercase">{s}</Badge>
+                                                                ))}
+                                                                {c.skills.length > 3 && <span className="text-[10px] text-muted-foreground">+{c.skills.length - 3}</span>}
+                                                            </div>
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>
@@ -126,7 +127,7 @@ export default function CandidateMatchingView() {
                                             </p>
                                             <span className="text-sm font-bold">92% Match</span>
                                         </div>
-                                        <Progress value={92} className="h-2 bg-slate-100" />
+                                        <Progress value={92} className="h-2 bg-muted" />
 
                                         <div className="flex justify-between items-end pt-2">
                                             <p className="text-xs font-semibold uppercase text-muted-foreground flex items-center gap-1">
@@ -134,7 +135,7 @@ export default function CandidateMatchingView() {
                                             </p>
                                             <span className="text-sm font-bold">85% Match</span>
                                         </div>
-                                        <Progress value={85} className="h-2 bg-slate-100" />
+                                        <Progress value={85} className="h-2 bg-muted" />
                                     </div>
 
                                     <div className="space-y-4">
@@ -154,11 +155,11 @@ export default function CandidateMatchingView() {
                                         <Star className="w-4 h-4 text-indigo-600" /> Key Skill Match & Gaps
                                     </h4>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-4 bg-slate-500/10 rounded-xl border border-slate-100">
-                                            <p className="text-[10px] font-bold uppercase text-slate-500 mb-3">Matching Skills</p>
+                                        <div className="p-4 bg-slate-500/10 rounded-xl border border-border">
+                                            <p className="text-[10px] font-bold uppercase text-muted-foreground mb-3">Matching Skills</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {matches.find(c => c.id === selectedCandidate)?.skills.map((s: string) => (
-                                                    <div key={s} className="flex items-center gap-1.5 px-2 py-1 bg-white border rounded-md text-xs font-medium">
+                                                    <div key={s} className="flex items-center gap-1.5 px-2 py-1 bg-card border rounded-md text-xs font-medium">
                                                         <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
                                                         {s}
                                                     </div>
@@ -169,7 +170,7 @@ export default function CandidateMatchingView() {
                                             <p className="text-[10px] font-bold uppercase text-red-500 mb-3">Gap Identification</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {matches.find(c => c.id === selectedCandidate)?.missing.map((s: string) => (
-                                                    <div key={s} className="flex items-center gap-1.5 px-2 py-1 bg-white border border-red-100 rounded-md text-xs font-medium text-red-700">
+                                                    <div key={s} className="flex items-center gap-1.5 px-2 py-1 bg-card border border-red-100 rounded-md text-xs font-medium text-red-700">
                                                         <AlertCircle className="w-3 h-3" />
                                                         {s}
                                                     </div>

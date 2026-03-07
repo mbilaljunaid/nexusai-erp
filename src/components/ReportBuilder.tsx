@@ -181,24 +181,25 @@ export function ReportBuilder({ module }: ReportBuilderProps) {
                   <Label className="text-sm font-medium">Select Template</Label>
                   <div className="grid gap-2 mt-2">
                     {templates.map((t: any) => (
-                      <Card
-                        key={t.name}
-                        className="p-3 cursor-pointer hover-elevate"
-                        onClick={() => {
-                          setSelectedTemplate(t.name);
-                          setFields(
-                            t.fields.map((f: string, i: number) => ({
-                              id: i.toString(),
-                              label: f.charAt(0).toUpperCase() + f.slice(1),
-                              field: f,
-                              type: "text" as const,
-                            }))
-                          );
-                        }}
-                        data-testid={`card-template-${t.name}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                      >
-                        <p className="font-medium text-sm">{t.name}</p>
-                      </Card>
+                      <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                                  setSelectedTemplate(t.name);
+                                                  setFields(
+                                                    t.fields.map((f: string, i: number) => ({
+                                                      id: i.toString(),
+                                                      label: f.charAt(0).toUpperCase() + f.slice(1),
+                                                      field: f,
+                                                      type: "text" as const,
+                                                    }))
+                                                  );
+                                                }}>
+                        <Card
+                                                key={t.name}
+                                                className="p-3 cursor-pointer hover-elevate"
+                                                data-testid={`card-template-${t.name}`}
+                                              >
+                                                <p className="font-medium text-sm">{t.name}</p>
+                                              </Card>
+                        </Button>
                     ))}
                   </div>
                 </div>

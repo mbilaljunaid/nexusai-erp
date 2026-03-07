@@ -108,7 +108,7 @@ export function TransferWorkerDialog({ personId, isOpen, onClose }: TransferWork
 
                     <div className="border-t pt-4">
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Risk Assessment</span>
+                            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Risk Assessment</span>
                             <Button
                                 type="button"
                                 variant="outline"

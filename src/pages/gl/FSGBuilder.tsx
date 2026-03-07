@@ -271,16 +271,17 @@ export default function FSGBuilder() {
                             </Card>
                             <div className="space-y-2 max-h-[600px] overflow-y-auto">
                                 {rowSets?.map(rs => (
-                                    <div role="button" tabIndex={0}
-                                        key={rs.id}
-                                        className={cn(`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedRowSet?.id === rs.id ? 'bg-blue-500/10 border-blue-200' : 'bg-card hover:bg-muted'}`)}
-                                        onClick={() => setSelectedRowSet(rs)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <div>
-                                            <div className="font-bold">{rs.name}</div>
-                                            <div className="text-xs text-muted-foreground">{rs.description}</div>
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRowSet(rs)}>
+                                    <div
+                                                                            key={rs.id}
+                                                                            className={cn(`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedRowSet?.id === rs.id ? 'bg-blue-500/10 border-blue-200' : 'bg-card hover:bg-muted'}`)}
+                                                                        >
+                                                                            <div>
+                                                                                <div className="font-bold">{rs.name}</div>
+                                                                                <div className="text-xs text-muted-foreground">{rs.description}</div>
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 ))}
                             </div>
                         </div>
@@ -334,7 +335,7 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Rows Table */}
-                                        <div className="min-h-72 h-full border-t border-gray-200">
+                                        <div className="min-h-72 h-full border-t border-border">
                                             <InteractiveSpreadsheet
                                                 columns={rowColumns}
                                                 data={activeRows || []}
@@ -373,16 +374,17 @@ export default function FSGBuilder() {
                             </Card>
                             <div className="space-y-2 max-h-[600px] overflow-y-auto">
                                 {colSets?.map(cs => (
-                                    <div role="button" tabIndex={0}
-                                        key={cs.id}
-                                        className={cn(`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedColSet?.id === cs.id ? 'bg-blue-500/10 border-blue-200' : 'bg-card hover:bg-muted'}`)}
-                                        onClick={() => setSelectedColSet(cs)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <div>
-                                            <div className="font-bold">{cs.name}</div>
-                                            <div className="text-xs text-muted-foreground">{cs.description}</div>
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedColSet(cs)}>
+                                    <div
+                                                                            key={cs.id}
+                                                                            className={cn(`p-4 border rounded-md flex justify-between items-center cursor-pointer transition-colors ${selectedColSet?.id === cs.id ? 'bg-blue-500/10 border-blue-200' : 'bg-card hover:bg-muted'}`)}
+                                                                        >
+                                                                            <div>
+                                                                                <div className="font-bold">{cs.name}</div>
+                                                                                <div className="text-xs text-muted-foreground">{cs.description}</div>
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 ))}
                             </div>
                         </div>
@@ -463,7 +465,7 @@ export default function FSGBuilder() {
                                         </div>
 
                                         {/* Cols Table */}
-                                        <div className="min-h-72 h-full border-t border-gray-200">
+                                        <div className="min-h-72 h-full border-t border-border">
                                             <InteractiveSpreadsheet
                                                 columns={colColumns}
                                                 data={activeCols || []}

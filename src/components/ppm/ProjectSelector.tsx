@@ -57,7 +57,7 @@ export function ProjectSelector({ value, onChange }: ProjectSelectorProps) {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-72 justify-between h-12 px-4 shadow-sm border-slate-200"
+                    className="w-72 justify-between h-12 px-4 shadow-sm border-border"
                 >
                     <div className="flex items-center gap-3 text-left">
                         <div className="bg-primary/10 p-2 rounded-md">
@@ -65,7 +65,7 @@ export function ProjectSelector({ value, onChange }: ProjectSelectorProps) {
                         </div>
                         <div className="flex flex-col items-start gap-0.5">
                             <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Project</span>
-                            <span className="font-semibold text-slate-900 dark:text-slate-200 truncate max-w-44">
+                            <span className="font-semibold text-foreground dark:text-slate-200 truncate max-w-44">
                                 {isLoading ? "Loading..." : selectedProject ? selectedProject.name : "Select Project..."}
                             </span>
                         </div>

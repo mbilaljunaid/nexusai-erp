@@ -68,7 +68,7 @@ export default function PromotionDiscountCodes() {
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Inactive</p>
-            <p className="text-2xl font-bold text-gray-600">{promos.length - active}</p>
+            <p className="text-2xl font-bold text-muted-foreground">{promos.length - active}</p>
           </CardContent>
         </Card>
       </div>

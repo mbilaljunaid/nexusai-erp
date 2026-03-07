@@ -130,7 +130,7 @@ export default function ForgotPasswordPage() {
         >
           <GlassmorphismCard className="p-8 backdrop-blur-xl border-white/10">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
+              <div className="w-16 h-16 rounded-full bg-card/5 flex items-center justify-center mx-auto mb-4 border border-white/10">
                 <KeyRound className="w-8 h-8 text-indigo-400" />
               </div>
               <h2 className="text-2xl font-bold mb-2">Password Reset</h2>
@@ -166,7 +166,7 @@ export default function ForgotPasswordPage() {
                             <Input
                               type="email"
                               placeholder="name@company.com"
-                              className="pl-10 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
+                              className="pl-10 h-11 bg-card/5 border-white/10 focus:border-indigo-500/50 transition-all"
                               {...field}
                             />
                           </div>
@@ -207,7 +207,7 @@ export default function ForgotPasswordPage() {
                         <FormControl>
                           <Input
                             placeholder="Enter 6-digit code"
-                            className="h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all text-center tracking-widest text-lg"
+                            className="h-11 bg-card/5 border-white/10 focus:border-indigo-500/50 transition-all text-center tracking-widest text-lg"
                             {...field}
                           />
                         </FormControl>
@@ -228,7 +228,7 @@ export default function ForgotPasswordPage() {
                             <Input
                               type={showPassword ?"text" :"password"}
                               placeholder="New password"
-                              className="pl-10 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
+                              className="pl-10 h-11 bg-card/5 border-white/10 focus:border-indigo-500/50 transition-all"
                               {...field}
                             />
                           </div>
@@ -249,7 +249,7 @@ export default function ForgotPasswordPage() {
                             <Input
                               type={showPassword ?"text" :"password"}
                               placeholder="Confirm new password"
-                              className="pl-4 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
+                              className="pl-4 h-11 bg-card/5 border-white/10 focus:border-indigo-500/50 transition-all"
                               {...field}
                             />
                             <Button variant="default"
@@ -291,7 +291,7 @@ export default function ForgotPasswordPage() {
                 <h3 className="text-xl font-bold mb-2">Password Reset!</h3>
                 <p className="text-muted-foreground mb-6">Your account is secure. Redirecting to login...</p>
                 <Link to="/login">
-                  <Button variant="outline" className="w-full border-white/10 hover:bg-white/5">
+                  <Button variant="outline" className="w-full border-white/10 hover:bg-card/5">
                     Proceed to Login
                   </Button>
                 </Link>

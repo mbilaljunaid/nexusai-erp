@@ -88,7 +88,7 @@ const industries: IndustryCard[] = [
     features: ["Production", "Sales CRM", "Supply Chain", "Quality Analytics", "BI Dashboard"],
     modules: 9,
     tenants: 45,
-    color: "from-slate-500/10 to-gray-500/10 border-slate-200",
+    color: "from-slate-500/10 to-gray-500/10 border-border",
   },
   {
     title: "Banking & Finance",

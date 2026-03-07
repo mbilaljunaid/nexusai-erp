@@ -83,7 +83,7 @@ export default function EcommerceDashboard() {
                                     <div key={vendor.id} className="flex items-center justify-between p-3 border rounded">
                                         <div>
                                             <div className="font-medium">{vendor.vendor_name}</div>
-                                            <div className="text-sm text-gray-500">Commission: {vendor.commission_rate}%</div>
+                                            <div className="text-sm text-muted-foreground">Commission: {vendor.commission_rate}%</div>
                                         </div>
                                         <Badge variant={vendor.status === 'approved' ? 'default' : 'secondary'}>{vendor.status}</Badge>
                                     </div>
@@ -102,7 +102,7 @@ export default function EcommerceDashboard() {
                                     <div key={rma.id} className="flex items-center justify-between p-3 border rounded">
                                         <div>
                                             <div className="font-medium">{rma.rma_number}</div>
-                                            <div className="text-sm text-gray-500">Reason: {rma.reason}</div>
+                                            <div className="text-sm text-muted-foreground">Reason: {rma.reason}</div>
                                         </div>
                                         <Badge>{rma.status}</Badge>
                                     </div>
@@ -119,8 +119,8 @@ export default function EcommerceDashboard() {
                             <div className="grid grid-cols-4 gap-4">
                                 {assets.slice(0, 12).map(asset => (
                                     <div key={asset.id} className="border rounded p-2">
-                                        <div className="aspect-square bg-gray-100 rounded mb-2 flex items-center justify-center">
-                                            <Image className="h-12 w-12 text-gray-400" />
+                                        <div className="aspect-square bg-muted rounded mb-2 flex items-center justify-center">
+                                            <Image className="h-12 w-12 text-muted-foreground/70" />
                                         </div>
                                         <div className="text-xs truncate">{asset.filename}</div>
                                     </div>

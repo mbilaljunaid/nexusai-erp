@@ -52,7 +52,7 @@ export default function TaskList() {
             header: "Priority",
             width: "15%",
             cell: (task: any) => {
-                let color = "bg-gray-100 text-gray-800";
+                let color = "bg-muted text-foreground";
                 if (task.priority === 'urgent') color = "bg-red-100 text-red-800";
                 if (task.priority === 'high') color = "bg-orange-100 text-orange-800";
                 if (task.priority === 'medium') color = "bg-blue-100 text-blue-800";

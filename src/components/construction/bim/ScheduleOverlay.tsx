@@ -97,7 +97,7 @@ export function ScheduleOverlay({ projectId, onHighlightElements }: ScheduleOver
     const currentDate = addDays(projectStartDate, currentDay);
 
     const statusConfig = {
-        NOT_STARTED: { color: "bg-gray-100 text-gray-800", icon: Circle },
+        NOT_STARTED: { color: "bg-muted text-foreground", icon: Circle },
         IN_PROGRESS: { color: "bg-blue-100 text-blue-800", icon: Clock },
         COMPLETED: { color: "bg-green-100 text-green-800", icon: CheckCircle2 },
         DELAYED: { color: "bg-red-100 text-red-800", icon: AlertCircle }

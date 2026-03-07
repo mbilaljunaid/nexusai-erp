@@ -82,7 +82,7 @@ export default function MarketingEngagement() {
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Draft</p>
-            <p className="text-2xl font-bold text-gray-600">{campaigns.filter((c: any) => c.status === "draft").length}</p>
+            <p className="text-2xl font-bold text-muted-foreground">{campaigns.filter((c: any) => c.status === "draft").length}</p>
           </CardContent>
         </Card>
       </div>

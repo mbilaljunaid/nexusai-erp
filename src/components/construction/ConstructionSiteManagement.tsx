@@ -221,34 +221,35 @@ export default function ConstructionSiteManagement() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {logs.map(log => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                                                setSelectedLogId(log.id);
+                                                                setIsDetailOpen(true);
+                                                            }}>
                             <Card
-                                key={log.id}
-                                className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary"
-                                onClick={() => {
-                                    setSelectedLogId(log.id);
-                                    setIsDetailOpen(true);
-                                }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader className="pb-2">
-                                    <div className="flex justify-between items-start">
-                                        <CardTitle className="text-lg">
-                                            {format(new Date(log.logDate), "PPP")}
-                                        </CardTitle>
-                                        <Badge variant={log.status === "SUBMITTED" ? "default" : "secondary"}>
-                                            {log.status}
-                                        </Badge>
-                                    </div>
-                                    <CardDescription>Reported by {log.reportedBy}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                        <div className="flex items-center gap-1">
-                                            {log.weatherCondition === "Sunny" ? <Sun className="h-4 w-4 text-orange-400" /> : <Cloud className="h-4 w-4" />}
-                                            {log.weatherCondition}
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                            key={log.id}
+                                                            className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary"
+                                                        >
+                                                            <CardHeader className="pb-2">
+                                                                <div className="flex justify-between items-start">
+                                                                    <CardTitle className="text-lg">
+                                                                        {format(new Date(log.logDate), "PPP")}
+                                                                    </CardTitle>
+                                                                    <Badge variant={log.status === "SUBMITTED" ? "default" : "secondary"}>
+                                                                        {log.status}
+                                                                    </Badge>
+                                                                </div>
+                                                                <CardDescription>Reported by {log.reportedBy}</CardDescription>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                                                    <div className="flex items-center gap-1">
+                                                                        {log.weatherCondition === "Sunny" ? <Sun className="h-4 w-4 text-orange-400" /> : <Cloud className="h-4 w-4" />}
+                                                                        {log.weatherCondition}
+                                                                    </div>
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ))}
                     </div>
                 </TabsContent>

@@ -83,7 +83,7 @@ export function IntercompanyManager() {
                             <Link2 className="h-6 w-6 text-blue-400" />
                             Intercompany Balancing Rules
                         </CardTitle>
-                        <CardDescription className="text-gray-400 mt-1">
+                        <CardDescription className="text-muted-foreground/70 mt-1">
                             Define balancing accounts for cross-entity journal entries.
                         </CardDescription>
                     </div>
@@ -103,14 +103,14 @@ export function IntercompanyManager() {
                                         <FormField control={form.control} name="fromCompany" render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="text-sm font-medium">Source Company (LE)</FormLabel>
-                                                <FormControl><Input placeholder="e.g. 01" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                <FormControl><Input placeholder="e.g. 01" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
                                         <FormField control={form.control} name="toCompany" render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="text-sm font-medium">Target Company (LE)</FormLabel>
-                                                <FormControl><Input placeholder="e.g. 02" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                <FormControl><Input placeholder="e.g. 02" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
@@ -120,21 +120,21 @@ export function IntercompanyManager() {
                                         <FormField control={form.control} name="receivableAccountId" render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="text-sm font-medium text-blue-400">Receivable Account (Due From)</FormLabel>
-                                                <FormControl><Input placeholder="CCID or Account Code" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                <FormControl><Input placeholder="CCID or Account Code" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
                                         <FormField control={form.control} name="payableAccountId" render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="text-sm font-medium text-purple-400">Payable Account (Due To)</FormLabel>
-                                                <FormControl><Input placeholder="CCID or Account Code" {...field} className="bg-white/5 border-white/10" /></FormControl>
+                                                <FormControl><Input placeholder="CCID or Account Code" {...field} className="bg-card/5 border-white/10" /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
                                     </div>
 
                                     <div className="flex justify-end gap-3 pt-4">
-                                        <Button type="button" variant="ghost" className="hover:bg-white/5" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+                                        <Button type="button" variant="ghost" className="hover:bg-card/5" onClick={() => setIsAddOpen(false)}>Cancel</Button>
                                         <Button type="submit" className="premium-button" disabled={createMutation.isPending}>
                                             Save Rule
                                         </Button>
@@ -148,25 +148,25 @@ export function IntercompanyManager() {
             <CardContent className="p-0">
                 <div className="overflow-x-auto">
                     <Table>
-                        <TableHeader className="bg-white/5">
+                        <TableHeader className="bg-card/5">
                             <TableRow className="border-white/5 hover:bg-transparent">
-                                <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-gray-400">Source LE</TableHead>
-                                <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-gray-400">Target LE</TableHead>
+                                <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Source LE</TableHead>
+                                <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Target LE</TableHead>
                                 <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-blue-400">Receivable (Due From)</TableHead>
                                 <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-purple-400">Payable (Due To)</TableHead>
-                                <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-gray-400">Status</TableHead>
+                                <TableHead className="py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Status</TableHead>
                                 <TableHead className="py-4 text-right"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
-                                <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-40 text-center text-gray-500">Loading rules...</TableCell></TableRow>
+                                <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-40 text-center text-muted-foreground">Loading rules...</TableCell></TableRow>
                             ) : rules.length === 0 ? (
                                 <TableRow className="hover:bg-transparent">
                                     <TableCell colSpan={6} className="h-60 text-center">
                                         <div className="flex flex-col items-center justify-center space-y-3">
-                                            <AlertCircle className="h-10 w-10 text-gray-600" />
-                                            <p className="text-gray-500">No intercompany balancing rules defined.</p>
+                                            <AlertCircle className="h-10 w-10 text-muted-foreground" />
+                                            <p className="text-muted-foreground">No intercompany balancing rules defined.</p>
                                             <Button variant="outline" onClick={() => setIsAddOpen(true)} className="text-blue-400 border-blue-400/20 hover:bg-blue-400/10">
                                                 Define your first rule
                                             </Button>
@@ -175,7 +175,7 @@ export function IntercompanyManager() {
                                 </TableRow>
                             ) : (
                                 rules.map((rule) => (
-                                    <TableRow key={rule.id} className="border-white/5 hover:bg-white/5 transition-colors group">
+                                    <TableRow key={rule.id} className="border-white/5 hover:bg-card/5 transition-colors group">
                                         <TableCell className="py-4 font-semibold text-white">{rule.fromCompany}</TableCell>
                                         <TableCell className="py-4 font-semibold text-white">{rule.toCompany}</TableCell>
                                         <TableCell className="py-4">

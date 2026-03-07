@@ -78,7 +78,7 @@ export default function CrmAuditTrail({ entityId }: { entityId?: string }) {
         if (action.includes("UPDATE")) return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
         if (action.includes("DELETE")) return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
         if (action.includes("STATUS")) return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
-        return "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400";
+        return "bg-muted text-foreground dark:bg-slate-800 dark:text-muted-foreground/70";
     };
 
     return (

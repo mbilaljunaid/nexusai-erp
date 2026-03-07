@@ -63,7 +63,7 @@ export default function EnergyUtilityDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{gridHealth?.avg_health_score || 0}%</div>
-                        <div className="text-xs text-gray-500">{gridHealth?.total_assets} assets</div>
+                        <div className="text-xs text-muted-foreground">{gridHealth?.total_assets} assets</div>
                     </CardContent>
                 </Card>
                 <Card>
@@ -119,10 +119,10 @@ export default function EnergyUtilityDashboard() {
                                     <div key={outage.id} className="flex items-center justify-between p-3 border rounded">
                                         <div>
                                             <div className="font-medium">{outage.outage_number}</div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="text-sm text-muted-foreground">
                                                 {outage.cause} • {outage.affected_customers} customers affected
                                             </div>
-                                            <div className="text-xs text-gray-400">
+                                            <div className="text-xs text-muted-foreground/70">
                                                 Started: {formatDateTime(outage.started_at)}
                                             </div>
                                         </div>
@@ -135,7 +135,7 @@ export default function EnergyUtilityDashboard() {
                                     </div>
                                 ))}
                                 {outages.length === 0 && (
-                                    <p className="text-center text-gray-400 py-8">No active outages</p>
+                                    <p className="text-center text-muted-foreground/70 py-8">No active outages</p>
                                 )}
                             </div>
                         </CardContent>
@@ -154,7 +154,7 @@ export default function EnergyUtilityDashboard() {
                                         <div className="flex justify-between items-start">
                                             <div>
                                                 <div className="font-medium">{program.program_name}</div>
-                                                <div className="text-sm text-gray-500">{program.program_type}</div>
+                                                <div className="text-sm text-muted-foreground">{program.program_type}</div>
                                             </div>
                                             <Badge variant="outline">${program.incentive_rate}/kWh</Badge>
                                         </div>
@@ -181,7 +181,7 @@ export default function EnergyUtilityDashboard() {
                                             <div className="font-medium">
                                                 {filing.compliance_regulations?.regulation_name}
                                             </div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="text-sm text-muted-foreground">
                                                 {filing.filing_period} • {filing.compliance_regulations?.regulatory_body}
                                             </div>
                                         </div>
@@ -194,7 +194,7 @@ export default function EnergyUtilityDashboard() {
                                     </div>
                                 ))}
                                 {filings.length === 0 && (
-                                    <p className="text-center text-gray-400 py-8">No upcoming filings</p>
+                                    <p className="text-center text-muted-foreground/70 py-8">No upcoming filings</p>
                                 )}
                             </div>
                         </CardContent>

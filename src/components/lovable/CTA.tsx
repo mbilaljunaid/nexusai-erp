@@ -110,7 +110,7 @@ export function CTASection({
                     {[...Array(15)].map((_, i) => (
                         <motion.div
                             key={i}
-                            className="absolute w-3 h-3 bg-white/20 rounded-full"
+                            className="absolute w-3 h-3 bg-card/20 rounded-full"
                             style={{
                                 left:`${Math.random() * 100}%`,
                                 top:`${Math.random() * 100}%`,
@@ -173,7 +173,7 @@ export function CTASection({
                             onClick={secondaryCTA.onClick}
                             className={cn(
                                "text-lg px-8",
-                                gradient &&"border-white text-white hover:bg-white/10"
+                                gradient &&"border-white text-white hover:bg-card/10"
                             )}
                         >
                             {secondaryCTA.label}

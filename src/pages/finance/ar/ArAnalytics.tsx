@@ -139,7 +139,7 @@ export default function ArAnalytics() {
                                             </div>
                                             <div className="text-right">
                                                 <StatusBadge status="info" label={formatDate(p.predictedDate)} />
-                                                <p className="text-xs text-slate-500 mt-1">{(p.confidence * 100).toFixed(0)}% Conf.</p>
+                                                <p className="text-xs text-muted-foreground mt-1">{(p.confidence * 100).toFixed(0)}% Conf.</p>
                                             </div>
                                         </div>
                                     ))}
@@ -178,7 +178,7 @@ export default function ArAnalytics() {
                                         Recommended Action: {advice.action}
                                         <Badge variant={advice.priority === "High" ? "destructive" : "default"}>{advice.priority} Priority</Badge>
                                     </h4>
-                                    <p className="text-slate-600 mt-1">{advice.reasoning}</p>
+                                    <p className="text-muted-foreground mt-1">{advice.reasoning}</p>
                                 </div>
                             </div>
                         )}
@@ -210,7 +210,7 @@ function FeatureCard({ title, value, desc, icon: Icon, color }: any) {
                 <div>
                     <div className="text-2xl font-bold">{value}</div>
                     <div className="text-sm font-medium text-muted-foreground">{title}</div>
-                    <div className="text-xs text-slate-400 mt-1">{desc}</div>
+                    <div className="text-xs text-muted-foreground/70 mt-1">{desc}</div>
                 </div>
             </CardContent>
         </Card>

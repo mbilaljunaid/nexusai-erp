@@ -245,7 +245,7 @@ export default function MatchRuleBuilder() {
                                                 {rule.active ? (
                                                     <ToggleRight className="w-5 h-5 text-green-600" />
                                                 ) : (
-                                                    <ToggleLeft className="w-5 h-5 text-gray-400" />
+                                                    <ToggleLeft className="w-5 h-5 text-muted-foreground/70" />
                                                 )}
                                             </div>
                                             <div className="flex flex-wrap gap-2 text-xs">

@@ -248,26 +248,27 @@ export default function RevenueSSPManager() {
                         ) : (
                             <div className="space-y-2">
                                 {books.map((book) => (
-                                    <div role="button" tabIndex={0}
-                                        key={book.id}
-                                        className={cn(`p-3 border rounded-lg cursor-pointer transition-colors ${selectedBook?.id === book.id
-                                            ? "bg-blue-500/10 border-blue-300"
-                                            : "hover:bg-slate-500/10"
-                                            }`)}
-                                        onClick={() => setSelectedBook(book)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <div className="flex justify-between items-start">
-                                            <div className="flex-1">
-                                                <p className="font-semibold text-sm">{book.name}</p>
-                                                <p className="text-xs text-muted-foreground mt-1">
-                                                    {book.currency} • {formatDate(book.effectiveFrom)}
-                                                </p>
-                                            </div>
-                                            <Badge variant={book.status === "Active" ? "default" : "secondary"}>
-                                                {book.status}
-                                            </Badge>
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedBook(book)}>
+                                    <div
+                                                                            key={book.id}
+                                                                            className={cn(`p-3 border rounded-lg cursor-pointer transition-colors ${selectedBook?.id === book.id
+                                                                                ? "bg-blue-500/10 border-blue-300"
+                                                                                : "hover:bg-slate-500/10"
+                                                                                }`)}
+                                                                        >
+                                                                            <div className="flex justify-between items-start">
+                                                                                <div className="flex-1">
+                                                                                    <p className="font-semibold text-sm">{book.name}</p>
+                                                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                                                        {book.currency} • {formatDate(book.effectiveFrom)}
+                                                                                    </p>
+                                                                                </div>
+                                                                                <Badge variant={book.status === "Active" ? "default" : "secondary"}>
+                                                                                    {book.status}
+                                                                                </Badge>
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 ))}
                             </div>
                         )}

@@ -68,7 +68,7 @@ export default function PricingPromotionManagement() {
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Inactive</p>
-            <p className="text-2xl font-bold text-gray-600">{prices.length - active}</p>
+            <p className="text-2xl font-bold text-muted-foreground">{prices.length - active}</p>
           </CardContent>
         </Card>
       </div>

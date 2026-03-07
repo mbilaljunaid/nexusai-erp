@@ -110,7 +110,7 @@ export function WorkLibrary() {
             case "DRAFT":
                 return { color: "bg-yellow-100 text-yellow-800", label: "Draft" };
             case "ARCHIVED":
-                return { color: "bg-gray-100 text-gray-800", label: "Archived" };
+                return { color: "bg-muted text-foreground", label: "Archived" };
         }
     };
 
@@ -179,63 +179,64 @@ export function WorkLibrary() {
                             const statusConfig = getStatusConfig(definition.status);
 
                             return (
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => loadDefinitionDetail(definition)}>
                                 <Card
-                                    key={definition.id}
-                                    className="cursor-pointer hover:border-primary transition-all"
-                                    onClick={() => loadDefinitionDetail(definition)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <CardContent className="pt-6">
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <span className="font-mono text-sm font-bold text-primary">{definition.code}</span>
-                                                    <Badge variant="outline" className={statusConfig.color}>
-                                                        {statusConfig.label}
-                                                    </Badge>
-                                                    <Badge variant="outline" className="text-xs">
-                                                        v{definition.version}
-                                                    </Badge>
-                                                </div>
-                                                <h3 className="font-bold text-lg mb-1">{definition.name}</h3>
-                                                <p className="text-sm text-muted-foreground">{definition.category}</p>
-                                            </div>
-                                        </div>
+                                                                    key={definition.id}
+                                                                    className="cursor-pointer hover:border-primary transition-all"
+                                                                >
+                                                                    <CardContent className="pt-6">
+                                                                        <div className="flex items-start justify-between mb-3">
+                                                                            <div className="flex-1">
+                                                                                <div className="flex items-center gap-3 mb-2">
+                                                                                    <span className="font-mono text-sm font-bold text-primary">{definition.code}</span>
+                                                                                    <Badge variant="outline" className={statusConfig.color}>
+                                                                                        {statusConfig.label}
+                                                                                    </Badge>
+                                                                                    <Badge variant="outline" className="text-xs">
+                                                                                        v{definition.version}
+                                                                                    </Badge>
+                                                                                </div>
+                                                                                <h3 className="font-bold text-lg mb-1">{definition.name}</h3>
+                                                                                <p className="text-sm text-muted-foreground">{definition.category}</p>
+                                                                            </div>
+                                                                        </div>
 
-                                        <div className="grid grid-cols-2 gap-3 mb-3 text-sm">
-                                            <div className="flex items-center gap-2">
-                                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                                <span>{definition.estimatedDuration} hrs</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                                <span>${definition.estimatedCost}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <ClipboardList className="h-4 w-4 text-muted-foreground" />
-                                                <span>{definition.operationCount} operations</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <FileText className="h-4 w-4 text-muted-foreground" />
-                                                <span>{definition.materialCount} materials</span>
-                                            </div>
-                                        </div>
+                                                                        <div className="grid grid-cols-2 gap-3 mb-3 text-sm">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                                                                <span>{definition.estimatedDuration} hrs</span>
+                                                                            </div>
+                                                                            <div className="flex items-center gap-2">
+                                                                                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                                                                <span>${definition.estimatedCost}</span>
+                                                                            </div>
+                                                                            <div className="flex items-center gap-2">
+                                                                                <ClipboardList className="h-4 w-4 text-muted-foreground" />
+                                                                                <span>{definition.operationCount} operations</span>
+                                                                            </div>
+                                                                            <div className="flex items-center gap-2">
+                                                                                <FileText className="h-4 w-4 text-muted-foreground" />
+                                                                                <span>{definition.materialCount} materials</span>
+                                                                            </div>
+                                                                        </div>
 
-                                        <div className="flex flex-wrap gap-1 mb-3">
-                                            {definition.skillsRequired.map((skill, i) => (
-                                                <Badge key={i} variant="outline" className="text-xs">
-                                                    <Wrench className="h-3 w-3 mr-1" />
-                                                    {skill}
-                                                </Badge>
-                                            ))}
-                                        </div>
+                                                                        <div className="flex flex-wrap gap-1 mb-3">
+                                                                            {definition.skillsRequired.map((skill, i) => (
+                                                                                <Badge key={i} variant="outline" className="text-xs">
+                                                                                    <Wrench className="h-3 w-3 mr-1" />
+                                                                                    {skill}
+                                                                                </Badge>
+                                                                            ))}
+                                                                        </div>
 
-                                        {definition.lastUsed && (
-                                            <div className="text-xs text-muted-foreground border-t pt-2">
-                                                Last used: {definition.lastUsed} • Used {definition.useCount} times
-                                            </div>
-                                        )}
-                                    </CardContent>
-                                </Card>
+                                                                        {definition.lastUsed && (
+                                                                            <div className="text-xs text-muted-foreground border-t pt-2">
+                                                                                Last used: {definition.lastUsed} • Used {definition.useCount} times
+                                                                            </div>
+                                                                        )}
+                                                                    </CardContent>
+                                                                </Card>
+                                </Button>
                             );
                         })}
                     </div>

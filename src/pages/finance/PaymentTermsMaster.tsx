@@ -90,19 +90,21 @@ export default function PaymentTermsMaster() {
                         terms.map(t => {
                             const cfg = TYPE_COLORS[t.term_type] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={t.id} className={cn(`term - card ${selected?.id === t.id ? 'selected' : ''} `)} onClick={() => { setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <div className="tc-top">
-                                        <span className="tc-code">{t.term_code}</span>
-                                        <span className="tc-type" style={{ background: cfg.bg, color: cfg.color }}>{t.term_type}</span>
-                                    </div>
-                                    <div className="tc-name">{t.term_name}</div>
-                                    <div className="tc-meta">
-                                        <span><Clock className="h-2.5 w-2.5"  /> {t.net_days}d</span>
-                                        {t.discount_pct > 0 && <span><Percent className="h-2.5 w-2.5"  /> {t.discount_pct}% in {t.discount_days}d</span>}
-                                        {t.is_split && <span>Split</span>}
-                                    </div>
-                                    <ChevronRight  className="tc-arrow h-3.5 w-3.5" />
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => { setSelected(t); setSchedTest(p => ({ ...p, termCode: t.term_code })); }}>
+                                <div key={t.id} className={cn(`term - card ${selected?.id === t.id ? 'selected' : ''} `)}>
+                                                                    <div className="tc-top">
+                                                                        <span className="tc-code">{t.term_code}</span>
+                                                                        <span className="tc-type" style={{ background: cfg.bg, color: cfg.color }}>{t.term_type}</span>
+                                                                    </div>
+                                                                    <div className="tc-name">{t.term_name}</div>
+                                                                    <div className="tc-meta">
+                                                                        <span><Clock className="h-2.5 w-2.5"  /> {t.net_days}d</span>
+                                                                        {t.discount_pct > 0 && <span><Percent className="h-2.5 w-2.5"  /> {t.discount_pct}% in {t.discount_days}d</span>}
+                                                                        {t.is_split && <span>Split</span>}
+                                                                    </div>
+                                                                    <ChevronRight  className="tc-arrow h-3.5 w-3.5" />
+                                                                </div>
+                                </Button>
                             );
                         })
                     )}

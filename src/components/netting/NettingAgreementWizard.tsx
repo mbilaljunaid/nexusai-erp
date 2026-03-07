@@ -210,20 +210,21 @@ export function NettingAgreementWizard({ isOpen, onClose, onSuccess }: Agreement
                                     </div>
                                     <div className="space-y-2 max-h-64 overflow-y-auto">
                                         {orgs.map((org: any) => (
-                                            <div role="button" tabIndex={0}
-                                                key={org.id}
-                                                className="flex items-center space-x-2 p-3 border rounded hover:bg-muted/50 cursor-pointer"
-                                                onClick={() => toggleEntity(org.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <Checkbox
-                                                    checked={selectedEntities.includes(org.id)}
-                                                    onCheckedChange={() => toggleEntity(org.id)}
-                                                />
-                                                <div className="flex-1">
-                                                    <p className="font-medium">{org.orgName}</p>
-                                                    <p className="text-xs text-muted-foreground">{org.entityType}</p>
-                                                </div>
-                                            </div>
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleEntity(org.id)}>
+                                            <div
+                                                                                            key={org.id}
+                                                                                            className="flex items-center space-x-2 p-3 border rounded hover:bg-muted/50 cursor-pointer"
+                                                                                        >
+                                                                                            <Checkbox
+                                                                                                checked={selectedEntities.includes(org.id)}
+                                                                                                onCheckedChange={() => toggleEntity(org.id)}
+                                                                                            />
+                                                                                            <div className="flex-1">
+                                                                                                <p className="font-medium">{org.orgName}</p>
+                                                                                                <p className="text-xs text-muted-foreground">{org.entityType}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                            </Button>
                                         ))}
                                     </div>
                                     <div className="flex items-center gap-2">

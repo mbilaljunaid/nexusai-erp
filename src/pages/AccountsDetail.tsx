@@ -334,44 +334,45 @@ export default function AccountsDetail() {
                 ) : filteredAccounts.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredAccounts.map((a) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation(`/crm/accounts/${a.id}`)}>
                             <Card
-                                key={a.id}
-                                className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
-                                onClick={() => setLocation(`/crm/accounts/${a.id}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardContent className="p-6">
-                                    <div className="flex items-start justify-between mb-4">
-                                        <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
-                                            <AvatarFallback className="bg-primary/5 text-primary font-bold">
-                                                {a.name.charAt(0).toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <Badge variant="secondary" className="bg-muted/50 border-none font-medium text-xs">
-                                            {a.type || "Customer"}
-                                        </Badge>
-                                    </div>
+                                                            key={a.id}
+                                                            className="hover-elevate group cursor-pointer border-muted/50 overflow-hidden"
+                                                        >
+                                                            <CardContent className="p-6">
+                                                                <div className="flex items-start justify-between mb-4">
+                                                                    <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
+                                                                        <AvatarFallback className="bg-primary/5 text-primary font-bold">
+                                                                            {a.name.charAt(0).toUpperCase()}
+                                                                        </AvatarFallback>
+                                                                    </Avatar>
+                                                                    <Badge variant="secondary" className="bg-muted/50 border-none font-medium text-xs">
+                                                                        {a.type || "Customer"}
+                                                                    </Badge>
+                                                                </div>
 
-                                    <div className="space-y-1">
-                                        <h3 className="font-bold text-lg group-hover:text-primary transition-colors line-clamp-1">{a.name}</h3>
-                                        <p className="text-sm text-muted-foreground italic">{a.industry || "General Industry"}</p>
-                                    </div>
+                                                                <div className="space-y-1">
+                                                                    <h3 className="font-bold text-lg group-hover:text-primary transition-colors line-clamp-1">{a.name}</h3>
+                                                                    <p className="text-sm text-muted-foreground italic">{a.industry || "General Industry"}</p>
+                                                                </div>
 
-                                    <div className="mt-6 pt-6 border-t border-muted/50 flex flex-col gap-2">
-                                        {a.phone && (
-                                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                <Phone className="h-3 w-3" />
-                                                <span>{a.phone}</span>
-                                            </div>
-                                        )}
-                                        {a.website && (
-                                            <div className="flex items-center gap-2 text-xs text-muted-foreground truncate">
-                                                <Globe className="h-3 w-3" />
-                                                <span>{a.website}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                                <div className="mt-6 pt-6 border-t border-muted/50 flex flex-col gap-2">
+                                                                    {a.phone && (
+                                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                                            <Phone className="h-3 w-3" />
+                                                                            <span>{a.phone}</span>
+                                                                        </div>
+                                                                    )}
+                                                                    {a.website && (
+                                                                        <div className="flex items-center gap-2 text-xs text-muted-foreground truncate">
+                                                                            <Globe className="h-3 w-3" />
+                                                                            <span>{a.website}</span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ))}
                     </div>
                 ) : (

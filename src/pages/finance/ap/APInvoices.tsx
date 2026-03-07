@@ -299,7 +299,7 @@ export default function APInvoices() {
             }}
             title="Manage Attachment"
           >
-            <Paperclip className={cn(`h-4 w-4 ${row.documentUrl ? 'text-blue-600' : 'text-gray-400'}`)} />
+            <Paperclip className={cn(`h-4 w-4 ${row.documentUrl ? 'text-blue-600' : 'text-muted-foreground/70'}`)} />
           </Button>
         </div>
       )
@@ -483,8 +483,8 @@ export default function APInvoices() {
           )}
 
           {selectedIds.size > 0 && (
-            <div className="bg-slate-100 p-3 rounded-md flex items-center justify-between border shadow-sm">
-              <span className="text-sm font-medium ml-2 text-slate-700">{selectedIds.size} invoices selected for bulk action</span>
+            <div className="bg-muted p-3 rounded-md flex items-center justify-between border shadow-sm">
+              <span className="text-sm font-medium ml-2 text-foreground/90">{selectedIds.size} invoices selected for bulk action</span>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => bulkValidateMutation.mutate(Array.from(selectedIds))}>Validate Selected</Button>
                 <Button size="sm" onClick={() => bulkApproveMutation.mutate(Array.from(selectedIds))}>Approve Selected</Button>

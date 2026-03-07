@@ -300,7 +300,7 @@ export default function MSSDashboard() {
                         <Button
                            variant="secondary"
                            size="sm"
-                           className="w-full justify-start bg-white/20 hover:bg-white/30 border-none text-white"
+                           className="w-full justify-start bg-card/20 hover:bg-card/30 border-none text-white"
                            onClick={async () => {
                               const res = await fetch('/api/hr-self-service/admin/workflow/escalate', { method:'POST'});
                               const data = await res.json();
@@ -312,7 +312,7 @@ export default function MSSDashboard() {
                         <Button
                            variant="secondary"
                            size="sm"
-                           className="w-full justify-start bg-white/20 hover:bg-white/30 border-none text-white"
+                           className="w-full justify-start bg-card/20 hover:bg-card/30 border-none text-white"
                         >
                            <FileDown className="h-4 w-4 mr-2" /> Batch Export Team Payslips
                         </Button>

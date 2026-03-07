@@ -132,7 +132,7 @@ export default function OnboardingWizard() {
                                 ? "bg-primary/10 border-primary"
                                 : step.id < currentStep
                                     ? "bg-green-500/10 border-green-200"
-                                    : "bg-white border-gray-200"
+                                    : "bg-card border-border"
                                 }`)}
                         >
                             <div
@@ -140,7 +140,7 @@ export default function OnboardingWizard() {
                                     ? "bg-primary text-primary-foreground"
                                     : step.id < currentStep
                                         ? "bg-green-500 text-white"
-                                        : "bg-gray-200 text-gray-500"
+                                        : "bg-gray-200 text-muted-foreground"
                                     }`)}
                             >
                                 {step.id < currentStep ? (

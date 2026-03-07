@@ -248,17 +248,18 @@ export default function ShipmentTrackingDashboard() {
                                     </TableHeader>
                                     <TableBody>
                                         {activeShipments.slice(0, 10).map((shipment) => (
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedShipment(shipment.shipmentId)}>
                                             <TableRow
-                                                key={shipment.shipmentId}
-                                                className="cursor-pointer hover:bg-slate-500/10"
-                                                onClick={() => setSelectedShipment(shipment.shipmentId)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                {shipmentColumns.map((col) => (
-                                                    <TableCell key={col.key}>
-                                                        {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
-                                                    </TableCell>
-                                                ))}
-                                            </TableRow>
+                                                                                            key={shipment.shipmentId}
+                                                                                            className="cursor-pointer hover:bg-slate-500/10"
+                                                                                        >
+                                                                                            {shipmentColumns.map((col) => (
+                                                                                                <TableCell key={col.key}>
+                                                                                                    {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
+                                                                                                </TableCell>
+                                                                                            ))}
+                                                                                        </TableRow>
+                                            </Button>
                                         ))}
                                     </TableBody>
                                 </Table>
@@ -275,20 +276,20 @@ export default function ShipmentTrackingDashboard() {
                             <CardDescription>Real-time GPS tracking of all active shipments</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="h-96 bg-slate-100 rounded-lg flex items-center justify-center border-2 border-dashed border-slate-300">
+                            <div className="h-96 bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-slate-300">
                                 <div className="text-center space-y-2">
-                                    <MapPin className="h-12 w-12 text-slate-400 mx-auto" />
-                                    <p className="text-sm font-medium text-slate-600">Map Integration</p>
+                                    <MapPin className="h-12 w-12 text-muted-foreground/70 mx-auto" />
+                                    <p className="text-sm font-medium text-muted-foreground">Map Integration</p>
                                     <p className="text-xs text-muted-foreground max-w-sm">
                                         Install react-leaflet or mapbox-gl for interactive map
                                         <br />
                                         Display shipment markers with tooltips showing ID, status, ETA
                                     </p>
                                     <div className="pt-4 space-y-2">
-                                        <p className="text-xs font-mono text-slate-500">
+                                        <p className="text-xs font-mono text-muted-foreground">
                                             npm install react-leaflet leaflet
                                         </p>
-                                        <p className="text-xs text-slate-500">
+                                        <p className="text-xs text-muted-foreground">
                                             {activeCount} shipments ready to display
                                         </p>
                                     </div>
@@ -335,17 +336,18 @@ export default function ShipmentTrackingDashboard() {
                                     </TableHeader>
                                     <TableBody>
                                         {activeShipments.map((shipment) => (
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedShipment(shipment.shipmentId)}>
                                             <TableRow
-                                                key={shipment.shipmentId}
-                                                className="cursor-pointer hover:bg-slate-500/10"
-                                                onClick={() => setSelectedShipment(shipment.shipmentId)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                {shipmentColumns.map((col) => (
-                                                    <TableCell key={col.key}>
-                                                        {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
-                                                    </TableCell>
-                                                ))}
-                                            </TableRow>
+                                                                                            key={shipment.shipmentId}
+                                                                                            className="cursor-pointer hover:bg-slate-500/10"
+                                                                                        >
+                                                                                            {shipmentColumns.map((col) => (
+                                                                                                <TableCell key={col.key}>
+                                                                                                    {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
+                                                                                                </TableCell>
+                                                                                            ))}
+                                                                                        </TableRow>
+                                            </Button>
                                         ))}
                                     </TableBody>
                                 </Table>

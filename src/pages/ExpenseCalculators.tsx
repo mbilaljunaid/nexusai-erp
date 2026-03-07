@@ -336,24 +336,24 @@ export default function ExpenseCalculators() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                     {perDiemResult.breakdown.breakfast > 0 && (
-                                        <div className="bg-white p-2 rounded">
+                                        <div className="bg-card p-2 rounded">
                                             <p className="text-muted-foreground">Breakfast</p>
                                             <p className="font-bold">{formatCurrency(perDiemResult.breakdown.breakfast)}</p>
                                         </div>
                                     )}
                                     {perDiemResult.breakdown.lunch > 0 && (
-                                        <div className="bg-white p-2 rounded">
+                                        <div className="bg-card p-2 rounded">
                                             <p className="text-muted-foreground">Lunch</p>
                                             <p className="font-bold">{formatCurrency(perDiemResult.breakdown.lunch)}</p>
                                         </div>
                                     )}
                                     {perDiemResult.breakdown.dinner > 0 && (
-                                        <div className="bg-white p-2 rounded">
+                                        <div className="bg-card p-2 rounded">
                                             <p className="text-muted-foreground">Dinner</p>
                                             <p className="font-bold">{formatCurrency(perDiemResult.breakdown.dinner)}</p>
                                         </div>
                                     )}
-                                    <div className="bg-white p-2 rounded">
+                                    <div className="bg-card p-2 rounded">
                                         <p className="text-muted-foreground">Lodging</p>
                                         <p className="font-bold">{formatCurrency(perDiemResult.breakdown.lodging)}</p>
                                     </div>

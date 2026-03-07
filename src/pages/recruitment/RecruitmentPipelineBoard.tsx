@@ -73,10 +73,10 @@ export default function RecruitmentPipelineBoard() {
                 {STAGES.map((stage) => {
                     const candidates = pipeline[stage] || [];
                     return (
-                        <div key={stage} className="flex flex-col h-full bg-slate-500/10 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
-                            <div className="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-800">
-                                <h3 className="font-bold text-sm tracking-tight text-slate-700 dark:text-slate-300">{stage}</h3>
-                                <Badge variant="secondary" className="bg-slate-200 text-slate-700">{candidates.length}</Badge>
+                        <div key={stage} className="flex flex-col h-full bg-slate-500/10 dark:bg-slate-900/50 rounded-xl border border-border dark:border-slate-800">
+                            <div className="p-4 flex justify-between items-center border-b border-border dark:border-slate-800">
+                                <h3 className="font-bold text-sm tracking-tight text-foreground/90 dark:text-slate-300">{stage}</h3>
+                                <Badge variant="secondary" className="bg-slate-200 text-foreground/90">{candidates.length}</Badge>
                             </div>
                             <div className="flex-1 overflow-y-auto p-3 space-y-3">
                                 {candidates.map((app: any) => (
@@ -119,7 +119,7 @@ export default function RecruitmentPipelineBoard() {
                                     </Card>
                                 ))}
                                 {candidates.length === 0 && (
-                                    <div className="py-8 text-center border-2 border-dashed rounded-lg bg-slate-100/30">
+                                    <div className="py-8 text-center border-2 border-dashed rounded-lg bg-muted/30">
                                         <p className="text-xs text-muted-foreground">No Candidates</p>
                                     </div>
                                 )}

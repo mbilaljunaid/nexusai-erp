@@ -19,7 +19,7 @@ export default function ProductionLayout({ children}: { children?: React.ReactNo
     return (
         <StandardPage title="System Administration">
             {/* Header */}
-            <div className="bg-white border-b sticky top-0">
+            <div className="bg-card border-b sticky top-0">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
@@ -27,19 +27,19 @@ export default function ProductionLayout({ children}: { children?: React.ReactNo
 
                         </div>
                         <div className="flex items-center gap-4">
-                            <span className="text-sm text-gray-500">v1.0.0</span>
+                            <span className="text-sm text-muted-foreground">v1.0.0</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Breadcrumbs */}
-            <div className="bg-white border-b">
+            <div className="bg-card border-b">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Link to="/" className="hover:text-blue-600">Home</Link>
                         <ChevronRight className="w-4 h-4" />
-                        <span className="text-gray-900 dark:text-gray-200 font-medium">System Admin</span>
+                        <span className="text-foreground dark:text-gray-200 font-medium">System Admin</span>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@ export default function ProductionLayout({ children}: { children?: React.ReactNo
                                             to={item.path}
                                             className={cn(`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
                                                 ?'bg-blue-500/10 text-blue-700'
-                                                :'text-gray-700 hover:bg-gray-500/10'
+                                                :'text-foreground/90 hover:bg-gray-500/10'
                                                }`)}
                                         >
                                             <Icon className="w-5 h-5" />

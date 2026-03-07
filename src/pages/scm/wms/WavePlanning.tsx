@@ -79,7 +79,7 @@ export default function WavePlanning() {
         },
         { id: "orderNumber", header: "Order #", width: "120px", cell: (row) => <div className="font-mono text-blue-400">{row.orderNumber}</div> },
         { id: "customer", header: "Customer", width: "150px", cell: () => <div className="text-white">Consolidated Express</div> },
-        { id: "requestedDate", header: "Requested Date", width: "150px", cell: () => <div className="text-slate-400">{format(new Date(), "MMM d, yyyy")}</div> },
+        { id: "requestedDate", header: "Requested Date", width: "150px", cell: () => <div className="text-muted-foreground/70">{format(new Date(), "MMM d, yyyy")}</div> },
         { id: "items", header: "Items", width: "100px", cell: () => <div className="text-white">5 items</div> },
         { id: "priority", header: "Priority", width: "120px", cell: () => <StatusBadge status="high" /> }
     ];
@@ -98,7 +98,7 @@ export default function WavePlanning() {
                         </div>
                         <div className="flex gap-2">
                             <div className="relative">
-                                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                                 <Input placeholder="Filter orders..." className="pl-9 w-64 bg-slate-950 border-slate-800" />
                             </div>
                             <Button variant="outline" className="border-slate-800 bg-slate-950">
@@ -125,9 +125,9 @@ export default function WavePlanning() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="p-4 bg-slate-950 border border-slate-800 rounded-lg">
-                                <p className="text-xs text-slate-500 uppercase font-bold mb-2">Selected Orders</p>
+                                <p className="text-xs text-muted-foreground uppercase font-bold mb-2">Selected Orders</p>
                                 <p className="text-3xl font-bold text-white">{selectedOrders.length}</p>
-                                <p className="text-xs text-slate-400 mt-1">Total cube: 45.2 ft³</p>
+                                <p className="text-xs text-muted-foreground/70 mt-1">Total cube: 45.2 ft³</p>
                             </div>
                             <Button
                                 className="w-full bg-blue-600 hover:bg-blue-500"

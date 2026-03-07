@@ -154,17 +154,18 @@ export default function ICDataAccessManager() {
                                 {users.length > 0 && (
                                     <div className="border rounded-md max-h-40 overflow-y-auto">
                                         {users.map((user: any) => (
-                                            <div role="button" tabIndex={0}
-                                                key={user.id}
-                                                className={cn(`p-2 hover:bg-muted cursor-pointer ${selectedUserId === user.id ? "bg-muted" : ""}`)}
-                                                onClick={() => {
-                                                    setSelectedUserId(user.id);
-                                                    setSearchTerm(user.name || user.email);
-                                                }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <div className="font-medium">{user.name || user.email}</div>
-                                                <div className="text-xs text-muted-foreground">{user.email}</div>
-                                            </div>
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                                                                                setSelectedUserId(user.id);
+                                                                                                setSearchTerm(user.name || user.email);
+                                                                                            }}>
+                                            <div
+                                                                                            key={user.id}
+                                                                                            className={cn(`p-2 hover:bg-muted cursor-pointer ${selectedUserId === user.id ? "bg-muted" : ""}`)}
+                                                                                        >
+                                                                                            <div className="font-medium">{user.name || user.email}</div>
+                                                                                            <div className="text-xs text-muted-foreground">{user.email}</div>
+                                                                                        </div>
+                                            </Button>
                                         ))}
                                     </div>
                                 )}

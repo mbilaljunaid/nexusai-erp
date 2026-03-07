@@ -28,7 +28,7 @@ export default function Marketing() {
     { id: "analytics", label: "Analytics", icon: TrendingUp, color: "text-indigo-500" },
     { id: "automation", label: "Automation", icon: Zap, color: "text-yellow-500" },
     { id: "budget", label: "Budget", icon: PieChart, color: "text-red-500" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-gray-500" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-muted-foreground" },
   ];
 
   return (

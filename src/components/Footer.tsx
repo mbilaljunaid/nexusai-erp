@@ -91,7 +91,7 @@ export function Footer() {
                 <Link
                   key={process.href}
                   href={process.href}
-                  className="text-sm text-slate-400 hover:text-blue-400 transition-colors flex items-center gap-2"
+                  className="text-sm text-muted-foreground/70 hover:text-blue-400 transition-colors flex items-center gap-2"
                   data-testid={`link-process-${process.name.toLowerCase().replace(/\s+/g, '-')}`}
                 >
                   <span className="text-blue-500">→</span> {process.name}
@@ -102,7 +102,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-slate-800 mt-2 pt-2 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+        <div className="border-t border-slate-800 mt-2 pt-2 flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
           <p>&copy; 2025 NexusAIFirst. All rights reserved.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link href="/privacy" className="hover:text-slate-200 transition-colors">Privacy Policy</Link>

@@ -43,7 +43,7 @@ interface PerformanceRow {
 }
 
 const STATUS_CFG: Record<string, string> = {
-    Tendered: 'bg-gray-100 text-gray-500',
+    Tendered: 'bg-muted text-muted-foreground',
     PickedUp: 'bg-blue-500/10 text-blue-700',
     InTransit: 'bg-sky-100 text-sky-600',
     OutForDelivery: 'bg-amber-100 text-amber-600',
@@ -173,17 +173,19 @@ export default function ShipmentTracking() {
 
                         {/* Shipment list */}
                         {shipments.map(s => {
-                            const cfg = STATUS_CFG[s.current_status] ?? 'bg-gray-100 text-gray-500';
+                            const cfg = STATUS_CFG[s.current_status] ?? 'bg-muted text-muted-foreground';
                             return (
-                                <div key={s.id} className={cn(`ship-card ${selected?.id === s.id ? 'selected' : ''}`)} onClick={() => setSelected(s)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <div className="sc-top">
-                                        <span className="sc-pro">{s.pro_number || s.tracking_number || s.id.slice(0, 8)}</span>
-                                        <span className={cn(`sc-status ${cfg}`)}>{s.current_status}</span>
-                                    </div>
-                                    <div className="sc-route"><MapPin className="h-2.5 w-2.5"  /> {s.origin_city ?? '?'} → {s.dest_city ?? '?'}</div>
-                                    <div className="sc-meta">{s.carrier_scac} · {s.edi_214_count} updates</div>
-                                    {s.current_status === 'Exception' && <div className="sc-exc"><AlertTriangle className="h-2.5 w-2.5"  /> Exception</div>}
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelected(s)}>
+                                <div key={s.id} className={cn(`ship-card ${selected?.id === s.id ? 'selected' : ''}`)}>
+                                                                    <div className="sc-top">
+                                                                        <span className="sc-pro">{s.pro_number || s.tracking_number || s.id.slice(0, 8)}</span>
+                                                                        <span className={cn(`sc-status ${cfg}`)}>{s.current_status}</span>
+                                                                    </div>
+                                                                    <div className="sc-route"><MapPin className="h-2.5 w-2.5"  /> {s.origin_city ?? '?'} → {s.dest_city ?? '?'}</div>
+                                                                    <div className="sc-meta">{s.carrier_scac} · {s.edi_214_count} updates</div>
+                                                                    {s.current_status === 'Exception' && <div className="sc-exc"><AlertTriangle className="h-2.5 w-2.5"  /> Exception</div>}
+                                                                </div>
+                                </Button>
                             );
                         })}
                         {shipments.length === 0 && <div className="empty">No shipments</div>}
@@ -223,7 +225,7 @@ export default function ShipmentTracking() {
             {activeTab === 'performance' && (
                 <div className="perf-panel h-[500px]">
                     {performance.length === 0 ? (
-                        <div className="flex items-center justify-center p-8 text-gray-500 h-full">No performance data</div>
+                        <div className="flex items-center justify-center p-8 text-muted-foreground h-full">No performance data</div>
                     ) : (
                         <InteractiveSpreadsheet
                             columns={performanceColumns}

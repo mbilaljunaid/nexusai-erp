@@ -49,13 +49,13 @@ export default function JournalWizard() {
                     value={headerData.journalName}
                     onChange={(e) => setHeaderData({ ...headerData, journalName: e.target.value })}
                     placeholder="e.g., Monthly Accrual"
-                    className="bg-white"
+                    className="bg-card"
                 />
             </div>
             <div className="space-y-2">
                 <Label>Ledger</Label>
                 <Select value={headerData.ledger} onValueChange={(v) => setHeaderData({ ...headerData, ledger: v })}>
-                    <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="bg-card"><SelectValue /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="Primary US Ledger">Primary US Ledger</SelectItem>
                         <SelectItem value="Primary UK Ledger">Primary UK Ledger</SelectItem>
@@ -65,7 +65,7 @@ export default function JournalWizard() {
             <div className="space-y-2">
                 <Label>Accounting Period</Label>
                 <Select value={headerData.period} onValueChange={(v) => setHeaderData({ ...headerData, period: v })}>
-                    <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="bg-card"><SelectValue /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="JAN-26">JAN-26</SelectItem>
                         <SelectItem value="FEB-26">FEB-26</SelectItem>
@@ -75,7 +75,7 @@ export default function JournalWizard() {
             <div className="space-y-2">
                 <Label>Category</Label>
                 <Select value={headerData.category} onValueChange={(v) => setHeaderData({ ...headerData, category: v })}>
-                    <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="bg-card"><SelectValue /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="Manual">Manual</SelectItem>
                         <SelectItem value="Accrual">Accrual</SelectItem>
@@ -230,7 +230,7 @@ export default function JournalWizard() {
                         <span className="text-muted-foreground text-xs uppercase tracking-wider">Total Credit</span>
                         <span className="font-mono font-bold text-lg">{formatNumber(totalCredit, 2)}</span>
                     </div>
-                    <div className="px-4 py-1 rounded bg-slate-100 flex items-center gap-2">
+                    <div className="px-4 py-1 rounded bg-muted flex items-center gap-2">
                         <span className={Math.abs(totalDebit - totalCredit) > 0.01 ? "text-red-600 font-bold" : "text-green-600 font-bold"}>
                             Variance: {formatNumber(Math.abs(totalDebit - totalCredit), 2)}
                         </span>
@@ -357,7 +357,7 @@ export default function JournalWizard() {
 
     return (
         <StandardPage title="High-Volume Journal Wizard">
-            <div className="bg-slate-50/50 p-6 rounded-xl border min-h-[700px]">
+            <div className="bg-muted/50/50 p-6 rounded-xl border min-h-[700px]">
                 <Wizard
                     steps={steps}
                     onComplete={() => createMutation.mutate()}

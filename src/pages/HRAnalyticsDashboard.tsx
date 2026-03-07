@@ -15,6 +15,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Skeleton } from "@/components/ui/skeleton";
 import { Info } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectValue, SelectTrigger } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface HRMetric {
   label: string;
@@ -139,40 +140,41 @@ export default function HRAnalyticsDashboard() {
           const isClickable = true; // Could be prop based on metric metadata
 
           return (
-            <Card
-              key={code}
-              className={cn(`transition-colors ${isClickable ? 'cursor-pointer hover:bg-zinc-800/50' : ''}`)}
-              onClick={() => isClickable && setSelectedKpi(code)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-            >
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-muted-foreground">{metric?.label || "Loading..."}</p>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger><Info className="h-4 w-4 text-muted-foreground/50 hover:text-primary" /></TooltipTrigger>
-                      <TooltipContent>
-                        {metric?.description || "Key Performance Indicator for Workforce."}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => isClickable && setSelectedKpi(code)}>
+              <Card
+                            key={code}
+                            className={cn(`transition-colors ${isClickable ? 'cursor-pointer hover:bg-zinc-800/50' : ''}`)}
+                          >
+                            <CardContent className="pt-6">
+                              <div className="flex items-center justify-between mb-2">
+                                <p className="text-sm text-muted-foreground">{metric?.label || "Loading..."}</p>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger><Info className="h-4 w-4 text-muted-foreground/50 hover:text-primary" /></TooltipTrigger>
+                                    <TooltipContent>
+                                      {metric?.description || "Key Performance Indicator for Workforce."}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
 
-                {isLoading ? <Skeleton className="h-9 w-24" /> : (
-                  <div>
-                    <p className="text-3xl font-bold">
-                      {metric?.value ? (code === "HR_HEADCOUNT" ? metric.value : `${Number(metric.value).toFixed(1)}%`) : "0"}
-                    </p>
+                              {isLoading ? <Skeleton className="h-9 w-24" /> : (
+                                <div>
+                                  <p className="text-3xl font-bold">
+                                    {metric?.value ? (code === "HR_HEADCOUNT" ? metric.value : `${Number(metric.value).toFixed(1)}%`) : "0"}
+                                  </p>
 
-                    {/* Benchmarking Badge (Specific to Attrition for now) */}
-                    {code === "HR_ATTRITION_VOL" && data?.benchmark?.avgTurnoverRate && (
-                      <div className="mt-2 text-xs font-medium text-green-500 bg-green-500/10 px-2 py-1 rounded inline-block">
-                        Better than Market ({Number(data.benchmark.avgTurnoverRate).toFixed(1)}%)
-                      </div>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                                  {/* Benchmarking Badge (Specific to Attrition for now) */}
+                                  {code === "HR_ATTRITION_VOL" && data?.benchmark?.avgTurnoverRate && (
+                                    <div className="mt-2 text-xs font-medium text-green-500 bg-green-500/10 px-2 py-1 rounded inline-block">
+                                      Better than Market ({Number(data.benchmark.avgTurnoverRate).toFixed(1)}%)
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+              </Button>
           );
         })}
       </div>

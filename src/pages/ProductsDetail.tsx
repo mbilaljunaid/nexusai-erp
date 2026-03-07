@@ -140,40 +140,41 @@ export default function ProductsDetail() {
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {products.map((product) => (
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedProduct(product)}>
                                 <Card
-                                    key={product.id}
-                                    className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
-                                    onClick={() => setSelectedProduct(product)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
-                                >
-                                    <div className={cn(`h-1.5 w-full ${product.isActive ?'bg-gradient-to-r from-blue-500 to-indigo-600' :'bg-muted'}`)} />
-                                    <CardContent className="p-5 flex flex-col flex-1">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${product.isActive ?'bg-blue-500/10 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 group-hover:bg-blue-500/15' :'bg-muted text-muted-foreground'}`)}>
-                                                <Package className="h-6 w-6" />
-                                            </div>
-                                            <Badge variant={product.isActive ?"default" :"secondary"} className={cn(`${product.isActive ?'bg-green-500/10 text-green-600 border-green-500/20' :''} font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider`)}>
-                                                {product.isActive ?"Active" :"Inactive"}
-                                            </Badge>
-                                        </div>
+                                                                    key={product.id}
+                                                                    className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
+                                                                >
+                                                                    <div className={cn(`h-1.5 w-full ${product.isActive ?'bg-gradient-to-r from-blue-500 to-indigo-600' :'bg-muted'}`)} />
+                                                                    <CardContent className="p-5 flex flex-col flex-1">
+                                                                        <div className="flex justify-between items-start mb-4">
+                                                                            <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${product.isActive ?'bg-blue-500/10 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 group-hover:bg-blue-500/15' :'bg-muted text-muted-foreground'}`)}>
+                                                                                <Package className="h-6 w-6" />
+                                                                            </div>
+                                                                            <Badge variant={product.isActive ?"default" :"secondary"} className={cn(`${product.isActive ?'bg-green-500/10 text-green-600 border-green-500/20' :''} font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider`)}>
+                                                                                {product.isActive ?"Active" :"Inactive"}
+                                                                            </Badge>
+                                                                        </div>
 
-                                        <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{product.name}</h3>
-                                        <p className="text-xs text-muted-foreground mb-4 font-mono uppercase tracking-widest">{product.productCode ||'NO-CODE'}</p>
+                                                                        <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{product.name}</h3>
+                                                                        <p className="text-xs text-muted-foreground mb-4 font-mono uppercase tracking-widest">{product.productCode ||'NO-CODE'}</p>
 
-                                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4 italic flex-1">
-                                            {product.description ||"No description provided."}
-                                        </p>
+                                                                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4 italic flex-1">
+                                                                            {product.description ||"No description provided."}
+                                                                        </p>
 
-                                        <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
-                                            <div className="flex items-center gap-1.5">
-                                                <Calendar className="h-3 w-3" />
-                                                {product.createdAt ? formatDate(product.createdAt) :'Unknown'}
-                                            </div>
-                                            <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                                                View Details <ArrowLeft className="h-3 w-3 rotate-180" />
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                                                        <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
+                                                                            <div className="flex items-center gap-1.5">
+                                                                                <Calendar className="h-3 w-3" />
+                                                                                {product.createdAt ? formatDate(product.createdAt) :'Unknown'}
+                                                                            </div>
+                                                                            <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                                View Details <ArrowLeft className="h-3 w-3 rotate-180" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </CardContent>
+                                                                </Card>
+                                </Button>
                             ))}
                         </div>
                         {/* Pagination Controls */}

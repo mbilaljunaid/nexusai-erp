@@ -33,7 +33,7 @@ export function GLMetrics() {
         return (
             <StandardPage title="Page Title">
                 {[...Array(4)].map((_, i) => (
-                    <Card key={i} className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+                    <Card key={i} className="border-none shadow-sm bg-card/50 backdrop-blur-sm">
                         <CardContent className="p-6">
                             <Skeleton className="h-4 w-24 mb-4" />
                             <Skeleton className="h-8 w-16" />
@@ -86,21 +86,21 @@ export function GLMetrics() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {cards.map((card, i) => (
-                <Card key={i} className="border-none shadow-sm hover:shadow-md transition-all group bg-white/80 backdrop-blur-md overflow-hidden relative">
+                <Card key={i} className="border-none shadow-sm hover:shadow-md transition-all group bg-card/80 backdrop-blur-md overflow-hidden relative">
                     <div className={cn(`absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full ${card.bg}/30 group-hover:scale-110 transition-transform`)} />
                     <CardContent className="p-6 relative">
                         <div className="flex justify-between items-start mb-4">
                             <div className={cn(`p-2 rounded-xl ${card.bg}`)}>
                                 <card.icon className={cn(`h-5 w-5 ${card.color}`)} />
                             </div>
-                            <div className={cn(`flex items-center text-[10px] font-bold px-2 py-1 rounded-full ${card.trendUp ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-100 text-slate-500'}`)}>
+                            <div className={cn(`flex items-center text-[10px] font-bold px-2 py-1 rounded-full ${card.trendUp ? 'bg-emerald-500/10 text-emerald-600' : 'bg-muted text-muted-foreground'}`)}>
                                 {card.trendUp ? <ArrowUpRight className="h-3 w-3 mr-0.5" /> : null}
                                 {card.trend}
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{card.title}</p>
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-200 tracking-tight">{card.value}</h3>
+                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{card.title}</p>
+                            <h3 className="text-2xl font-bold text-foreground dark:text-slate-200 tracking-tight">{card.value}</h3>
                         </div>
                         <div className="mt-4">
                             <Progress

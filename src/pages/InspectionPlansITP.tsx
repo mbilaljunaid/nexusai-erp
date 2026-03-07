@@ -104,10 +104,10 @@ export default function InspectionPlansITP() {
       breadcrumbs={[{ label: "Manufacturing", href: "/manufacturing" }, { label: "Inspection Plans" }]}
     >
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200 border-none">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200 border-none">
           Inspection Plans (ITP)
         </h1>
-        <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-slate-600">Incoming, in-process, final inspections, and SPC monitoring</p>
+        <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-muted-foreground">Incoming, in-process, final inspections, and SPC monitoring</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3">
@@ -132,7 +132,7 @@ export default function InspectionPlansITP() {
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Inactive</p>
-            <p className="text-2xl font-bold text-gray-600">{plans.length - active}</p>
+            <p className="text-2xl font-bold text-muted-foreground">{plans.length - active}</p>
           </CardContent>
         </Card>
       </div>

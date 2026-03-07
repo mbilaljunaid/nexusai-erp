@@ -69,10 +69,10 @@ export default function RevenueAuditConsole() {
             description="Trace lifecycle and monitor ASC 606 rule adherence."
             actions={
                 <div className="flex gap-4">
-                    <Card className="px-6 py-3 shadow-sm border-none bg-white">
+                    <Card className="px-6 py-3 shadow-sm border-none bg-card">
                         <div className="flex items-center gap-4">
                             <div className="text-right">
-                                <p className="text-xs font-semibold text-slate-500 uppercase">Compliance Score</p>
+                                <p className="text-xs font-semibold text-muted-foreground uppercase">Compliance Score</p>
                                 <p className="text-2xl font-bold text-indigo-600">{complianceHealth?.score || 100}%</p>
                             </div>
                             <div className={cn(`h-10 w-10 rounded-full border-4 flex items-center justify-center text-[10px] font-bold ${(complianceHealth?.score || 100) > 90 ?'border-green-500 text-green-600' :'border-yellow-500 text-yellow-600'}`)}>
@@ -85,7 +85,7 @@ export default function RevenueAuditConsole() {
         >
 
             <Tabs defaultValue="trace" className="space-y-6">
-                <TabsList className="bg-white border p-1 shadow-sm">
+                <TabsList className="bg-card border p-1 shadow-sm">
                     <TabsTrigger value="trace" className="gap-2">
                         <FileSearch className="h-4 w-4" /> Transaction Trace
                     </TabsTrigger>
@@ -108,7 +108,7 @@ export default function RevenueAuditConsole() {
                                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     placeholder="e.g. ORDER-7712, SUB-101..."
-                                    className="pl-9 bg-slate-500/10 border-slate-200"
+                                    className="pl-9 bg-slate-500/10 border-border"
                                     value={searchId}
                                     onChange={(e) => setSearchId(e.target.value)}
                                     onKeyDown={(e) => e.key ==='Enter' && handleSearch()}
@@ -147,7 +147,7 @@ export default function RevenueAuditConsole() {
                                 <Card className="border-none shadow-sm h-fit">
                                     <CardHeader className="bg-slate-500/10 border-b">
                                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                                            <Database className="h-4 w-4 text-slate-500" /> Operational Context
+                                            <Database className="h-4 w-4 text-muted-foreground" /> Operational Context
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent className="pt-6 space-y-4 text-sm">
@@ -195,7 +195,7 @@ export default function RevenueAuditConsole() {
                             {/* Recognition Entries */}
                             {auditTrace.recognitions?.length > 0 && (
                                 <Card className="border-none shadow-sm overflow-hidden">
-                                    <CardHeader className="bg-white border-b">
+                                    <CardHeader className="bg-card border-b">
                                         <CardTitle className="text-lg">Recognition Stream Audit</CardTitle>
                                         <CardDescription>Historical and future entries generated from this transaction lifecycle.</CardDescription>
                                     </CardHeader>
@@ -230,7 +230,7 @@ export default function RevenueAuditConsole() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <Card className="border-none shadow-sm">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Step 4 Allocation Check</CardTitle>
+                                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">Step 4 Allocation Check</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold flex items-center gap-2">
@@ -242,7 +242,7 @@ export default function RevenueAuditConsole() {
                         </Card>
                         <Card className="border-none shadow-sm">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Period Cutoff Safety</CardTitle>
+                                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">Period Cutoff Safety</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold flex items-center gap-2 text-amber-600">
@@ -254,7 +254,7 @@ export default function RevenueAuditConsole() {
                         </Card>
                         <Card className="border-none shadow-sm">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-slate-500 uppercase">Subledger Reconciliation</CardTitle>
+                                <CardTitle className="text-sm font-medium text-muted-foreground uppercase">Subledger Reconciliation</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold flex items-center gap-2">
@@ -273,14 +273,14 @@ export default function RevenueAuditConsole() {
                         </CardHeader>
                         <CardContent className="h-48 flex flex-col items-center justify-center border-2 border-dashed rounded-lg bg-slate-500/10">
                             <ShieldCheck className="h-12 w-12 text-indigo-200 mb-4" />
-                            <p className="text-slate-500 font-medium">No active compliance violations detected.</p>
+                            <p className="text-muted-foreground font-medium">No active compliance violations detected.</p>
                         </CardContent>
                     </Card>
                 </TabsContent>
 
                 <TabsContent value="activity">
                     <Card className="border-none shadow-sm overflow-hidden">
-                        <CardHeader className="bg-white border-b">
+                        <CardHeader className="bg-card border-b">
                             <CardTitle>System Activity Journal</CardTitle>
                             <CardDescription>All manual adjustments and rule changes are logged here for audit purposes.</CardDescription>
                         </CardHeader>
@@ -313,9 +313,9 @@ export default function RevenueAuditConsole() {
 function StepNode({ icon: Icon, label, sublabel, status}: { icon: any, label: string, sublabel?: string, status:"success" |"pending" |"error"}) {
     return (
         <div className="flex flex-col items-center gap-2 relative bg-slate-500/10 p-2 rounded-lg min-w-28">
-            <div className={cn(`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${status ==="success" ?'bg-white text-indigo-600 border-2 border-indigo-500 scale-110' :
+            <div className={cn(`h-14 w-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${status ==="success" ?'bg-card text-indigo-600 border-2 border-indigo-500 scale-110' :
                 status ==="error" ?'bg-red-500/10 text-red-600 border-2 border-red-500' :
-                   'bg-slate-100 text-slate-400 border border-slate-200'
+                   'bg-muted text-muted-foreground/70 border border-border'
                }`)}>
                 <Icon className="h-6 w-6" />
                 {status ==="success" && (
@@ -325,7 +325,7 @@ function StepNode({ icon: Icon, label, sublabel, status}: { icon: any, label: st
                 )}
             </div>
             <div className="text-center">
-                <p className={cn(`text-[11px] font-bold uppercase tracking-wider ${status ==="success" ?"text-indigo-900 dark:text-indigo-200" :"text-slate-400"}`)}>{label}</p>
+                <p className={cn(`text-[11px] font-bold uppercase tracking-wider ${status ==="success" ?"text-indigo-900 dark:text-indigo-200" :"text-muted-foreground/70"}`)}>{label}</p>
                 <p className="text-[10px] text-muted-foreground font-mono truncate max-w-24">{sublabel ||"..."}</p>
             </div>
         </div>

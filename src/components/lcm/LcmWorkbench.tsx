@@ -278,7 +278,7 @@ export default function LcmWorkbench() {
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button variant="ghost" size="sm" title="Close & Calculate Variance" disabled={op.status === 'CLOSED' || op.approvalStatus !== 'APPROVED'}>
-                                                                <Lock className={cn(`h-4 w-4 ${op.status === 'CLOSED' ? 'text-gray-400' : 'text-red-600'}`)} />
+                                                                <Lock className={cn(`h-4 w-4 ${op.status === 'CLOSED' ? 'text-muted-foreground/70' : 'text-red-600'}`)} />
                                                             </Button>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent>

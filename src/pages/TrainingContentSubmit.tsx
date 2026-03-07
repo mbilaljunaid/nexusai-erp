@@ -167,7 +167,7 @@ export default function TrainingContentSubmit() {
             <CheckCircle className="w-10 h-10 text-green-400" />
           </div>
           
-          <p className="text-slate-400 mb-8">
+          <p className="text-muted-foreground/70 mb-8">
             {isFilterRequest 
               ? "Your filter request has been submitted and will be reviewed by our team."
               : "Your content has been submitted and will be reviewed by our team. Once approved, it will appear in the training content library and you'll earn reputation points!"

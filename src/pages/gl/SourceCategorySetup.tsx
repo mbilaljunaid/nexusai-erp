@@ -70,7 +70,7 @@ export default function SourceCategorySetup() {
             description="Standard Origins: Manual, Spreadsheet, Intercompany, Payables, Receivables"
         >
             <Tabs defaultValue="sources" className="space-y-4">
-                <TabsList className="bg-slate-100 p-1">
+                <TabsList className="bg-muted p-1">
                     <TabsTrigger value="sources" className="flex items-center gap-2">
                         <Database className="h-4 w-4" /> Journal Sources
                     </TabsTrigger>

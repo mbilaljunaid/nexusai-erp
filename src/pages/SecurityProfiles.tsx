@@ -149,7 +149,7 @@ export default function SecurityProfiles() {
         {
             id: "scopeValueId",
             header: "Scope Value ID",
-            cell: (r: any) => <span className="font-mono text-xs text-slate-500">{r.scopeValueId}</span>
+            cell: (r: any) => <span className="font-mono text-xs text-muted-foreground">{r.scopeValueId}</span>
         },
         {
             id: "isActive",
@@ -193,7 +193,7 @@ export default function SecurityProfiles() {
             </div>
 
             <Card className="overflow-hidden">
-                <div className="p-4 border-b flex justify-between items-center bg-slate-50/50">
+                <div className="p-4 border-b flex justify-between items-center bg-muted/50/50">
                     <h2 className="font-semibold text-lg">Access Assignments</h2>
                     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                         <SheetTrigger asChild>

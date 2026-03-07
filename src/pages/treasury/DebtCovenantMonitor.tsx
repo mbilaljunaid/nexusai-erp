@@ -43,7 +43,7 @@ const STATUS_CFG: Record<string, string> = {
     Clear: 'bg-emerald-100 text-emerald-600',
     PotentialMatch: 'bg-amber-100 text-amber-600',
     Confirmed: 'bg-red-100 text-red-600',
-    FalsePositive: 'bg-gray-100 text-gray-500',
+    FalsePositive: 'bg-muted text-muted-foreground',
 };
 
 const RECON_CFG: Record<string, string> = {
@@ -117,7 +117,7 @@ export default function DebtCovenantMonitor() {
         { id: "type", header: "Type", width: "120px", cell: (row) => <span className="type-chip">{row.entity_type}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
-                const cfg = STATUS_CFG[row.match_status] ?? 'bg-gray-100 text-gray-500';
+                const cfg = STATUS_CFG[row.match_status] ?? 'bg-muted text-muted-foreground';
                 return <span className={cn(`status-chip ${cfg}`)}>{row.match_status}</span>;
             }
         },
@@ -147,7 +147,7 @@ export default function DebtCovenantMonitor() {
         },
         {
             id: "status", header: "Status", width: "120px", cell: (row) => {
-                const cfg = RECON_CFG[row.status] ?? 'bg-gray-100 text-gray-500';
+                const cfg = RECON_CFG[row.status] ?? 'bg-muted text-muted-foreground';
                 return <span className={cn(`status-chip ${cfg}`)}>{row.status}</span>;
             }
         },
@@ -240,7 +240,7 @@ export default function DebtCovenantMonitor() {
                                 {isLoading ? (
                                     <div className="loading h-full flex items-center justify-center">Loading…</div>
                                 ) : screenHistory.length === 0 ? (
-                                    <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No screening history</div>
+                                    <div className="p-8 text-center text-muted-foreground h-full flex items-center justify-center">No screening history</div>
                                 ) : (
                                     <InteractiveSpreadsheet
                                         columns={screenColumns}
@@ -255,39 +255,43 @@ export default function DebtCovenantMonitor() {
 
                     {/* Review Modal */}
                     {selectedResult && (
-                        <div role="button" tabIndex={0} className="modal-backdrop" onClick={() => setSelectedResult(null)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                            <div role="button" tabIndex={0} className="review-modal" onClick={e => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <h3 className="rm-title">Review Match</h3>
-                                <div className="rm-entity">{selectedResult.entity_name}</div>
-                                {selectedResult.matched_name && <div className="rm-match">Matched against: <strong>{selectedResult.matched_name}</strong></div>}
-                                <div className="rm-score">Similarity score: <strong>{selectedResult.match_score}%</strong></div>
-                                <div className="rm-lists">Lists: {(selectedResult.list_sources ?? []).join(', ')}</div>
-                                <div className="rm-progs">Programs: {(selectedResult.program_tags ?? []).join(', ')}</div>
-                                <div className="rm-choice" style={{ gap: '12px' }}>
-                                    <RadioGroup value={reviewOutcome} onValueChange={(v: any) => setReviewOutcome(v)} className="flex flex-col gap-3">
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="FalsePositive" id="r1" />
-                                            <Label htmlFor="r1" className="text-[13px] cursor-pointer">False Positive — clear entity</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <RadioGroupItem value="Confirmed" id="r2" />
-                                            <Label htmlFor="r2" className="text-[13px] cursor-pointer">Confirmed Match — escalate</Label>
-                                        </div>
-                                    </RadioGroup>
-                                </div>
-                                <div className="rm-actions">
-                                    <Button variant="default" className="rm-cancel" onClick={() => setSelectedResult(null)} aria-label="Cancel review">Cancel</Button>
-                                    <Button variant="default"
-                                        className={cn(`rm-confirm ${reviewOutcome === 'Confirmed' ? 'danger' : 'success'}`)}
-                                        disabled={reviewMutation.isPending}
-                                        onClick={() => reviewMutation.mutate({ id: selectedResult.id, outcome: reviewOutcome })}
-                                        aria-label="Submit review"
-                                    >
-                                        Submit Review
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedResult(null)}>
+                        <div className="modal-backdrop">
+                                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={e => e.stopPropagation()}>
+                                                    <div className="review-modal">
+                                                                                    <h3 className="rm-title">Review Match</h3>
+                                                                                    <div className="rm-entity">{selectedResult.entity_name}</div>
+                                                                                    {selectedResult.matched_name && <div className="rm-match">Matched against: <strong>{selectedResult.matched_name}</strong></div>}
+                                                                                    <div className="rm-score">Similarity score: <strong>{selectedResult.match_score}%</strong></div>
+                                                                                    <div className="rm-lists">Lists: {(selectedResult.list_sources ?? []).join(', ')}</div>
+                                                                                    <div className="rm-progs">Programs: {(selectedResult.program_tags ?? []).join(', ')}</div>
+                                                                                    <div className="rm-choice" style={{ gap: '12px' }}>
+                                                                                        <RadioGroup value={reviewOutcome} onValueChange={(v: any) => setReviewOutcome(v)} className="flex flex-col gap-3">
+                                                                                            <div className="flex items-center space-x-2">
+                                                                                                <RadioGroupItem value="FalsePositive" id="r1" />
+                                                                                                <Label htmlFor="r1" className="text-[13px] cursor-pointer">False Positive — clear entity</Label>
+                                                                                            </div>
+                                                                                            <div className="flex items-center space-x-2">
+                                                                                                <RadioGroupItem value="Confirmed" id="r2" />
+                                                                                                <Label htmlFor="r2" className="text-[13px] cursor-pointer">Confirmed Match — escalate</Label>
+                                                                                            </div>
+                                                                                        </RadioGroup>
+                                                                                    </div>
+                                                                                    <div className="rm-actions">
+                                                                                        <Button variant="default" className="rm-cancel" onClick={() => setSelectedResult(null)} aria-label="Cancel review">Cancel</Button>
+                                                                                        <Button variant="default"
+                                                                                            className={cn(`rm-confirm ${reviewOutcome === 'Confirmed' ? 'danger' : 'success'}`)}
+                                                                                            disabled={reviewMutation.isPending}
+                                                                                            onClick={() => reviewMutation.mutate({ id: selectedResult.id, outcome: reviewOutcome })}
+                                                                                            aria-label="Submit review"
+                                                                                        >
+                                                                                            Submit Review
+                                                                                        </Button>
+                                                                                    </div>
+                                                                                </div>
+                                                    </Button>
+                                                </div>
+                        </Button>
                     )}
                 </div>
             )}
@@ -302,7 +306,7 @@ export default function DebtCovenantMonitor() {
                     </div>
                     <div className="h-[400px]">
                         {signoffs.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No bank reconciliations found</div>
+                            <div className="p-8 text-center text-muted-foreground h-full flex items-center justify-center">No bank reconciliations found</div>
                         ) : (
                             <InteractiveSpreadsheet
                                 columns={reconColumns}
@@ -388,18 +392,18 @@ export default function DebtCovenantMonitor() {
 
 function DcmKpi({ label, value, colorClass, borderClass, alert }: { label: string; value: number | string; colorClass: string; borderClass: string; alert?: boolean }) {
     return (
-        <div className={cn(`bg-white border-y border-r border-l-4 rounded-xl px-4 py-3 min-w-28 ${alert ? 'border-y-red-300 border-r-red-300' : 'border-y-gray-200 border-r-gray-200'} ${borderClass}`)}>
+        <div className={cn(`bg-card border-y border-r border-l-4 rounded-xl px-4 py-3 min-w-28 ${alert ? 'border-y-red-300 border-r-red-300' : 'border-y-gray-200 border-r-gray-200'} ${borderClass}`)}>
             <div className={cn(`text-[22px] font-[800] ${colorClass}`)}>{value}</div>
-            <div className="text-[11px] text-gray-500 mt-0.5">{label}</div>
+            <div className="text-[11px] text-muted-foreground mt-0.5">{label}</div>
         </div>
     );
 }
 
 function ReconKpi({ label, value, colorClass, isText }: { label: string; value: number | string; colorClass: string; isText?: boolean }) {
     return (
-        <div className="bg-gray-500/10 border border-gray-200 rounded-lg px-4 py-2.5 flex-1">
+        <div className="bg-gray-500/10 border border-border rounded-lg px-4 py-2.5 flex-1">
             <div className={cn(`font-[800] ${colorClass} ${isText ? 'text-base font-mono' : 'text-[22px]'}`)}>{value}</div>
-            <div className="text-[11px] text-gray-400 mt-0.5">{label}</div>
+            <div className="text-[11px] text-muted-foreground/70 mt-0.5">{label}</div>
         </div>
     );
 }

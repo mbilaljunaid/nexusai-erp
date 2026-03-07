@@ -46,7 +46,7 @@ export default function CostInsights() {
             width: "250px",
             cell: (row: any) => (
                 <div className="flex items-center gap-2 h-full px-2">
-                    <AlertCircle className="h-4 w-4 text-slate-400" />
+                    <AlertCircle className="h-4 w-4 text-muted-foreground/70" />
                     <span className="font-medium text-sm">{(row.anomalyType || "").replace("_", " ")}</span>
                 </div>
             )
@@ -77,7 +77,7 @@ export default function CostInsights() {
             description="Proactive financial surveillance and predictive costing insights."
             actions={
                 <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="px-3 py-1 bg-white">
+                    <Badge variant="outline" className="px-3 py-1 bg-card">
                         <Sparkles className="h-3 w-3 mr-2 text-amber-500 fill-amber-500" />
                         AI Engine Active
                     </Badge>
@@ -86,7 +86,7 @@ export default function CostInsights() {
         >
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="bg-white border-none shadow-sm border-l-4 border-l-red-500">
+                <Card className="bg-card border-none shadow-sm border-l-4 border-l-red-500">
                     <CardHeader className="pb-2">
                         <CardDescription>High Severity Anomalies</CardDescription>
                         <CardTitle className="text-3xl flex items-center justify-between">
@@ -95,7 +95,7 @@ export default function CostInsights() {
                         </CardTitle>
                     </CardHeader>
                 </Card>
-                <Card className="bg-white border-none shadow-sm border-l-4 border-l-amber-500">
+                <Card className="bg-card border-none shadow-sm border-l-4 border-l-amber-500">
                     <CardHeader className="pb-2">
                         <CardDescription>Pending Investigations</CardDescription>
                         <CardTitle className="text-3xl">
@@ -103,7 +103,7 @@ export default function CostInsights() {
                         </CardTitle>
                     </CardHeader>
                 </Card>
-                <Card className="bg-white border-none shadow-sm border-l-4 border-l-indigo-500">
+                <Card className="bg-card border-none shadow-sm border-l-4 border-l-indigo-500">
                     <CardHeader className="pb-2">
                         <CardDescription>Cost Precision Score</CardDescription>
                         <CardTitle className="text-3xl flex items-center justify-between">
@@ -116,7 +116,7 @@ export default function CostInsights() {
 
             <div className="grid grid-cols-1 gap-6">
                 <Card className="border-none shadow-sm overflow-hidden">
-                    <CardHeader className="bg-white border-b">
+                    <CardHeader className="bg-card border-b">
                         <CardTitle>Surveillance Feed</CardTitle>
                         <CardDescription>Real-time anomaly detection across production and procurement.</CardDescription>
                     </CardHeader>

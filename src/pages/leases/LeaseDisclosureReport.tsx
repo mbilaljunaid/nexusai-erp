@@ -57,7 +57,7 @@ export default function LeaseDisclosureReport() {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2"><CardTitle className="text-sm">Total Lease Liability</CardTitle></CardHeader>
-                    <CardContent><div className="text-3xl font-bold text-slate-700">${formatNumber(totalLiability)}</div></CardContent>
+                    <CardContent><div className="text-3xl font-bold text-foreground/90">${formatNumber(totalLiability)}</div></CardContent>
                 </Card>
             </div>
 

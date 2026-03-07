@@ -193,58 +193,59 @@ export function ArSideSheet({ isOpen, onClose, data, type }: ArSideSheetProps) {
                             </div>
                         ) : (
                             accounts?.map((acc: any) => (
-                                <div role="button" tabIndex={0}
-                                    key={acc.id}
-                                    onClick={() => setSelectedAccountId(selectedAccountId === acc.id ? null : acc.id)}
-                                    className={cn(`p-4 rounded-xl border transition-all cursor-pointer ${selectedAccountId === acc.id
-                                        ? "border-emerald-500 bg-emerald-50/30 ring-1 ring-emerald-200 shadow-sm"
-                                        : "hover:border-emerald-200 hover:bg-muted/50 border-muted-foreground/10"
-                                        }`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div className="flex items-center gap-2">
-                                            <Briefcase className="h-4 w-4 text-emerald-600" />
-                                            <span className="font-bold text-sm tracking-tight">{acc.accountName}</span>
-                                        </div>
-                                        <Badge variant={acc.creditHold ? "destructive" : "default"} className="text-[9px] h-4 px-1">
-                                            {acc.creditHold ? "ON HOLD" : "ACTIVE"}
-                                        </Badge>
-                                    </div>
-                                    <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
-                                        <span>{acc.accountNumber}</span>
-                                        <span className="text-rose-600 font-bold tracking-tight">${formatNumber(parseFloat(acc.balance))}</span>
-                                    </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedAccountId(selectedAccountId === acc.id ? null : acc.id)}>
+                                <div
+                                                                    key={acc.id}
+                                                                    className={cn(`p-4 rounded-xl border transition-all cursor-pointer ${selectedAccountId === acc.id
+                                                                        ? "border-emerald-500 bg-emerald-50/30 ring-1 ring-emerald-200 shadow-sm"
+                                                                        : "hover:border-emerald-200 hover:bg-muted/50 border-muted-foreground/10"
+                                                                        }`)}
+                                                                >
+                                                                    <div className="flex justify-between items-start mb-2">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <Briefcase className="h-4 w-4 text-emerald-600" />
+                                                                            <span className="font-bold text-sm tracking-tight">{acc.accountName}</span>
+                                                                        </div>
+                                                                        <Badge variant={acc.creditHold ? "destructive" : "default"} className="text-[9px] h-4 px-1">
+                                                                            {acc.creditHold ? "ON HOLD" : "ACTIVE"}
+                                                                        </Badge>
+                                                                    </div>
+                                                                    <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
+                                                                        <span>{acc.accountNumber}</span>
+                                                                        <span className="text-rose-600 font-bold tracking-tight">${formatNumber(parseFloat(acc.balance))}</span>
+                                                                    </div>
 
-                                    {selectedAccountId === acc.id && (
-                                        <div className="mt-4 pt-4 border-t border-emerald-100 space-y-3 animate-in fade-in slide-in-from-top-2">
-                                            <ArCreditProfile account={acc} />
+                                                                    {selectedAccountId === acc.id && (
+                                                                        <div className="mt-4 pt-4 border-t border-emerald-100 space-y-3 animate-in fade-in slide-in-from-top-2">
+                                                                            <ArCreditProfile account={acc} />
 
-                                            <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest text-emerald-800/60 mt-4">
-                                                <span>Sites / Addresses</span>
-                                            </div>
-                                            {sitesLoading ? (
-                                                <div className="h-10 w-full animate-pulse bg-emerald-100/50 rounded-lg" />
-                                            ) : sites?.length === 0 ? (
-                                                <p className="text-[10px] text-muted-foreground italic">No addresses defined for this account.</p>
-                                            ) : (
-                                                <div className="space-y-2">
-                                                    {sites?.map((site: any) => (
-                                                        <div key={site.id} className="p-2 bg-white/60 rounded-lg border border-emerald-100 flex items-start gap-2">
-                                                            <MapPin className="h-3 w-3 text-emerald-500 mt-0.5" />
-                                                            <div className="flex-1">
-                                                                <div className="flex items-center justify-between">
-                                                                    <span className="text-[11px] font-bold">{site.siteName}</span>
-                                                                    {site.isBillTo && <Badge className="text-[8px] h-3 px-1 bg-sky-500">Bill-To</Badge>}
+                                                                            <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest text-emerald-800/60 mt-4">
+                                                                                <span>Sites / Addresses</span>
+                                                                            </div>
+                                                                            {sitesLoading ? (
+                                                                                <div className="h-10 w-full animate-pulse bg-emerald-100/50 rounded-lg" />
+                                                                            ) : sites?.length === 0 ? (
+                                                                                <p className="text-[10px] text-muted-foreground italic">No addresses defined for this account.</p>
+                                                                            ) : (
+                                                                                <div className="space-y-2">
+                                                                                    {sites?.map((site: any) => (
+                                                                                        <div key={site.id} className="p-2 bg-card/60 rounded-lg border border-emerald-100 flex items-start gap-2">
+                                                                                            <MapPin className="h-3 w-3 text-emerald-500 mt-0.5" />
+                                                                                            <div className="flex-1">
+                                                                                                <div className="flex items-center justify-between">
+                                                                                                    <span className="text-[11px] font-bold">{site.siteName}</span>
+                                                                                                    {site.isBillTo && <Badge className="text-[8px] h-3 px-1 bg-sky-500">Bill-To</Badge>}
+                                                                                                </div>
+                                                                                                <p className="text-[10px] text-muted-foreground truncate max-w-44">{site.address}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    ))}
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
                                                                 </div>
-                                                                <p className="text-[10px] text-muted-foreground truncate max-w-44">{site.address}</p>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
+                                </Button>
                             ))
                         )}
                     </div>

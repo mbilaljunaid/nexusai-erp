@@ -60,8 +60,8 @@ export default function CarrierManifest() {
         <div className="p-6 max-w-7xl mx-auto font-sans">
             <div className="flex justify-between mb-4">
                 <div>
-                    <h1 className="text-[22px] font-bold text-gray-900 dark:text-gray-200 m-0">Carrier Manifest</h1>
-                    <p className="text-[13px] text-gray-500 mt-1 mb-0">Shipping manifests · ZPL label generation · Tender to carrier</p>
+                    <h1 className="text-[22px] font-bold text-foreground dark:text-gray-200 m-0">Carrier Manifest</h1>
+                    <p className="text-[13px] text-muted-foreground mt-1 mb-0">Shipping manifests · ZPL label generation · Tender to carrier</p>
                 </div>
                 <Button variant="default" onClick={() => setShowNew(true)} className="text-white">+ New Manifest</Button>
             </div>
@@ -74,16 +74,16 @@ export default function CarrierManifest() {
                     ['Tendered', summary?.tendered_manifests ?? 0, 'border-l-emerald-600'],
                     ['Pkgs Today', summary?.total_packages_today ?? 0, 'border-l-gray-500']
                 ].map(([l, v, c]) => (
-                    <div key={l} className={cn(`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-4 ${c}`)}>
+                    <div key={l} className={cn(`bg-card border border-border rounded-xl py-2.5 px-4 flex-1 border-l-4 ${c}`)}>
                         <div className="text-[22px] font-extrabold font-mono">{v}</div>
-                        <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
+                        <div className="text-[11px] text-muted-foreground/70 mt-0.5">{l}</div>
                     </div>
                 ))}
             </div>
 
             {/* New Manifest form */}
             {showNew && (
-                <div className="bg-white border border-gray-200 rounded-xl p-3.5 mb-2.5">
+                <div className="bg-card border border-border rounded-xl p-3.5 mb-2.5">
                     <div className="text-[13px] font-bold mb-2.5">New Manifest</div>
                     <div className="grid grid-cols-3 gap-2">
                         {[['carrierScac', 'Carrier SCAC', 'text'], ['shipDate', 'Ship Date', 'date'], ['originWarehouse', 'Warehouse', 'text']].map(([k, l, t]) => (
@@ -104,29 +104,31 @@ export default function CarrierManifest() {
                 {/* Manifest list */}
                 <div className="flex flex-col gap-1.5">
                     {manifests.map(m => {
-                        const cfgClass = STATUS_CFG[m.status] ?? 'bg-gray-100 text-gray-500';
+                        const cfgClass = STATUS_CFG[m.status] ?? 'bg-muted text-muted-foreground';
                         return (
-                            <div key={m.id} onClick={() => setSelected(m)} className={cn(`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-500/10' : 'border-gray-200 bg-white'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <div className="flex justify-between mb-1">
-                                    <span className="text-[11px] font-bold font-mono">{m.manifest_number}</span>
-                                    <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`)}>{m.status}</span>
-                                </div>
-                                <div className="text-[10px] text-gray-700 mb-0.5">{m.carrier_scac} · {m.ship_date}</div>
-                                <div className="text-[10px] text-gray-500 flex items-center gap-1"><Package className="h-2.5 w-2.5"  /> {m.total_packages} pkgs · {Number(m.total_weight_kg || 0).toFixed(1)} kg</div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelected(m)}>
+                            <div key={m.id} className={cn(`border rounded-xl p-2.5 cursor-pointer ${selected?.id === m.id ? 'border-blue-700 bg-blue-500/10' : 'border-border bg-card'}`)}>
+                                                            <div className="flex justify-between mb-1">
+                                                                <span className="text-[11px] font-bold font-mono">{m.manifest_number}</span>
+                                                                <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`)}>{m.status}</span>
+                                                            </div>
+                                                            <div className="text-[10px] text-foreground/90 mb-0.5">{m.carrier_scac} · {m.ship_date}</div>
+                                                            <div className="text-[10px] text-muted-foreground flex items-center gap-1"><Package className="h-2.5 w-2.5"  /> {m.total_packages} pkgs · {Number(m.total_weight_kg || 0).toFixed(1)} kg</div>
+                                                        </div>
+                            </Button>
                         );
                     })}
-                    {manifests.length === 0 && <div className="text-center text-gray-400 p-5">No manifests</div>}
+                    {manifests.length === 0 && <div className="text-center text-muted-foreground/70 p-5">No manifests</div>}
                 </div>
 
                 {/* Detail panel */}
-                <div className="bg-white border border-gray-200 rounded-xl p-4">
+                <div className="bg-card border border-border rounded-xl p-4">
                     {selected ? (
                         <>
                             <div className="flex justify-between items-start mb-3.5">
                                 <div>
                                     <div className="text-base font-extrabold font-mono">{selected.manifest_number}</div>
-                                    <div className="text-xs text-gray-500">{selected.carrier_scac} · {selected.ship_date} · {selected.total_packages} packages</div>
+                                    <div className="text-xs text-muted-foreground">{selected.carrier_scac} · {selected.ship_date} · {selected.total_packages} packages</div>
                                 </div>
                                 <div className="flex gap-1.5">
                                     <Button variant="default" size="sm" onClick={() => setShowNewPkg(true)} className="text-white text-[11px] flex items-center gap-1"><Package className="h-[11px] w-[11px]"  /> Add Package</Button>
@@ -136,7 +138,7 @@ export default function CarrierManifest() {
                             </div>
 
                             {showNewPkg && (
-                                <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3 mb-3">
+                                <div className="bg-gray-500/10 border border-border rounded-xl p-3 mb-3">
                                     <div className="text-xs font-bold mb-2">Add Package</div>
                                     <div className="grid grid-cols-2 gap-1.5">
                                         {[['customerName', 'Customer Name', 'text'], ['address', 'Address', 'text'], ['city', 'City', 'text'], ['state', 'State', 'text'], ['zip', 'ZIP', 'text'], ['weightKg', 'Weight (kg)', 'number']].map(([k, l, t]) => (
@@ -167,19 +169,19 @@ export default function CarrierManifest() {
                                 <TableHeader>
                                     <TableRow className="bg-gray-500/10 hover:bg-gray-500/10">
                                         {['Tracking #', 'Customer', 'Destination', 'Weight', 'Service', 'Label', ''].map(h => (
-                                            <TableHead key={h} className="py-2 px-2.5 h-auto text-gray-700 font-semibold">{h}</TableHead>
+                                            <TableHead key={h} className="py-2 px-2.5 h-auto text-foreground/90 font-semibold">{h}</TableHead>
                                         ))}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {packages.map(p => (
-                                        <TableRow key={p.id} className="border-gray-100 hover:bg-gray-50/50">
+                                        <TableRow key={p.id} className="border-border hover:bg-muted/50/50">
                                             <TableCell className="py-2 px-2.5 font-mono font-bold">{p.tracking_number}</TableCell>
                                             <TableCell className="py-2 px-2.5">{p.customer_name || '—'}</TableCell>
                                             <TableCell className="py-2 px-2.5">{p.ship_to_city}, {p.ship_to_state} {p.ship_to_zip}</TableCell>
                                             <TableCell className="py-2 px-2.5 font-mono">{Number(p.weight_kg).toFixed(2)} kg</TableCell>
                                             <TableCell className="py-2 px-2.5">{p.service_code}</TableCell>
-                                            <TableCell className="py-2 px-2.5"><span className={cn(`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-gray-400'}`)}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></TableCell>
+                                            <TableCell className="py-2 px-2.5"><span className={cn(`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-muted-foreground/70'}`)}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></TableCell>
                                             <TableCell className="py-2 px-2.5">
                                                 <Button variant="secondary" size="sm" onClick={() => printMut.mutate(p.id)} className="flex items-center gap-1 text-white text-[10px]">
                                                     <Printer className="h-2.5 w-2.5"  /> Print ZPL
@@ -189,7 +191,7 @@ export default function CarrierManifest() {
                                     ))}
                                     {packages.length === 0 && (
                                         <TableRow>
-                                            <TableCell colSpan={7} className="text-center text-gray-400 py-4">No packages</TableCell>
+                                            <TableCell colSpan={7} className="text-center text-muted-foreground/70 py-4">No packages</TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>
@@ -198,12 +200,12 @@ export default function CarrierManifest() {
                             {/* ZPL Preview */}
                             {zplPreview && (
                                 <div className="mt-3.5 bg-gray-900 rounded-lg p-3">
-                                    <div className="text-[11px] font-bold text-gray-400 mb-1.5 flex items-center gap-1.5"><Printer className="h-[11px] w-[11px]"  /> ZPL II Label Payload</div>
+                                    <div className="text-[11px] font-bold text-muted-foreground/70 mb-1.5 flex items-center gap-1.5"><Printer className="h-[11px] w-[11px]"  /> ZPL II Label Payload</div>
                                     <pre className="text-[10px] font-mono text-emerald-100 m-0 whitespace-pre-wrap max-h-72 overflow-y-auto">{zplPreview}</pre>
                                 </div>
                             )}
                         </>
-                    ) : <div className="flex items-center justify-center h-48 text-gray-400 text-sm">Select a manifest to view details</div>}
+                    ) : <div className="flex items-center justify-center h-48 text-muted-foreground/70 text-sm">Select a manifest to view details</div>}
                 </div>
             </div>
         </div>

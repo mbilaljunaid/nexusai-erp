@@ -35,8 +35,8 @@ export default function PublicFixedAssetProcess() {
             </Button>
           </Link>
           <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800">
-              <Building2 className="w-8 h-8 text-slate-600" />
+            <div className="p-3 rounded-lg bg-muted dark:bg-slate-800">
+              <Building2 className="w-8 h-8 text-muted-foreground" />
             </div>
             <div>
               <Badge className="mb-2">FINANCE</Badge>

@@ -186,7 +186,7 @@ export default function BulkImportWizard() {
                                         <ScrollArea className="h-72 border rounded-md p-4 bg-muted/30">
                                             <div className="space-y-3">
                                                 {result.errors.map((err, i) => (
-                                                    <Alert key={i} variant="destructive" className="bg-white">
+                                                    <Alert key={i} variant="destructive" className="bg-card">
                                                         <AlertCircle className="h-4 w-4" />
                                                         <AlertTitle className="text-xs font-mono">Row {err.row}</AlertTitle>
                                                         <AlertDescription className="text-xs mt-1">

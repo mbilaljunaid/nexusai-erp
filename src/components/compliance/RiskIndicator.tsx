@@ -87,7 +87,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
     const { color, bg, border, icon: Icon, barColor, label } = config[analysis.level];
 
     return (
-        <div className={cn("rounded-xl border shadow-sm overflow-hidden bg-white", className)}>
+        <div className={cn("rounded-xl border shadow-sm overflow-hidden bg-card", className)}>
             <div className={cn("px-4 py-3 flex items-center justify-between border-b", bg, border)}>
                 <div className="flex items-center gap-2">
                     <Icon className={cn("h-5 w-5", color)} />
@@ -95,14 +95,14 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
                         {label}
                     </span>
                 </div>
-                <Badge variant="outline" className={cn("font-mono bg-white/50", color)}>
+                <Badge variant="outline" className={cn("font-mono bg-card/50", color)}>
                     Score: {analysis.score}/100
                 </Badge>
             </div>
 
             <div className="p-4 space-y-4">
                 <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs font-medium text-slate-500">
+                    <div className="flex justify-between text-xs font-medium text-muted-foreground">
                         <span>Compliance Confidence</span>
                         <span>{100 - analysis.score}%</span>
                     </div>
@@ -110,7 +110,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
                 </div>
 
                 <div className="space-y-2">
-                    <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-tight flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-tight flex items-center gap-1">
                         Risk Justification
                         <TooltipProvider>
                             <Tooltip>
@@ -125,7 +125,7 @@ export function RiskIndicator({ analysis, isLoading, className }: RiskIndicatorP
                     </h4>
                     <ul className="space-y-1.5 list-disc pl-4 italic">
                         {analysis.justification.map((j, i) => (
-                            <li key={i} className="text-xs text-slate-600 leading-relaxed">
+                            <li key={i} className="text-xs text-muted-foreground leading-relaxed">
                                 {j}
                             </li>
                         ))}

@@ -24,7 +24,7 @@ const Node = ({ service, isCenter = false}: { service: ServiceStatus; isCenter?:
             case'Closed': return'bg-green-100 border-green-500 text-green-700';
             case'Open': return'bg-blue-500/10 border-blue-400 text-blue-700';
             case'Error': return'bg-red-500/10 border-red-400 text-red-700';
-            default: return'bg-gray-500/10 border-gray-300 text-gray-500';
+            default: return'bg-gray-500/10 border-gray-300 text-muted-foreground';
        }
    };
 
@@ -33,7 +33,7 @@ const Node = ({ service, isCenter = false}: { service: ServiceStatus; isCenter?:
             case'Closed': return <CheckCircle2 className="w-5 h-5 text-green-600" />;
             case'Open': return <Clock className="w-5 h-5 text-blue-500" />;
             case'Error': return <AlertCircle className="w-5 h-5 text-red-500" />;
-            default: return <Clock className="w-5 h-5 text-gray-400" />;
+            default: return <Clock className="w-5 h-5 text-muted-foreground/70" />;
        }
    };
 
@@ -102,14 +102,14 @@ export const CloseDependencyGraph: React.FC<CloseDependencyGraphProps> = ({ stat
                                     group-hover:bg-blue-400 transition-colors
                                `)} />
                                 <div className="hidden md:block absolute left-full ml-16 transform -translate-x-1 top-1/2 -mt-1">
-                                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                                    <ArrowRight className="w-4 h-4 text-muted-foreground/70" />
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Right Column: GL */}
-                    <div className="flex items-center justify-center pl-10 border-l-2 border-dashed border-slate-200 ml-4 py-20">
+                    <div className="flex items-center justify-center pl-10 border-l-2 border-dashed border-border ml-4 py-20">
                         <div className="relative">
                             <div className="absolute -left-6 top-1/2 w-6 h-0.5 bg-slate-300" />
                             <Node service={glStatus} isCenter={true} />

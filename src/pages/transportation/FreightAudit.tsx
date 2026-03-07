@@ -89,29 +89,30 @@ export default function FreightAudit() {
                     </CardHeader>
                     <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
                         {invoices?.map((invoice: any) => (
-                            <div role="button" tabIndex={0}
-                                key={invoice.id}
-                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedInvoice?.id === invoice.id
-                                    ? "border-primary bg-primary/5"
-                                    : "border-border hover:bg-accent"
-                                    }`)}
-                                onClick={() => setSelectedInvoice(invoice)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <div className="font-medium">{invoice.invoiceNumber}</div>
-                                        <div className="text-sm text-muted-foreground">{invoice.carrier}</div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="font-bold">{formatCurrency(invoice.amount)}</div>
-                                        {invoice.hasDiscrepancy && (
-                                            <Badge variant="destructive" className="mt-1">
-                                                Discrepancy
-                                            </Badge>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedInvoice(invoice)}>
+                            <div
+                                                            key={invoice.id}
+                                                            className={cn(`p-3 rounded-lg cursor-pointer border ${selectedInvoice?.id === invoice.id
+                                                                ? "border-primary bg-primary/5"
+                                                                : "border-border hover:bg-accent"
+                                                                }`)}
+                                                        >
+                                                            <div className="flex justify-between items-start">
+                                                                <div>
+                                                                    <div className="font-medium">{invoice.invoiceNumber}</div>
+                                                                    <div className="text-sm text-muted-foreground">{invoice.carrier}</div>
+                                                                </div>
+                                                                <div className="text-right">
+                                                                    <div className="font-bold">{formatCurrency(invoice.amount)}</div>
+                                                                    {invoice.hasDiscrepancy && (
+                                                                        <Badge variant="destructive" className="mt-1">
+                                                                            Discrepancy
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>

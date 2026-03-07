@@ -42,9 +42,9 @@ export default function TaskDashboard() {
                 </div>
             )
         },
-        { id: "priority", header: "Priority", width: "100px", cell: (row) => <span className="text-slate-400">{row.priority}</span> },
+        { id: "priority", header: "Priority", width: "100px", cell: (row) => <span className="text-muted-foreground/70">{row.priority}</span> },
         { id: "assigned", header: "Assigned To", width: "150px", cell: (row) => <span className="text-white">{row.assignedUserId || 'Unassigned'}</span> },
-        { id: "location", header: "Location", width: "120px", cell: () => <span className="text-slate-400 font-mono text-xs">A-04-12-01</span> },
+        { id: "location", header: "Location", width: "120px", cell: () => <span className="text-muted-foreground/70 font-mono text-xs">A-04-12-01</span> },
         {
             id: "actions", header: "Actions", width: "100px", cell: () => (
                 <Button variant="ghost" size="sm" className="hover:bg-blue-500/20 text-blue-400 w-full justify-end">
@@ -71,7 +71,7 @@ export default function TaskDashboard() {
                     <Card key={stat.label} className="bg-slate-900/50 border-slate-800">
                         <CardContent className="p-6 flex items-center justify-between">
                             <div>
-                                <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">{stat.label}</p>
+                                <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">{stat.label}</p>
                                 <p className={cn(`text-3xl font-bold mt-1 ${stat.color}`)}>{stat.count}</p>
                             </div>
                             <stat.icon className={cn(`w-8 h-8 opacity-20 ${stat.color}`)} />

@@ -197,7 +197,7 @@ export default function DemoManagement() {
                 <h2 className="text-2xl font-bold mb-6">Active Demo Environments</h2>
 
                 {demos.length === 0 ? (
-                  <p className="text-slate-400">No active demos yet</p>
+                  <p className="text-muted-foreground/70">No active demos yet</p>
                 ) : (
                   <div className="space-y-4">
                     {demos.map((demo) => (

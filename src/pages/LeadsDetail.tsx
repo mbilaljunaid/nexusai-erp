@@ -311,15 +311,17 @@ export default function LeadsDetail() {
       header: "Actions",
       width: "15%",
       cell: (lead: any) => (
-        <div role="button" tabIndex={0} className="p-2" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-          <LeadConvertModal
-            lead={lead}
-            onSuccess={() => {
-              queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
-              queryClient.invalidateQueries({ queryKey: ["/api/crm/metrics"] });
-            }}
-          />
-        </div>
+        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={(e) => e.stopPropagation()}>
+          <div className="p-2">
+                    <LeadConvertModal
+                      lead={lead}
+                      onSuccess={() => {
+                        queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+                        queryClient.invalidateQueries({ queryKey: ["/api/crm/metrics"] });
+                      }}
+                    />
+                  </div>
+          </Button>
       )
     }
   ];

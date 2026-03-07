@@ -82,7 +82,7 @@ export default function ProductCatalogDashboard() {
             <div className="flex justify-between items-center">
                 <div>
                     
-                    <p className="text-gray-500 mt-1">Product Information Management</p>
+                    <p className="text-muted-foreground mt-1">Product Information Management</p>
                 </div>
                 <div className="flex space-x-3">
                     <Button variant="outline">
@@ -104,7 +104,7 @@ export default function ProductCatalogDashboard() {
             <div className="grid grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm text-gray-500">Total Products</CardTitle>
+                        <CardTitle className="text-sm text-muted-foreground">Total Products</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{products.length}</div>
@@ -112,7 +112,7 @@ export default function ProductCatalogDashboard() {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm text-gray-500">Published</CardTitle>
+                        <CardTitle className="text-sm text-muted-foreground">Published</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">
@@ -122,7 +122,7 @@ export default function ProductCatalogDashboard() {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm text-gray-500">Categories</CardTitle>
+                        <CardTitle className="text-sm text-muted-foreground">Categories</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{categories.length}</div>
@@ -130,7 +130,7 @@ export default function ProductCatalogDashboard() {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm text-gray-500">Pending Review</CardTitle>
+                        <CardTitle className="text-sm text-muted-foreground">Pending Review</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">
@@ -176,7 +176,7 @@ export default function ProductCatalogDashboard() {
                                     <div key={cat.id} className="p-3 border rounded flex justify-between items-center">
                                         <div>
                                             <div className="font-medium">{cat.name}</div>
-                                            <div className="text-sm text-gray-500">{cat.path}</div>
+                                            <div className="text-sm text-muted-foreground">{cat.path}</div>
                                         </div>
                                         <Badge>{cat.level === 0 ? 'Root' : `Level ${cat.level}`}</Badge>
                                     </div>
@@ -192,7 +192,7 @@ export default function ProductCatalogDashboard() {
                             <CardTitle>Custom Attributes</CardTitle>
                         </CardHeader>
                         <CardContent className="h-96 flex items-center justify-center">
-                            <p className="text-gray-400">Attribute management UI coming soon</p>
+                            <p className="text-muted-foreground/70">Attribute management UI coming soon</p>
                         </CardContent>
                     </Card>
                 </TabsContent>

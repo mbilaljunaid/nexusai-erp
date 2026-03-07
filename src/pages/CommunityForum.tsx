@@ -194,7 +194,7 @@ export default function CommunityForum() {
 
   const getTrustLevelInfo = (level: number) => {
     const levels = [
-      { name: "New Member", color: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200", icon: Users },
+      { name: "New Member", color: "bg-muted text-foreground dark:bg-gray-800 dark:text-gray-200", icon: Users },
       { name: "Contributor", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200", icon: Star },
       { name: "Trusted", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200", icon: Shield },
       { name: "Leader", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200", icon: Trophy },
@@ -437,13 +437,15 @@ export default function CommunityForum() {
         <CardHeader className="py-3"><CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Trending Today</CardTitle></CardHeader>
         <CardContent className="pt-0 space-y-3">
           {trendingPosts.map((post, i) => (
-            <div role="button" tabIndex={0} key={post.id} className="cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setSelectedPost(post.id)} data-testid={`trending-post-${i}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-              <p className="text-sm font-medium line-clamp-2">{post.title}</p>
-              <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {post.viewCount || 0}</span>
-                <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" /> {post.answerCount || 0}</span>
-              </div>
-            </div>
+            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedPost(post.id)}>
+              <div key={post.id} className="cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" data-testid={`trending-post-${i}`}>
+                            <p className="text-sm font-medium line-clamp-2">{post.title}</p>
+                            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {post.viewCount || 0}</span>
+                              <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" /> {post.answerCount || 0}</span>
+                            </div>
+                          </div>
+              </Button>
           ))}
         </CardContent>
       </Card>
@@ -456,22 +458,24 @@ export default function CommunityForum() {
             const displayName = user.userName || (user.userFirstName && user.userLastName ? `${user.userFirstName} ${user.userLastName}` : null) || user.userId?.slice(0, 12);
             const initials = displayName ? displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?';
             return (
-              <div role="button" tabIndex={0} key={user.id} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" onClick={() => setProfileUserId(user.userId)} data-testid={`leaderboard-user-${index}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">{index + 1}</div>
-                <Avatar className="w-7 h-7">
-                  {user.profileImageUrl && <AvatarImage src={user.profileImageUrl} alt={displayName} />}
-                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{displayName}</p>
-                  <div className="flex items-center gap-1">
-                    <Badge variant="outline" className={cn(`text-[10px] px-1 py-0 ${trustInfo.color}`)}>
-                      <trustInfo.icon className="w-2 h-2 mr-0.5" />{trustInfo.name}
-                    </Badge>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-muted-foreground">{user.totalReputation || 0}</span>
-              </div>
+              <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setProfileUserId(user.userId)}>
+                <div key={user.id} className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md -mx-2" data-testid={`leaderboard-user-${index}`}>
+                                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary font-bold text-[10px]">{index + 1}</div>
+                                <Avatar className="w-7 h-7">
+                                  {user.profileImageUrl && <AvatarImage src={user.profileImageUrl} alt={displayName} />}
+                                  <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium truncate">{displayName}</p>
+                                  <div className="flex items-center gap-1">
+                                    <Badge variant="outline" className={cn(`text-[10px] px-1 py-0 ${trustInfo.color}`)}>
+                                      <trustInfo.icon className="w-2 h-2 mr-0.5" />{trustInfo.name}
+                                    </Badge>
+                                  </div>
+                                </div>
+                                <span className="text-xs font-bold text-muted-foreground">{user.totalReputation || 0}</span>
+                              </div>
+                </Button>
             );
           })}
         </CardContent>
@@ -607,30 +611,32 @@ export default function CommunityForum() {
               <>
                 <div className="space-y-3">
                   {filteredPosts.slice(0, visibleCount).map((post) => (
-                    <Card key={post.id} className="cursor-pointer hover-elevate" onClick={() => setSelectedPost(post.id)} data-testid={`card-post-${post.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                      <CardContent className="py-4">
-                        <div className="flex gap-3">
-                          <div className="flex flex-col items-center gap-0.5 text-center min-w-12">
-                            <span className="font-bold text-base">{(post.upvotes || 0) - (post.downvotes || 0)}</span>
-                            <span className="text-xs text-muted-foreground">votes</span>
-                            <span className={cn(`font-medium text-sm mt-1 ${post.acceptedAnswerId ? "text-green-600" : ""}`)}>{post.answerCount || 0}</span>
-                            <span className="text-xs text-muted-foreground">answers</span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                              <Badge className={getPostTypeBadge(post.postType)}>{post.postType}</Badge>
-                              {post.acceptedAnswerId && <Badge variant="outline" className="text-green-600 border-green-600 text-xs"><CheckCircle className="w-3 h-3 mr-1" /> Solved</Badge>}
-                            </div>
-                            <h3 className="font-semibold line-clamp-2" data-testid={`text-post-title-${post.id}`}>{post.title}</h3>
-                            <p className="text-muted-foreground text-sm line-clamp-1 mt-1">{post.content}</p>
-                            <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {post.viewCount || 0}</span>
-                              <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDate(post.createdAt)}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedPost(post.id)}>
+                      <Card key={post.id} className="cursor-pointer hover-elevate" data-testid={`card-post-${post.id}`}>
+                                            <CardContent className="py-4">
+                                              <div className="flex gap-3">
+                                                <div className="flex flex-col items-center gap-0.5 text-center min-w-12">
+                                                  <span className="font-bold text-base">{(post.upvotes || 0) - (post.downvotes || 0)}</span>
+                                                  <span className="text-xs text-muted-foreground">votes</span>
+                                                  <span className={cn(`font-medium text-sm mt-1 ${post.acceptedAnswerId ? "text-green-600" : ""}`)}>{post.answerCount || 0}</span>
+                                                  <span className="text-xs text-muted-foreground">answers</span>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                                    <Badge className={getPostTypeBadge(post.postType)}>{post.postType}</Badge>
+                                                    {post.acceptedAnswerId && <Badge variant="outline" className="text-green-600 border-green-600 text-xs"><CheckCircle className="w-3 h-3 mr-1" /> Solved</Badge>}
+                                                  </div>
+                                                  <h3 className="font-semibold line-clamp-2" data-testid={`text-post-title-${post.id}`}>{post.title}</h3>
+                                                  <p className="text-muted-foreground text-sm line-clamp-1 mt-1">{post.content}</p>
+                                                  <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                                                    <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {post.viewCount || 0}</span>
+                                                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDate(post.createdAt)}</span>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </CardContent>
+                                          </Card>
+                      </Button>
                   ))}
                 </div>
                 {visibleCount < filteredPosts.length && (

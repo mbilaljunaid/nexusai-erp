@@ -76,7 +76,7 @@ export default function MappingSetWorkbench() {
                             <p className="text-sm text-purple-700 mb-4">
                                 Importing mapping values from CSV or Excel? Use the bulk uploader in the set details view.
                             </p>
-                            <Button variant="outline" size="sm" className="bg-white border-purple-200 text-purple-700 hover:bg-purple-500/15">
+                            <Button variant="outline" size="sm" className="bg-card border-purple-200 text-purple-700 hover:bg-purple-500/15">
                                 Import Master Data
                             </Button>
                         </CardContent>

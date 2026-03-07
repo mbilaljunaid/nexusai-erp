@@ -84,7 +84,7 @@ export function JournalLineRuleTable({ eventClassId }: { eventClassId: string })
                     <Plus className="h-4 w-4" /> Add Line Type
                 </Button>
             </div>
-            <div className="rounded-md border p-1 bg-white">
+            <div className="rounded-md border p-1 bg-card">
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-muted/50">

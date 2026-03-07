@@ -113,7 +113,7 @@ export default function BenefitsEnrollment() {
         { id: "plan", header: "Plan", width: "150px", cell: (row) => <span className="plan-cell">{row.plan_name}</span> },
         {
             id: "type", header: "Type", width: "100px", cell: (row) => {
-                const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-gray-100', text: 'text-gray-500' };
+                const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-muted', text: 'text-muted-foreground' };
                 return <span className={cn(`type-badge ${cls.lightBg} ${cls.text}`)}>{row.benefit_type}</span>;
             }
         },
@@ -134,7 +134,7 @@ export default function BenefitsEnrollment() {
     const summaryColumns: SpreadsheetColumn<any>[] = [
         {
             id: "type", header: "Benefit Type", width: "150px", cell: (row) => {
-                const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-gray-100', text: 'text-gray-500' };
+                const cls = TYPE_CLASSES[row.benefit_type] ?? { lightBg: 'bg-muted', text: 'text-muted-foreground' };
                 return <span className={cn(`type-badge ${cls.lightBg} ${cls.text}`)}>{row.benefit_type}</span>;
             }
         },
@@ -235,8 +235,8 @@ export default function BenefitsEnrollment() {
 
             {activeTab === 'summary' && (
                 <div className="be-card pb-0 !p-0">
-                    <h2 className="section-title pt-4 px-4 pb-2 m-0 bg-white">Benefits Participation Summary</h2>
-                    <div className="h-[400px] bg-white">
+                    <h2 className="section-title pt-4 px-4 pb-2 m-0 bg-card">Benefits Participation Summary</h2>
+                    <div className="h-[400px] bg-card">
                         {summary.length === 0 ? (
                             <div className="empty-plans h-full flex items-center justify-center">No data available</div>
                         ) : (

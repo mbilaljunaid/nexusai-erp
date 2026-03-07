@@ -163,35 +163,36 @@ export function ModuleSelectionStep({ data, onNext, onBack }: ModuleSelectionSte
                                 const isDisabled = module.isRequired;
 
                                 return (
-                                    <div role="button" tabIndex={0}
-                                        key={module.id}
-                                        className={cn(`flex items-start gap-3 p-3 rounded-lg border transition-colors ${isSelected ? "bg-primary/5 border-primary" : "hover:bg-accent"
-                                            } ${isDisabled ? "opacity-75" : "cursor-pointer"}`)}
-                                        onClick={() => !isDisabled && toggleModule(module.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <Checkbox
-                                            checked={isSelected}
-                                            disabled={isDisabled}
-                                            className="mt-0.5"
-                                        />
-                                        <div className="flex-1 space-y-1">
-                                            <div className="flex items-center gap-2">
-                                                <h4 className="font-medium text-sm">{module.name}</h4>
-                                                {module.isRecommended && (
-                                                    <Badge variant="secondary" className="text-xs">
-                                                        <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-                                                        Recommended
-                                                    </Badge>
-                                                )}
-                                                {module.isRequired && (
-                                                    <Badge variant="default" className="text-xs">
-                                                        Required
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                            <p className="text-xs text-muted-foreground">{module.description}</p>
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => !isDisabled && toggleModule(module.id)}>
+                                    <div
+                                                                            key={module.id}
+                                                                            className={cn(`flex items-start gap-3 p-3 rounded-lg border transition-colors ${isSelected ? "bg-primary/5 border-primary" : "hover:bg-accent"
+                                                                                } ${isDisabled ? "opacity-75" : "cursor-pointer"}`)}
+                                                                        >
+                                                                            <Checkbox
+                                                                                checked={isSelected}
+                                                                                disabled={isDisabled}
+                                                                                className="mt-0.5"
+                                                                            />
+                                                                            <div className="flex-1 space-y-1">
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <h4 className="font-medium text-sm">{module.name}</h4>
+                                                                                    {module.isRecommended && (
+                                                                                        <Badge variant="secondary" className="text-xs">
+                                                                                            <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
+                                                                                            Recommended
+                                                                                        </Badge>
+                                                                                    )}
+                                                                                    {module.isRequired && (
+                                                                                        <Badge variant="default" className="text-xs">
+                                                                                            Required
+                                                                                        </Badge>
+                                                                                    )}
+                                                                                </div>
+                                                                                <p className="text-xs text-muted-foreground">{module.description}</p>
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 );
                             })}
                         </CardContent>

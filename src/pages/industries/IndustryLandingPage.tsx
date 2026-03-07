@@ -31,7 +31,7 @@ export default function IndustryLandingPage() {
                         </Button>
                     }
                     secondaryCTA={
-                        <Button size="lg" variant="outline" className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/20">
+                        <Button size="lg" variant="outline" className="backdrop-blur-sm bg-card/10 border-white/20 hover:bg-card/20">
                             Request Demo
                         </Button>
                     }

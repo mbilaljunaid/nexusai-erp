@@ -156,16 +156,17 @@ export default function APWithholdingTax() {
                             </TableHeader>
                             <TableBody>
                                 {groups?.map((g: any) => (
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedGroupId(g.id)}>
                                     <TableRow
-                                        key={g.id}
-                                        className={cn(`cursor-pointer ${selectedGroupId === g.id ? 'bg-muted' : ''}`)}
-                                        onClick={() => setSelectedGroupId(g.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <TableCell className="font-medium">{g.groupName}</TableCell>
-                                        <TableCell>
-                                            <StatusBadge status={g.enabledFlag ? 'Enabled' : 'Disabled'} />
-                                        </TableCell>
-                                    </TableRow>
+                                                                            key={g.id}
+                                                                            className={cn(`cursor-pointer ${selectedGroupId === g.id ? 'bg-muted' : ''}`)}
+                                                                        >
+                                                                            <TableCell className="font-medium">{g.groupName}</TableCell>
+                                                                            <TableCell>
+                                                                                <StatusBadge status={g.enabledFlag ? 'Enabled' : 'Disabled'} />
+                                                                            </TableCell>
+                                                                        </TableRow>
+                                    </Button>
                                 ))}
                                 {!groups?.length && (
                                     <TableRow>

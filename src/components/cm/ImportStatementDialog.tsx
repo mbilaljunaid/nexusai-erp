@@ -120,43 +120,44 @@ export default function ImportStatementDialog({ open, onClose, accountId }: Prop
 
                     <div className="space-y-2">
                         <Label>Statement File</Label>
-                        <div role="button" tabIndex={0}
-                            className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => fileInputRef.current?.click()}>
+                        <div
+                                                    className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors
                                 ${file ? 'border-blue-500 bg-blue-500/10' : 'border-slate-300 hover:border-slate-400'}`)}
-                            onClick={() => fileInputRef.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="hidden"
-                                accept={format === 'CSV' ? '.csv' : '.txt,.sta,.xml'}
-                                onChange={handleFileChange}
-                                title="Bank statement file upload"
-                                aria-label="Bank statement file upload"
-                            />
+                                                >
+                                                    <input
+                                                        type="file"
+                                                        ref={fileInputRef}
+                                                        className="hidden"
+                                                        accept={format === 'CSV' ? '.csv' : '.txt,.sta,.xml'}
+                                                        onChange={handleFileChange}
+                                                        title="Bank statement file upload"
+                                                        aria-label="Bank statement file upload"
+                                                    />
 
-                            {file ? (
-                                <>
-                                    <FileText className="w-8 h-8 text-blue-500 mb-2" />
-                                    <p className="text-sm font-medium text-slate-900 dark:text-slate-200">{file.name}</p>
-                                    <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(1)} KB</p>
-                                    <Button variant="ghost" size="sm" className="mt-2 h-6 text-xs" onClick={(e) => { e.stopPropagation(); setFile(null); }}>
-                                        Change File
-                                    </Button>
-                                </>
-                            ) : (
-                                <>
-                                    <Upload className="w-8 h-8 text-slate-400 mb-2" />
-                                    <p className="text-sm font-medium text-slate-900 dark:text-slate-200">Click to upload</p>
-                                    <p className="text-xs text-slate-500">Supported: {format}</p>
-                                </>
-                            )}
-                        </div>
+                                                    {file ? (
+                                                        <>
+                                                            <FileText className="w-8 h-8 text-blue-500 mb-2" />
+                                                            <p className="text-sm font-medium text-foreground dark:text-slate-200">{file.name}</p>
+                                                            <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
+                                                            <Button variant="ghost" size="sm" className="mt-2 h-6 text-xs" onClick={(e) => { e.stopPropagation(); setFile(null); }}>
+                                                                Change File
+                                                            </Button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Upload className="w-8 h-8 text-muted-foreground/70 mb-2" />
+                                                            <p className="text-sm font-medium text-foreground dark:text-slate-200">Click to upload</p>
+                                                            <p className="text-xs text-muted-foreground">Supported: {format}</p>
+                                                        </>
+                                                    )}
+                                                </div>
+                        </Button>
                     </div>
 
                     {uploadMutation.isPending && (
                         <div className="space-y-1">
-                            <div className="flex justify-between text-xs text-slate-500">
+                            <div className="flex justify-between text-xs text-muted-foreground">
                                 <span>Uploading...</span>
                                 <span>{uploadProgress}%</span>
                             </div>

@@ -138,43 +138,44 @@ export default function CampaignsDetail() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {filteredCampaigns.map((campaign) => (
-              <Card
-                key={campaign.id}
-                className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
-                onClick={() => setSelectedCampaign(campaign)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
-              >
-                <div className={cn(`h-1.5 w-full ${campaign.status ==='In Progress' ?'bg-gradient-to-r from-purple-500 to-pink-600' :'bg-muted'}`)} />
-                <CardContent className="p-5 flex flex-col flex-1">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${campaign.status ==='In Progress' ?'bg-purple-500/10 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300' :'bg-muted text-muted-foreground'}`)}>
-                      <Megaphone className="h-6 w-6" />
-                    </div>
-                    <Badge variant={campaign.status ==="In Progress" ?"default" :"secondary"} className="font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider">
-                      {campaign.status}
-                    </Badge>
-                  </div>
+              <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCampaign(campaign)}>
+                <Card
+                                key={campaign.id}
+                                className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
+                              >
+                                <div className={cn(`h-1.5 w-full ${campaign.status ==='In Progress' ?'bg-gradient-to-r from-purple-500 to-pink-600' :'bg-muted'}`)} />
+                                <CardContent className="p-5 flex flex-col flex-1">
+                                  <div className="flex justify-between items-start mb-4">
+                                    <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${campaign.status ==='In Progress' ?'bg-purple-500/10 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300' :'bg-muted text-muted-foreground'}`)}>
+                                      <Megaphone className="h-6 w-6" />
+                                    </div>
+                                    <Badge variant={campaign.status ==="In Progress" ?"default" :"secondary"} className="font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider">
+                                      {campaign.status}
+                                    </Badge>
+                                  </div>
 
-                  <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{campaign.name}</h3>
-                  <div className="flex items-center gap-2 mb-4">
-                    <Badge variant="outline" className="text-[9px] uppercase tracking-tighter opacity-70">{campaign.type}</Badge>
-                  </div>
+                                  <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{campaign.name}</h3>
+                                  <div className="flex items-center gap-2 mb-4">
+                                    <Badge variant="outline" className="text-[9px] uppercase tracking-tighter opacity-70">{campaign.type}</Badge>
+                                  </div>
 
-                  <div className="flex flex-col gap-1 mb-4">
-                    <p className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Expected Revenue</p>
-                    <p className="text-xl font-bold text-primary">{formatCurrency(campaign.expectedRevenue)}</p>
-                  </div>
+                                  <div className="flex flex-col gap-1 mb-4">
+                                    <p className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Expected Revenue</p>
+                                    <p className="text-xl font-bold text-primary">{formatCurrency(campaign.expectedRevenue)}</p>
+                                  </div>
 
-                  <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="h-3 w-3" />
-                      Started: {campaign.startDate ? format(new Date(campaign.startDate),"MMM d, yyyy") :'N/A'}
-                    </div>
-                    <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                      Insights <Target className="h-3 w-3" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                                  <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
+                                    <div className="flex items-center gap-1.5">
+                                      <Calendar className="h-3 w-3" />
+                                      Started: {campaign.startDate ? format(new Date(campaign.startDate),"MMM d, yyyy") :'N/A'}
+                                    </div>
+                                    <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                      Insights <Target className="h-3 w-3" />
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                </Button>
             ))}
           </div>
         )}

@@ -182,46 +182,50 @@ export default function CasesDetail() {
                         <div className="col-span-2">Created</div>
                     </div>
                     {filteredCases.map(c => (
-                        <div role="button" tabIndex={0} key={c.id} className="grid grid-cols-12 p-3 border-t text-sm items-center hover:bg-muted/50 cursor-pointer" onClick={() => openEditCase(c)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                            <div className="col-span-4 font-medium flex items-center gap-2">
-                                <FileText className="h-4 w-4 text-muted-foreground" />
-                                {c.subject}
-                            </div>
-                            <div className="col-span-2">
-                                <StatusBadge status={c.status ?? ''} />
-                            </div>
-                            <div className="col-span-2 flex items-center gap-2">
-                                {getPriorityIcon(c.priority)}
-                                {c.priority}
-                            </div>
-                            <div className="col-span-2">{c.origin}</div>
-                            <div className="col-span-2 text-muted-foreground">
-                                {formatDate(c.createdAt!)}
-                            </div>
-                        </div>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => openEditCase(c)}>
+                        <div key={c.id} className="grid grid-cols-12 p-3 border-t text-sm items-center hover:bg-muted/50 cursor-pointer">
+                                                    <div className="col-span-4 font-medium flex items-center gap-2">
+                                                        <FileText className="h-4 w-4 text-muted-foreground" />
+                                                        {c.subject}
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <StatusBadge status={c.status ?? ''} />
+                                                    </div>
+                                                    <div className="col-span-2 flex items-center gap-2">
+                                                        {getPriorityIcon(c.priority)}
+                                                        {c.priority}
+                                                    </div>
+                                                    <div className="col-span-2">{c.origin}</div>
+                                                    <div className="col-span-2 text-muted-foreground">
+                                                        {formatDate(c.createdAt!)}
+                                                    </div>
+                                                </div>
+                        </Button>
                     ))}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredCases.map(c => (
-                        <Card key={c.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => openEditCase(c)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                            <CardHeader className="pb-2">
-                                <div className="flex justify-between items-start">
-                                    <StatusBadge status={c.status ?? ''} />
-                                    <div className="flex gap-1">{getPriorityIcon(c.priority)}</div>
-                                </div>
-                                <CardTitle className="text-base line-clamp-1">{c.subject}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground line-clamp-2 mb-4 h-10">
-                                    {c.description || "No description provided."}
-                                </p>
-                                <div className="flex justify-between text-xs text-muted-foreground border-t pt-2">
-                                    <span>{c.origin}</span>
-                                    <span>{formatDate(c.createdAt!)}</span>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => openEditCase(c)}>
+                        <Card key={c.id} className="hover:shadow-md transition-shadow cursor-pointer">
+                                                    <CardHeader className="pb-2">
+                                                        <div className="flex justify-between items-start">
+                                                            <StatusBadge status={c.status ?? ''} />
+                                                            <div className="flex gap-1">{getPriorityIcon(c.priority)}</div>
+                                                        </div>
+                                                        <CardTitle className="text-base line-clamp-1">{c.subject}</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4 h-10">
+                                                            {c.description || "No description provided."}
+                                                        </p>
+                                                        <div className="flex justify-between text-xs text-muted-foreground border-t pt-2">
+                                                            <span>{c.origin}</span>
+                                                            <span>{formatDate(c.createdAt!)}</span>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                        </Button>
                     ))}
                 </div>
             )}

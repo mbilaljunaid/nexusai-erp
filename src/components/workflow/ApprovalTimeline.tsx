@@ -74,12 +74,12 @@ export function ApprovalTimeline({ leaseId, status}: ApprovalTimelineProps) {
                         const isActive = index <= activeIndex;
                         const isCurrent = index === activeIndex;
 
-                        let iconColor ="text-gray-400 bg-white";
-                        if (isActive) iconColor ="text-blue-600 bg-white";
-                        if (status ==="REJECTED" && step.status ==="PENDING_APPROVAL") iconColor ="text-red-500 bg-white";
+                        let iconColor ="text-muted-foreground/70 bg-card";
+                        if (isActive) iconColor ="text-blue-600 bg-card";
+                        if (status ==="REJECTED" && step.status ==="PENDING_APPROVAL") iconColor ="text-red-500 bg-card";
 
                         return (
-                            <div key={step.status} className="flex flex-col items-center bg-white px-2">
+                            <div key={step.status} className="flex flex-col items-center bg-card px-2">
                                 <Icon className={cn(`h-8 w-8 ${iconColor} border-2 rounded-full p-1 transition-all duration-300 ${isCurrent ?'ring-4 ring-blue-100' :''}`)} />
                                 <span className={cn(`text-xs font-medium mt-2 ${isActive ?'text-foreground' :'text-muted-foreground'}`)}>
                                     {step.label}

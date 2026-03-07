@@ -55,23 +55,25 @@ export default function MyPayslips() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {isLoading && <p>Loading payslips...</p>}
                 {payslips?.map((payslip: any) => (
-                    <Card key={payslip.id} className="cursor-pointer hover:bg-accent/50 transition-colors" onClick={() => setSelectedRunId(payslip.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                {payslip.periodName}
-                            </CardTitle>
-                            <FileText className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">${formatNumber(Number(payslip.totalNet))}</div>
-                            <p className="text-xs text-muted-foreground">
-                                Paid on {format(new Date(payslip.paymentDate || payslip.periodEndDate), 'MMM dd, yyyy')}
-                            </p>
-                            <div className="mt-4 flex gap-2">
-                                <StatusBadge status="active" label="Paid" />
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRunId(payslip.id)}>
+                    <Card key={payslip.id} className="cursor-pointer hover:bg-accent/50 transition-colors">
+                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                <CardTitle className="text-sm font-medium">
+                                                    {payslip.periodName}
+                                                </CardTitle>
+                                                <FileText className="h-4 w-4 text-muted-foreground" />
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="text-2xl font-bold">${formatNumber(Number(payslip.totalNet))}</div>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Paid on {format(new Date(payslip.paymentDate || payslip.periodEndDate), 'MMM dd, yyyy')}
+                                                </p>
+                                                <div className="mt-4 flex gap-2">
+                                                    <StatusBadge status="active" label="Paid" />
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                    </Button>
                 ))}
             </div>
 

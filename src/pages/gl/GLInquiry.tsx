@@ -106,16 +106,16 @@ export default function GLInquiry() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-500/10">
                             <CardContent className="p-6">
-                                <p className="text-sm font-medium text-slate-500 mb-1">Total Period Debits</p>
-                                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200 font-mono">
+                                <p className="text-sm font-medium text-muted-foreground mb-1">Total Period Debits</p>
+                                <h3 className="text-3xl font-bold text-foreground dark:text-slate-200 font-mono">
                                     {formatNumber(totalDebit, 2)}
                                 </h3>
                             </CardContent>
                         </Card>
                         <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-500/10">
                             <CardContent className="p-6">
-                                <p className="text-sm font-medium text-slate-500 mb-1">Total Period Credits</p>
-                                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200 font-mono">
+                                <p className="text-sm font-medium text-muted-foreground mb-1">Total Period Credits</p>
+                                <h3 className="text-3xl font-bold text-foreground dark:text-slate-200 font-mono">
                                     {formatNumber(totalCredit, 2)}
                                 </h3>
                             </CardContent>
@@ -135,7 +135,7 @@ export default function GLInquiry() {
                             <div className="flex justify-between items-center">
                                 <div>
                                     <CardTitle className="flex items-center gap-2">
-                                        <Layers className="h-5 w-5 text-slate-500" />
+                                        <Layers className="h-5 w-5 text-muted-foreground" />
                                         Transaction Drilldown
                                     </CardTitle>
                                     <CardDescription>Journal lines composing the period balance.</CardDescription>

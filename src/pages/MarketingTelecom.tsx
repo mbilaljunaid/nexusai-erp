@@ -62,7 +62,7 @@ export default function MarketingTelecom() {
             <DashboardWidget title="Active %" colSpan={1}>
                 <div className="flex items-center gap-4">
                     <div className="p-2 rounded-full bg-/15">
-                        <Activity className="h-4 w-4 text-slate-600" />
+                        <Activity className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
                         <div className="text-2xl font-bold tracking-tight">{activePercent.toFixed(0)}%</div>

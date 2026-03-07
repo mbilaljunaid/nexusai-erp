@@ -189,17 +189,18 @@ export default function MRPWorkbench() {
                     <CardContent className="p-0">
                         <div className="divide-y cursor-pointer">
                             {plans.map(plan => (
-                                <div role="button" tabIndex={0}
-                                    key={plan.id}
-                                    onClick={() => setSelectedPlanId(plan.id)}
-                                    className={cn(`p-4 hover:bg-muted/50 transition-colors ${selectedPlanId === plan.id ? 'bg-primary/5 border-r-4 border-primary' : ''}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="font-semibold">{plan.planName}</div>
-                                    <div className="flex justify-between items-center mt-1">
-                                        <span className="text-xs text-muted-foreground">{formatDate(plan.planDate)}</span>
-                                        <Badge variant="outline" className="text-[10px] h-4 px-1">{plan.status}</Badge>
-                                    </div>
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedPlanId(plan.id)}>
+                                <div
+                                                                    key={plan.id}
+                                                                    className={cn(`p-4 hover:bg-muted/50 transition-colors ${selectedPlanId === plan.id ? 'bg-primary/5 border-r-4 border-primary' : ''}`)}
+                                                                >
+                                                                    <div className="font-semibold">{plan.planName}</div>
+                                                                    <div className="flex justify-between items-center mt-1">
+                                                                        <span className="text-xs text-muted-foreground">{formatDate(plan.planDate)}</span>
+                                                                        <Badge variant="outline" className="text-[10px] h-4 px-1">{plan.status}</Badge>
+                                                                    </div>
+                                                                </div>
+                                </Button>
                             ))}
                         </div>
                     </CardContent>

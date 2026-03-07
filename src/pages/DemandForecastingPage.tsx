@@ -103,8 +103,8 @@ export default function DemandForecastingPage() {
       breadcrumbs={[{ label: "Supply Chain", href: "/supply-chain" }, { label: "Demand Forecasting" }]}
     >
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200 border-none">Demand Forecasting</h1>
-        <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-slate-600">Predict future demand and optimize inventory</p>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200 border-none">Demand Forecasting</h1>
+        <p className="text-muted-foreground mt-2 text-sm max-w-2xl text-muted-foreground">Predict future demand and optimize inventory</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">

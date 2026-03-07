@@ -78,9 +78,9 @@ export default function PartnerManagement() {
         switch (tier) {
             case "PLATINUM": return "bg-purple-100 text-purple-800 border-purple-200";
             case "GOLD": return "bg-amber-100 text-amber-800 border-amber-200";
-            case "SILVER": return "bg-gray-100 text-gray-800 border-gray-200";
+            case "SILVER": return "bg-muted text-foreground border-border";
             case "BRONZE": return "bg-orange-100 text-orange-800 border-orange-200";
-            default: return "bg-gray-100 text-gray-800 border-gray-200";
+            default: return "bg-muted text-foreground border-border";
         }
     };
 

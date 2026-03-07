@@ -124,20 +124,22 @@ export default function CMMSMaintenance() {
         <CardHeader><CardTitle className="text-base">Maintenance Work Orders</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {isLoading ? <TableSkeleton rows={4} /> : workOrders.length === 0 ? <p className="text-muted-foreground text-center py-4">No MWOs</p> : workOrders.map((w: any) => (
-            <div role="button" tabIndex={0} key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between cursor-pointer" data-testid={`mwo-${w.id}`} onClick={() => setSelectedWorkOrderId(w.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedWorkOrderId(w.id)}>
+              <div key={w.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between cursor-pointer" data-testid={`mwo-${w.id}`}>
 
-              <div className="flex-1">
-                <p className="font-semibold">{w.assetId}</p>
+                            <div className="flex-1">
+                              <p className="font-semibold">{w.assetId}</p>
 
-                <p className="text-xs text-muted-foreground">{w.maintenanceType} • {w.estimatedHours}h • Priority: {w.priority}</p>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Badge variant={w.status === "completed" ? "default" : "secondary"} className="text-xs">{w.status}</Badge>
-                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(w.id)} data-testid={`button-delete-${w.id}`} className="h-7 w-7" aria-label="Delete">
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
+                              <p className="text-xs text-muted-foreground">{w.maintenanceType} • {w.estimatedHours}h • Priority: {w.priority}</p>
+                            </div>
+                            <div className="flex gap-2 items-center">
+                              <Badge variant={w.status === "completed" ? "default" : "secondary"} className="text-xs">{w.status}</Badge>
+                              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(w.id)} data-testid={`button-delete-${w.id}`} className="h-7 w-7" aria-label="Delete">
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          </div>
+              </Button>
           ))}
         </CardContent>
       </Card>

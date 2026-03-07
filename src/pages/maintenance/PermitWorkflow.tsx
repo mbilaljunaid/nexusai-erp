@@ -164,11 +164,11 @@ export function PermitWorkflow() {
             case "PENDING_APPROVAL":
                 return { color: "bg-yellow-100 text-yellow-800", icon: Clock, label: "Pending Approval" };
             case "EXPIRED":
-                return { color: "bg-gray-100 text-gray-800", icon: XCircle, label: "Expired" };
+                return { color: "bg-muted text-foreground", icon: XCircle, label: "Expired" };
             case "REVOKED":
                 return { color: "bg-red-100 text-red-800", icon: XCircle, label: "Revoked" };
             default:
-                return { color: "bg-gray-100 text-gray-800", icon: FileText, label: "Draft" };
+                return { color: "bg-muted text-foreground", icon: FileText, label: "Draft" };
         }
     };
 
@@ -426,7 +426,7 @@ export function PermitWorkflow() {
                                                                 ) : approval.status === "REJECTED" ? (
                                                                     <XCircle className="h-4 w-4 text-red-600" />
                                                                 ) : (
-                                                                    <Clock className="h-4 w-4 text-gray-400" />
+                                                                    <Clock className="h-4 w-4 text-muted-foreground/70" />
                                                                 )}
                                                                 <div className="flex-1">
                                                                     <span className="font-medium">Level {approval.level}:</span> {approval.approverName}

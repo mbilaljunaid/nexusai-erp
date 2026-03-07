@@ -46,31 +46,35 @@ export default function SlaRules() {
             <div className="flex flex-col gap-8">
                 {/* Header Configuration Links */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/finance/sla/mapping-sets")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                                <Database className="h-4 w-4" /> Mapping Sets
-                            </CardTitle>
-                            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">12 Active Sets</div>
-                            <p className="text-xs text-muted-foreground mt-1 text-balance">Define translation rules between source values and account segments.</p>
-                        </CardContent>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation("/finance/sla/mapping-sets")}>
+                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group">
+                                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                                <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                                    <Database className="h-4 w-4" /> Mapping Sets
+                                                </CardTitle>
+                                                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="text-2xl font-bold">12 Active Sets</div>
+                                                <p className="text-xs text-muted-foreground mt-1 text-balance">Define translation rules between source values and account segments.</p>
+                                            </CardContent>
+                                        </Card>
+                    </Button>
 
-                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => setLocation("/gl/config/sla/adr")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                                <GitBranch className="h-4 w-4" /> Derivation Rules
-                            </CardTitle>
-                            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">45 Rules (ADR)</div>
-                            <p className="text-xs text-muted-foreground mt-1 text-balance">Configure hierarchical logic to determine account combinations.</p>
-                        </CardContent>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation("/gl/config/sla/adr")}>
+                    <Card className="hover:border-primary/50 transition-colors cursor-pointer group">
+                                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                                <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                                    <GitBranch className="h-4 w-4" /> Derivation Rules
+                                                </CardTitle>
+                                                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="text-2xl font-bold">45 Rules (ADR)</div>
+                                                <p className="text-xs text-muted-foreground mt-1 text-balance">Configure hierarchical logic to determine account combinations.</p>
+                                            </CardContent>
+                                        </Card>
+                    </Button>
 
                     <Card className="bg-primary/5 border-primary/20">
                         <CardHeader className="pb-2">

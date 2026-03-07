@@ -145,7 +145,7 @@ export default function TrainingContentAdmin() {
             </Link>
             <div>
               
-              <p className="text-sm text-slate-400">Manage community training content submissions</p>
+              <p className="text-sm text-muted-foreground/70">Manage community training content submissions</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -178,7 +178,7 @@ export default function TrainingContentAdmin() {
           <TabsContent value="content">
             <div className="flex flex-wrap gap-3 mb-6">
               <div className="relative flex-1 min-w-48">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
                 <Input
                   placeholder="Search submissions..."
                   value={search}
@@ -219,9 +219,9 @@ export default function TrainingContentAdmin() {
             ) : resources.length === 0 ? (
               <Card className="bg-slate-800 border-slate-700">
                 <CardContent className="py-16 text-center">
-                  <Clock className="w-16 h-16 mx-auto mb-4 text-slate-500" />
+                  <Clock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-semibold mb-2">No submissions found</h3>
-                  <p className="text-slate-400">There are no training content submissions matching your filters.</p>
+                  <p className="text-muted-foreground/70">There are no training content submissions matching your filters.</p>
                 </CardContent>
               </Card>
             ) : (
@@ -256,7 +256,7 @@ export default function TrainingContentAdmin() {
                                   )}
                                 </div>
                                 <h3 className="text-lg font-semibold text-white">{resource.title}</h3>
-                                <p className="text-sm text-slate-400 line-clamp-2">{resource.description}</p>
+                                <p className="text-sm text-muted-foreground/70 line-clamp-2">{resource.description}</p>
                               </div>
                               
                               <DropdownMenu>
@@ -294,7 +294,7 @@ export default function TrainingContentAdmin() {
                               </DropdownMenu>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-slate-500">
+                            <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <User className="w-3 h-3" />
                                 {resource.author_name || "Anonymous"}
@@ -333,9 +333,9 @@ export default function TrainingContentAdmin() {
             ) : !filterRequests || filterRequests.length === 0 ? (
               <Card className="bg-slate-800 border-slate-700">
                 <CardContent className="py-16 text-center">
-                  <Filter className="w-16 h-16 mx-auto mb-4 text-slate-500" />
+                  <Filter className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-semibold mb-2">No filter requests</h3>
-                  <p className="text-slate-400">There are no pending filter category requests.</p>
+                  <p className="text-muted-foreground/70">There are no pending filter category requests.</p>
                 </CardContent>
               </Card>
             ) : (
@@ -350,8 +350,8 @@ export default function TrainingContentAdmin() {
                             <Badge className={statusConfig.pending.color}>Pending</Badge>
                           </div>
                           <h3 className="text-lg font-semibold text-white">{request.filter_value}</h3>
-                          <p className="text-sm text-slate-400">{request.description}</p>
-                          <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                          <p className="text-sm text-muted-foreground/70">{request.description}</p>
+                          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <User className="w-3 h-3" />
                               {request.requester_name || "Anonymous"}
@@ -403,7 +403,7 @@ export default function TrainingContentAdmin() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-sm text-slate-400 block mb-2">Review Notes (optional)</Label>
+              <Label className="text-sm text-muted-foreground/70 block mb-2">Review Notes (optional)</Label>
               <Textarea
                 value={reviewNotes}
                 onChange={(e) => setReviewNotes(e.target.value)}

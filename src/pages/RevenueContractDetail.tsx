@@ -138,19 +138,19 @@ export default function RevenueContractDetail() {
         <StandardPage
             title="RevenueContractDetail"
             description=""
-            className="p-6 space-y-6 bg-slate-50/50 min-h-screen"
+            className="p-6 space-y-6 bg-muted/50/50 min-h-screen"
         >
             <div className="flex justify-between items-start">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
                         <Link href="/revenue/contracts">
-                            <Button variant="ghost" size="sm" className="-ml-3 text-muted-foreground hover:text-slate-900 dark:text-slate-200">
+                            <Button variant="ghost" size="sm" className="-ml-3 text-muted-foreground hover:text-foreground dark:text-slate-200">
                                 ← Back
                             </Button>
                         </Link>
                     </div>
                     <div className="flex items-center gap-2 mb-1">
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200">{contract.contractNumber}</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200">{contract.contractNumber}</h1>
                         <Badge variant="secondary">{contract.status}</Badge>
                     </div>
                     <p className="text-muted-foreground">Contract Details & Revenue Lifecycle</p>
@@ -234,7 +234,7 @@ export default function RevenueContractDetail() {
 
                 <TabsContent value="overview" className="space-y-4 mt-4">
                     <Card className="border-none shadow-sm overflow-hidden">
-                        <CardHeader className="bg-white border-b">
+                        <CardHeader className="bg-card border-b">
                             <CardTitle>Performance Obligations (POBs)</CardTitle>
                             <CardDescription>Unit level delivery items for this contract.</CardDescription>
                         </CardHeader>
@@ -252,7 +252,7 @@ export default function RevenueContractDetail() {
 
                 <TabsContent value="schedule" className="mt-4">
                     <Card className="border-none shadow-sm overflow-hidden">
-                        <CardHeader className="bg-white border-b">
+                        <CardHeader className="bg-card border-b">
                             <CardTitle>Recognition Schedules</CardTitle>
                             <CardDescription>Scheduled revenue realization across fiscal periods.</CardDescription>
                         </CardHeader>

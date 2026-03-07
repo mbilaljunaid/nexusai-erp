@@ -83,26 +83,30 @@ export default function MaintenanceWorkbench({ initialTab = "overview" }: { init
 
                     <TabsContent value="overview" className="flex-1 overflow-auto">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("dispatch")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Work Execution</CardTitle>
-                                    <Users className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">{metrics?.backlog || 0}</div>
-                                    <p className="text-xs text-muted-foreground">Unassigned Work Orders</p>
-                                </CardContent>
-                            </Card>
-                            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("planning")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Schedule Adherence</CardTitle>
-                                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">87%</div>
-                                    <p className="text-xs text-muted-foreground">+2.4% from last week</p>
-                                </CardContent>
-                            </Card>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setActiveTab("dispatch")}>
+                            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                                <CardTitle className="text-sm font-medium">Work Execution</CardTitle>
+                                                                <Users className="h-4 w-4 text-muted-foreground" />
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="text-2xl font-bold">{metrics?.backlog || 0}</div>
+                                                                <p className="text-xs text-muted-foreground">Unassigned Work Orders</p>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setActiveTab("planning")}>
+                            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                                <CardTitle className="text-sm font-medium">Schedule Adherence</CardTitle>
+                                                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="text-2xl font-bold">87%</div>
+                                                                <p className="text-xs text-muted-foreground">+2.4% from last week</p>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                     <CardTitle className="text-sm font-medium">Asset Availability</CardTitle>

@@ -251,17 +251,18 @@ export default function ARInvoiceDetail() {
                                         <h3 className="font-semibold mb-4 text-sm text-muted-foreground">Select Line</h3>
                                         <div className="space-y-2">
                                             {lines.map((l: any) => (
-                                                <div role="button" tabIndex={0}
-                                                    key={l.id}
-                                                    className={cn(`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-500/10'}`)}
-                                                    onClick={() => {
-                                                        setSelectedLineId(l.id);
-                                                        form.setValue("amount", l.amount);
-                                                    }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                                >
-                                                    <div className="font-medium truncate">{l.description}</div>
-                                                    <div className="text-muted-foreground">${l.amount}</div>
-                                                </div>
+                                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                                                                                        setSelectedLineId(l.id);
+                                                                                                        form.setValue("amount", l.amount);
+                                                                                                    }}>
+                                                <div
+                                                                                                    key={l.id}
+                                                                                                    className={cn(`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-500/10'}`)}
+                                                                                                >
+                                                                                                    <div className="font-medium truncate">{l.description}</div>
+                                                                                                    <div className="text-muted-foreground">${l.amount}</div>
+                                                                                                </div>
+                                                </Button>
                                             ))}
                                         </div>
                                     </div>

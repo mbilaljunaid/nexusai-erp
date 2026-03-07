@@ -178,7 +178,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                             <div className="text-center text-white">
                                 <Loader2 className="h-12 w-12 animate-spin text-white mx-auto mb-4" />
                                 <p className="text-sm">Loading 3D Model...</p>
-                                <p className="text-xs text-gray-400 mt-2">Initializing Autodesk Forge Viewer</p>
+                                <p className="text-xs text-muted-foreground/70 mt-2">Initializing Autodesk Forge Viewer</p>
                             </div>
                         ) : (
                             <>
@@ -188,7 +188,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                                         <Box className="h-24 w-24 mx-auto opacity-20" />
                                         <div>
                                             <h3 className="text-xl font-bold mb-2">BIM Viewer Ready</h3>
-                                            <p className="text-sm text-gray-400 max-w-md">
+                                            <p className="text-sm text-muted-foreground/70 max-w-md">
                                                 Production setup requires Autodesk Forge API credentials.
                                                 <br />
                                                 Viewer will display 3D models (RVT, IFC, NWD formats).

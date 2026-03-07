@@ -220,11 +220,13 @@ export default function FSGReportBuilder() {
                     {/* Report Library */}
                     <div className="report-cards">
                         {reports.map(r => (
-                            <div key={r.id} className="report-card" role="button" tabIndex={0} onClick={() => { setSelectedReport(r.id); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <div className="report-card-name">{r.name}</div>
-                                <div className="report-card-type">{r.report_type}</div>
-                                <ChevronRight className="h-4 w-4"  color="#9ca3af" />
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => { setSelectedReport(r.id); }}>
+                            <div key={r.id} className="report-card">
+                                                            <div className="report-card-name">{r.name}</div>
+                                                            <div className="report-card-type">{r.report_type}</div>
+                                                            <ChevronRight className="h-4 w-4"  color="#9ca3af" />
+                                                        </div>
+                            </Button>
                         ))}
                         {reports.length === 0 && (
                             <div className="empty-library">No reports yet — use the Builder tab to create one</div>

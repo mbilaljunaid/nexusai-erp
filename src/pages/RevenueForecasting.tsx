@@ -122,7 +122,7 @@ export default function RevenueForecasting() {
           </div>
           <div className="space-y-1 flex-1 min-w-48">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Contract Filter <span className="text-slate-400">(optional)</span>
+              Contract Filter <span className="text-muted-foreground/70">(optional)</span>
             </Label>
             <Input
               placeholder="Contract ID or leave blank for all"

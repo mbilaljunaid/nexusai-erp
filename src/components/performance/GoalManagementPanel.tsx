@@ -159,7 +159,7 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
             case 'INDIVIDUAL': return 'text-blue-600';
             case 'TEAM': return 'text-purple-600';
             case 'COMPANY': return 'text-green-600';
-            default: return 'text-gray-600';
+            default: return 'text-muted-foreground';
         }
     };
 

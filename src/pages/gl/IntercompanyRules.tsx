@@ -140,7 +140,7 @@ export default function IntercompanyRules() {
                                         <TableCell className="font-mono text-xs">{rule.receivableAccountId}</TableCell>
                                         <TableCell className="font-mono text-xs">{rule.payableAccountId}</TableCell>
                                         <TableCell>
-                                            <span className={cn(`px-2 py-1 rounded-full text-xs ${rule.enabled ? 'bg-green-100 text-green-800' : 'bg-gray-100'}`)}>
+                                            <span className={cn(`px-2 py-1 rounded-full text-xs ${rule.enabled ? 'bg-green-100 text-green-800' : 'bg-muted'}`)}>
                                                 {rule.enabled ? "Active" : "Disabled"}
                                             </span>
                                         </TableCell>

@@ -101,7 +101,7 @@ export default function CommissionPlanManager() {
             title="Commission Management"
             description="Manage dynamic compensation plans and assign them directly to sales representatives."
             actions={
-                <Button variant="outline" className="bg-white" onClick={() => setIsAssignOpen(true)}>
+                <Button variant="outline" className="bg-card" onClick={() => setIsAssignOpen(true)}>
                     <Users className="mr-2 h-4 w-4" /> Assign Sales Rep
                 </Button>
             }

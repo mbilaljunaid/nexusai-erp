@@ -26,7 +26,7 @@ interface Certification {
 interface Summary { status: string; count: number; total_variance: number; }
 
 const STATUS_CONFIG: Record<string, { className: string; border: string; text: string; icon: any }> = {
-    'Pending': { className: 'bg-gray-100 text-gray-500', border: 'border-gray-500', text: 'text-gray-500', icon: Clock },
+    'Pending': { className: 'bg-muted text-muted-foreground', border: 'border-gray-500', text: 'text-muted-foreground', icon: Clock },
     'In-Review': { className: 'bg-amber-100 text-amber-600', border: 'border-amber-600', text: 'text-amber-600', icon: Clock },
     'Certified': { className: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-600', text: 'text-emerald-600', icon: CheckCircle },
     'Escalated': { className: 'bg-red-100 text-red-600', border: 'border-red-600', text: 'text-red-600', icon: AlertTriangle },
@@ -84,7 +84,9 @@ export default function AccountCertPortal() {
     const certColumns: SpreadsheetColumn<Certification>[] = [
         { id: "account_id", header: "Account", width: "120px", cell: (row) => <div className="account-code">{row.account_id}</div> },
         { id: "status", header: "Status", width: "150px", cell: (row) => { const cfg = STATUS_CONFIG[row.status]; const Icon = cfg.icon; return <span className={cn(`status-badge ${cfg.className}`)}><Icon size={12} /> {row.status}</span>; } },
-        { id: "variance", header: <div className="sortable-col" role="button" tabIndex={0} onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown className="h-3.5 w-3.5"  /> : <ChevronUp className="h-3.5 w-3.5"  />)}</div>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{formatNumber(row.variance, 2)}</div> },
+        { id: "variance", header: <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }}>
+        <div className="sortable-col">Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown className="h-3.5 w-3.5"  /> : <ChevronUp className="h-3.5 w-3.5"  />)}</div>
+        </Button>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{formatNumber(row.variance, 2)}</div> },
         { id: "gl_balance", header: "GL Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_gl, 2) },
         { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_sub, 2) },
         { id: "preparer", header: "Preparer", width: "150px", cell: (row) => <div className="email-cell">{row.preparer_email}</div> },

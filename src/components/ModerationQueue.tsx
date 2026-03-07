@@ -176,7 +176,7 @@ export function ModerationQueue() {
     const variants: Record<string, { color: string; icon: typeof Clock }> = {
       pending: { color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200", icon: Clock },
       reviewed: { color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200", icon: CheckCircle },
-      dismissed: { color: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200", icon: XCircle },
+      dismissed: { color: "bg-muted text-foreground dark:bg-gray-800 dark:text-gray-200", icon: XCircle },
     };
     const variant = variants[status] || variants.pending;
     const Icon = variant.icon;
@@ -190,7 +190,7 @@ export function ModerationQueue() {
 
   const getSeverityBadge = (severity: string | null) => {
     const variants: Record<string, string> = {
-      low: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+      low: "bg-muted text-foreground dark:bg-gray-800 dark:text-gray-200",
       medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
       high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
       critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",

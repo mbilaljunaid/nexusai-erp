@@ -330,61 +330,62 @@ export function PMScheduler() {
                         const isSelected = selectedDefs.includes(def.id);
 
                         return (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleSelection(def.id)}>
                             <Card
-                                key={def.id}
-                                className={cn(
-                                    "border-2 cursor-pointer transition-all",
-                                    isSelected && "border-primary bg-primary/5"
-                                )}
-                                onClick={() => toggleSelection(def.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardContent className="pt-6">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <h3 className="font-bold text-lg">{def.name}</h3>
-                                                <Badge
-                                                    variant="outline"
-                                                    className={def.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
-                                                >
-                                                    {def.status}
-                                                </Badge>
-                                                <Badge variant="outline" className={freqConfig.color}>
-                                                    {freqConfig.label}
-                                                </Badge>
-                                            </div>
+                                                            key={def.id}
+                                                            className={cn(
+                                                                "border-2 cursor-pointer transition-all",
+                                                                isSelected && "border-primary bg-primary/5"
+                                                            )}
+                                                        >
+                                                            <CardContent className="pt-6">
+                                                                <div className="flex items-start justify-between">
+                                                                    <div className="flex-1">
+                                                                        <div className="flex items-center gap-3 mb-2">
+                                                                            <h3 className="font-bold text-lg">{def.name}</h3>
+                                                                            <Badge
+                                                                                variant="outline"
+                                                                                className={def.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-muted text-foreground"}
+                                                                            >
+                                                                                {def.status}
+                                                                            </Badge>
+                                                                            <Badge variant="outline" className={freqConfig.color}>
+                                                                                {freqConfig.label}
+                                                                            </Badge>
+                                                                        </div>
 
-                                            <div className="text-sm text-muted-foreground mb-3">
-                                                Asset: {def.assetName} • Every {def.frequencyValue} {def.frequency.toLowerCase()}
-                                            </div>
+                                                                        <div className="text-sm text-muted-foreground mb-3">
+                                                                            Asset: {def.assetName} • Every {def.frequencyValue} {def.frequency.toLowerCase()}
+                                                                        </div>
 
-                                            <div className="grid md:grid-cols-3 gap-4 text-sm">
-                                                <div>
-                                                    <span className="text-muted-foreground">Last Generated:</span>
-                                                    <div className="font-medium">
-                                                        {def.lastGenerated ? format(new Date(def.lastGenerated), "MMM dd, yyyy") : "Never"}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <span className="text-muted-foreground">Next Due:</span>
-                                                    <div className={cn("font-medium flex items-center gap-1", dueStatus.color)}>
-                                                        <StatusIcon className="h-4 w-4" />
-                                                        {format(new Date(def.nextDue), "MMM dd, yyyy")}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <span className="text-muted-foreground">Status:</span>
-                                                    <div className="font-medium">{dueStatus.label}</div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                                        <div className="grid md:grid-cols-3 gap-4 text-sm">
+                                                                            <div>
+                                                                                <span className="text-muted-foreground">Last Generated:</span>
+                                                                                <div className="font-medium">
+                                                                                    {def.lastGenerated ? format(new Date(def.lastGenerated), "MMM dd, yyyy") : "Never"}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <span className="text-muted-foreground">Next Due:</span>
+                                                                                <div className={cn("font-medium flex items-center gap-1", dueStatus.color)}>
+                                                                                    <StatusIcon className="h-4 w-4" />
+                                                                                    {format(new Date(def.nextDue), "MMM dd, yyyy")}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <span className="text-muted-foreground">Status:</span>
+                                                                                <div className="font-medium">{dueStatus.label}</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
 
-                                        <Button variant="ghost" size="icon" aria-label="Settings">
-                                            <Settings className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                                    <Button variant="ghost" size="icon" aria-label="Settings">
+                                                                        <Settings className="h-4 w-4" />
+                                                                    </Button>
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         );
                     })
                 )}

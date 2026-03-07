@@ -164,29 +164,30 @@ export default function ConsolidationResultsViewer() {
                                 <div className="space-y-4">
                                     {balances.map((balance) => (
                                         <div key={balance.account}>
-                                            <div role="button" tabIndex={0}
-                                                className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
-                                                onClick={() => setExpandedAccount(expandedAccount === balance.account ? null : balance.account)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <div className="flex items-center gap-2">
-                                                    <ChevronRight className={cn(`h-4 w-4 transition-transform ${expandedAccount === balance.account ? 'rotate-90' : ''}`)} />
-                                                    <span className="font-medium">{balance.account}</span>
-                                                </div>
-                                                <div className="flex gap-8 text-sm">
-                                                    <div className="text-right">
-                                                        <div className="text-xs text-muted-foreground mb-1">Pre-Elim</div>
-                                                        <div className="font-mono">{formatCurrency(balance.preElimination)}</div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className="text-xs text-muted-foreground mb-1">Eliminations</div>
-                                                        <div className="font-mono text-orange-600">{formatCurrency(balance.eliminations)}</div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className="text-xs text-muted-foreground mb-1">Consolidated</div>
-                                                        <div className="font-mono font-bold">{formatCurrency(balance.consolidated)}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setExpandedAccount(expandedAccount === balance.account ? null : balance.account)}>
+                                            <div
+                                                                                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted cursor-pointer"
+                                                                                        >
+                                                                                            <div className="flex items-center gap-2">
+                                                                                                <ChevronRight className={cn(`h-4 w-4 transition-transform ${expandedAccount === balance.account ? 'rotate-90' : ''}`)} />
+                                                                                                <span className="font-medium">{balance.account}</span>
+                                                                                            </div>
+                                                                                            <div className="flex gap-8 text-sm">
+                                                                                                <div className="text-right">
+                                                                                                    <div className="text-xs text-muted-foreground mb-1">Pre-Elim</div>
+                                                                                                    <div className="font-mono">{formatCurrency(balance.preElimination)}</div>
+                                                                                                </div>
+                                                                                                <div className="text-right">
+                                                                                                    <div className="text-xs text-muted-foreground mb-1">Eliminations</div>
+                                                                                                    <div className="font-mono text-orange-600">{formatCurrency(balance.eliminations)}</div>
+                                                                                                </div>
+                                                                                                <div className="text-right">
+                                                                                                    <div className="text-xs text-muted-foreground mb-1">Consolidated</div>
+                                                                                                    <div className="font-mono font-bold">{formatCurrency(balance.consolidated)}</div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                            </Button>
 
                                             {expandedAccount === balance.account && (
                                                 <div className="ml-8 mt-2 p-4 bg-muted/50 rounded-lg">

@@ -267,7 +267,7 @@ export default function RoutingEditor() {
                                 ))}
                             </div>
 
-                            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t flex justify-end gap-2">
+                            <div className="fixed bottom-0 left-0 right-0 p-6 bg-card border-t flex justify-end gap-2">
                                 <Button variant="outline" onClick={() => setIsSheetOpen(false)}>Cancel</Button>
                                 <Button onClick={handleSave} disabled={createMutation.isPending}>
                                     <Save className="mr-2 h-4 w-4" /> {createMutation.isPending ? "Saving..." : "Save Routing"}

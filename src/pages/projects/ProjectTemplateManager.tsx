@@ -95,8 +95,8 @@ export default function ProjectTemplateManager() {
             width: "15%",
             cell: (item: any) => (
                 <div className="p-2 flex items-center gap-1">
-                    {item.activeFlag ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-slate-400" />}
-                    <span className={item.activeFlag ? "text-green-600" : "text-slate-500"}>{item.activeFlag ? "Active" : "Inactive"}</span>
+                    {item.activeFlag ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-muted-foreground/70" />}
+                    <span className={item.activeFlag ? "text-green-600" : "text-muted-foreground"}>{item.activeFlag ? "Active" : "Inactive"}</span>
                 </div>
             )
         },

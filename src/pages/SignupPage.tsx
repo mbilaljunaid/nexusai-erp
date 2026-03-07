@@ -124,7 +124,7 @@ export default function SignupPage() {
                 { title:"85+ Modules", desc:"Finance, HR, CRM included"},
                 { title:"Self-Hosted", desc:"Your data, your control"},
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-card/5 border border-white/10 backdrop-blur-sm">
                   <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
                     <CheckCircle className="w-5 h-5" />
                   </div>
@@ -185,7 +185,7 @@ export default function SignupPage() {
                               <Input
                                 aria-label="Full Name"
                                 placeholder="John Doe"
-                                className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                className="pl-10 h-11 bg-card/5 border-white/10 focus:border-blue-500/50 transition-all"
                                 {...field}
                               />
                             </div>
@@ -208,7 +208,7 @@ export default function SignupPage() {
                                 aria-label="Email"
                                 type="email"
                                 placeholder="your@company.com"
-                                className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                className="pl-10 h-11 bg-card/5 border-white/10 focus:border-blue-500/50 transition-all"
                                 {...field}
                               />
                             </div>
@@ -232,7 +232,7 @@ export default function SignupPage() {
                                   aria-label="Password"
                                   type={showPassword ?"text" :"password"}
                                   placeholder="••••••••"
-                                  className="pl-10 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                  className="pl-10 h-11 bg-card/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
                                 />
                               </div>
@@ -254,7 +254,7 @@ export default function SignupPage() {
                                   aria-label="Confirm Password"
                                   type={showPassword ?"text" :"password"}
                                   placeholder="••••••••"
-                                  className="pl-4 h-11 bg-white/5 border-white/10 focus:border-blue-500/50 transition-all"
+                                  className="pl-4 h-11 bg-card/5 border-white/10 focus:border-blue-500/50 transition-all"
                                   {...field}
                                 />
                                 <IconButton
@@ -282,7 +282,7 @@ export default function SignupPage() {
                             <Checkbox
                               aria-label="Accept Terms"
                               id="terms"
-                              className="mt-1 rounded bg-white/10 border-white/20"
+                              className="mt-1 rounded bg-card/10 border-white/20"
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />

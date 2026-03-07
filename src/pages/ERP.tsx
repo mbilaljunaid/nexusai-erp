@@ -54,7 +54,7 @@ export default function ERP() {
     { id: "inventory", label: "Inventory", icon: Warehouse, color: "text-yellow-500", path: "/erp/inventory" },
     { id: "quality", label: "Quality Control", icon: Zap, color: "text-cyan-500", path: "/erp/quality" },
     { id: "suppliers", label: "Suppliers", icon: Users, color: "text-indigo-500", path: "/erp/suppliers" },
-    { id: "settings", label: "Settings", icon: Settings, color: "text-slate-500", path: "/erp/settings" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-muted-foreground", path: "/erp/settings" },
   ];
 
   return (

@@ -97,7 +97,7 @@ The NexusAI Talent Team`);
             <div className="max-w-7xl mx-auto space-y-6 pb-12">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 rounded-lg">
                             <FileText className="h-6 w-6" />
@@ -198,12 +198,12 @@ The NexusAI Talent Team`);
                                 <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Copy link"><Link className="h-4 w-4" /></Button>
                                 <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" aria-label="Image"><ImageIcon className="h-4 w-4" /></Button>
                                 <div className="flex-1" />
-                                <Button variant="outline" size="sm" className="h-8 text-xs bg-white dark:bg-zinc-950">Add E-Signature Block</Button>
+                                <Button variant="outline" size="sm" className="h-8 text-xs bg-card dark:bg-zinc-950">Add E-Signature Block</Button>
                             </div>
 
                             {/* Editor Area */}
                             <div className="flex-1 bg-zinc-500/10 dark:bg-zinc-900/50 p-6">
-                                <div className="bg-white dark:bg-zinc-950 shadow-sm border h-full rounded-md p-0 overflow-hidden min-h-[600px]">
+                                <div className="bg-card dark:bg-zinc-950 shadow-sm border h-full rounded-md p-0 overflow-hidden min-h-[600px]">
                                     <Textarea
                                         className="w-full h-full p-8 resize-none border-none font-serif text-base text-zinc-800 dark:text-zinc-200 leading-relaxed focus-visible:ring-0"
                                         value={documentBody}

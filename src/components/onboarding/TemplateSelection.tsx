@@ -95,7 +95,7 @@ export function TemplateSelection({
             saas: 'bg-purple-100 text-purple-800',
             hr: 'bg-yellow-100 text-yellow-800',
         };
-        return colors[category || 'other'] || 'bg-gray-100 text-gray-800';
+        return colors[category || 'other'] || 'bg-muted text-foreground';
     };
 
     if (isLoading) {
@@ -133,55 +133,56 @@ export function TemplateSelection({
                         const isSelected = selectedTemplates.includes(template.id);
 
                         return (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleTemplate(template.id)}>
                             <Card
-                                key={template.id}
-                                className={cn(`cursor-pointer transition-all ${isSelected ? 'ring-2 ring-primary' : 'hover:shadow-md'
-                                    }`)}
-                                onClick={() => toggleTemplate(template.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader>
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <CardTitle className="text-base">{template.name}</CardTitle>
-                                                {isSelected && (
-                                                    <Check className="w-4 h-4 text-primary" />
-                                                )}
-                                            </div>
-                                            {template.templateCategory && (
-                                                <Badge
-                                                    variant="secondary"
-                                                    className={cn(`text-xs ${getCategoryBadgeColor(template.templateCategory)}`)}
-                                                >
-                                                    {template.templateCategory}
-                                                </Badge>
-                                            )}
-                                        </div>
-                                        {template.isDefault && (
-                                            <Badge variant="outline" className="text-xs">
-                                                Default
-                                            </Badge>
-                                        )}
-                                    </div>
-                                    <CardDescription className="text-sm">
-                                        {template.description || 'No description available'}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handlePreview(template);
-                                        }}
-                                        className="w-full"
-                                    >
-                                        <Eye className="w-4 h-4 mr-2" />
-                                        Preview
-                                    </Button>
-                                </CardContent>
-                            </Card>
+                                                            key={template.id}
+                                                            className={cn(`cursor-pointer transition-all ${isSelected ? 'ring-2 ring-primary' : 'hover:shadow-md'
+                                                                }`)}
+                                                        >
+                                                            <CardHeader>
+                                                                <div className="flex items-start justify-between">
+                                                                    <div className="flex-1">
+                                                                        <div className="flex items-center gap-2 mb-1">
+                                                                            <CardTitle className="text-base">{template.name}</CardTitle>
+                                                                            {isSelected && (
+                                                                                <Check className="w-4 h-4 text-primary" />
+                                                                            )}
+                                                                        </div>
+                                                                        {template.templateCategory && (
+                                                                            <Badge
+                                                                                variant="secondary"
+                                                                                className={cn(`text-xs ${getCategoryBadgeColor(template.templateCategory)}`)}
+                                                                            >
+                                                                                {template.templateCategory}
+                                                                            </Badge>
+                                                                        )}
+                                                                    </div>
+                                                                    {template.isDefault && (
+                                                                        <Badge variant="outline" className="text-xs">
+                                                                            Default
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                                <CardDescription className="text-sm">
+                                                                    {template.description || 'No description available'}
+                                                                </CardDescription>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handlePreview(template);
+                                                                    }}
+                                                                    className="w-full"
+                                                                >
+                                                                    <Eye className="w-4 h-4 mr-2" />
+                                                                    Preview
+                                                                </Button>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         );
                     })}
                 </div>

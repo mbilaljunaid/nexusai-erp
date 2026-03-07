@@ -165,10 +165,10 @@ export default function Inventory() {
                   <CardTitle className="text-base text-white">Warehouse Allocation</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-slate-400">12 warehouses managed across 4 regions.</p>
+                  <p className="text-muted-foreground/70">12 warehouses managed across 4 regions.</p>
                   <div className="mt-4 space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Total Capacity</span>
+                      <span className="text-muted-foreground/70">Total Capacity</span>
                       <span className="text-white font-mono">82%</span>
                     </div>
                     <Progress value={82} className="h-2 bg-slate-800" indicatorClassName="bg-blue-500" />
@@ -183,7 +183,7 @@ export default function Inventory() {
                 <CardContent className="space-y-4">
                   <p className="text-blue-100 text-sm">Access advanced warehouse management features including wave planning and LPN tracking.</p>
                   <div className="flex gap-2">
-                    <Button variant="secondary" className="bg-white text-blue-600 hover:bg-blue-500/10" asChild>
+                    <Button variant="secondary" className="bg-card text-blue-600 hover:bg-blue-500/10" asChild>
                       <Link to="/scm/wms/operations">Enter Operations Workbench</Link>
                     </Button>
                     <Button variant="outline" className="border-blue-400 text-white hover:bg-blue-500" asChild>
@@ -198,9 +198,9 @@ export default function Inventory() {
 
         {activeNav === "fulfillment" && (
           <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-slate-800 rounded-xl space-y-4">
-            <Package className="h-16 w-16 text-slate-700" />
+            <Package className="h-16 w-16 text-foreground/90" />
             <h3 className="text-xl font-bold text-white">Advanced Fulfillment Active</h3>
-            <p className="text-slate-500 text-center max-w-md">The legacy inventory fulfillment view has been upgraded to the WMS Operations Workbench.</p>
+            <p className="text-muted-foreground text-center max-w-md">The legacy inventory fulfillment view has been upgraded to the WMS Operations Workbench.</p>
             <Button className="bg-blue-600 hover:bg-blue-500" asChild>
               <Link to="/scm/wms/operations">Open WMS Workbench</Link>
             </Button>

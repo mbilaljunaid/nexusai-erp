@@ -138,15 +138,17 @@ export default function CommunityBrowser() {
                         {/* Sub-Communities */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {(currentId ? children?.subCommunities : roots)?.map((c: any) => (
-                                <Card key={c.id} className="hover:border-primary cursor-pointer transition-colors" onClick={() => setCurrentId(c.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <CardContent className="p-4 flex items-center gap-3">
-                                        <Folder className="h-8 w-8 text-blue-500 fill-blue-500/20" />
-                                        <div>
-                                            <div className="font-semibold">{c.title}</div>
-                                            <div className="text-xs text-muted-foreground line-clamp-1">{c.description || 'Learning Community'}</div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setCurrentId(c.id)}>
+                                <Card key={c.id} className="hover:border-primary cursor-pointer transition-colors">
+                                                                    <CardContent className="p-4 flex items-center gap-3">
+                                                                        <Folder className="h-8 w-8 text-blue-500 fill-blue-500/20" />
+                                                                        <div>
+                                                                            <div className="font-semibold">{c.title}</div>
+                                                                            <div className="text-xs text-muted-foreground line-clamp-1">{c.description || 'Learning Community'}</div>
+                                                                        </div>
+                                                                    </CardContent>
+                                                                </Card>
+                                </Button>
                             ))}
                             {(loadingRoots || loadingChildren) && <Loader2 className="animate-spin" />}
                         </div>

@@ -15,6 +15,7 @@ import {
     Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface RiskMetric {
     category: string;
@@ -115,7 +116,7 @@ export function RiskDashboard({ projectId }: RiskDashboardProps) {
             case "low":
                 return { color: "bg-green-100 text-green-800 border-green-200", icon: Zap, textColor: "text-green-600" };
             default:
-                return { color: "bg-gray-100 text-gray-800 border-gray-200", icon: Activity, textColor: "text-gray-600" };
+                return { color: "bg-muted text-foreground border-border", icon: Activity, textColor: "text-muted-foreground" };
         }
     };
 
@@ -191,58 +192,59 @@ export function RiskDashboard({ projectId }: RiskDashboardProps) {
                     const config = getSeverityConfig(risk.severity);
                     const Icon = config.icon;
                     const TrendIcon = risk.trend === "up" ? TrendingUp : risk.trend === "down" ? TrendingDown : Activity;
-                    const trendColor = risk.trend === "up" ? "text-red-500" : risk.trend === "down" ? "text-green-500" : "text-gray-500";
+                    const trendColor = risk.trend === "up" ? "text-red-500" : risk.trend === "down" ? "text-green-500" : "text-muted-foreground";
 
                     return (
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCategory(selectedCategory === risk.category ? null : risk.category)}>
                         <Card
-                            key={risk.category}
-                            className="hover:shadow-lg transition-shadow cursor-pointer"
-                            onClick={() => setSelectedCategory(selectedCategory === risk.category ? null : risk.category)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                            <CardHeader className="pb-3">
-                                <div className="flex items-center justify-between">
-                                    <CardTitle className="text-sm font-medium">{risk.category}</CardTitle>
-                                    <Badge variant="outline" className={config.color}>
-                                        <Icon className="h-3 w-3 mr-1" />
-                                        {risk.severity.toUpperCase()}
-                                    </Badge>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-3">
-                                    {/* Risk Score */}
-                                    <div>
-                                        <div className="flex justify-between text-xs mb-1">
-                                            <span className="text-muted-foreground">Risk Score</span>
-                                            <span className="font-semibold">{risk.score}/100</span>
-                                        </div>
-                                        <Progress value={risk.score} className={cn("h-2", getRiskColor(risk.score))} />
-                                    </div>
+                                                    key={risk.category}
+                                                    className="hover:shadow-lg transition-shadow cursor-pointer"
+                                                >
+                                                    <CardHeader className="pb-3">
+                                                        <div className="flex items-center justify-between">
+                                                            <CardTitle className="text-sm font-medium">{risk.category}</CardTitle>
+                                                            <Badge variant="outline" className={config.color}>
+                                                                <Icon className="h-3 w-3 mr-1" />
+                                                                {risk.severity.toUpperCase()}
+                                                            </Badge>
+                                                        </div>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="space-y-3">
+                                                            {/* Risk Score */}
+                                                            <div>
+                                                                <div className="flex justify-between text-xs mb-1">
+                                                                    <span className="text-muted-foreground">Risk Score</span>
+                                                                    <span className="font-semibold">{risk.score}/100</span>
+                                                                </div>
+                                                                <Progress value={risk.score} className={cn("h-2", getRiskColor(risk.score))} />
+                                                            </div>
 
-                                    {/* Trend Indicator */}
-                                    <div className="flex items-center gap-2 text-xs">
-                                        <TrendIcon className={cn("h-4 w-4", trendColor)} />
-                                        <span className={trendColor}>
-                                            {risk.trend === "up" ? "Increasing" : risk.trend === "down" ? "Decreasing" : "Stable"}
-                                        </span>
-                                    </div>
+                                                            {/* Trend Indicator */}
+                                                            <div className="flex items-center gap-2 text-xs">
+                                                                <TrendIcon className={cn("h-4 w-4", trendColor)} />
+                                                                <span className={trendColor}>
+                                                                    {risk.trend === "up" ? "Increasing" : risk.trend === "down" ? "Decreasing" : "Stable"}
+                                                                </span>
+                                                            </div>
 
-                                    {/* Expandable Detail */}
-                                    {selectedCategory === risk.category && (
-                                        <div className="pt-2 border-t space-y-2">
-                                            <div className="text-xs">
-                                                <div className="font-medium mb-1">Description</div>
-                                                <div className="text-muted-foreground">{risk.description}</div>
-                                            </div>
-                                            <div className="text-xs">
-                                                <div className="font-medium mb-1">Impact</div>
-                                                <div className="text-muted-foreground">{risk.impact}</div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
+                                                            {/* Expandable Detail */}
+                                                            {selectedCategory === risk.category && (
+                                                                <div className="pt-2 border-t space-y-2">
+                                                                    <div className="text-xs">
+                                                                        <div className="font-medium mb-1">Description</div>
+                                                                        <div className="text-muted-foreground">{risk.description}</div>
+                                                                    </div>
+                                                                    <div className="text-xs">
+                                                                        <div className="font-medium mb-1">Impact</div>
+                                                                        <div className="text-muted-foreground">{risk.impact}</div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                        </Button>
                     );
                 })}
             </div>

@@ -121,7 +121,7 @@ export default function AuditManagement() {
           </Button>
         </div>
 
-        <div className="border rounded-md bg-white">
+        <div className="border rounded-md bg-card">
           <InteractiveSpreadsheet
             data={localAudits}
             columns={[

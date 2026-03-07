@@ -77,7 +77,7 @@ export default function PortalPayments() {
                     ) : (
                         <div className="text-center py-12">
                             <CheckCircle className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                            <p className="text-slate-500">No payment history found</p>
+                            <p className="text-muted-foreground">No payment history found</p>
                         </div>
                     )}
                 </CardContent>

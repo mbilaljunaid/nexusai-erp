@@ -95,7 +95,7 @@ export default function StockPickingPacking() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="border rounded-md bg-white">
+          <div className="border rounded-md bg-card">
             <InteractiveSpreadsheet
               data={localTasks}
               columns={[

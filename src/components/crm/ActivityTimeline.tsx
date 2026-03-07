@@ -66,7 +66,7 @@ export function ActivityTimeline({ entityType, entityId }: ActivityTimelineProps
             case "email": return <Mail className="h-4 w-4 text-green-500" />;
             case "meeting": return <Calendar className="h-4 w-4 text-purple-500" />;
             case "task": return <CheckCircle className="h-4 w-4 text-orange-500" />;
-            default: return <StickyNote className="h-4 w-4 text-gray-500" />;
+            default: return <StickyNote className="h-4 w-4 text-muted-foreground" />;
         }
     };
 

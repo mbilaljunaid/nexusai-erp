@@ -57,8 +57,8 @@ export default function CertificationStatus() {
         { id: "cert_type", header: "Cert Type", width: "150px", cell: (p: any) => <span className="font-bold font-mono">{p.cert_type}</span> },
         { id: "suppliers", header: "Suppliers", width: "120px", cell: (p: any) => <span className="font-mono">{p.suppliers_with_cert}</span> },
         { id: "active", header: "Active", width: "120px", cell: (p: any) => <span className="text-emerald-600 font-semibold">{p.active}</span> },
-        { id: "expired", header: "Expired", width: "120px", cell: (p: any) => <span className={p.expired > 0 ? "text-red-600" : "text-gray-500"}>{p.expired}</span> },
-        { id: "earliest_expiry", header: "Earliest Expiry", width: "150px", cell: (p: any) => <span className="text-gray-500">{fmtDate(p.earliest_expiry)}</span> }
+        { id: "expired", header: "Expired", width: "120px", cell: (p: any) => <span className={p.expired > 0 ? "text-red-600" : "text-muted-foreground"}>{p.expired}</span> },
+        { id: "earliest_expiry", header: "Earliest Expiry", width: "150px", cell: (p: any) => <span className="text-muted-foreground">{fmtDate(p.earliest_expiry)}</span> }
     ];
 
     return (
@@ -66,7 +66,7 @@ export default function CertificationStatus() {
             <div className="flex justify-between mb-4">
                 <div>
 
-                    <p className="text-[13px] text-gray-500 mt-1">ISO · SOC2 · GDPR · Custom — verification & expiry alerts</p>
+                    <p className="text-[13px] text-muted-foreground mt-1">ISO · SOC2 · GDPR · Custom — verification & expiry alerts</p>
                 </div>
                 <Button variant="default" onClick={() => setShowNew(true)} className="text-white">+ Add Certificate</Button>
             </div>
@@ -83,7 +83,7 @@ export default function CertificationStatus() {
             {/* Tabs */}
             <div className="flex gap-1 mb-3.5">
                 {(['certs', 'portfolio', 'expiring'] as const).map(t => (
-                    <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`px-4 py-1.5 border border-gray-200 rounded-lg text-[12px] font-semibold cursor-pointer ${tab === t ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
+                    <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`px-4 py-1.5 border border-border rounded-lg text-[12px] font-semibold cursor-pointer ${tab === t ? "bg-gray-900 text-white" : "bg-card text-muted-foreground"}`)}>
                         {t === 'certs' ? 'All Certificates' : t === 'portfolio' ? 'Portfolio View' : `Expiring (${expiring.length})`}
                     </Button>
                 ))}
@@ -120,42 +120,44 @@ export default function CertificationStatus() {
                     <div className="flex gap-2 mb-2.5">
                         <Input placeholder="Filter by supplier ID" value={supplierId} onChange={e => setSupplierId(e.target.value)} className="px-2.5 py-1.5 border border-gray-300 rounded-lg text-[12px] min-w-48" aria-label="Supplier filter" />
                         {['', 'Active', 'Expired', 'Pending', 'Revoked'].map(s => (
-                            <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-3 py-1.5 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${statusFilter === s ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
+                            <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-3 py-1.5 border border-border rounded-md text-[11px] font-semibold cursor-pointer ${statusFilter === s ? "bg-gray-900 text-white" : "bg-card text-muted-foreground"}`)}>
                                 {s || 'All'}
                             </Button>
                         ))}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
                         {certs.map(c => {
-                            const cfg = CERT_STATUS[c.status] ?? { className: 'bg-gray-100 text-gray-500', color: '#6b7280', icon: ShieldCheck };
+                            const cfg = CERT_STATUS[c.status] ?? { className: 'bg-muted text-muted-foreground', color: '#6b7280', icon: ShieldCheck };
                             const Icon = cfg.icon;
                             const sel = selected?.id === c.id;
                             return (
-                                <Card key={c.id} onClick={() => setSelected(sel ? null : c)} className={cn(`p-3.5 cursor-pointer shadow-sm border-2 ${sel ? 'border-blue-700' : 'border-gray-200'}`)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <div className="flex justify-between mb-2">
-                                        <div className="flex items-center gap-1.5">
-                                            <Icon size={14} color={cfg.color} />
-                                            <span className="text-[13px] font-extrabold font-mono">{c.cert_type}</span>
-                                        </div>
-                                        <span className={cn(`px-1.5 py-0.5 rounded-md text-[9px] font-bold ${cfg.className}`)}>{c.status}</span>
-                                    </div>
-                                    <div className="text-[11px] text-gray-700 mb-0.5">Supplier: <strong>{c.supplier_id}</strong></div>
-                                    {c.issuing_body && <div className="text-[10px] text-gray-500 mb-0.5">{c.issuing_body} #{c.cert_number}</div>}
-                                    <div className="text-[10px] text-gray-500">
-                                        {c.issue_date && `Issued: ${fmtDate(c.issue_date)}  `}
-                                        {c.expiry_date && <span className={c.status === 'Active' && new Date(c.expiry_date) < new Date(Date.now() + 60 * 86400000) ? "text-amber-600" : ""}>Expires: {fmtDate(c.expiry_date)}</span>}
-                                    </div>
-                                    {c.verified_by && <div className="text-[10px] text-emerald-600 mt-1">✓ Verified by {c.verified_by}</div>}
-                                    {sel && (
-                                        <div className="mt-2 flex gap-1.5">
-                                            {c.status === 'Pending' && <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); verifyMut.mutate(c.id); }} className="text-white text-[11px]">Verify</Button>}
-                                            {c.status === 'Active' && <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); revokeMut.mutate(c.id); }} className="text-white text-[11px]">Revoke</Button>}
-                                        </div>
-                                    )}
-                                </Card>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelected(sel ? null : c)}>
+                                <Card key={c.id} className={cn(`p-3.5 cursor-pointer shadow-sm border-2 ${sel ? 'border-blue-700' : 'border-border'}`)}>
+                                                                    <div className="flex justify-between mb-2">
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            <Icon size={14} color={cfg.color} />
+                                                                            <span className="text-[13px] font-extrabold font-mono">{c.cert_type}</span>
+                                                                        </div>
+                                                                        <span className={cn(`px-1.5 py-0.5 rounded-md text-[9px] font-bold ${cfg.className}`)}>{c.status}</span>
+                                                                    </div>
+                                                                    <div className="text-[11px] text-foreground/90 mb-0.5">Supplier: <strong>{c.supplier_id}</strong></div>
+                                                                    {c.issuing_body && <div className="text-[10px] text-muted-foreground mb-0.5">{c.issuing_body} #{c.cert_number}</div>}
+                                                                    <div className="text-[10px] text-muted-foreground">
+                                                                        {c.issue_date && `Issued: ${fmtDate(c.issue_date)}  `}
+                                                                        {c.expiry_date && <span className={c.status === 'Active' && new Date(c.expiry_date) < new Date(Date.now() + 60 * 86400000) ? "text-amber-600" : ""}>Expires: {fmtDate(c.expiry_date)}</span>}
+                                                                    </div>
+                                                                    {c.verified_by && <div className="text-[10px] text-emerald-600 mt-1">✓ Verified by {c.verified_by}</div>}
+                                                                    {sel && (
+                                                                        <div className="mt-2 flex gap-1.5">
+                                                                            {c.status === 'Pending' && <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); verifyMut.mutate(c.id); }} className="text-white text-[11px]">Verify</Button>}
+                                                                            {c.status === 'Active' && <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); revokeMut.mutate(c.id); }} className="text-white text-[11px]">Revoke</Button>}
+                                                                        </div>
+                                                                    )}
+                                                                </Card>
+                                </Button>
                             );
                         })}
-                        {certs.length === 0 && <div className="col-span-full text-center text-gray-400 p-6">No certificates found</div>}
+                        {certs.length === 0 && <div className="col-span-full text-center text-muted-foreground/70 p-6">No certificates found</div>}
                     </div>
                 </>
             )}
@@ -171,7 +173,7 @@ export default function CertificationStatus() {
                             onChange={() => { }}
                         />
                     ) : (
-                        <div className="text-center text-gray-400 p-5">No data</div>
+                        <div className="text-center text-muted-foreground/70 p-5">No data</div>
                     )}
                 </Card>
             )}
@@ -185,7 +187,7 @@ export default function CertificationStatus() {
                             <Card key={c.id} className={cn(`py-2.5 px-3.5 flex justify-between items-center shadow-sm border-l-[4px] ${isOk ? 'border-l-amber-600' : 'border-l-red-600'}`)}>
                                 <div>
                                     <span className="text-[13px] font-bold font-mono">{c.cert_type}</span>
-                                    <span className="ml-2 text-[11px] text-gray-500">Supplier: {c.supplier_id} · #{c.cert_number}</span>
+                                    <span className="ml-2 text-[11px] text-muted-foreground">Supplier: {c.supplier_id} · #{c.cert_number}</span>
                                 </div>
                                 <div className={cn(`text-[12px] font-bold ${isOk ? 'text-amber-600' : 'text-red-600'}`)}>
                                     {days <= 0 ? 'EXPIRED' : `${days} days remaining`} — Expires {fmtDate(c.expiry_date)}
@@ -193,7 +195,7 @@ export default function CertificationStatus() {
                             </Card>
                         );
                     })}
-                    {expiring.length === 0 && <div className="text-center text-gray-400 p-6">No certificates expiring within 60 days</div>}
+                    {expiring.length === 0 && <div className="text-center text-muted-foreground/70 p-6">No certificates expiring within 60 days</div>}
                 </div>
             )}
         </StandardPage>

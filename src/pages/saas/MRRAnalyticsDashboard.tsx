@@ -45,21 +45,21 @@ export default function MRRAnalyticsDashboard() {
         <div className="space-y-6">
             <div>
                 
-                <p className="text-gray-500 mt-1">Monthly Recurring Revenue & SaaS Metrics</p>
+                <p className="text-muted-foreground mt-1">Monthly Recurring Revenue & SaaS Metrics</p>
             </div>
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <DollarSign className="h-4 w-4 mr-2" />
                             MRR
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">${(metrics?.mrr || 0).toLocaleString()}</div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                             ARR: ${(metrics?.arr || 0).toLocaleString()}
                         </p>
                     </CardContent>
@@ -67,14 +67,14 @@ export default function MRRAnalyticsDashboard() {
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <Users className="h-4 w-4 mr-2" />
                             Customers
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{formatNumber(metrics?.total_customers) || 0}</div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                             ARPU: ${(metrics?.arpu || 0).toFixed(2)}
                         </p>
                     </CardContent>
@@ -82,14 +82,14 @@ export default function MRRAnalyticsDashboard() {
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <Target className="h-4 w-4 mr-2" />
                             Net Revenue Retention
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{(metrics?.net_revenue_retention || 0).toFixed(1)}%</div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                             Churn: {(metrics?.customer_churn_rate || 0).toFixed(1)}%
                         </p>
                     </CardContent>
@@ -97,14 +97,14 @@ export default function MRRAnalyticsDashboard() {
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
                             <TrendingUp className="h-4 w-4 mr-2" />
                             LTV / CAC
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">{(metrics?.ltv_cac_ratio || 0).toFixed(1)}x</div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                             LTV: ${(metrics?.ltv || 0).toLocaleString()}
                         </p>
                     </CardContent>
@@ -126,7 +126,7 @@ export default function MRRAnalyticsDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="h-96 flex items-center justify-center">
-                                <p className="text-gray-400">Waterfall chart visualization will be implemented here</p>
+                                <p className="text-muted-foreground/70">Waterfall chart visualization will be implemented here</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -138,7 +138,7 @@ export default function MRRAnalyticsDashboard() {
                             <CardTitle>Customer Lifetime Value by Cohort</CardTitle>
                         </CardHeader>
                         <CardContent className="h-96 flex items-center justify-center">
-                            <p className="text-gray-400">Cohort LTV table will be implemented here</p>
+                            <p className="text-muted-foreground/70">Cohort LTV table will be implemented here</p>
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -149,7 +149,7 @@ export default function MRRAnalyticsDashboard() {
                             <CardTitle>Plan Performance Metrics</CardTitle>
                         </CardHeader>
                         <CardContent className="h-96 flex items-center justify-center">
-                            <p className="text-gray-400">Plan comparison table will be implemented here</p>
+                            <p className="text-muted-foreground/70">Plan comparison table will be implemented here</p>
                         </CardContent>
                     </Card>
                 </TabsContent>

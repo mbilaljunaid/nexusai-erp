@@ -22,23 +22,24 @@ const TreeNode = ({ node, level = 0 }: { node: AssetNode, level?: number }) => {
 
     return (
         <div className="select-none">
-            <div role="button" tabIndex={0}
-                className={cn(`flex items-center gap-2 py-2 px-2 hover:bg-muted/50 rounded cursor-pointer ${level === 0 ? 'font-medium' : 'text-sm'}`)}
-                style={{ paddingLeft: `${level * 16 + 8}px` }} // eslint-disable-line react-dom/no-unsafe-inline-style
-                onClick={() => setIsOpen(!isOpen)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-            >
-                {hasChildren ? (
-                    isOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                    <span className="w-4" />
-                )}
+            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setIsOpen(!isOpen)}>
+            <div
+                            className={cn(`flex items-center gap-2 py-2 px-2 hover:bg-muted/50 rounded cursor-pointer ${level === 0 ? 'font-medium' : 'text-sm'}`)}
+                            style={{ paddingLeft: `${level * 16 + 8}px` }} // eslint-disable-line react-dom/no-unsafe-inline-style
+                        >
+                            {hasChildren ? (
+                                isOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                                <span className="w-4" />
+                            )}
 
-                {level === 0 ? <Layers className="h-4 w-4 text-primary" /> : <Box className="h-4 w-4 text-blue-500" />}
+                            {level === 0 ? <Layers className="h-4 w-4 text-primary" /> : <Box className="h-4 w-4 text-blue-500" />}
 
-                <span className="truncate">
-                    {node.assetNumber} <span className="text-muted-foreground font-normal">- {node.description}</span>
-                </span>
-            </div>
+                            <span className="truncate">
+                                {node.assetNumber} <span className="text-muted-foreground font-normal">- {node.description}</span>
+                            </span>
+                        </div>
+            </Button>
 
             {isOpen && hasChildren && (
                 <div>

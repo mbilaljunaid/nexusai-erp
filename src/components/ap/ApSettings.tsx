@@ -146,7 +146,7 @@ export default function ApSettings() {
 
                 <TabsContent value="options" className="space-y-6 focus-visible:outline-none">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Card className="shadow-sm border-slate-200/60 overflow-hidden">
+                        <Card className="shadow-sm border-border/60 overflow-hidden">
                             <CardHeader className="bg-slate-500/10 border-b">
                                 <CardTitle className="text-lg flex items-center gap-2">
                                     <Receipt className="h-4 w-4 text-primary" />
@@ -223,7 +223,7 @@ export default function ApSettings() {
                             </CardContent>
                         </Card>
 
-                        <Card className="shadow-sm border-slate-200/60 overflow-hidden">
+                        <Card className="shadow-sm border-border/60 overflow-hidden">
                             <CardHeader className="bg-slate-500/10 border-b">
                                 <CardTitle className="text-lg flex items-center gap-2">
                                     <CreditCard className="h-4 w-4 text-primary" />
@@ -276,7 +276,7 @@ export default function ApSettings() {
                 </TabsContent>
 
                 <TabsContent value="tolerances" className="space-y-6 focus-visible:outline-none">
-                    <Card className="shadow-sm border-slate-200/60 overflow-hidden">
+                    <Card className="shadow-sm border-border/60 overflow-hidden">
                         <CardHeader className="bg-slate-500/10 border-b">
                             <CardTitle className="text-lg flex items-center gap-2">
                                 <ShieldCheck className="h-4 w-4 text-primary" />
@@ -286,36 +286,36 @@ export default function ApSettings() {
                         </CardHeader>
                         <CardContent className="pt-6">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="space-y-3 p-4 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <div className="space-y-3 p-4 bg-muted/50/50 rounded-xl border border-border">
                                     <Label className="text-sm font-semibold">Price Tolerance (%)</Label>
                                     <Input
                                         type="number"
                                         step="0.01"
                                         value={formData.priceTolerancePercent}
                                         onChange={(e) => setFormData({ ...formData, priceTolerancePercent: e.target.value })}
-                                        className="bg-white"
+                                        className="bg-card"
                                     />
                                     <p className="text-xs text-muted-foreground font-medium">Allowable unit price difference from Purchase Order line.</p>
                                 </div>
-                                <div className="space-y-3 p-4 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <div className="space-y-3 p-4 bg-muted/50/50 rounded-xl border border-border">
                                     <Label className="text-sm font-semibold">Quantity Tolerance (%)</Label>
                                     <Input
                                         type="number"
                                         step="0.01"
                                         value={formData.qtyTolerancePercent}
                                         onChange={(e) => setFormData({ ...formData, qtyTolerancePercent: e.target.value })}
-                                        className="bg-white"
+                                        className="bg-card"
                                     />
                                     <p className="text-xs text-muted-foreground font-medium">Allowable quantity exception before triggering QTY_VARIANCE stay.</p>
                                 </div>
-                                <div className="space-y-3 p-4 bg-slate-50/50 rounded-xl border border-slate-100">
+                                <div className="space-y-3 p-4 bg-muted/50/50 rounded-xl border border-border">
                                     <Label className="text-sm font-semibold">Tax Tolerance (%)</Label>
                                     <Input
                                         type="number"
                                         step="0.01"
                                         value={formData.taxTolerancePercent}
                                         onChange={(e) => setFormData({ ...formData, taxTolerancePercent: e.target.value })}
-                                        className="bg-white"
+                                        className="bg-card"
                                     />
                                     <p className="text-xs text-muted-foreground font-medium">Rounding tolerance for system-calculated tax lines.</p>
                                 </div>
@@ -325,7 +325,7 @@ export default function ApSettings() {
                 </TabsContent>
 
                 <TabsContent value="accounting" className="space-y-6 focus-visible:outline-none">
-                    <Card className="shadow-sm border-slate-200/60 overflow-hidden">
+                    <Card className="shadow-sm border-border/60 overflow-hidden">
                         <CardHeader className="bg-slate-500/10 border-b">
                             <CardTitle className="text-lg">Subledger Accounting Policies</CardTitle>
                             <CardDescription>Control when and how subledger journals are generated for AP transactions.</CardDescription>
@@ -378,7 +378,7 @@ export default function ApSettings() {
                 </TabsContent>
 
                 <TabsContent value="distribution" className="space-y-6 focus-visible:outline-none">
-                    <Card className="shadow-sm border-slate-200/60 overflow-hidden">
+                    <Card className="shadow-sm border-border/60 overflow-hidden">
                         <CardHeader className="bg-slate-500/10 border-b flex flex-row items-center justify-between">
                             <div>
                                 <CardTitle className="text-lg">Distribution Sets</CardTitle>
@@ -427,7 +427,7 @@ export default function ApSettings() {
                                             </div>
                                             <div className="space-y-3">
                                                 {setLines.map((line, idx) => (
-                                                    <div key={idx} className="flex gap-4 items-end bg-slate-500/10 p-3 rounded-lg border border-slate-100">
+                                                    <div key={idx} className="flex gap-4 items-end bg-slate-500/10 p-3 rounded-lg border border-border">
                                                         <div className="flex-1 space-y-1.5">
                                                             <Label className="text-xs">GL Account Combination ID</Label>
                                                             <Input
@@ -471,7 +471,7 @@ export default function ApSettings() {
                         </CardHeader>
                         <CardContent className="pt-6">
                             {Array.isArray(distSets) && distSets.length === 0 ? (
-                                <div className="text-center py-12 text-muted-foreground bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200">
+                                <div className="text-center py-12 text-muted-foreground bg-muted/50/50 rounded-2xl border-2 border-dashed border-border">
                                     <Layers className="h-10 w-10 mx-auto mb-3 text-slate-300" />
                                     <p className="font-medium">No distribution sets defined.</p>
                                     <p className="text-sm">Sets allow you to split invoice lines automatically across multiple GL accounts.</p>
@@ -481,7 +481,7 @@ export default function ApSettings() {
                                     {Array.isArray(distSets) && distSets.map((set: any) => (
                                         <div key={set.id} className="group relative flex items-center justify-between p-4 border rounded-xl hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer">
                                             <div className="flex items-center gap-4">
-                                                <div className="p-3 bg-white border shadow-sm text-primary rounded-lg group-hover:scale-110 transition-transform">
+                                                <div className="p-3 bg-card border shadow-sm text-primary rounded-lg group-hover:scale-110 transition-transform">
                                                     <Layers className="h-5 w-5" />
                                                 </div>
                                                 <div>

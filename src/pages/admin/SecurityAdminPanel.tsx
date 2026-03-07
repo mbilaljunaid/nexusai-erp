@@ -185,10 +185,10 @@ export default function SecurityAdminPanel() {
 
       {/* Add IP Form */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-4">Add IP Address</h3>
+        <h3 className="text-lg font-semibold text-foreground dark:text-gray-200 mb-4">Add IP Address</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <Label className="block text-sm font-medium text-gray-700 mb-1">
+            <Label className="block text-sm font-medium text-foreground/90 mb-1">
               IP Address *
             </Label>
             <Input
@@ -199,7 +199,7 @@ export default function SecurityAdminPanel() {
             />
           </div>
           <div className="md:col-span-2">
-            <Label className="block text-sm font-medium text-gray-700 mb-1">
+            <Label className="block text-sm font-medium text-foreground/90 mb-1">
               Reason (Optional)
             </Label>
             <Input
@@ -239,7 +239,7 @@ export default function SecurityAdminPanel() {
               onClick={() => setActiveTab('whitelist')}
               className={cn(`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'whitelist'
                 ? 'border-green-600 text-green-700'
-                : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-200'
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:text-gray-200'
                 }`)}
             >
               Whitelist ({whitelist.length})
@@ -248,7 +248,7 @@ export default function SecurityAdminPanel() {
               onClick={() => setActiveTab('blacklist')}
               className={cn(`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'blacklist'
                 ? 'border-red-600 text-red-700'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`)}
             >
               Blacklist ({blacklist.length})
@@ -259,15 +259,15 @@ export default function SecurityAdminPanel() {
         {/* List Content */}
         <div className="divide-y">
           {currentList.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-muted-foreground">
               No IP addresses in {activeTab}
             </div>
           ) : (
             currentList.map((entry) => (
               <div key={entry.ip} className="px-6 py-4 flex items-center justify-between hover:bg-gray-500/10">
                 <div>
-                  <p className="text-sm font-mono font-medium text-gray-900 dark:text-gray-200">{entry.ip}</p>
-                  <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
+                  <p className="text-sm font-mono font-medium text-foreground dark:text-gray-200">{entry.ip}</p>
+                  <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                     <span>Added by {entry.addedBy}</span>
                     <span>•</span>
                     <span>{formatDateTime(entry.addedAt)}</span>

@@ -50,7 +50,7 @@ export default function PublicProcessHub() {
     { icon: Warehouse, title: "Warehouse Management", desc: "Warehouse operations", href: "/public/processes/warehouse-management", color: "text-rose-500" },
     { icon: RotateCcw, title: "Customer Returns", desc: "Returns and refunds processing", href: "/public/processes/customer-returns", color: "text-sky-500" },
     { icon: Users, title: "Vendor Performance", desc: "Supplier evaluation", href: "/public/processes/vendor-performance", color: "text-fuchsia-500" },
-    { icon: CreditCard, title: "Subscription Billing", desc: "Recurring billing management", href: "/public/processes/subscription-billing", color: "text-slate-500" },
+    { icon: CreditCard, title: "Subscription Billing", desc: "Recurring billing management", href: "/public/processes/subscription-billing", color: "text-muted-foreground" },
   ];
 
   return (

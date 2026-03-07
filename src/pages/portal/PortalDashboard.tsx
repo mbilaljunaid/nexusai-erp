@@ -80,7 +80,7 @@ export default function PortalDashboard() {
                     title="Overdue Amount"
                     value={`$${formatNumber(stats.overdue) || "0.00"}`}
                     icon={AlertCircle}
-                    color={hasOverdue ? "text-red-600" : "text-gray-400"}
+                    color={hasOverdue ? "text-red-600" : "text-muted-foreground/70"}
                     bg={hasOverdue ? "bg-red-500/10" : "bg-gray-500/10"}
                 />
                 <StatCard
@@ -186,7 +186,7 @@ function StatCard({ title, value, icon: Icon, color, bg }: any) {
         <Card>
             <CardContent className="p-6 flex items-center justify-between">
                 <div>
-                    <p className="text-sm font-medium text-slate-500">{title}</p>
+                    <p className="text-sm font-medium text-muted-foreground">{title}</p>
                     <div className="text-2xl font-bold mt-1">{value}</div>
                 </div>
                 <div className={cn(`h-12 w-12 rounded-full ${bg} flex items-center justify-center`)}>

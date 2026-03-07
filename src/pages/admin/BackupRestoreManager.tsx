@@ -107,12 +107,12 @@ export default function BackupRestoreManager() {
 
 
     const restorePointColumns: SpreadsheetColumn[] = [
-        { id: "timestamp", header: "Timestamp", width: 200, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{formatDateTime(item.timestamp)}</span> },
+        { id: "timestamp", header: "Timestamp", width: 200, cell: (item) => <span className="text-sm text-foreground dark:text-gray-200">{formatDateTime(item.timestamp)}</span> },
         { id: "type", header: "Type", width: 150, cell: (item) => <span className="text-sm capitalize">{item.type}</span> },
-        { id: "dataSize", header: "Size", width: 120, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{item.dataSize}</span> },
-        { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-gray-900 dark:text-gray-200">{formatNumber(item.itemCount)}</span> },
+        { id: "dataSize", header: "Size", width: 120, cell: (item) => <span className="text-sm text-foreground dark:text-gray-200">{item.dataSize}</span> },
+        { id: "itemCount", header: "Items", width: 120, cell: (item) => <span className="text-sm text-foreground dark:text-gray-200">{formatNumber(item.itemCount)}</span> },
         { id: "status", header: "Status", width: 150, cell: (item) => <StatusBadge status={item.status} /> },
-        { id: "lastVerified", header: "Last Verified", width: 200, cell: (item) => <span className="text-sm text-gray-500">{item.lastVerified ? formatDateTime(item.lastVerified) : 'Never'}</span> },
+        { id: "lastVerified", header: "Last Verified", width: 200, cell: (item) => <span className="text-sm text-muted-foreground">{item.lastVerified ? formatDateTime(item.lastVerified) : 'Never'}</span> },
         {
             id: "actions", header: "Actions", width: 150, cell: (item) => (
                 <div className="flex items-center justify-end gap-2 pr-4 w-full">
@@ -134,8 +134,8 @@ export default function BackupRestoreManager() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-200">Backup & Restore Manager</h2>
-                    <p className="mt-1 text-sm text-gray-600">
+                    <h2 className="text-2xl font-bold text-foreground dark:text-gray-200">Backup & Restore Manager</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
                         Create, verify, and manage database backups
                     </p>
                 </div>
@@ -179,8 +179,8 @@ export default function BackupRestoreManager() {
                             <Database className="w-5 h-5 text-blue-600" />
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Total Backups</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">{restorePoints.length}</p>
+                            <p className="text-sm font-medium text-muted-foreground">Total Backups</p>
+                            <p className="text-2xl font-bold text-foreground dark:text-gray-200">{restorePoints.length}</p>
                         </div>
                     </div>
                 </Card>
@@ -191,8 +191,8 @@ export default function BackupRestoreManager() {
                             <CheckCircle className="w-5 h-5 text-green-600" />
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Verified</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-gray-200">
+                            <p className="text-sm font-medium text-muted-foreground">Verified</p>
+                            <p className="text-2xl font-bold text-foreground dark:text-gray-200">
                                 {restorePoints.filter(p => p.status === 'verified').length}
                             </p>
                         </div>
@@ -205,8 +205,8 @@ export default function BackupRestoreManager() {
                             <Clock className="w-5 h-5 text-yellow-600" />
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-600">Latest Backup</p>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-gray-200">
+                            <p className="text-sm font-medium text-muted-foreground">Latest Backup</p>
+                            <p className="text-sm font-semibold text-foreground dark:text-gray-200">
                                 {restorePoints.length > 0
                                     ? formatDate(restorePoints[0].timestamp)
                                     : 'None'}
@@ -219,7 +219,7 @@ export default function BackupRestoreManager() {
             {/* Restore Points Table */}
             <Card className="overflow-hidden">
                 <div className="px-6 py-4 border-b bg-gray-500/10">
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Restore Points</h3>
+                    <h3 className="text-sm font-semibold text-foreground dark:text-gray-200">Restore Points</h3>
                 </div>
 
                 <div className="h-[400px]">
@@ -228,7 +228,7 @@ export default function BackupRestoreManager() {
                             <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
                         </div>
                     ) : restorePoints.length === 0 ? (
-                        <div className="p-12 text-center text-gray-500">
+                        <div className="p-12 text-center text-muted-foreground">
                             No backup restore points found. Create your first backup above.
                         </div>
                     ) : (
@@ -244,11 +244,11 @@ export default function BackupRestoreManager() {
 
             {/* Backup Schedule (Placeholder) */}
             <Card className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-200 mb-4">Automated Backup Schedule</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-foreground dark:text-gray-200 mb-4">Automated Backup Schedule</h3>
+                <p className="text-sm text-muted-foreground mb-4">
                     Configure automated backup schedules to ensure regular data protection.
                 </p>
-                <Button variant="secondary" className="text-gray-700 text-sm hover:">
+                <Button variant="secondary" className="text-foreground/90 text-sm hover:">
                     Configure Schedule
                 </Button>
             </Card>

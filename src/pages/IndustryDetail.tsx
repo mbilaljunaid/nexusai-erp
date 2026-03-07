@@ -1761,7 +1761,7 @@ export default function IndustryDetail() {
                     </Button>
                   </Link>
                   <Link to="/marketplace">
-                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-marketplace">
+                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-card/10" data-testid="button-marketplace">
                       Browse Marketplace
                     </Button>
                   </Link>
@@ -1897,12 +1897,12 @@ export default function IndustryDetail() {
             <p className="text-blue-100 mb-6 text-lg">Get instant access to a fully seeded demo environment for {industry.name}</p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link to={`/demo?industry=${industry.name}`}>
-                <Button size="lg" className="bg-white text-blue-700 hover:bg-blue-500/10" data-testid="button-request-demo">
+                <Button size="lg" className="bg-card text-blue-700 hover:bg-blue-500/10" data-testid="button-request-demo">
                   Request Demo <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
               <Link to="/marketplace">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-view-marketplace">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-card/10" data-testid="button-view-marketplace">
                   View Marketplace
                 </Button>
               </Link>

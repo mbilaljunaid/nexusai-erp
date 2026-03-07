@@ -197,7 +197,7 @@ export default function LearningApprovals() {
                                 </CardHeader>
                                 {request.reviewComments && (
                                     <CardContent>
-                                        <div className="p-3 border rounded-lg bg-white">
+                                        <div className="p-3 border rounded-lg bg-card">
                                             <p className="text-sm font-medium mb-1">Review Comments</p>
                                             <p className="text-sm text-muted-foreground">{request.reviewComments}</p>
                                         </div>
@@ -231,7 +231,7 @@ export default function LearningApprovals() {
                                 </CardHeader>
                                 {request.reviewComments && (
                                     <CardContent>
-                                        <div className="p-3 border rounded-lg bg-white">
+                                        <div className="p-3 border rounded-lg bg-card">
                                             <p className="text-sm font-medium mb-1">Rejection Reason</p>
                                             <p className="text-sm text-muted-foreground">{request.reviewComments}</p>
                                         </div>

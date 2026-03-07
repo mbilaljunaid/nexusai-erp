@@ -145,28 +145,29 @@ export default function LearningPathBuilder() {
                         </Card>
                     ) : (
                         paths.map((path: LearningPath) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedPathId(path.id)}>
                             <Card
-                                key={path.id}
-                                className={cn(`cursor-pointer transition-all ${selectedPathId === path.id
-                                        ? "border-primary ring-2 ring-primary"
-                                        : "hover:border-primary/50"
-                                    }`)}
-                                onClick={() => setSelectedPathId(path.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader>
-                                    <CardTitle className="text-lg">{path.title}</CardTitle>
-                                    <CardDescription className="line-clamp-2">
-                                        {path.description}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                        <span>{path.courses?.length || 0} courses</span>
-                                        <span>{path.duration}h total</span>
-                                        <span>{path.enrolledCount} enrolled</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                            key={path.id}
+                                                            className={cn(`cursor-pointer transition-all ${selectedPathId === path.id
+                                                                    ? "border-primary ring-2 ring-primary"
+                                                                    : "hover:border-primary/50"
+                                                                }`)}
+                                                        >
+                                                            <CardHeader>
+                                                                <CardTitle className="text-lg">{path.title}</CardTitle>
+                                                                <CardDescription className="line-clamp-2">
+                                                                    {path.description}
+                                                                </CardDescription>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                                                    <span>{path.courses?.length || 0} courses</span>
+                                                                    <span>{path.duration}h total</span>
+                                                                    <span>{path.enrolledCount} enrolled</span>
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ))
                     )}
                 </div>

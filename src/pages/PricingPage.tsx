@@ -508,14 +508,14 @@ export default function PricingPage() {
 
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               {/* $10 Option */}
-              <Card className="bg-white/10 border-white/20 p-6 backdrop-blur" data-testid="card-sponsor-10">
+              <Card className="bg-card/10 border-white/20 p-6 backdrop-blur" data-testid="card-sponsor-10">
                 <Coffee className="w-10 h-10 mx-auto mb-4 text-yellow-300" />
                 <h3 className="text-xl font-bold mb-2">Buy Me 3 Coffees</h3>
                 <div className="text-3xl font-bold mb-4">$10</div>
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
                 <Button
                   onClick={() => handleSponsor(10)}
-                  className="w-full bg-white text-orange-600 hover:bg-slate-500/15"
+                  className="w-full bg-card text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-10"
                 >
@@ -526,14 +526,14 @@ export default function PricingPage() {
               </Card>
 
               {/* $25 Option */}
-              <Card className="bg-white/10 border-white/20 p-6 backdrop-blur" data-testid="card-sponsor-25">
+              <Card className="bg-card/10 border-white/20 p-6 backdrop-blur" data-testid="card-sponsor-25">
                 <Star className="w-10 h-10 mx-auto mb-4 text-yellow-300" />
                 <h3 className="text-xl font-bold mb-2">Feature Supporter</h3>
                 <div className="text-3xl font-bold mb-4">$25</div>
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
                 <Button
                   onClick={() => handleSponsor(25)}
-                  className="w-full bg-white text-orange-600 hover:bg-slate-500/15"
+                  className="w-full bg-card text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-25"
                 >
@@ -544,14 +544,14 @@ export default function PricingPage() {
               </Card>
 
               {/* $50 Option */}
-              <Card className="bg-white/10 border-white/20 p-6 backdrop-blur" data-testid="card-sponsor-50">
+              <Card className="bg-card/10 border-white/20 p-6 backdrop-blur" data-testid="card-sponsor-50">
                 <Gift className="w-10 h-10 mx-auto mb-4 text-yellow-300" />
                 <h3 className="text-xl font-bold mb-2">Project Champion</h3>
                 <div className="text-3xl font-bold mb-4">$50</div>
                 <p className="text-sm text-white/70 mb-4">One-time contribution</p>
                 <Button
                   onClick={() => handleSponsor(50)}
-                  className="w-full bg-white text-orange-600 hover:bg-slate-500/15"
+                  className="w-full bg-card text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-50"
                 >
@@ -563,7 +563,7 @@ export default function PricingPage() {
             </div>
 
             {/* Custom Amount */}
-            <Card className="bg-white/10 border-white/20 p-6 backdrop-blur max-w-md mx-auto" data-testid="card-sponsor-custom">
+            <Card className="bg-card/10 border-white/20 p-6 backdrop-blur max-w-md mx-auto" data-testid="card-sponsor-custom">
               <h3 className="text-lg font-bold mb-4">Custom Amount</h3>
               <div className="flex gap-3">
                 <div className="relative flex-1">
@@ -574,13 +574,13 @@ export default function PricingPage() {
                     placeholder="Enter amount"
                     value={customAmount}
                     onChange={(e) => setCustomAmount(e.target.value)}
-                    className="pl-7 bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                    className="pl-7 bg-card/10 border-white/20 text-white placeholder:text-white/50"
                     data-testid="input-custom-amount"
                   />
                 </div>
                 <Button
                   onClick={handleCustomSponsor}
-                  className="bg-white text-orange-600 hover:bg-slate-500/15"
+                  className="bg-card text-orange-600 hover:bg-slate-500/15"
                   disabled={checkoutMutation.isPending}
                   data-testid="button-sponsor-custom"
                 >

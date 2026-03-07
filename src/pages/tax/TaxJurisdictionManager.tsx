@@ -96,29 +96,30 @@ export default function TaxJurisdictionManager() {
                         </CardHeader>
                         <CardContent className="space-y-2 max-h-[500px] overflow-y-auto">
                             {jurisdictions?.map((jurisdiction: any) => (
-                                <div role="button" tabIndex={0}
-                                    key={jurisdiction.id}
-                                    className="border rounded-lg p-4 cursor-pointer hover:bg-accent"
-                                    onClick={() => setSelectedJurisdiction(jurisdiction)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <div className="font-medium">{jurisdiction.name}</div>
-                                            <div className="text-sm text-muted-foreground">{jurisdiction.type}</div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="font-bold">{jurisdiction.rate}%</div>
-                                            <Badge variant={jurisdiction.active ? "default" : "secondary"}>
-                                                {jurisdiction.active ? "Active" : "Inactive"}
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                    {jurisdiction.effectiveDate && (
-                                        <div className="text-xs text-muted-foreground mt-2">
-                                            Effective: {formatDate(jurisdiction.effectiveDate)}
-                                        </div>
-                                    )}
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedJurisdiction(jurisdiction)}>
+                                <div
+                                                                    key={jurisdiction.id}
+                                                                    className="border rounded-lg p-4 cursor-pointer hover:bg-accent"
+                                                                >
+                                                                    <div className="flex justify-between items-start">
+                                                                        <div>
+                                                                            <div className="font-medium">{jurisdiction.name}</div>
+                                                                            <div className="text-sm text-muted-foreground">{jurisdiction.type}</div>
+                                                                        </div>
+                                                                        <div className="text-right">
+                                                                            <div className="font-bold">{jurisdiction.rate}%</div>
+                                                                            <Badge variant={jurisdiction.active ? "default" : "secondary"}>
+                                                                                {jurisdiction.active ? "Active" : "Inactive"}
+                                                                            </Badge>
+                                                                        </div>
+                                                                    </div>
+                                                                    {jurisdiction.effectiveDate && (
+                                                                        <div className="text-xs text-muted-foreground mt-2">
+                                                                            Effective: {formatDate(jurisdiction.effectiveDate)}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                </Button>
                             ))}
                         </CardContent>
                     </Card>

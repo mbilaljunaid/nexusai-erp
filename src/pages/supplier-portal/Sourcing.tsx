@@ -106,26 +106,28 @@ export default function SupplierSourcing() {
 
             <div className="grid grid-cols-1 gap-4">
                 {rfqs?.map((rfq: any) => (
-                    <Card key={rfq.id} className="hover:border-primary/50 transition-all group cursor-pointer" onClick={() => setSelectedRFQ(rfq)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <CardContent className="p-0">
-                            <div className="flex items-center p-4">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-1">
-                                        <Badge variant="outline" className="font-mono text-[10px]">{rfq.rfqNumber}</Badge>
-                                        <h3 className="font-bold text-sm tracking-tight">{rfq.title}</h3>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground line-clamp-1">{rfq.description}</p>
-                                </div>
-                                <div className="flex items-center gap-8 pr-4">
-                                    <div className="text-right">
-                                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Close Date</p>
-                                        <p className="text-xs font-medium">{rfq.closeDate ? formatDate(rfq.closeDate) : 'N/A'}</p>
-                                    </div>
-                                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRFQ(rfq)}>
+                    <Card key={rfq.id} className="hover:border-primary/50 transition-all group cursor-pointer">
+                                            <CardContent className="p-0">
+                                                <div className="flex items-center p-4">
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-1">
+                                                            <Badge variant="outline" className="font-mono text-[10px]">{rfq.rfqNumber}</Badge>
+                                                            <h3 className="font-bold text-sm tracking-tight">{rfq.title}</h3>
+                                                        </div>
+                                                        <p className="text-xs text-muted-foreground line-clamp-1">{rfq.description}</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-8 pr-4">
+                                                        <div className="text-right">
+                                                            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Close Date</p>
+                                                            <p className="text-xs font-medium">{rfq.closeDate ? formatDate(rfq.closeDate) : 'N/A'}</p>
+                                                        </div>
+                                                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                    </Button>
                 ))}
 
                 {rfqs?.length === 0 && (
@@ -185,7 +187,7 @@ export default function SupplierSourcing() {
                                                                 <span className="text-[10px] text-muted-foreground">$</span>
                                                                 <Input
                                                                     type="number"
-                                                                    className="h-8 w-24 text-right text-xs bg-primary/5 focus:bg-white"
+                                                                    className="h-8 w-24 text-right text-xs bg-primary/5 focus:bg-card"
                                                                     value={line.offeredPrice}
                                                                     onChange={e => {
                                                                         const l = [...bidLines];

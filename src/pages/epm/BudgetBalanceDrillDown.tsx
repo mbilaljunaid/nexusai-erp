@@ -77,7 +77,7 @@ export default function BudgetBalanceDrillDown() {
         if (variancePct <= -10) return "text-red-600 bg-red-500/10";
         if (variancePct <= -5) return "text-amber-600 bg-amber-500/10";
         if (variancePct >= 10) return "text-green-600 bg-green-500/10";
-        return "text-gray-600 bg-gray-500/10";
+        return "text-muted-foreground bg-gray-500/10";
     };
 
     const getStatusBadge = (variancePct: number) => {
@@ -193,39 +193,40 @@ export default function BudgetBalanceDrillDown() {
                                 ) : (
                                     balances.map((balance) => (
                                         <>
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedAccount(balance.ccid)}>
                                             <TableRow
-                                                key={balance.ccid}
-                                                className="cursor-pointer hover:bg-muted/50"
-                                                onClick={() => setSelectedAccount(balance.ccid)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <TableCell>
-                                                    {balance.hasChildren && (
-                                                        <Button variant="default" onClick={(e) => { e.stopPropagation(); toggleExpand(balance.ccid); }}>
-                                                            {expandedAccounts.has(balance.ccid) ?
-                                                                <ChevronDown className="h-4 w-4" /> :
-                                                                <ChevronRight className="h-4 w-4" />
-                                                            }
-                                                        </Button>
-                                                    )}
-                                                </TableCell>
-                                                <TableCell className="font-medium">{balance.accountName}</TableCell>
-                                                <TableCell className="text-right font-mono">{formatCurrency(balance.budgeted)}</TableCell>
-                                                <TableCell className="text-right font-mono">{formatCurrency(balance.actual)}</TableCell>
-                                                <TableCell className="text-right font-mono">
-                                                    <span className={getStatusColor(balance.variancePct)}>
-                                                        {balance.consumed.toFixed(0)}%
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell className="text-right font-mono">{formatCurrency(balance.remaining)}</TableCell>
-                                                <TableCell className={cn(`text-right font-mono flex items-center justify-end gap-1 ${balance.variance < 0 ? 'text-red-600' : 'text-green-600'}`)}>
-                                                    {balance.variance < 0 ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
-                                                    {formatCurrency(Math.abs(balance.variance))}
-                                                    <span className="text-xs">({balance.variancePct.toFixed(1)}%)</span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    {getStatusBadge(balance.variancePct)}
-                                                </TableCell>
-                                            </TableRow>
+                                                                                            key={balance.ccid}
+                                                                                            className="cursor-pointer hover:bg-muted/50"
+                                                                                        >
+                                                                                            <TableCell>
+                                                                                                {balance.hasChildren && (
+                                                                                                    <Button variant="default" onClick={(e) => { e.stopPropagation(); toggleExpand(balance.ccid); }}>
+                                                                                                        {expandedAccounts.has(balance.ccid) ?
+                                                                                                            <ChevronDown className="h-4 w-4" /> :
+                                                                                                            <ChevronRight className="h-4 w-4" />
+                                                                                                        }
+                                                                                                    </Button>
+                                                                                                )}
+                                                                                            </TableCell>
+                                                                                            <TableCell className="font-medium">{balance.accountName}</TableCell>
+                                                                                            <TableCell className="text-right font-mono">{formatCurrency(balance.budgeted)}</TableCell>
+                                                                                            <TableCell className="text-right font-mono">{formatCurrency(balance.actual)}</TableCell>
+                                                                                            <TableCell className="text-right font-mono">
+                                                                                                <span className={getStatusColor(balance.variancePct)}>
+                                                                                                    {balance.consumed.toFixed(0)}%
+                                                                                                </span>
+                                                                                            </TableCell>
+                                                                                            <TableCell className="text-right font-mono">{formatCurrency(balance.remaining)}</TableCell>
+                                                                                            <TableCell className={cn(`text-right font-mono flex items-center justify-end gap-1 ${balance.variance < 0 ? 'text-red-600' : 'text-green-600'}`)}>
+                                                                                                {balance.variance < 0 ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
+                                                                                                {formatCurrency(Math.abs(balance.variance))}
+                                                                                                <span className="text-xs">({balance.variancePct.toFixed(1)}%)</span>
+                                                                                            </TableCell>
+                                                                                            <TableCell>
+                                                                                                {getStatusBadge(balance.variancePct)}
+                                                                                            </TableCell>
+                                                                                        </TableRow>
+                                            </Button>
                                             {expandedAccounts.has(balance.ccid) && balance.children?.map((child) => (
                                                 <TableRow key={child.ccid} className="bg-muted/30">
                                                     <TableCell></TableCell>

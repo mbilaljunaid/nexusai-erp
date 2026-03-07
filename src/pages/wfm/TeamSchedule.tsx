@@ -108,18 +108,20 @@ export default function TeamSchedule() {
             cell: (person: any) => {
                 const assignment = getShiftForCell(person.id, day);
                 return (
-                    <div role="button" tabIndex={0} className="cursor-pointer h-full w-full flex items-center justify-center p-1" onClick={() => setSelectedCell({ personId: person.id, date: day })} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        {assignment ? (
-                            <div
-                                className={cn(`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`)}
-                                title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
-                            >
-                                {assignment.shift.code}
-                            </div>
-                        ) : (
-                            <div className="h-full w-full rounded hover:bg-slate-500/15 min-h-6"></div>
-                        )}
-                    </div>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCell({ personId: person.id, date: day })}>
+                    <div className="cursor-pointer h-full w-full flex items-center justify-center p-1">
+                                            {assignment ? (
+                                                <div
+                                                    className={cn(`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`)}
+                                                    title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
+                                                >
+                                                    {assignment.shift.code}
+                                                </div>
+                                            ) : (
+                                                <div className="h-full w-full rounded hover:bg-slate-500/15 min-h-6"></div>
+                                            )}
+                                        </div>
+                    </Button>
                 );
             }
         }))

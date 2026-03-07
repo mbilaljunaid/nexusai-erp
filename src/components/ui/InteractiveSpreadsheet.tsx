@@ -85,7 +85,7 @@ export function InteractiveSpreadsheet<T = any>({
                 )}
                 <div className="overflow-x-auto w-full">
                     <Table >
-                        <TableHeader className="bg-slate-100/50 border-b">
+                        <TableHeader className="bg-muted/50 border-b">
                             <TableRow>
                                 {columns.map((col, i) => (
                                     <TableHead key={col.id || `col-${i}`} className={`p-3 text-left text-sm font-medium text-muted-foreground whitespace-nowrap ${col.width || ''} ${col.headerClassName || ''}`}>
@@ -101,7 +101,7 @@ export function InteractiveSpreadsheet<T = any>({
                                 return (
                                     <TableRow
                                         key={rowAny.id || rowAny.lineNumber || index}
-                                        className={`border-b group transition-colors ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50/50'} ${onRowSelect ? 'cursor-pointer' : ''}`}
+                                        className={`border-b group transition-colors ${isSelected ? 'bg-muted' : 'hover:bg-muted/50/50'} ${onRowSelect ? 'cursor-pointer' : ''}`}
                                         onClick={() => onRowSelect && onRowSelect(row)}
                                     >
                                         {columns.map((col, cIdx) => (
@@ -153,10 +153,10 @@ export function InteractiveSpreadsheet<T = any>({
             )}
 
             {/* eslint-disable-next-line react/forbid-dom-props */}
-            <div className={`border rounded-md bg-white flex flex-col w-full is-container-${uId}`}>
+            <div className={`border rounded-md bg-card flex flex-col w-full is-container-${uId}`}>
                 {/* eslint-disable-next-line react/forbid-dom-props */}
                 <div
-                    className={`grid gap-2 p-3 bg-slate-100/50 border-b font-medium text-sm text-muted-foreground is-header-${uId}`}
+                    className={`grid gap-2 p-3 bg-muted/50 border-b font-medium text-sm text-muted-foreground is-header-${uId}`}
                 >
                     {columns.map((col, i) => (
                         <div key={col.id || `col-${i}`} className={`truncate ${col.headerClassName || ''}`}>{col.header || col.label}</div>
@@ -173,17 +173,18 @@ export function InteractiveSpreadsheet<T = any>({
                             const isSelected = activeRow !== undefined && (activeRow === rowAny.id || activeRow === rowAny.lineNumber);
                             // eslint-disable-next-line react/forbid-dom-props
                             return (
-                                <div role="button" tabIndex={0}
-                                    key={rowAny.id || virtualRow.index}
-                                    className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50'} ${onRowSelect ? 'cursor-pointer' : ''} is-row-${uId}-${virtualRow.index}`}
-                                    onClick={() => onRowSelect && onRowSelect(row)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    {columns.map((col, cIdx) => (
-                                        <div key={`${(row as any).id || virtualRow.index}-${col.id || cIdx}`} className={`w-full ${col.cellClassName || ''}`}>
-                                            {col.cell ? col.cell(row, virtualRow.index, (field, val) => handleUpdateRow(virtualRow.index, field, val)) : (col.id ? String((row as any)[col.id] ?? '') : '')}
-                                        </div>
-                                    ))}
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => onRowSelect && onRowSelect(row)}>
+                                <div
+                                                                    key={rowAny.id || virtualRow.index}
+                                                                    className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-muted' : 'hover:bg-muted/50'} ${onRowSelect ? 'cursor-pointer' : ''} is-row-${uId}-${virtualRow.index}`}
+                                                                >
+                                                                    {columns.map((col, cIdx) => (
+                                                                        <div key={`${(row as any).id || virtualRow.index}-${col.id || cIdx}`} className={`w-full ${col.cellClassName || ''}`}>
+                                                                            {col.cell ? col.cell(row, virtualRow.index, (field, val) => handleUpdateRow(virtualRow.index, field, val)) : (col.id ? String((row as any)[col.id] ?? '') : '')}
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                </Button>
                             );
                         })}
                     </div>

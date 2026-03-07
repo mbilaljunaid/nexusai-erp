@@ -47,7 +47,7 @@ export default function OpportunityList() {
       "Closed Won": "bg-green-100 text-green-800",
       "Closed Lost": "bg-red-100 text-red-800",
     };
-    return colors[stage] || "bg-gray-100 text-gray-800";
+    return colors[stage] || "bg-muted text-foreground";
   };
 
   const columns = [

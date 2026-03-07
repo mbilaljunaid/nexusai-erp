@@ -96,7 +96,7 @@ export default function SubcontractorManagement() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="border rounded-md bg-white">
+          <div className="border rounded-md bg-card">
             <InteractiveSpreadsheet
               data={localSubs}
               columns={[

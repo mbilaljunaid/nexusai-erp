@@ -99,7 +99,7 @@ export default function ProcessDesigner() {
         <Card className="p-3">
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">Inactive</p>
-            <p className="text-2xl font-bold text-gray-600">{processes.filter((p: any) => p.status === "inactive").length}</p>
+            <p className="text-2xl font-bold text-muted-foreground">{processes.filter((p: any) => p.status === "inactive").length}</p>
           </CardContent>
         </Card>
       </div>

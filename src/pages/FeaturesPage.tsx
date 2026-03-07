@@ -634,7 +634,7 @@ export default function FeaturesPage() {
               <Button size="lg" variant="secondary" asChild>
                 <Link href="/demo" data-testid="link-request-demo">Request Demo</Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary" asChild>
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-card hover:text-primary" asChild>
                 <Link href="/contact" data-testid="link-contact-sales">Contact Sales</Link>
               </Button>
             </div>

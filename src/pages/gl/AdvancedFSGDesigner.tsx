@@ -339,25 +339,26 @@ export default function AdvancedFSGDesigner() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {reports?.map((report: FSGReport) => (
-                            <div role="button" tabIndex={0}
-                                key={report.id}
-                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedReport === report.id
-                                    ? "border-primary bg-primary/5"
-                                    : "border-border hover:bg-accent"
-                                    }`)}
-                                onClick={() => {
-                                    setSelectedReport(report.id);
-                                    setReportName(report.name);
-                                    setReportDescription(report.description);
-                                    setRows(report.rows || []);
-                                    setColumns(report.columns || []);
-                                }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === '') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="font-medium">{report.name}</div>
-                                <div className="text-xs text-muted-foreground">
-                                    {report.rows?.length || 0} rows, {report.columns?.length || 0} cols
-                                </div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                                                setSelectedReport(report.id);
+                                                                setReportName(report.name);
+                                                                setReportDescription(report.description);
+                                                                setRows(report.rows || []);
+                                                                setColumns(report.columns || []);
+                                                            }}>
+                            <div
+                                                            key={report.id}
+                                                            className={cn(`p-3 rounded-lg cursor-pointer border ${selectedReport === report.id
+                                                                ? "border-primary bg-primary/5"
+                                                                : "border-border hover:bg-accent"
+                                                                }`)}
+                                                        >
+                                                            <div className="font-medium">{report.name}</div>
+                                                            <div className="text-xs text-muted-foreground">
+                                                                {report.rows?.length || 0} rows, {report.columns?.length || 0} cols
+                                                            </div>
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>
@@ -404,7 +405,7 @@ export default function AdvancedFSGDesigner() {
                                     </Button>
                                 </div>
 
-                                <div className="min-h-72 h-full border border-gray-200 rounded-lg">
+                                <div className="min-h-72 h-full border border-border rounded-lg">
                                     <InteractiveSpreadsheet
                                         columns={rowColumns}
                                         data={rows}
@@ -515,7 +516,7 @@ export default function AdvancedFSGDesigner() {
                                             Export to Excel
                                         </Button>
                                     </div>
-                                    <div className="min-h-72 h-full border border-gray-200 rounded-lg">
+                                    <div className="min-h-72 h-full border border-border rounded-lg">
                                         <InteractiveSpreadsheet
                                             columns={previewColumns}
                                             data={rows}

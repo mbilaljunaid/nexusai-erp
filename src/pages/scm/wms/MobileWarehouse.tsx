@@ -79,7 +79,7 @@ export default function MobileWarehouse() {
                 </div>
 
                 <div className="mt-8">
-                    <Button variant="outline" className="w-full border-slate-800 text-slate-400 py-6">
+                    <Button variant="outline" className="w-full border-slate-800 text-muted-foreground/70 py-6">
                         <RefreshCcw className="w-4 h-4 mr-2" /> Daily Inventory Summary
                     </Button>
                 </div>
@@ -101,27 +101,28 @@ export default function MobileWarehouse() {
 
                 <div className="space-y-3 flex-1 overflow-y-auto">
                     {pickTasks.map((task: any) => (
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setActiveTask(task)}>
                         <Card
-                            key={task.id}
-                            className="bg-slate-900 border-slate-800 active:scale-95 transition-transform"
-                            onClick={() => setActiveTask(task)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                            <CardContent className="p-4 flex justify-between items-center">
-                                <div>
-                                    <p className="text-xs text-slate-500 font-bold uppercase">{task.taskNumber}</p>
-                                    <h3 className="text-lg font-bold text-white mt-1">{task.itemId}</h3>
-                                    <p className="text-sm text-blue-400 font-mono mt-1">Loc: A-04-12-01</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-2xl font-bold text-white">{task.quantityPlanned}</p>
-                                    <span className="text-xs text-slate-500">{task.uom}</span>
-                                </div>
-                                <ChevronRight className="w-5 h-5 text-slate-700 ml-4" />
-                            </CardContent>
-                        </Card>
+                                                    key={task.id}
+                                                    className="bg-slate-900 border-slate-800 active:scale-95 transition-transform"
+                                                >
+                                                    <CardContent className="p-4 flex justify-between items-center">
+                                                        <div>
+                                                            <p className="text-xs text-muted-foreground font-bold uppercase">{task.taskNumber}</p>
+                                                            <h3 className="text-lg font-bold text-white mt-1">{task.itemId}</h3>
+                                                            <p className="text-sm text-blue-400 font-mono mt-1">Loc: A-04-12-01</p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="text-2xl font-bold text-white">{task.quantityPlanned}</p>
+                                                            <span className="text-xs text-muted-foreground">{task.uom}</span>
+                                                        </div>
+                                                        <ChevronRight className="w-5 h-5 text-foreground/90 ml-4" />
+                                                    </CardContent>
+                                                </Card>
+                        </Button>
                     ))}
                     {pickTasks.length === 0 && (
-                        <div className="text-center py-20 text-slate-500">
+                        <div className="text-center py-20 text-muted-foreground">
                             <CheckCircle2 className="w-12 h-12 mx-auto mb-4 opacity-20" />
                             <p>No picking tasks available</p>
                         </div>
@@ -146,7 +147,7 @@ export default function MobileWarehouse() {
                         <CardContent className="p-6">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest leading-none mb-1">Source Locator</p>
+                                    <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest leading-none mb-1">Source Locator</p>
                                     <p className="text-3xl font-mono font-bold text-blue-400">A-04-12-01</p>
                                 </div>
                                 <div className="p-3 bg-blue-500/10 rounded-lg">
@@ -155,9 +156,9 @@ export default function MobileWarehouse() {
                             </div>
 
                             <div className="space-y-1">
-                                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest leading-none mb-1">Item to Pick</p>
+                                <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest leading-none mb-1">Item to Pick</p>
                                 <h2 className="text-2xl font-bold text-white">{activeTask.itemId}</h2>
-                                <p className="text-sm text-slate-400">Premium Industrial Component X-9</p>
+                                <p className="text-sm text-muted-foreground/70">Premium Industrial Component X-9</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -166,7 +167,7 @@ export default function MobileWarehouse() {
                         <div className="grid grid-cols-2 gap-4">
                             <Card className="bg-slate-900 border-slate-800">
                                 <CardContent className="p-4 text-center">
-                                    <p className="text-xs text-slate-500 uppercase font-bold mb-1">Planned</p>
+                                    <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Planned</p>
                                     <p className="text-3xl font-bold text-white">{activeTask.quantityPlanned}</p>
                                 </CardContent>
                             </Card>
@@ -185,7 +186,7 @@ export default function MobileWarehouse() {
                         </div>
 
                         <div className="relative">
-                            <QrCode className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                            <QrCode className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 placeholder="Scan Barcode / Locator"
                                 className="pl-12 py-8 bg-slate-900 border-slate-700 text-lg font-mono focus:border-blue-500"
@@ -198,7 +199,7 @@ export default function MobileWarehouse() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mt-8">
-                    <Button variant="outline" className="border-slate-800 bg-slate-900 text-slate-400 h-16">
+                    <Button variant="outline" className="border-slate-800 bg-slate-900 text-muted-foreground/70 h-16">
                         <AlertTriangle className="w-4 h-4 mr-2" /> Problem
                     </Button>
                     <Button
@@ -226,7 +227,7 @@ function Header({ title }: { title: string }) {
             </div>
             <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-[10px] text-slate-500 font-mono">LINK-UP 01</span>
+                <span className="text-[10px] text-muted-foreground font-mono">LINK-UP 01</span>
             </div>
         </div>
     );
@@ -238,7 +239,7 @@ function MenuButton({ icon: Icon, label, color, onClick, count }: any) {
             onClick={onClick}
             className={cn(`flex items-center justify-start gap-4 h-24 w-full ${color} hover:opacity-90 transition-opacity p-6 rounded-xl border-none relative overflow-hidden group`)}
         >
-            <div className="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition-transform">
+            <div className="p-3 bg-card/20 rounded-lg group-hover:scale-110 transition-transform">
                 <Icon className="w-8 h-8 text-white" />
             </div>
             <div className="text-left">
@@ -246,7 +247,7 @@ function MenuButton({ icon: Icon, label, color, onClick, count }: any) {
                 <span className="text-xs text-white/70">WMS Execution v1.4</span>
             </div>
             {count !== undefined && (
-                <div className="absolute top-4 right-4 bg-white text-blue-600 px-3 py-1 rounded-full font-bold text-sm shadow-lg">
+                <div className="absolute top-4 right-4 bg-card text-blue-600 px-3 py-1 rounded-full font-bold text-sm shadow-lg">
                     {count}
                 </div>
             )}

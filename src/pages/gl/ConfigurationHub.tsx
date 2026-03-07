@@ -93,8 +93,8 @@ const configTiles = [
         description: "Suspense, Rounding, and Netting rules",
         icon: Settings,
         path: "/gl/config/controls",
-        color: "text-slate-600",
-        bgColor: "bg-slate-100/50"
+        color: "text-muted-foreground",
+        bgColor: "bg-muted/50"
     },
     {
         title: "Cross-Validation Rules",
@@ -133,8 +133,8 @@ const configTiles = [
         description: "Manage legal entities and registrations",
         icon: Building2,
         path: "/gl/config/legal-entities",
-        color: "text-slate-600",
-        bgColor: "bg-slate-100/50"
+        color: "text-muted-foreground",
+        bgColor: "bg-muted/50"
     },
     {
         title: "Budget Manager",
@@ -173,7 +173,7 @@ const configTiles = [
         description: "Track system changes and user activity",
         icon: ShieldCheck,
         path: "/gl/audit",
-        color: "text-slate-700",
+        color: "text-foreground/90",
         bgColor: "bg-slate-200/50"
     }
 ];
@@ -189,7 +189,7 @@ export default function ConfigurationHub() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {configTiles.map((tile, idx) => (
                     <RouterLink key={idx} href={tile.path}>
-                        <Card className="group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 overflow-hidden relative">
+                        <Card className="group cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-border overflow-hidden relative">
                             <div className={cn(`absolute top-0 right-0 p-8 ${tile.color} opacity-5 group-hover:scale-110 transition-transform`)}>
                                 <tile.icon className="h-24 w-24" />
                             </div>

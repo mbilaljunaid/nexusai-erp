@@ -49,15 +49,15 @@ export function LogisticsInsightsCard() {
                 {insights.map((insight, i) => (
                     <div key={i} className={cn(`p-4 rounded-xl ${insight.bgColor} border border-transparent hover:border-indigo-200 transition-all cursor-pointer group`)}>
                         <div className="flex gap-4">
-                            <div className={cn(`p-2 rounded-lg bg-white shadow-sm h-fit ${insight.color}`)}>
+                            <div className={cn(`p-2 rounded-lg bg-card shadow-sm h-fit ${insight.color}`)}>
                                 <insight.icon className="h-5 w-5" />
                             </div>
                             <div className="flex-1 space-y-1">
                                 <div className="flex justify-between items-start">
-                                    <h4 className="text-sm font-bold text-gray-900 dark:text-gray-200">{insight.title}</h4>
+                                    <h4 className="text-sm font-bold text-foreground dark:text-gray-200">{insight.title}</h4>
                                     <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
-                                <p className="text-xs text-gray-600 leading-relaxed">
+                                <p className="text-xs text-muted-foreground leading-relaxed">
                                     {insight.description}
                                 </p>
                             </div>

@@ -136,7 +136,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="your@company.com"
-                          className="w-full bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500"
+                          className="w-full bg-slate-700 border-slate-600 text-white placeholder:text-muted-foreground/70 focus:border-blue-500"
                           data-testid="input-email"
                         />
                       </div>
@@ -148,7 +148,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
                       >
                         {loading ? "Sending..." : "Request Demo"} <ArrowRight className="ml-2 w-4 h-4" />
                       </Button>
-                      <p className="text-xs text-slate-400 text-center">
+                      <p className="text-xs text-muted-foreground/70 text-center">
                         Credentials and access link will be sent to your email
                       </p>
                     </div>
@@ -165,7 +165,7 @@ export default function IndustryDemoPage({ industry }: IndustryDemoPageProps) {
                       <li>✓ Complete walkthrough guide</li>
                     </ul>
                     <Link to="/industries">
-                      <Button variant="outline" className="w-full text-white border-white hover:bg-white/10">
+                      <Button variant="outline" className="w-full text-white border-white hover:bg-card/10">
                         Back to Industries
                       </Button>
                     </Link>

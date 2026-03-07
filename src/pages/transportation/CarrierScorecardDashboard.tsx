@@ -338,28 +338,29 @@ export default function CarrierScorecardDashboard() {
                             ) : (
                                 <div className="space-y-3">
                                     {topPerformers.map((carrier, index) => (
-                                        <div role="button" tabIndex={0}
-                                            key={carrier.id}
-                                            className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-lg hover:bg-emerald-500/15 transition-colors cursor-pointer"
-                                            onClick={() => setSelectedCarrier(carrier.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="flex items-center justify-center h-6 w-6 rounded-full bg-emerald-600 text-white text-xs font-bold">
-                                                        {index + 1}
-                                                    </span>
-                                                    <span className="font-semibold text-emerald-900 dark:text-emerald-200">{carrier.name}</span>
-                                                </div>
-                                                <div className="flex items-center gap-1 text-amber-600">
-                                                    <Star className="h-4 w-4 fill-amber-500" />
-                                                    <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
-                                                </div>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-2 text-xs text-emerald-700">
-                                                <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
-                                                <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
-                                            </div>
-                                        </div>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCarrier(carrier.id)}>
+                                        <div
+                                                                                    key={carrier.id}
+                                                                                    className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-lg hover:bg-emerald-500/15 transition-colors cursor-pointer"
+                                                                                >
+                                                                                    <div className="flex justify-between items-start mb-2">
+                                                                                        <div className="flex items-center gap-2">
+                                                                                            <span className="flex items-center justify-center h-6 w-6 rounded-full bg-emerald-600 text-white text-xs font-bold">
+                                                                                                {index + 1}
+                                                                                            </span>
+                                                                                            <span className="font-semibold text-emerald-900 dark:text-emerald-200">{carrier.name}</span>
+                                                                                        </div>
+                                                                                        <div className="flex items-center gap-1 text-amber-600">
+                                                                                            <Star className="h-4 w-4 fill-amber-500" />
+                                                                                            <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="grid grid-cols-2 gap-2 text-xs text-emerald-700">
+                                                                                        <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
+                                                                                        <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
+                                                                                    </div>
+                                                                                </div>
+                                        </Button>
                                     ))}
                                 </div>
                             )}
@@ -385,23 +386,24 @@ export default function CarrierScorecardDashboard() {
                             ) : (
                                 <div className="space-y-3">
                                     {underPerformers.map((carrier) => (
-                                        <div role="button" tabIndex={0}
-                                            key={carrier.id}
-                                            className="p-3 bg-rose-500/10 border border-rose-200 rounded-lg hover:bg-rose-500/15 transition-colors cursor-pointer"
-                                            onClick={() => setSelectedCarrier(carrier.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <div className="flex justify-between items-start mb-2">
-                                                <span className="font-semibold text-rose-900 dark:text-rose-200">{carrier.name}</span>
-                                                <div className="flex items-center gap-1 text-rose-600">
-                                                    <Star className="h-4 w-4" />
-                                                    <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
-                                                </div>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-2 text-xs text-rose-700">
-                                                <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
-                                                <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
-                                            </div>
-                                        </div>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCarrier(carrier.id)}>
+                                        <div
+                                                                                    key={carrier.id}
+                                                                                    className="p-3 bg-rose-500/10 border border-rose-200 rounded-lg hover:bg-rose-500/15 transition-colors cursor-pointer"
+                                                                                >
+                                                                                    <div className="flex justify-between items-start mb-2">
+                                                                                        <span className="font-semibold text-rose-900 dark:text-rose-200">{carrier.name}</span>
+                                                                                        <div className="flex items-center gap-1 text-rose-600">
+                                                                                            <Star className="h-4 w-4" />
+                                                                                            <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="grid grid-cols-2 gap-2 text-xs text-rose-700">
+                                                                                        <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
+                                                                                        <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
+                                                                                    </div>
+                                                                                </div>
+                                        </Button>
                                     ))}
                                 </div>
                             )}

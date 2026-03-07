@@ -108,7 +108,7 @@ export default function TrainingContent() {
       case "beginner": return "bg-green-500/20 text-green-400 border-green-500/30";
       case "intermediate": return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
       case "advanced": return "bg-red-500/20 text-red-400 border-red-500/30";
-      default: return "bg-slate-500/20 text-slate-400 border-slate-500/30";
+      default: return "bg-slate-500/20 text-muted-foreground/70 border-slate-500/30";
     }
   };
 
@@ -129,7 +129,7 @@ export default function TrainingContent() {
               </div>
               <div>
                 
-                <p className="text-slate-400">{config.description}</p>
+                <p className="text-muted-foreground/70">{config.description}</p>
               </div>
             </div>
 
@@ -164,7 +164,7 @@ export default function TrainingContent() {
 
             <div className="flex flex-wrap gap-3 mb-6">
               <div className="relative flex-1 min-w-48">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
                 <Input
                   placeholder="Search content..."
                   value={search}
@@ -195,7 +195,7 @@ export default function TrainingContent() {
                 <CardContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label className="text-sm text-slate-400 mb-2 block">Module</Label>
+                      <Label className="text-sm text-muted-foreground/70 mb-2 block">Module</Label>
                       <Select value={selectedModule} onValueChange={setSelectedModule}>
                         <SelectTrigger className="bg-slate-900 border-slate-600" data-testid="select-module">
                           <SelectValue placeholder="All Modules" />
@@ -209,7 +209,7 @@ export default function TrainingContent() {
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm text-slate-400 mb-2 block">Industry</Label>
+                      <Label className="text-sm text-muted-foreground/70 mb-2 block">Industry</Label>
                       <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
                         <SelectTrigger className="bg-slate-900 border-slate-600" data-testid="select-industry">
                           <SelectValue placeholder="All Industries" />
@@ -223,7 +223,7 @@ export default function TrainingContent() {
                       </Select>
                     </div>
                     <div>
-                      <Label className="text-sm text-slate-400 mb-2 block">Difficulty</Label>
+                      <Label className="text-sm text-muted-foreground/70 mb-2 block">Difficulty</Label>
                       <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
                         <SelectTrigger className="bg-slate-900 border-slate-600" data-testid="select-difficulty">
                           <SelectValue placeholder="All Levels" />
@@ -250,7 +250,7 @@ export default function TrainingContent() {
                 <CardContent className="py-16 text-center">
                   <Icon className={cn(`w-16 h-16 mx-auto mb-4 ${config.color} opacity-50`)} />
                   <h3 className="text-xl font-semibold mb-2">No content yet</h3>
-                  <p className="text-slate-400 mb-6">Be the first to contribute {config.title.toLowerCase()}!</p>
+                  <p className="text-muted-foreground/70 mb-6">Be the first to contribute {config.title.toLowerCase()}!</p>
                   <Link to="/contributor/training/submit">
                     <Button className="bg-blue-600 hover:bg-blue-500">
                       <Plus className="w-4 h-4 mr-2" />
@@ -295,7 +295,7 @@ export default function TrainingContent() {
                                 </Badge>
                               </div>
                               <h3 className="text-lg font-semibold text-white mb-1 line-clamp-1">{resource.title}</h3>
-                              <p className="text-sm text-slate-400 line-clamp-2 mb-2">{resource.description}</p>
+                              <p className="text-sm text-muted-foreground/70 line-clamp-2 mb-2">{resource.description}</p>
                             </div>
                             <Button
                               size="icon"
@@ -309,7 +309,7 @@ export default function TrainingContent() {
                             </Button>
                           </div>
                           
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <User className="w-3 h-3" />
                               {resource.author_name || "Anonymous"}
@@ -375,7 +375,7 @@ export default function TrainingContent() {
                 <p className="text-sm text-slate-300 mb-4">
                   Share your knowledge and earn reputation points! Get recognized for your contributions to the NexusAIFirst community.
                 </p>
-                <ul className="text-sm text-slate-400 space-y-2 mb-4">
+                <ul className="text-sm text-muted-foreground/70 space-y-2 mb-4">
                   <li className="flex items-center gap-2">
                     <ThumbsUp className="w-4 h-4 text-green-400" />
                     Earn 5 points per like

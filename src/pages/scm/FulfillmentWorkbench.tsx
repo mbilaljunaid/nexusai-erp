@@ -123,7 +123,7 @@ export default function FulfillmentWorkbench() {
             }
         >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-card/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-white/80">Pending Orders</CardTitle>
                         <ClipboardList className="h-4 w-4 text-orange-400" />
@@ -132,7 +132,7 @@ export default function FulfillmentWorkbench() {
                         <div className="text-2xl font-bold text-white">{readyOrders.length}</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-card/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-white/80">Active Tasks</CardTitle>
                         <Package className="h-4 w-4 text-blue-400" />
@@ -141,7 +141,7 @@ export default function FulfillmentWorkbench() {
                         <div className="text-2xl font-bold text-white">{tasks.length}</div>
                     </CardContent>
                 </Card>
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-card/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-white/80">Shipped Today</CardTitle>
                         <Truck className="h-4 w-4 text-green-400" />
@@ -153,13 +153,13 @@ export default function FulfillmentWorkbench() {
             </div>
 
             <Tabs defaultValue="planning" className="w-full">
-                <TabsList className="bg-white/5 border-white/10">
+                <TabsList className="bg-card/5 border-white/10">
                     <TabsTrigger value="planning">Wave Planning</TabsTrigger>
                     <TabsTrigger value="execution">Task Execution</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="planning" className="space-y-4">
-                    <Card className="bg-white/5 border-white/10">
+                    <Card className="bg-card/5 border-white/10">
                         <CardHeader>
                             <div className="flex justify-between">
                                 <CardTitle className="text-white/90">Orders Awaiting Release</CardTitle>
@@ -189,7 +189,7 @@ export default function FulfillmentWorkbench() {
                 </TabsContent>
 
                 <TabsContent value="execution" className="space-y-4">
-                    <Card className="bg-white/5 border-white/10">
+                    <Card className="bg-card/5 border-white/10">
                         <CardHeader>
                             <CardTitle className="text-white/90">Picking Queue</CardTitle>
                         </CardHeader>

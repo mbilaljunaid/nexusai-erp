@@ -78,77 +78,78 @@ export function BankAccountList() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {accounts?.map(account => (
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedDrilldown({ id: account.id, name: account.name })}>
                     <Card
-                        key={account.id}
-                        className="relative overflow-hidden group hover:shadow-lg transition-all border-l-4 border-l-primary/50 cursor-pointer"
-                        onClick={() => setSelectedDrilldown({ id: account.id, name: account.name })} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                    >
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <div className="flex flex-col">
-                                <CardTitle className="text-lg font-bold flex items-center gap-2">
-                                    {account.name}
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setAccountDialog({ isOpen: true, account });
-                                        }} aria-label="Edit"
-                                    >
-                                        <Edit3 className="h-3 w-3" />
-                                    </Button>
-                                </CardTitle>
-                                <CardDescription className="flex items-center gap-1">
-                                    <Building2 className="h-3 w-3" />
-                                    {account.bankName}
-                                </CardDescription>
-                            </div>
-                            <Badge variant={account.active ? "default" : "secondary"}>
-                                {account.active ? "Active" : "Inactive"}
-                            </Badge>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="mt-4 flex flex-col space-y-1">
-                                <span className="text-muted-foreground text-xs uppercase tracking-wider">Available Balance</span>
-                                <div className="text-2xl font-bold flex items-baseline">
-                                    <span className="text-sm mr-1 text-muted-foreground">{account.currency}</span>
-                                    {formatNumber(Number(account.currentBalance), 2)}
-                                </div>
-                            </div>
-
-                            <Separator className="my-4" />
-
-                            <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                    <CreditCard className="h-3 w-3" />
-                                    •••• {account.accountNumber.slice(-4)}
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Link href={`/cash/accounts/${account.id}/reconcile`}>
-                                        <Button variant="ghost" size="sm" className="h-7 px-2" onClick={(e) => e.stopPropagation()}>
-                                            <RefreshCw className="h-3 w-3 mr-1" />
-                                            Reconcile
-                                        </Button>
-                                    </Link>
-                                    {account.currency !== 'USD' && (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-7 px-2 text-primary"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setSelectedRevalAccount({ id: account.id, name: account.name, currency: account.currency || 'USD' });
-                                            }}
+                                            key={account.id}
+                                            className="relative overflow-hidden group hover:shadow-lg transition-all border-l-4 border-l-primary/50 cursor-pointer"
                                         >
-                                            <TrendingUp className="h-3 w-3 mr-1" />
-                                            Revalue
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                                <div className="flex flex-col">
+                                                    <CardTitle className="text-lg font-bold flex items-center gap-2">
+                                                        {account.name}
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setAccountDialog({ isOpen: true, account });
+                                                            }} aria-label="Edit"
+                                                        >
+                                                            <Edit3 className="h-3 w-3" />
+                                                        </Button>
+                                                    </CardTitle>
+                                                    <CardDescription className="flex items-center gap-1">
+                                                        <Building2 className="h-3 w-3" />
+                                                        {account.bankName}
+                                                    </CardDescription>
+                                                </div>
+                                                <Badge variant={account.active ? "default" : "secondary"}>
+                                                    {account.active ? "Active" : "Inactive"}
+                                                </Badge>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="mt-4 flex flex-col space-y-1">
+                                                    <span className="text-muted-foreground text-xs uppercase tracking-wider">Available Balance</span>
+                                                    <div className="text-2xl font-bold flex items-baseline">
+                                                        <span className="text-sm mr-1 text-muted-foreground">{account.currency}</span>
+                                                        {formatNumber(Number(account.currentBalance), 2)}
+                                                    </div>
+                                                </div>
+
+                                                <Separator className="my-4" />
+
+                                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                                    <div className="flex items-center gap-1">
+                                                        <CreditCard className="h-3 w-3" />
+                                                        •••• {account.accountNumber.slice(-4)}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Link href={`/cash/accounts/${account.id}/reconcile`}>
+                                                            <Button variant="ghost" size="sm" className="h-7 px-2" onClick={(e) => e.stopPropagation()}>
+                                                                <RefreshCw className="h-3 w-3 mr-1" />
+                                                                Reconcile
+                                                            </Button>
+                                                        </Link>
+                                                        {account.currency !== 'USD' && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-7 px-2 text-primary"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setSelectedRevalAccount({ id: account.id, name: account.name, currency: account.currency || 'USD' });
+                                                                }}
+                                                            >
+                                                                <TrendingUp className="h-3 w-3 mr-1" />
+                                                                Revalue
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                    </Button>
                 ))}
 
                 <BankAccountDialog

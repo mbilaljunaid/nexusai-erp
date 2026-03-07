@@ -140,26 +140,28 @@ export default function BenefitsEnrollment() {
                         {loadingPrograms ? (
                             <p>Loading programs...</p>
                         ) : openPrograms?.map((prog: any) => (
-                            <Card key={prog.id} className="relative overflow-hidden group hover:border-teal-500/50 transition-all cursor-pointer border-zinc-200/50 dark:border-zinc-800/50 shadow-sm" onClick={() => { setSelectedProgramId(prog.id); setStep(1); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <ShieldCheck className="h-24 w-24" />
-                                </div>
-                                <CardHeader>
-                                    <Badge className="w-fit mb-2 bg-teal-500/10 text-teal-600 hover:bg-teal-500/20 border-teal-500/30">Open Enrollment</Badge>
-                                    <CardTitle className="text-2xl">{prog.name}</CardTitle>
-                                    <CardDescription>{prog.description || "Comprehensive benefit package for all eligible employees."}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-sm text-zinc-500 space-y-1">
-                                        <p>Ends: {formatDate(prog.openEnrollmentEnd)}</p>
-                                    </div>
-                                </CardContent>
-                                <CardFooter>
-                                    <Button variant="ghost" className="p-0 text-teal-600 hover:bg-transparent group-hover:gap-3 transition-all">
-                                        Start Selection <ChevronRight className="h-4 w-4" />
-                                    </Button>
-                                </CardFooter>
-                            </Card>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => { setSelectedProgramId(prog.id); setStep(1); }}>
+                            <Card key={prog.id} className="relative overflow-hidden group hover:border-teal-500/50 transition-all cursor-pointer border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+                                                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                                                <ShieldCheck className="h-24 w-24" />
+                                                            </div>
+                                                            <CardHeader>
+                                                                <Badge className="w-fit mb-2 bg-teal-500/10 text-teal-600 hover:bg-teal-500/20 border-teal-500/30">Open Enrollment</Badge>
+                                                                <CardTitle className="text-2xl">{prog.name}</CardTitle>
+                                                                <CardDescription>{prog.description || "Comprehensive benefit package for all eligible employees."}</CardDescription>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="text-sm text-zinc-500 space-y-1">
+                                                                    <p>Ends: {formatDate(prog.openEnrollmentEnd)}</p>
+                                                                </div>
+                                                            </CardContent>
+                                                            <CardFooter>
+                                                                <Button variant="ghost" className="p-0 text-teal-600 hover:bg-transparent group-hover:gap-3 transition-all">
+                                                                    Start Selection <ChevronRight className="h-4 w-4" />
+                                                                </Button>
+                                                            </CardFooter>
+                                                        </Card>
+                            </Button>
                         ))}
                     </div>
                 )}
@@ -185,17 +187,18 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div role="button" tabIndex={0}
-                                            key={opt.planOptionId}
-                                            onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <div className="flex justify-between items-start mb-4">
-                                                <p className="font-semibold">{opt.optionName}</p>
-                                                {selections[plan.planId] === opt.planOptionId && <CheckCircle2 className="h-5 w-5 text-teal-600" />}
-                                            </div>
-                                            <p className="text-3xl font-bold">${opt.employeeCost}<span className="text-sm text-zinc-400 font-normal">/mo</span></p>
-                                        </div>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}>
+                                        <div
+                                                                                    key={opt.planOptionId}
+                                                                                    className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)}
+                                                                                >
+                                                                                    <div className="flex justify-between items-start mb-4">
+                                                                                        <p className="font-semibold">{opt.optionName}</p>
+                                                                                        {selections[plan.planId] === opt.planOptionId && <CheckCircle2 className="h-5 w-5 text-teal-600" />}
+                                                                                    </div>
+                                                                                    <p className="text-3xl font-bold">${opt.employeeCost}<span className="text-sm text-zinc-400 font-normal">/mo</span></p>
+                                                                                </div>
+                                        </Button>
                                     ))}
                                 </CardContent>
                             </Card>
@@ -230,17 +233,18 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div role="button" tabIndex={0}
-                                            key={opt.planOptionId}
-                                            onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <div className="flex justify-between items-start mb-4">
-                                                <p className="font-semibold">{opt.optionName}</p>
-                                                {selections[plan.planId] === opt.planOptionId && <CheckCircle2 className="h-5 w-5 text-teal-600" />}
-                                            </div>
-                                            <p className="text-3xl font-bold">${opt.employeeCost}<span className="text-sm text-zinc-400 font-normal">/mo</span></p>
-                                        </div>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}>
+                                        <div
+                                                                                    key={opt.planOptionId}
+                                                                                    className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)}
+                                                                                >
+                                                                                    <div className="flex justify-between items-start mb-4">
+                                                                                        <p className="font-semibold">{opt.optionName}</p>
+                                                                                        {selections[plan.planId] === opt.planOptionId && <CheckCircle2 className="h-5 w-5 text-teal-600" />}
+                                                                                    </div>
+                                                                                    <p className="text-3xl font-bold">${opt.employeeCost}<span className="text-sm text-zinc-400 font-normal">/mo</span></p>
+                                                                                </div>
+                                        </Button>
                                     ))}
                                 </CardContent>
                             </Card>
@@ -275,17 +279,18 @@ export default function BenefitsEnrollment() {
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                                     {plan.options.map((opt: any) => (
-                                        <div role="button" tabIndex={0}
-                                            key={opt.planOptionId}
-                                            onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}
-                                            className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <div className="flex justify-between items-start mb-4">
-                                                <p className="font-semibold">{opt.optionName}</p>
-                                                {selections[plan.planId] === opt.planOptionId && <CheckCircle2 className="h-5 w-5 text-teal-600" />}
-                                            </div>
-                                            <p className="text-3xl font-bold">${opt.employeeCost}<span className="text-sm text-zinc-400 font-normal">/mo</span></p>
-                                        </div>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => handleSelectOption(plan.planId, opt.planOptionId)}>
+                                        <div
+                                                                                    key={opt.planOptionId}
+                                                                                    className={cn(`p-6 rounded-2xl border-2 cursor-pointer transition-all ${selections[plan.planId] === opt.planOptionId ? "border-teal-500 bg-teal-500/5 shadow-sm shadow-teal-500/10" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"}`)}
+                                                                                >
+                                                                                    <div className="flex justify-between items-start mb-4">
+                                                                                        <p className="font-semibold">{opt.optionName}</p>
+                                                                                        {selections[plan.planId] === opt.planOptionId && <CheckCircle2 className="h-5 w-5 text-teal-600" />}
+                                                                                    </div>
+                                                                                    <p className="text-3xl font-bold">${opt.employeeCost}<span className="text-sm text-zinc-400 font-normal">/mo</span></p>
+                                                                                </div>
+                                        </Button>
                                     ))}
                                 </CardContent>
                             </Card>
@@ -311,7 +316,7 @@ export default function BenefitsEnrollment() {
                                 {Object.values(MOCK_PLANS).flat().filter((p: any) => selections[p.planId]).map((p: any) => {
                                     const selectedOpt = p.options.find((o: any) => o.planOptionId === selections[p.planId]);
                                     return (
-                                        <div key={p.planId} className="flex justify-between items-center p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
+                                        <div key={p.planId} className="flex justify-between items-center p-4 bg-card dark:bg-zinc-900 rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm">
                                             <div>
                                                 <p className="font-semibold text-xs tracking-wider uppercase text-zinc-500">{p.planType}</p>
                                                 <p className="font-bold text-lg">{p.planName} <span className="text-muted-foreground font-normal ml-2">({selectedOpt.optionName})</span></p>

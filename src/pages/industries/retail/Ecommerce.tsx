@@ -100,7 +100,7 @@ export default function Ecommerce() {
   const statusConfig = {
     active: "bg-green-500/10 text-green-600",
     draft: "bg-yellow-500/10 text-yellow-600",
-    archived: "bg-gray-500/10 text-gray-600",
+    archived: "bg-gray-500/10 text-muted-foreground",
     pending: "bg-blue-500/10 text-blue-600",
     processing: "bg-yellow-500/10 text-yellow-600",
     shipped: "bg-purple-500/10 text-purple-600",
@@ -168,7 +168,7 @@ export default function Ecommerce() {
     { id: "spent", header: "Total Spent", width: "120px", cell: (customer) => <span className="font-mono">${customer.totalSpent}</span> },
     {
       id: "status", header: "Status", width: "100px", cell: (customer) => (
-        <Badge className={customer.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}>
+        <Badge className={customer.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-muted-foreground"}>
           {customer.status}
         </Badge>
       )

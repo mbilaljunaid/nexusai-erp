@@ -34,38 +34,38 @@ export default function YardManagement() {
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
                 <Card className="bg-slate-900/50 border-slate-800">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Docks</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Docks</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-3xl font-bold text-white">12</p>
-                        <p className="text-xs text-slate-400 mt-1">8 General • 4 Cold</p>
+                        <p className="text-xs text-muted-foreground/70 mt-1">8 General • 4 Cold</p>
                     </CardContent>
                 </Card>
                 <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-blue-500">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-500 uppercase tracking-wider">Occupied</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Occupied</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-3xl font-bold text-blue-400">4</p>
-                        <p className="text-xs text-slate-400 mt-1">3 Inbound • 1 Outbound</p>
+                        <p className="text-xs text-muted-foreground/70 mt-1">3 Inbound • 1 Outbound</p>
                     </CardContent>
                 </Card>
                 <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-green-500">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-500 uppercase tracking-wider">Today's Appts</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Today's Appts</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-3xl font-bold text-green-400">18</p>
-                        <p className="text-xs text-slate-400 mt-1">7 Completed</p>
+                        <p className="text-xs text-muted-foreground/70 mt-1">7 Completed</p>
                     </CardContent>
                 </Card>
                 <Card className="bg-slate-900/50 border-slate-800 border-l-4 border-l-orange-500">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-500 uppercase tracking-wider">Trailer Count</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Trailer Count</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-3xl font-bold text-orange-400">22</p>
-                        <p className="text-xs text-slate-400 mt-1">In yard / Staged</p>
+                        <p className="text-xs text-muted-foreground/70 mt-1">In yard / Staged</p>
                     </CardContent>
                 </Card>
             </div>
@@ -96,15 +96,15 @@ export default function YardManagement() {
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-white">{appt.carrier}</h4>
-                                            <p className="text-xs text-slate-500">{appt.id} • {appt.type}</p>
+                                            <p className="text-xs text-muted-foreground">{appt.id} • {appt.type}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-8">
                                         <div className="text-right">
                                             <p className="text-sm font-mono text-white flex items-center gap-2">
-                                                <Clock className="w-3 h-3 text-slate-500" /> {appt.time}
+                                                <Clock className="w-3 h-3 text-muted-foreground" /> {appt.time}
                                             </p>
-                                            <p className="text-xs text-slate-500 mt-1">Dock: {appt.dock}</p>
+                                            <p className="text-xs text-muted-foreground mt-1">Dock: {appt.dock}</p>
                                         </div>
                                         <Badge
                                             variant="outline"
@@ -116,7 +116,7 @@ export default function YardManagement() {
                                         >
                                             {appt.status}
                                         </Badge>
-                                        <Button variant="ghost" size="icon" aria-label="More options"><MoreVertical className="w-4 h-4 text-slate-500" /></Button>
+                                        <Button variant="ghost" size="icon" aria-label="More options"><MoreVertical className="w-4 h-4 text-muted-foreground" /></Button>
                                     </div>
                                 </div>
                             ))}
@@ -133,7 +133,7 @@ export default function YardManagement() {
                             <div className="grid grid-cols-4 gap-2">
                                 {Array.from({ length: 12 }).map((_, i) => (
                                     <div key={i} className={cn(`h-16 rounded border flex flex-col items-center justify-center gap-1 ${i < 4 ? 'bg-blue-500/10 border-blue-500/30' : 'bg-slate-950 border-slate-800 opacity-50'}`)}>
-                                        <span className="text-[10px] text-slate-500 font-bold uppercase">D-{(i + 1).toString().padStart(2, '0')}</span>
+                                        <span className="text-[10px] text-muted-foreground font-bold uppercase">D-{(i + 1).toString().padStart(2, '0')}</span>
                                         {i < 4 ? <Truck className="w-4 h-4 text-blue-400" /> : <div className="w-4 h-4" />}
                                     </div>
                                 ))}

@@ -150,7 +150,7 @@ export default function CloseDashboard() {
             description: "Ledgers, COA, and value sets",
             icon: Settings,
             href: "/finance/gl/config",
-            color: "text-gray-600"
+            color: "text-muted-foreground"
         }
     ];
 

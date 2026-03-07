@@ -133,7 +133,7 @@ export default function SubscriptionManagement() {
       case "starter":
         return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200";
       default:
-        return "bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200";
+        return "bg-muted dark:bg-gray-900 text-foreground dark:text-gray-200";
     }
   };
 

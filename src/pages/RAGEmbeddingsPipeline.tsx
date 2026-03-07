@@ -32,7 +32,7 @@ export default function RAGEmbeddingsPipeline() {
   const navItems = [
     { id: "jobs", label: "Jobs", icon: Database, color: "text-blue-500" },
     { id: "vectors", label: "Vector Index", icon: Grid3x3, color: "text-purple-500" },
-    { id: "config", label: "Config", icon: Settings, color: "text-gray-500" },
+    { id: "config", label: "Config", icon: Settings, color: "text-muted-foreground" },
   ];
 
   return (

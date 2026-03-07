@@ -101,7 +101,7 @@ export function IndustryPageTemplate({
                         onClick: () => document.getElementById('modules')?.scrollIntoView({ behavior: 'smooth' })
                     }}
                 >
-                    <Badge className="bg-white/20 text-white border-white/30 text-sm px-4 py-2">
+                    <Badge className="bg-card/20 text-white border-white/30 text-sm px-4 py-2">
                         Industry Solution
                     </Badge>
                 </PremiumHero>

@@ -158,20 +158,22 @@ export default function EInvoicingDashboard() {
                         const total = Object.values(pivot[std] ?? {}).reduce((a, b) => a + b, 0);
                         const pct = total > 0 ? Math.round(accepted / total * 100) : 0;
                         return (
-                            <div key={std} className="std-card" onClick={() => setStandardFilter(std)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <div className="std-name">{std}</div>
-                                <style>{`
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setStandardFilter(std)}>
+                            <div key={std} className="std-card">
+                                                            <div className="std-name">{std}</div>
+                                                            <style>{`
                                     .std-color-${Math.round(pct)} { color: ${pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626'}; }
                                     .std-bg-${Math.round(pct)} { background: ${pct >= 90 ? '#059669' : pct >= 60 ? '#d97706' : '#dc2626'}; width: ${pct}%; }
                                 `}</style>
-                                <div className={cn(`std-pct std-color-${Math.round(pct)}`)}>
-                                    {pct}%
-                                </div>
-                                <div className="std-bar-bg">
-                                    <div className={cn(`std-bar-fill std-bg-${Math.round(pct)}`)} />
-                                </div>
-                                <div className="std-total">{total} docs</div>
-                            </div>
+                                                            <div className={cn(`std-pct std-color-${Math.round(pct)}`)}>
+                                                                {pct}%
+                                                            </div>
+                                                            <div className="std-bar-bg">
+                                                                <div className={cn(`std-bar-fill std-bg-${Math.round(pct)}`)} />
+                                                            </div>
+                                                            <div className="std-total">{total} docs</div>
+                                                        </div>
+                            </Button>
                         );
                     })}
                 </div>
@@ -316,7 +318,7 @@ function KPICard({ label, value, icon, colorCls, bgCls, borderCls, textCls }: { 
             <div className={colorCls}>{icon}</div>
             <div>
                 <div className={cn(`text-[26px] font-extrabold ${textCls}`)}>{value}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{label}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
             </div>
         </div>
     );

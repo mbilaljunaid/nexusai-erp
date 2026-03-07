@@ -133,18 +133,20 @@ export default function LoadTenderWorkbench() {
                     {tenders.map(t => {
                         const cfg = STATUS_CFG[t.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                         return (
-                            <div key={t.id} className={cn(`tender-card ${selected?.id === t.id ? 'selected' : ''}`)} onClick={() => setSelected(t)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <div className="tc-top">
-                                    <span className="tc-num">{t.tender_number}</span>
-                                    <span className="tc-status" style={{ background: cfg.bg, color: cfg.color }}>{t.status}</span>
-                                </div>
-                                <div className="tc-route"><Truck className="h-2.5 w-2.5"  /> {t.origin_city}, {t.origin_state} → {t.dest_city}, {t.dest_state}</div>
-                                <div className="tc-meta">{t.carrier_scac} · {t.equipment_type} · {fmt(t.freight_charge)}</div>
-                                <div className="tc-edi">
-                                    <span className={t.edi_204_sent ? 'green' : 'grey'}>204 {t.edi_204_sent ? '✓' : '✗'}</span>
-                                    <span className={t.edi_990_received ? 'green' : 'grey'}>990 {t.edi_990_received ? '✓' : '✗'}</span>
-                                </div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelected(t)}>
+                            <div key={t.id} className={cn(`tender-card ${selected?.id === t.id ? 'selected' : ''}`)}>
+                                                            <div className="tc-top">
+                                                                <span className="tc-num">{t.tender_number}</span>
+                                                                <span className="tc-status" style={{ background: cfg.bg, color: cfg.color }}>{t.status}</span>
+                                                            </div>
+                                                            <div className="tc-route"><Truck className="h-2.5 w-2.5"  /> {t.origin_city}, {t.origin_state} → {t.dest_city}, {t.dest_state}</div>
+                                                            <div className="tc-meta">{t.carrier_scac} · {t.equipment_type} · {fmt(t.freight_charge)}</div>
+                                                            <div className="tc-edi">
+                                                                <span className={t.edi_204_sent ? 'green' : 'grey'}>204 {t.edi_204_sent ? '✓' : '✗'}</span>
+                                                                <span className={t.edi_990_received ? 'green' : 'grey'}>990 {t.edi_990_received ? '✓' : '✗'}</span>
+                                                            </div>
+                                                        </div>
+                            </Button>
                         );
                     })}
                     {tenders.length === 0 && <div className="empty">No tenders found</div>}

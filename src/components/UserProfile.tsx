@@ -71,7 +71,7 @@ export function UserProfile({ userId }: UserProfileProps) {
 
   const getTrustLevelInfo = (level: number) => {
     const levels = [
-      { name: "New Member", color: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200", icon: Users },
+      { name: "New Member", color: "bg-muted text-foreground dark:bg-gray-800 dark:text-gray-200", icon: Users },
       { name: "Contributor", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200", icon: Star },
       { name: "Trusted", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200", icon: Shield },
       { name: "Leader", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200", icon: Trophy },
@@ -96,9 +96,9 @@ export function UserProfile({ userId }: UserProfileProps) {
 
   const getLevelColor = (level: string) => {
     const colors: Record<string, string> = {
-      none: "text-gray-400",
+      none: "text-muted-foreground/70",
       bronze: "text-amber-600",
-      silver: "text-gray-400",
+      silver: "text-muted-foreground/70",
       gold: "text-yellow-500",
       platinum: "text-cyan-400",
       legendary: "text-purple-500",

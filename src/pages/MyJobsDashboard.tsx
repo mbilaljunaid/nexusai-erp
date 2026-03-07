@@ -211,30 +211,31 @@ export default function MyJobsDashboard() {
             ) : (
               <div className="space-y-3">
                 {myJobs.map(job => (
-                  <div role="button" tabIndex={0}
-                    key={job.id}
-                    className={cn(`p-4 border rounded-lg cursor-pointer hover-elevate ${selectedJob?.id === job.id ? 'border-primary bg-muted/50' : ''}`)}
-                    onClick={() => setSelectedJob(job)}
-                    data-testid={`job-item-${job.id}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold truncate">{job.title}</h4>
-                        <p className="text-sm text-muted-foreground truncate">{job.category_name}</p>
-                      </div>
-                      <StatusBadge status={job.status} />
-                    </div>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <DollarSign className="w-3 h-3" />
-                        {formatBudget(job.budget_min, job.budget_max, job.currency)}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        {job.proposal_count} proposals
-                      </span>
-                    </div>
-                  </div>
+                  <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedJob(job)}>
+                    <div
+                                        key={job.id}
+                                        className={cn(`p-4 border rounded-lg cursor-pointer hover-elevate ${selectedJob?.id === job.id ? 'border-primary bg-muted/50' : ''}`)}
+                                        data-testid={`job-item-${job.id}`}
+                                      >
+                                        <div className="flex items-start justify-between gap-2">
+                                          <div className="flex-1 min-w-0">
+                                            <h4 className="font-semibold truncate">{job.title}</h4>
+                                            <p className="text-sm text-muted-foreground truncate">{job.category_name}</p>
+                                          </div>
+                                          <StatusBadge status={job.status} />
+                                        </div>
+                                        <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                                          <span className="flex items-center gap-1">
+                                            <DollarSign className="w-3 h-3" />
+                                            {formatBudget(job.budget_min, job.budget_max, job.currency)}
+                                          </span>
+                                          <span className="flex items-center gap-1">
+                                            <Users className="w-3 h-3" />
+                                            {job.proposal_count} proposals
+                                          </span>
+                                        </div>
+                                      </div>
+                    </Button>
                 ))}
               </div>
             )}

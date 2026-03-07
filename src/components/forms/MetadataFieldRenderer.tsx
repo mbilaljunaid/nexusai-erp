@@ -145,7 +145,7 @@ export function MetadataFieldRenderer({
             )}
 
             {field.type === "calculated" && (
-              <div className="bg-gray-500/10 p-3 rounded text-sm text-gray-600 border" data-testid={`calculated-${field.name}`}>
+              <div className="bg-gray-500/10 p-3 rounded text-sm text-muted-foreground border" data-testid={`calculated-${field.name}`}>
                 {logicEngine.calculateFormulaValue(field.formula || "", formData) || "—"}
               </div>
             )}
@@ -304,7 +304,7 @@ export function MetadataFieldRenderer({
       {error && <p className="text-sm text-red-500" data-testid={`error-${field.name}`}>{error}</p>}
 
       {/* Help text */}
-      {field.helpText && <p className="text-xs text-gray-500">{field.helpText}</p>}
+      {field.helpText && <p className="text-xs text-muted-foreground">{field.helpText}</p>}
     </div>
   );
 }

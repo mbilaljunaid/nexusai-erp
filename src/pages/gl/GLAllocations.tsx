@@ -160,8 +160,8 @@ export default function GLAllocations() {
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start">
                             <div>
-                                <p className="text-sm font-medium text-slate-500 mb-1">Active Rules</p>
-                                <h3 className="text-3xl font-bold text-slate-900 dark:text-slate-200">{allocations?.filter((a) => a.active)?.length || 0}</h3>
+                                <p className="text-sm font-medium text-muted-foreground mb-1">Active Rules</p>
+                                <h3 className="text-3xl font-bold text-foreground dark:text-slate-200">{allocations?.filter((a) => a.active)?.length || 0}</h3>
                             </div>
                             <div className="p-3 bg-orange-100 rounded-full">
                                 <PieChart className="w-6 h-6 text-orange-600" />
@@ -179,10 +179,10 @@ export default function GLAllocations() {
                             <CardDescription>Rules to distribute costs or revenues across accounts automatically.</CardDescription>
                         </div>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
                             <Input
                                 placeholder="Search rules..."
-                                className="pl-9 w-64 bg-white"
+                                className="pl-9 w-64 bg-card"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -216,7 +216,7 @@ export default function GLAllocations() {
                     <DialogHeader>
                         <DialogTitle>Run Allocation Rule</DialogTitle>
                         <DialogDescription>
-                            Execute <span className="font-bold text-slate-900 dark:text-slate-200">{selectedRule?.name}</span> for a specific accounting period.
+                            Execute <span className="font-bold text-foreground dark:text-slate-200">{selectedRule?.name}</span> for a specific accounting period.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-4">
@@ -239,7 +239,7 @@ export default function GLAllocations() {
                             </Select>
                         </div>
 
-                        <div className="p-4 bg-muted/40 rounded-lg text-sm text-slate-600 border border-slate-200">
+                        <div className="p-4 bg-muted/40 rounded-lg text-sm text-muted-foreground border border-border">
                             <span className="font-semibold block mb-1">Impact Warning</span>
                             Running this rule will generate journal entries in the selected period. These entries will be set to Draft or Posted depending on your Ledger setup.
                         </div>

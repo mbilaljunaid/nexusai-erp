@@ -121,7 +121,7 @@ export default function APDashboard() {
             description: "System parameters and distribution sets",
             icon: Settings,
             href: "/finance/ap/config",
-            color: "text-gray-600"
+            color: "text-muted-foreground"
         }
     ];
 
@@ -190,19 +190,20 @@ export default function APDashboard() {
                     <h3 className="text-lg font-semibold mb-4">Quick Access</h3>
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {navigationCards.map((card) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation(card.href)}>
                             <Card
-                                key={card.href}
-                                className="cursor-pointer hover:shadow-md transition-shadow"
-                                onClick={() => setLocation(card.href)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader>
-                                    <div className="flex items-center gap-3">
-                                        <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
-                                        <CardTitle className="text-base">{card.title}</CardTitle>
-                                    </div>
-                                    <CardDescription>{card.description}</CardDescription>
-                                </CardHeader>
-                            </Card>
+                                                            key={card.href}
+                                                            className="cursor-pointer hover:shadow-md transition-shadow"
+                                                        >
+                                                            <CardHeader>
+                                                                <div className="flex items-center gap-3">
+                                                                    <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
+                                                                    <CardTitle className="text-base">{card.title}</CardTitle>
+                                                                </div>
+                                                                <CardDescription>{card.description}</CardDescription>
+                                                            </CardHeader>
+                                                        </Card>
+                            </Button>
                         ))}
                     </div>
                 </div>
@@ -216,23 +217,24 @@ export default function APDashboard() {
                     <CardContent>
                         <div className="space-y-3">
                             {recentInvoices?.data?.slice(0, 10).map((invoice: any) => (
-                                <div role="button" tabIndex={0}
-                                    key={invoice.id}
-                                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent cursor-pointer"
-                                    onClick={() => setLocation(`/finance/ap/invoices/${invoice.id}`)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <FileText className="h-4 w-4 text-muted-foreground" />
-                                        <div>
-                                            <p className="font-medium font-mono text-sm">{invoice.invoiceNumber}</p>
-                                            <p className="text-sm text-muted-foreground">{invoice.supplier?.name}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <p className="font-semibold">${parseFloat(invoice.invoiceAmount).toFixed(2)}</p>
-                                        <Badge>{invoice.invoiceStatus}</Badge>
-                                    </div>
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation(`/finance/ap/invoices/${invoice.id}`)}>
+                                <div
+                                                                    key={invoice.id}
+                                                                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent cursor-pointer"
+                                                                >
+                                                                    <div className="flex items-center gap-4">
+                                                                        <FileText className="h-4 w-4 text-muted-foreground" />
+                                                                        <div>
+                                                                            <p className="font-medium font-mono text-sm">{invoice.invoiceNumber}</p>
+                                                                            <p className="text-sm text-muted-foreground">{invoice.supplier?.name}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="flex items-center gap-4">
+                                                                        <p className="font-semibold">${parseFloat(invoice.invoiceAmount).toFixed(2)}</p>
+                                                                        <Badge>{invoice.invoiceStatus}</Badge>
+                                                                    </div>
+                                                                </div>
+                                </Button>
                             ))}
                         </div>
                     </CardContent>

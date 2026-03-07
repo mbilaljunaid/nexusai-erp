@@ -82,14 +82,14 @@ export default function CampaignDetail() {
                             <span>Total Opportunities Created</span>
                             <span className="font-bold">{stats?.totalDeals}</span>
                         </div>
-                        <Progress value={100} className="h-2 bg-slate-100" indicatorClassName="bg-blue-200" />
+                        <Progress value={100} className="h-2 bg-muted" indicatorClassName="bg-blue-200" />
                     </div>
                     <div className="space-y-1">
                         <div className="flex justify-between text-sm">
                             <span>Won Opportunities</span>
                             <span className="font-bold">{stats?.wonDeals}</span>
                         </div>
-                        <Progress value={stats?.conversionRate} className="h-2 bg-slate-100" indicatorClassName="bg-green-500" />
+                        <Progress value={stats?.conversionRate} className="h-2 bg-muted" indicatorClassName="bg-green-500" />
                     </div>
                     <div>
                         <p className="text-sm text-muted-foreground mt-2">Conversion Rate: <span className="font-bold text-foreground">{stats?.conversionRate}%</span></p>

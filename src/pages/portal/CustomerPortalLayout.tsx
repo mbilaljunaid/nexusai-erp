@@ -52,16 +52,16 @@ export default function CustomerPortalLayout({ children}: { children: ReactNode}
     return (
         <div className="min-h-screen bg-muted/50">
             {/* Top Navbar */}
-            <nav className="bg-white border-b px-6 py-3 flex justify-between items-center sticky top-0">
+            <nav className="bg-card border-b px-6 py-3 flex justify-between items-center sticky top-0">
                 <div className="flex items-center gap-2">
                     <div className="h-8 w-8 bg-emerald-600 rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-lg">N</span>
                     </div>
-                    <span className="font-bold text-xl tracking-tight text-slate-800">Nexus<span className="text-emerald-600">Portal</span></span>
+                    <span className="font-bold text-xl tracking-tight text-foreground">Nexus<span className="text-emerald-600">Portal</span></span>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium text-slate-600">Welcome, {customer?.name}</span>
+                    <span className="text-sm font-medium text-muted-foreground">Welcome, {customer?.name}</span>
 
                     {/* Notification Bell */}
                     <Button variant="ghost" size="sm" className="relative">
@@ -73,7 +73,7 @@ export default function CustomerPortalLayout({ children}: { children: ReactNode}
                         )}
                     </Button>
 
-                    <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-500 hover:text-red-500">
+                    <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-red-500">
                         <LogOut className="h-4 w-4 mr-2" />
                         Sign Out
                     </Button>
@@ -82,7 +82,7 @@ export default function CustomerPortalLayout({ children}: { children: ReactNode}
 
             <div className="flex">
                 {/* Sidebar */}
-                <aside className="w-64 bg-white min-h-[calc(100vh-64px)] border-r px-4 py-6 hidden md:block fixed h-full">
+                <aside className="w-64 bg-card min-h-[calc(100vh-64px)] border-r px-4 py-6 hidden md:block fixed h-full">
                     <div className="space-y-1">
                         <NavItem href="/portal/dashboard" icon={LayoutDashboard} label="Overview" active={location ==="/portal/dashboard"} />
                         <NavItem href="/portal/invoices" icon={FileText} label="Invoices" active={location ==="/portal/invoices"} />
@@ -109,9 +109,9 @@ function NavItem({ href, icon: Icon, label, active}: any) {
         <Link href={href}>
             <div className={cn(`flex items-center gap-3 px-3 py-2 rounded-md font-medium text-sm transition-colors cursor-pointer ${active
                 ?"bg-emerald-500/10 text-emerald-700"
-                :"text-slate-600 hover:bg-slate-500/15 hover:text-slate-900 dark:text-slate-200"
+                :"text-muted-foreground hover:bg-slate-500/15 hover:text-foreground dark:text-slate-200"
                }`)}>
-                <Icon className={cn(`h-4 w-4 ${active ?"text-emerald-600" :"text-slate-400"}`)} />
+                <Icon className={cn(`h-4 w-4 ${active ?"text-emerald-600" :"text-muted-foreground/70"}`)} />
                 {label}
             </div>
         </Link>

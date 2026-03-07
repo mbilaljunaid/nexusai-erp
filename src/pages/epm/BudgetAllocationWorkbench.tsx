@@ -275,38 +275,39 @@ export default function BudgetAllocationWorkbench() {
                                     </TableRow>
                                 ) : (
                                     rules.map((rule) => (
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRule(rule)}>
                                         <TableRow
-                                            key={rule.id}
-                                            className="cursor-pointer hover:bg-muted/50"
-                                            onClick={() => setSelectedRule(rule)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <TableCell className="font-medium">{rule.name}</TableCell>
-                                            <TableCell><code className="text-xs">{rule.sourceAccount}</code></TableCell>
-                                            <TableCell className="text-right font-mono">${formatNumber(rule.totalAmount)}</TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline">{rule.basis.replace("_", " ")}</Badge>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={rule.isActive ? "default" : "outline"}>
-                                                    {rule.isActive ? "Active" : "Inactive"}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            previewMutation.mutate(rule.id);
-                                                        }}
-                                                    >
-                                                        <PlayCircle className="h-3 w-3 mr-1" />
-                                                        Preview
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
+                                                                                    key={rule.id}
+                                                                                    className="cursor-pointer hover:bg-muted/50"
+                                                                                >
+                                                                                    <TableCell className="font-medium">{rule.name}</TableCell>
+                                                                                    <TableCell><code className="text-xs">{rule.sourceAccount}</code></TableCell>
+                                                                                    <TableCell className="text-right font-mono">${formatNumber(rule.totalAmount)}</TableCell>
+                                                                                    <TableCell>
+                                                                                        <Badge variant="outline">{rule.basis.replace("_", " ")}</Badge>
+                                                                                    </TableCell>
+                                                                                    <TableCell>
+                                                                                        <Badge variant={rule.isActive ? "default" : "outline"}>
+                                                                                            {rule.isActive ? "Active" : "Inactive"}
+                                                                                        </Badge>
+                                                                                    </TableCell>
+                                                                                    <TableCell>
+                                                                                        <div className="flex gap-1">
+                                                                                            <Button
+                                                                                                variant="ghost"
+                                                                                                size="sm"
+                                                                                                onClick={(e) => {
+                                                                                                    e.stopPropagation();
+                                                                                                    previewMutation.mutate(rule.id);
+                                                                                                }}
+                                                                                            >
+                                                                                                <PlayCircle className="h-3 w-3 mr-1" />
+                                                                                                Preview
+                                                                                            </Button>
+                                                                                        </div>
+                                                                                    </TableCell>
+                                                                                </TableRow>
+                                        </Button>
                                     ))
                                 )}
                             </TableBody>

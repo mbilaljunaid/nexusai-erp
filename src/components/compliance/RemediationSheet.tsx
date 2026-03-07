@@ -92,7 +92,7 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
 
                     <div className="space-y-1">
                         <Label className="text-xs uppercase text-muted-foreground font-semibold">Description</Label>
-                        <p className="text-sm text-slate-600 bg-slate-500/10 p-3 rounded-lg border italic">
+                        <p className="text-sm text-muted-foreground bg-slate-500/10 p-3 rounded-lg border italic">
                             "{violation.description}"
                         </p>
                     </div>
@@ -125,7 +125,7 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
                     {violation.remediationActions && violation.remediationActions.length > 0 && (
                         <div className="space-y-2">
                             <Label className="text-xs uppercase text-muted-foreground font-semibold">Recommended Steps</Label>
-                            <ul className="list-disc list-inside text-sm text-slate-600 space-y-1 ml-1">
+                            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 ml-1">
                                 {violation.remediationActions.map((action, i) => (
                                     <li key={i}>{action}</li>
                                 ))}
@@ -137,11 +137,11 @@ export function RemediationSheet({ violation, onOpenChange }: RemediationSheetPr
                 {/* Workflow Visualizer */}
                 {violation.status !== "resolved" && (
                     <div className="bg-slate-500/10 p-4 rounded-lg border mb-4">
-                        <div className="text-xs font-semibold uppercase text-slate-500 mb-2">Remediation Workflow</div>
+                        <div className="text-xs font-semibold uppercase text-muted-foreground mb-2">Remediation Workflow</div>
                         <div className="flex items-center gap-2 text-sm">
                             <Badge variant={violation.status === 'open' ? 'default' : 'outline'}>Step 1: Manager</Badge>
                             <span className="text-slate-300">→</span>
-                            <Badge variant="outline" className="text-slate-400">Step 2: Compliance</Badge>
+                            <Badge variant="outline" className="text-muted-foreground/70">Step 2: Compliance</Badge>
                         </div>
                     </div>
                 )}

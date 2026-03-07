@@ -124,9 +124,9 @@ function PartnersManagementSection({ toast }: { toast: ReturnType<typeof useToas
 
   const tierConfig = {
     diamond: { bg: "bg-purple-500/10", text: "text-purple-600", label: "Diamond" },
-    platinum: { bg: "bg-slate-500/10", text: "text-slate-600", label: "Platinum" },
+    platinum: { bg: "bg-slate-500/10", text: "text-muted-foreground", label: "Platinum" },
     gold: { bg: "bg-yellow-500/10", text: "text-yellow-600", label: "Gold" },
-    silver: { bg: "bg-gray-500/10", text: "text-gray-600", label: "Silver" },
+    silver: { bg: "bg-gray-500/10", text: "text-muted-foreground", label: "Silver" },
   };
 
   const handleApprove = (partner: Partner) => {

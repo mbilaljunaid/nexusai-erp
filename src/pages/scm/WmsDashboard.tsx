@@ -42,19 +42,19 @@ export default function WmsDashboard() {
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold text-white">WMS Executive Insight</h1>
-                            <p className="text-slate-400 text-sm">Real-time Warehouse Operations &amp; Efficiency</p>
+                            <p className="text-muted-foreground/70 text-sm">Real-time Warehouse Operations &amp; Efficiency</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-6">
                         <EnterpriseContextSwitcher />
                         <div className="w-px h-8 bg-slate-800" />
                         <div className="text-right">
-                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Active Workers</p>
+                            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Active Workers</p>
                             <p className="text-xl font-bold text-white">24</p>
                         </div>
                         <div className="w-px h-8 bg-slate-800" />
                         <div className="text-right">
-                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">System Health</p>
+                            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">System Health</p>
                             <p className="text-xl font-bold text-green-400">99.9%</p>
                         </div>
                     </div>
@@ -73,7 +73,7 @@ export default function WmsDashboard() {
                 <DashboardWidget title="Dock Occupation" icon={Truck}>
                     <div className="flex flex-col">
                         <span className="text-2xl font-bold text-yellow-400">4/6</span>
-                        <span className="text-xs text-slate-500">Critical priority</span>
+                        <span className="text-xs text-muted-foreground">Critical priority</span>
                     </div>
                 </DashboardWidget>
                 <DashboardWidget title="Average Cycle Time" icon={Clock}>
@@ -85,7 +85,7 @@ export default function WmsDashboard() {
                 <DashboardWidget title="System Logic" icon={Layers}>
                     <div className="flex flex-col">
                         <span className="text-2xl font-bold text-blue-400">AI-Dir</span>
-                        <span className="text-xs text-slate-500">Advanced Engine</span>
+                        <span className="text-xs text-muted-foreground">Advanced Engine</span>
                     </div>
                 </DashboardWidget>
             </div>
@@ -132,7 +132,7 @@ export default function WmsDashboard() {
                             {zoneUtilization.map((zone) => (
                                 <div key={zone.name} className="space-y-2">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-slate-400">{zone.name}</span>
+                                        <span className="text-muted-foreground/70">{zone.name}</span>
                                         <span className="text-white font-bold">{zone.value}%</span>
                                     </div>
                                     <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
@@ -162,7 +162,7 @@ export default function WmsDashboard() {
                             <div key={idx} className="flex justify-between items-center p-3 bg-slate-950 rounded border border-slate-800">
                                 <div>
                                     <p className="font-bold text-white">{dock.dock}</p>
-                                    <p className="text-xs text-slate-500">{dock.carrier}</p>
+                                    <p className="text-xs text-muted-foreground">{dock.carrier}</p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-sm font-mono text-blue-400">{dock.time}</p>
@@ -215,15 +215,15 @@ export default function WmsDashboard() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         <div className="flex justify-between items-center text-xs pb-1 border-b border-slate-800">
-                            <span className="text-slate-400">Picking</span>
+                            <span className="text-muted-foreground/70">Picking</span>
                             <span className="text-blue-400 font-bold">65%</span>
                         </div>
                         <div className="flex justify-between items-center text-xs pb-1 border-b border-slate-800">
-                            <span className="text-slate-400">Putaway</span>
+                            <span className="text-muted-foreground/70">Putaway</span>
                             <span className="text-green-400 font-bold">20%</span>
                         </div>
                         <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400">Replenish</span>
+                            <span className="text-muted-foreground/70">Replenish</span>
                             <span className="text-purple-400 font-bold">15%</span>
                         </div>
                     </CardContent>

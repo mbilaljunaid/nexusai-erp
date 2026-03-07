@@ -31,7 +31,7 @@ export function MobileEquipmentCard({ equipment, onSelect}: MobileEquipmentCardP
         ACTIVE: { color:"bg-green-100 text-green-800 border-green-300", label:"Active", icon: Gauge},
         IDLE: { color:"bg-yellow-100 text-yellow-800 border-yellow-300", label:"Idle", icon: Clock},
         MAINTENANCE: { color:"bg-orange-100 text-orange-800 border-orange-300", label:"Maintenance", icon: AlertTriangle},
-        OFFLINE: { color:"bg-gray-100 text-gray-800 border-gray-300", label:"Offline", icon: AlertTriangle}
+        OFFLINE: { color:"bg-muted text-foreground border-gray-300", label:"Offline", icon: AlertTriangle}
    };
 
     const config = statusConfig[equipment.status];
@@ -44,131 +44,132 @@ export function MobileEquipmentCard({ equipment, onSelect}: MobileEquipmentCardP
    };
 
     return (
+        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setIsExpanded(!isExpanded)}>
         <Card
-            className={cn(
-               "border-2 transition-all",
-                equipment.alerts && equipment.alerts.length > 0 &&"border-orange-400"
-            )}
-            onClick={() => setIsExpanded(!isExpanded)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
-        >
-            <CardContent className="p-4">
-                {/* Compact View */}
-                <div className="space-y-3">
-                    {/* Header */}
-                    <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-lg truncate">{equipment.equipmentNumber}</h3>
-                            <p className="text-sm text-muted-foreground truncate">{equipment.type} • {equipment.model}</p>
-                        </div>
-                        <Badge variant="outline" className={cn("ml-2 flex-shrink-0", config.color)}>
-                            <StatusIcon className="h-3 w-3 mr-1" />
-                            {config.label}
-                        </Badge>
-                    </div>
+                    className={cn(
+                       "border-2 transition-all",
+                        equipment.alerts && equipment.alerts.length > 0 &&"border-orange-400"
+                    )}
+                >
+                    <CardContent className="p-4">
+                        {/* Compact View */}
+                        <div className="space-y-3">
+                            {/* Header */}
+                            <div className="flex items-start justify-between">
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-lg truncate">{equipment.equipmentNumber}</h3>
+                                    <p className="text-sm text-muted-foreground truncate">{equipment.type} • {equipment.model}</p>
+                                </div>
+                                <Badge variant="outline" className={cn("ml-2 flex-shrink-0", config.color)}>
+                                    <StatusIcon className="h-3 w-3 mr-1" />
+                                    {config.label}
+                                </Badge>
+                            </div>
 
-                    {/* Quick Stats - Always Visible */}
-                    <div className="grid grid-cols-3 gap-2">
-                        <div className="bg-muted/50 rounded-lg p-2 text-center">
-                            <div className="text-xs text-muted-foreground mb-1">Fuel</div>
-                            <div className={cn("text-base font-bold flex items-center justify-center gap-1", getFuelColor(equipment.fuelLevel))}>
-                                <Battery className="h-4 w-4" />
-                                {equipment.fuelLevel}%
+                            {/* Quick Stats - Always Visible */}
+                            <div className="grid grid-cols-3 gap-2">
+                                <div className="bg-muted/50 rounded-lg p-2 text-center">
+                                    <div className="text-xs text-muted-foreground mb-1">Fuel</div>
+                                    <div className={cn("text-base font-bold flex items-center justify-center gap-1", getFuelColor(equipment.fuelLevel))}>
+                                        <Battery className="h-4 w-4" />
+                                        {equipment.fuelLevel}%
+                                    </div>
+                                </div>
+                                <div className="bg-muted/50 rounded-lg p-2 text-center">
+                                    <div className="text-xs text-muted-foreground mb-1">Hours</div>
+                                    <div className="text-base font-bold flex items-center justify-center gap-1">
+                                        <Clock className="h-4 w-4" />
+                                        {equipment.hoursToday}h
+                                    </div>
+                                </div>
+                                <div className="bg-muted/50 rounded-lg p-2 text-center">
+                                    <div className="text-xs text-muted-foreground mb-1">Usage</div>
+                                    <div className="text-base font-bold flex items-center justify-center gap-1">
+                                        <Gauge className="h-4 w-4" />
+                                        {equipment.utilization}%
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div className="bg-muted/50 rounded-lg p-2 text-center">
-                            <div className="text-xs text-muted-foreground mb-1">Hours</div>
-                            <div className="text-base font-bold flex items-center justify-center gap-1">
-                                <Clock className="h-4 w-4" />
-                                {equipment.hoursToday}h
-                            </div>
-                        </div>
-                        <div className="bg-muted/50 rounded-lg p-2 text-center">
-                            <div className="text-xs text-muted-foreground mb-1">Usage</div>
-                            <div className="text-base font-bold flex items-center justify-center gap-1">
-                                <Gauge className="h-4 w-4" />
-                                {equipment.utilization}%
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Alerts - Always Visible if Present */}
-                    {equipment.alerts && equipment.alerts.length > 0 && (
-                        <div className="bg-orange-500/10 border border-orange-200 rounded-lg p-2">
-                            <div className="flex items-start gap-2">
-                                <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                                <div className="text-xs text-orange-900 dark:text-orange-200">
-                                    {equipment.alerts[0]}
-                                    {equipment.alerts.length > 1 && (
-                                        <span className="ml-1 font-semibold">+{equipment.alerts.length - 1} more</span>
+                            {/* Alerts - Always Visible if Present */}
+                            {equipment.alerts && equipment.alerts.length > 0 && (
+                                <div className="bg-orange-500/10 border border-orange-200 rounded-lg p-2">
+                                    <div className="flex items-start gap-2">
+                                        <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                                        <div className="text-xs text-orange-900 dark:text-orange-200">
+                                            {equipment.alerts[0]}
+                                            {equipment.alerts.length > 1 && (
+                                                <span className="ml-1 font-semibold">+{equipment.alerts.length - 1} more</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Expand/Collapse Indicator */}
+                            <div className="flex items-center justify-center pt-1 border-t">
+                                <Button variant="ghost" size="sm" className="h-8 text-xs">
+                                    {isExpanded ? (
+                                        <>
+                                            <ChevronUp className="h-4 w-4 mr-1" />
+                                            Show Less
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ChevronDown className="h-4 w-4 mr-1" />
+                                            Show More
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+
+                            {/* Expanded Details */}
+                            {isExpanded && (
+                                <div className="space-y-3 pt-3 border-t">
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                                            <span className="font-medium">Location:</span>
+                                            <span className="text-muted-foreground">{equipment.location}</span>
+                                        </div>
+                                        {equipment.operator && (
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <span className="font-medium">Operator:</span>
+                                                <span className="text-muted-foreground">{equipment.operator}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* All Alerts */}
+                                    {equipment.alerts && equipment.alerts.length > 1 && (
+                                        <div className="space-y-2">
+                                            <div className="text-sm font-medium">All Alerts:</div>
+                                            {equipment.alerts.map((alert, index) => (
+                                                <div key={index} className="bg-orange-500/10 border border-orange-200 rounded p-2 text-xs text-orange-900 dark:text-orange-200">
+                                                    • {alert}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Action Button */}
+                                    {onSelect && (
+                                        <Button
+                                            className="w-full h-12 text-base"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onSelect(equipment);
+                                           }}
+                                        >
+                                            View Details
+                                        </Button>
                                     )}
                                 </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Expand/Collapse Indicator */}
-                    <div className="flex items-center justify-center pt-1 border-t">
-                        <Button variant="ghost" size="sm" className="h-8 text-xs">
-                            {isExpanded ? (
-                                <>
-                                    <ChevronUp className="h-4 w-4 mr-1" />
-                                    Show Less
-                                </>
-                            ) : (
-                                <>
-                                    <ChevronDown className="h-4 w-4 mr-1" />
-                                    Show More
-                                </>
-                            )}
-                        </Button>
-                    </div>
-
-                    {/* Expanded Details */}
-                    {isExpanded && (
-                        <div className="space-y-3 pt-3 border-t">
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2 text-sm">
-                                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                                    <span className="font-medium">Location:</span>
-                                    <span className="text-muted-foreground">{equipment.location}</span>
-                                </div>
-                                {equipment.operator && (
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <span className="font-medium">Operator:</span>
-                                        <span className="text-muted-foreground">{equipment.operator}</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* All Alerts */}
-                            {equipment.alerts && equipment.alerts.length > 1 && (
-                                <div className="space-y-2">
-                                    <div className="text-sm font-medium">All Alerts:</div>
-                                    {equipment.alerts.map((alert, index) => (
-                                        <div key={index} className="bg-orange-500/10 border border-orange-200 rounded p-2 text-xs text-orange-900 dark:text-orange-200">
-                                            • {alert}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* Action Button */}
-                            {onSelect && (
-                                <Button
-                                    className="w-full h-12 text-base"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onSelect(equipment);
-                                   }}
-                                >
-                                    View Details
-                                </Button>
                             )}
                         </div>
-                    )}
-                </div>
-            </CardContent>
-        </Card>
+                    </CardContent>
+                </Card>
+        </Button>
     );
 }
 

@@ -48,7 +48,7 @@ const MODULE_COLORS: Record<string, string> = {
   HR: "bg-green-100 text-green-800",
   FX: "bg-cyan-100 text-cyan-800",
   EPM: "bg-rose-100 text-rose-800",
-  ALL: "bg-slate-100 text-slate-700",
+  ALL: "bg-muted text-foreground/90",
 };
 
 export default function FeatureFlags() {
@@ -203,7 +203,7 @@ export default function FeatureFlags() {
               <AccordionItem key={mod} value={mod} className="border rounded-lg px-4 bg-card">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center gap-3">
-                    <Badge className={MODULE_COLORS[mod] ?? "bg-slate-100"}>{mod}</Badge>
+                    <Badge className={MODULE_COLORS[mod] ?? "bg-muted"}>{mod}</Badge>
                     <span className="font-medium">{modFlags.length} flags</span>
                     <span className="text-xs text-muted-foreground">
                       {modEnabled} enabled / {modFlags.length - modEnabled} disabled

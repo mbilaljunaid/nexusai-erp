@@ -22,7 +22,7 @@ const COLOR_MAP = {
   orange: { card: "bg-orange-500/10", icon: "bg-orange-500/15", text: "text-orange-600 dark:text-orange-400", title: "text-orange-900 dark:text-orange-200" },
   teal: { card: "bg-teal-500/10", icon: "bg-teal-500/15", text: "text-teal-600 dark:text-teal-400", title: "text-teal-900 dark:text-teal-200" },
   cyan: { card: "bg-cyan-500/10", icon: "bg-cyan-500/15", text: "text-cyan-600 dark:text-cyan-400", title: "text-cyan-900 dark:text-cyan-200" },
-  slate: { card: "bg-slate-500/10", icon: "bg-slate-500/15", text: "text-slate-600 dark:text-slate-400", title: "text-slate-900 dark:text-slate-200" },
+  slate: { card: "bg-slate-500/10", icon: "bg-slate-500/15", text: "text-muted-foreground dark:text-muted-foreground/70", title: "text-foreground dark:text-slate-200" },
 } as const;
 
 export type MetricCardColor = keyof typeof COLOR_MAP;

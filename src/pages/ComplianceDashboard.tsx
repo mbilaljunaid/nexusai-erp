@@ -149,7 +149,7 @@ export default function ComplianceDashboard() {
           <CardContent>
             <div className="space-y-3">
               {openViolations.map((violation) => (
-                <div key={violation.id} className="p-3 bg-white border border-red-200 rounded-lg">
+                <div key={violation.id} className="p-3 bg-card border border-red-200 rounded-lg">
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <div className="font-semibold text-red-700">{violation.description}</div>

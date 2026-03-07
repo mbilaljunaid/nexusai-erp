@@ -297,23 +297,24 @@ export default function ConstructionBillingWorkbench() {
                     </CardHeader>
                     <CardContent className="p-0">
                         {payApps.map(app => (
-                            <div role="button" tabIndex={0}
-                                key={app.id}
-                                className={cn(`p-4 border-b cursor-pointer hover:bg-muted/50 ${selectedPayAppId === app.id ? "bg-muted" : ""}`)}
-                                onClick={() => setSelectedPayAppId(app.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="font-semibold">App #{app.applicationNumber}</span>
-                                    <Badge variant="outline">{app.status}</Badge>
-                                </div>
-                                <div className="text-sm text-muted-foreground flex items-center gap-2 mb-2">
-                                    <Calendar className="h-3 w-3" />
-                                    {format(new Date(app.periodEnd), "MMM d, yyyy")}
-                                </div>
-                                <div className="font-mono text-sm font-bold text-primary">
-                                    Due: ${formatNumber(Number(app.currentPaymentDue))}
-                                </div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedPayAppId(app.id)}>
+                            <div
+                                                            key={app.id}
+                                                            className={cn(`p-4 border-b cursor-pointer hover:bg-muted/50 ${selectedPayAppId === app.id ? "bg-muted" : ""}`)}
+                                                        >
+                                                            <div className="flex justify-between items-center mb-1">
+                                                                <span className="font-semibold">App #{app.applicationNumber}</span>
+                                                                <Badge variant="outline">{app.status}</Badge>
+                                                            </div>
+                                                            <div className="text-sm text-muted-foreground flex items-center gap-2 mb-2">
+                                                                <Calendar className="h-3 w-3" />
+                                                                {format(new Date(app.periodEnd), "MMM d, yyyy")}
+                                                            </div>
+                                                            <div className="font-mono text-sm font-bold text-primary">
+                                                                Due: ${formatNumber(Number(app.currentPaymentDue))}
+                                                            </div>
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>

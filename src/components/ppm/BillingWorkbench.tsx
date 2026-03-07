@@ -105,9 +105,9 @@ export function BillingWorkbench() {
             accessorKey: "status",
             cell: (item) => {
                 const colors: Record<string, string> = {
-                    DRAFT: "bg-gray-100", APPROVED: "bg-blue-100 text-blue-700", TRANSFERRED: "bg-emerald-100 text-emerald-700"
+                    DRAFT: "bg-muted", APPROVED: "bg-blue-100 text-blue-700", TRANSFERRED: "bg-emerald-100 text-emerald-700"
                 };
-                return <Badge className={colors[item.status] || "bg-gray-100"}>{item.status}</Badge>
+                return <Badge className={colors[item.status] || "bg-muted"}>{item.status}</Badge>
             }
         },
         {
@@ -135,8 +135,8 @@ export function BillingWorkbench() {
         <div className="p-8 space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-500">
             <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-200">Project Billing</h1>
-                    <p className="text-lg text-slate-500 mt-2">Manage Contract Billing, Invoices, and Revenue Recognition</p>
+                    <h1 className="text-4xl font-black tracking-tight text-foreground dark:text-slate-200">Project Billing</h1>
+                    <p className="text-lg text-muted-foreground mt-2">Manage Contract Billing, Invoices, and Revenue Recognition</p>
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" className="gap-2" onClick={() => refetchEvents()}>
@@ -146,7 +146,7 @@ export function BillingWorkbench() {
             </div>
 
             <Tabs defaultValue="unbilled" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="bg-slate-100 p-1 rounded-lg">
+                <TabsList className="bg-muted p-1 rounded-lg">
                     <TabsTrigger value="unbilled" className="gap-2"><DollarSign className="w-4 h-4" /> Unbilled Events</TabsTrigger>
                     <TabsTrigger value="invoices" className="gap-2"><FileText className="w-4 h-4" /> Invoices</TabsTrigger>
                 </TabsList>

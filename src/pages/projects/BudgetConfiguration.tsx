@@ -245,21 +245,22 @@ export default function BudgetConfiguration() {
                                     </TableHeader>
                                     <TableBody>
                                         {versions.map((version) => (
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedVersionId(version.id)}>
                                             <TableRow
-                                                key={version.id}
-                                                className={selectedVersionId === version.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
-                                                onClick={() => setSelectedVersionId(version.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <TableCell className="font-medium">{version.versionName}</TableCell>
-                                                <TableCell><Badge variant="outline">{version.versionType}</Badge></TableCell>
-                                                <TableCell className="text-right font-mono">
-                                                    ${(version.totalAmount || 0).toFixed(2)}
-                                                </TableCell>
-                                                <TableCell><StatusBadge status={version.currentFlag ? "CURRENT" : version.status} /></TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">
-                                                    {version.baselineDate ? formatDate(version.baselineDate) : "—"}
-                                                </TableCell>
-                                            </TableRow>
+                                                                                            key={version.id}
+                                                                                            className={selectedVersionId === version.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
+                                                                                        >
+                                                                                            <TableCell className="font-medium">{version.versionName}</TableCell>
+                                                                                            <TableCell><Badge variant="outline">{version.versionType}</Badge></TableCell>
+                                                                                            <TableCell className="text-right font-mono">
+                                                                                                ${(version.totalAmount || 0).toFixed(2)}
+                                                                                            </TableCell>
+                                                                                            <TableCell><StatusBadge status={version.currentFlag ? "CURRENT" : version.status} /></TableCell>
+                                                                                            <TableCell className="text-xs text-muted-foreground">
+                                                                                                {version.baselineDate ? formatDate(version.baselineDate) : "—"}
+                                                                                            </TableCell>
+                                                                                        </TableRow>
+                                            </Button>
                                         ))}
                                     </TableBody>
                                 </Table>
@@ -309,7 +310,7 @@ export default function BudgetConfiguration() {
                                             <h5 className="text-xs font-bold uppercase text-muted-foreground">Budget Lines</h5>
                                             <div className="max-h-64 overflow-y-auto space-y-1">
                                                 {budgetLines.map((line) => (
-                                                    <div key={line.id} className="p-2 bg-white rounded border text-xs">
+                                                    <div key={line.id} className="p-2 bg-card rounded border text-xs">
                                                         <div className="flex justify-between">
                                                             <span className="text-muted-foreground">{line.taskName || "Project Level"}</span>
                                                             <span className="font-mono">${line.amount.toFixed(2)}</span>

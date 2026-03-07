@@ -224,44 +224,45 @@ export function ApInvoiceCapture({ open, onOpenChange }: ApInvoiceCaptureProps) 
                         </TabsList>
 
                         <TabsContent value="upload" className="mt-6">
-                            <div role="button" tabIndex={0}
-                                className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-10 flex flex-col items-center justify-center gap-3 bg-primary/[0.02] hover:bg-primary/[0.04] transition-colors cursor-pointer relative"
-                                onClick={() => document.getElementById("file-upload")?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <input
-                                    id="file-upload"
-                                    type="file"
-                                    className="hidden"
-                                    title="Invoice file upload"
-                                    accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls"
-                                    onChange={handleFileChange}
-                                />
-                                {selectedFile ? (
-                                    <>
-                                        {selectedFile.name.endsWith(".xlsx") ? (
-                                            <FileSpreadsheet className="w-12 h-12 text-green-500" />
-                                        ) : selectedFile.type.startsWith("image") ? (
-                                            <FileImage className="w-12 h-12 text-blue-500" />
-                                        ) : (
-                                            <FileText className="w-12 h-12 text-orange-500" />
-                                        )}
-                                        <p className="font-medium">{selectedFile.name}</p>
-                                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFile(null); }} className="h-8">
-                                            Change File
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <div className="p-4 bg-muted rounded-full">
-                                            <Upload className="w-6 h-6 text-muted-foreground" />
-                                        </div>
-                                        <div className="text-center">
-                                            <p className="font-medium">Drop your invoice here</p>
-                                            <p className="text-sm text-muted-foreground">PDF, JPG, PNG or Excel up to 10MB</p>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => document.getElementById("file-upload")?.click()}>
+                            <div
+                                                            className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-10 flex flex-col items-center justify-center gap-3 bg-primary/[0.02] hover:bg-primary/[0.04] transition-colors cursor-pointer relative"
+                                                        >
+                                                            <input
+                                                                id="file-upload"
+                                                                type="file"
+                                                                className="hidden"
+                                                                title="Invoice file upload"
+                                                                accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls"
+                                                                onChange={handleFileChange}
+                                                            />
+                                                            {selectedFile ? (
+                                                                <>
+                                                                    {selectedFile.name.endsWith(".xlsx") ? (
+                                                                        <FileSpreadsheet className="w-12 h-12 text-green-500" />
+                                                                    ) : selectedFile.type.startsWith("image") ? (
+                                                                        <FileImage className="w-12 h-12 text-blue-500" />
+                                                                    ) : (
+                                                                        <FileText className="w-12 h-12 text-orange-500" />
+                                                                    )}
+                                                                    <p className="font-medium">{selectedFile.name}</p>
+                                                                    <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedFile(null); }} className="h-8">
+                                                                        Change File
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <div className="p-4 bg-muted rounded-full">
+                                                                        <Upload className="w-6 h-6 text-muted-foreground" />
+                                                                    </div>
+                                                                    <div className="text-center">
+                                                                        <p className="font-medium">Drop your invoice here</p>
+                                                                        <p className="text-sm text-muted-foreground">PDF, JPG, PNG or Excel up to 10MB</p>
+                                                                    </div>
+                                                                </>
+                                                            )}
+                                                        </div>
+                            </Button>
                         </TabsContent>
 
                         <TabsContent value="audio" className="mt-6">

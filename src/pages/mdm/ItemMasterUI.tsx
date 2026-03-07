@@ -193,41 +193,42 @@ export default function ItemMasterUI() {
                     </div>
                 ) : (
                     items.map((item: Item) => (
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedItem(item)}>
                         <Card
-                            key={item.id}
-                            className="cursor-pointer hover:shadow-lg transition-shadow"
-                            onClick={() => setSelectedItem(item)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                            <CardHeader className="pb-3">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <CardTitle className="text-lg">{item.itemNumber}</CardTitle>
-                                        <CardDescription className="line-clamp-2 mt-1">
-                                            {item.description}
-                                        </CardDescription>
-                                    </div>
-                                    <Badge variant={item.status === "ACTIVE" ? "default" : "secondary"}>
-                                        {item.status}
-                                    </Badge>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex flex-wrap gap-2">
-                                    {item.category && (
-                                        <Badge variant="outline">
-                                            <Tag className="w-3 h-3 mr-1" />
-                                            {item.category}
-                                        </Badge>
-                                    )}
-                                    {item.uom && (
-                                        <Badge variant="outline">{item.uom}</Badge>
-                                    )}
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-3">
-                                    Created: {formatDate(item.createdAt)}
-                                </p>
-                            </CardContent>
-                        </Card>
+                                                    key={item.id}
+                                                    className="cursor-pointer hover:shadow-lg transition-shadow"
+                                                >
+                                                    <CardHeader className="pb-3">
+                                                        <div className="flex items-start justify-between">
+                                                            <div className="flex-1">
+                                                                <CardTitle className="text-lg">{item.itemNumber}</CardTitle>
+                                                                <CardDescription className="line-clamp-2 mt-1">
+                                                                    {item.description}
+                                                                </CardDescription>
+                                                            </div>
+                                                            <Badge variant={item.status === "ACTIVE" ? "default" : "secondary"}>
+                                                                {item.status}
+                                                            </Badge>
+                                                        </div>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {item.category && (
+                                                                <Badge variant="outline">
+                                                                    <Tag className="w-3 h-3 mr-1" />
+                                                                    {item.category}
+                                                                </Badge>
+                                                            )}
+                                                            {item.uom && (
+                                                                <Badge variant="outline">{item.uom}</Badge>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-xs text-muted-foreground mt-3">
+                                                            Created: {formatDate(item.createdAt)}
+                                                        </p>
+                                                    </CardContent>
+                                                </Card>
+                        </Button>
                     ))
                 )}
             </div>

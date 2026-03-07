@@ -100,8 +100,8 @@ export default function RecruitmentPipelineBoard() {
             description="Manage candidate flow and hiring stages"
             actions={
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-md border">
-                        <Briefcase className="h-4 w-4 text-slate-500" />
+                    <div className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-md border">
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
                         <Select value={selectedJobId || ""} onValueChange={setSelectedJobId}>
                             <SelectTrigger className="w-72 border-none bg-transparent h-7 focus:ring-0">
                                 <SelectValue placeholder="Select Job Requisition" />
@@ -129,8 +129,8 @@ export default function RecruitmentPipelineBoard() {
             <div className="flex-1 overflow-x-auto pb-4">
                 {!selectedJobId ? (
                     <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-                        <div className="bg-slate-100 p-6 rounded-full">
-                            <Users2 className="h-12 w-12 text-slate-400" />
+                        <div className="bg-muted p-6 rounded-full">
+                            <Users2 className="h-12 w-12 text-muted-foreground/70" />
                         </div>
                         <div>
                             <h2 className="text-lg font-semibold">No Job Selected</h2>
@@ -142,14 +142,14 @@ export default function RecruitmentPipelineBoard() {
                         {STAGES.map((stage) => {
                             const candidates = pipeline[stage] || [];
                             return (
-                                <div key={stage} className="w-80 flex flex-col h-full rounded-xl bg-slate-100/50 border border-slate-200 shadow-sm">
+                                <div key={stage} className="w-80 flex flex-col h-full rounded-xl bg-muted/50 border border-border shadow-sm">
                                     {/* Column Header */}
-                                    <div className="p-4 flex items-center justify-between border-b bg-white rounded-t-xl">
+                                    <div className="p-4 flex items-center justify-between border-b bg-card rounded-t-xl">
                                         <div className="flex items-center gap-2">
                                             <span className={cn(`w-2 h-2 rounded-full ${stageColors[stage].split(' ')[0]}`)} />
-                                            <h3 className="font-bold text-sm tracking-wide text-slate-700">{stage}</h3>
+                                            <h3 className="font-bold text-sm tracking-wide text-foreground/90">{stage}</h3>
                                         </div>
-                                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 rounded-md font-medium">
+                                        <Badge variant="secondary" className="bg-muted text-muted-foreground rounded-md font-medium">
                                             {candidates.length}
                                         </Badge>
                                     </div>
@@ -168,10 +168,10 @@ export default function RecruitmentPipelineBoard() {
                                                                     </AvatarFallback>
                                                                 </Avatar>
                                                                 <div>
-                                                                    <p className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-200 group-hover:text-blue-600 transition-colors">
+                                                                    <p className="font-bold text-sm tracking-tight text-foreground dark:text-slate-200 group-hover:text-blue-600 transition-colors">
                                                                         {app.candidate.firstName} {app.candidate.lastName}
                                                                     </p>
-                                                                    <p className="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mt-0.5">
+                                                                    <p className="text-[10px] uppercase font-bold text-muted-foreground/70 flex items-center gap-1.5 mt-0.5">
                                                                         <Clock className="w-3 h-3" />
                                                                         Applied 2d ago
                                                                     </p>
@@ -184,11 +184,11 @@ export default function RecruitmentPipelineBoard() {
 
                                                         {app.score && (
                                                             <div className="space-y-1.5">
-                                                                <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase">
+                                                                <div className="flex justify-between text-[10px] font-bold text-muted-foreground uppercase">
                                                                     <span>Fit Score</span>
                                                                     <span className="text-blue-600">{app.score}%</span>
                                                                 </div>
-                                                                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                                                     <div
                                                                         className="h-full bg-blue-500 rounded-full transition-all duration-1000 w-[var(--tw-progress-width)]"
                                                                         style={{ "--tw-progress-width": `${app.score}%` } as React.CSSProperties}
@@ -199,11 +199,11 @@ export default function RecruitmentPipelineBoard() {
 
                                                         <div className="flex items-center justify-between pt-2 border-t border-slate-50">
                                                             <div className="flex gap-1.5">
-                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-slate-200" aria-label="Email">
-                                                                    <Mail className="h-3.5 w-3.5 text-slate-500" />
+                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-border" aria-label="Email">
+                                                                    <Mail className="h-3.5 w-3.5 text-muted-foreground" />
                                                                 </Button>
-                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-slate-200" aria-label="Calendar">
-                                                                    <Calendar className="h-3.5 w-3.5 text-slate-500" />
+                                                                <Button variant="outline" size="icon" className="h-7 w-7 rounded-md border-border" aria-label="Calendar">
+                                                                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                                                                 </Button>
                                                             </div>
                                                             {stage !== "HIRED" && stage !== "REJECTED" && (
@@ -228,9 +228,9 @@ export default function RecruitmentPipelineBoard() {
                                                 </Card>
                                             ))}
                                             {candidates.length === 0 && (
-                                                <div className="py-12 border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center space-y-2 opacity-50">
+                                                <div className="py-12 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center space-y-2 opacity-50">
                                                     <LayoutGrid className="h-8 w-8 text-slate-300" />
-                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Empty</p>
+                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Empty</p>
                                                 </div>
                                             )}
                                         </div>

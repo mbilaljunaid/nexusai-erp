@@ -338,7 +338,7 @@ export default function RequestsIssues() {
             case 'bug': return 'bg-red-100 text-red-800';
             case 'support': return 'bg-green-100 text-green-800';
             case 'question': return 'bg-yellow-100 text-yellow-800';
-            default: return 'bg-gray-100 text-gray-800';
+            default: return 'bg-muted text-foreground';
         }
     };
 
@@ -357,7 +357,7 @@ export default function RequestsIssues() {
             case 'open': return <AlertCircle className="w-4 h-4 text-orange-600" />;
             case 'in-progress': return <Clock className="w-4 h-4 text-blue-600" />;
             case 'resolved': return <CheckCircle className="w-4 h-4 text-green-600" />;
-            case 'closed': return <CheckCircle className="w-4 h-4 text-gray-600" />;
+            case 'closed': return <CheckCircle className="w-4 h-4 text-muted-foreground" />;
             default: return null;
         }
     };
@@ -548,7 +548,7 @@ export default function RequestsIssues() {
                                     {/* Empty State */}
                                     {!isLoading && !error && requests.length === 0 && (
                                         <div className="p-12 text-center">
-                                            <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                                            <MessageSquare className="w-12 h-12 mx-auto mb-4 text-muted-foreground/70" />
                                             <p className="text-muted-foreground">No requests found</p>
                                         </div>
                                     )}

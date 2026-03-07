@@ -152,7 +152,7 @@ export function CreateASNModal({ isOpen, onClose }: CreateASNModalProps) {
                         </div>
                     </div>
 
-                    <div className="rounded-md bg-slate-500/10 p-4 text-sm text-slate-500">
+                    <div className="rounded-md bg-slate-500/10 p-4 text-sm text-muted-foreground">
                         <p>Note: For this MVP, all items in the selected PO will be marked as fully shipped.</p>
                     </div>
                 </div>

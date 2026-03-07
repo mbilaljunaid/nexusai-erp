@@ -113,11 +113,13 @@ export default function BankStatementImport() {
                         ))}
                     </div>
                     <input ref={fileRef} type="file" accept=".txt,.xml,.camt,.mt940,.bai2" onChange={handleFile} hidden />
-                    <div className="drop-zone" onClick={() => fileRef.current?.click()} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <Upload  className="text-gray-400 mb-2 h-8 w-8" />
-                        <div className="dz-primary">Click to upload or paste below</div>
-                        <div className="dz-sub">{format} format</div>
-                    </div>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => fileRef.current?.click()}>
+                    <div className="drop-zone">
+                                            <Upload  className="text-muted-foreground/70 mb-2 h-8 w-8" />
+                                            <div className="dz-primary">Click to upload or paste below</div>
+                                            <div className="dz-sub">{format} format</div>
+                                        </div>
+                    </Button>
                     <Textarea className="paste-area" placeholder="Or paste statement content here…" value={pasteContent} onChange={e => setPasteContent(e.target.value)} rows={8} aria-label="Statement content" />
                     <Button variant="default"
                         className="import-btn"
@@ -138,19 +140,21 @@ export default function BankStatementImport() {
                     {isLoading ? <div className="loading">Loading…</div> : (
                         <div className="hist-list">
                             {imports.map(imp => {
-                                const cfg = STATUS_CFG[imp.import_status] ?? 'bg-gray-100 text-gray-500';
+                                const cfg = STATUS_CFG[imp.import_status] ?? 'bg-muted text-muted-foreground';
                                 return (
-                                    <div key={imp.id} className={cn(`hist-item ${activeImport?.id === imp.id ? 'selected' : ''}`)} onClick={() => setActiveImport(imp)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                        <div className="hist-top">
-                                            <span className="hist-fmt">{imp.format}</span>
-                                            <span className={cn(`hist-status ${cfg}`)}>{imp.import_status}</span>
-                                        </div>
-                                        <div className="hist-date">{imp.statement_date}</div>
-                                        <div className="hist-amounts">
-                                            <span className="green">+{fmt(imp.total_credits, imp.currency_code)}</span>
-                                            <span className="red">-{fmt(imp.total_debits, imp.currency_code)}</span>
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setActiveImport(imp)}>
+                                    <div key={imp.id} className={cn(`hist-item ${activeImport?.id === imp.id ? 'selected' : ''}`)}>
+                                                                            <div className="hist-top">
+                                                                                <span className="hist-fmt">{imp.format}</span>
+                                                                                <span className={cn(`hist-status ${cfg}`)}>{imp.import_status}</span>
+                                                                            </div>
+                                                                            <div className="hist-date">{imp.statement_date}</div>
+                                                                            <div className="hist-amounts">
+                                                                                <span className="green">+{fmt(imp.total_credits, imp.currency_code)}</span>
+                                                                                <span className="red">-{fmt(imp.total_debits, imp.currency_code)}</span>
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 );
                             })}
                             {imports.length === 0 && <div className="empty">No imports yet</div>}
@@ -180,7 +184,7 @@ export default function BankStatementImport() {
                             </div>
                             <div className="h-[400px]">
                                 {transactions.length === 0 ? (
-                                    <div className="p-8 text-center text-gray-500 h-full flex items-center justify-center">No transactions</div>
+                                    <div className="p-8 text-center text-muted-foreground h-full flex items-center justify-center">No transactions</div>
                                 ) : (
                                     <InteractiveSpreadsheet
                                         columns={txColumns}

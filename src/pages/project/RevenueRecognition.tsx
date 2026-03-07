@@ -52,7 +52,7 @@ export default function RevenueRecognition() {
         { id: "costsIncurred", header: "Costs Incurred", width: "120px", cell: (e) => <span className="font-mono">{fmt(e.costs_incurred)}</span> },
         { id: "costsToComplete", header: "Costs to Complete", width: "130px", cell: (e) => <span className="font-mono">{fmt(e.costs_to_complete)}</span> },
         { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span className="font-mono font-bold text-emerald-600">{fmt(e.revenue_recognized)}</span> },
-        { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span className="font-mono text-gray-500">{fmt(e.cumulative_revenue)}</span> },
+        { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span className="font-mono text-muted-foreground">{fmt(e.cumulative_revenue)}</span> },
         { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold"><CheckCircle2 className="h-[11px] w-[11px]"  /> Posted</span> : <span className="text-[10px] text-amber-600 font-semibold">Pending</span> },
         { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <Button variant="default" size="sm" onClick={() => postGLMut.mutate({ id: e.id })} className="text-white text-[10px]">Post GL</Button> : null }
     ];
@@ -62,7 +62,7 @@ export default function RevenueRecognition() {
             <div className="flex justify-between mb-4">
                 <div>
 
-                    <p className="text-[13px] text-gray-500 mt-1 mb-0">POC · Milestone · Time &amp; Materials · Completed Contract — ASC 606/IFRS 15</p>
+                    <p className="text-[13px] text-muted-foreground mt-1 mb-0">POC · Milestone · Time &amp; Materials · Completed Contract — ASC 606/IFRS 15</p>
                 </div>
             </div>
 
@@ -77,7 +77,7 @@ export default function RevenueRecognition() {
             {activeProject && summary && (
                 <>
                     {/* Summary bar */}
-                    <div className="bg-white border border-gray-200 rounded-xl p-4 mb-3.5">
+                    <div className="bg-card border border-border rounded-xl p-4 mb-3.5">
                         <div className="flex gap-5 mb-2.5">
                             {(
                                 [
@@ -91,23 +91,23 @@ export default function RevenueRecognition() {
                             ).map(([l, v]) => (
                                 <div key={l as string}>
                                     <div className="text-[17px] font-extrabold font-mono">{v as React.ReactNode}</div>
-                                    <div className="text-[10px] text-gray-400 mt-0.5">{l as string}</div>
+                                    <div className="text-[10px] text-muted-foreground/70 mt-0.5">{l as string}</div>
                                 </div>
                             ))}
                         </div>
                         {/* progress bar */}
-                        <div className="bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                        <div className="bg-muted rounded-full h-2.5 overflow-hidden">
                             <style>{`
                                 .rev-progress { width: ${pctNum}%; }
                             `}</style>
                             <div className={cn(`h-full rounded-full transition-all duration-400 rev-progress ${pctNum >= 90 ? 'bg-emerald-600' : 'bg-blue-700'}`)} />
                         </div>
-                        <div className="text-[11px] text-gray-500 mt-1">{pctNum}% recognized of contract value</div>
+                        <div className="text-[11px] text-muted-foreground mt-1">{pctNum}% recognized of contract value</div>
                     </div>
 
                     {/* Setup form */}
                     {showSetup && (
-                        <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3 mb-2.5">
+                        <div className="bg-gray-500/10 border border-border rounded-xl p-3 mb-2.5">
                             <div className="text-xs font-bold mb-2">Setup Recognition Method — Project {activeProject}</div>
                             <div className="grid grid-cols-3 gap-2">
                                 <div className="flex flex-col gap-0.5">
@@ -139,7 +139,7 @@ export default function RevenueRecognition() {
 
                     {/* Recognize form */}
                     {showRecognize && (
-                        <div className="bg-gray-500/10 border border-gray-200 rounded-xl p-3 mb-2.5">
+                        <div className="bg-gray-500/10 border border-border rounded-xl p-3 mb-2.5">
                             <div className="text-xs font-bold mb-2">Recognize Revenue — {summary.method}</div>
                             <div className="grid grid-cols-3 gap-2">
                                 {(
@@ -166,7 +166,7 @@ export default function RevenueRecognition() {
                     )}
 
                     {/* Events table */}
-                    <div className="min-h-[400px] h-full border border-gray-200 rounded-xl">
+                    <div className="min-h-[400px] h-full border border-border rounded-xl">
                         <InteractiveSpreadsheet
                             columns={revColumns}
                             data={events}
@@ -178,7 +178,7 @@ export default function RevenueRecognition() {
             )}
 
             {!activeProject && (
-                <div className="text-center p-14 text-gray-400">
+                <div className="text-center p-14 text-muted-foreground/70">
                     <BarChart2  className="mb-2 opacity-40 mx-auto h-8 w-8" />
                     <p className="text-[13px]">Enter a project ID to load revenue recognition schedule</p>
                 </div>

@@ -148,17 +148,17 @@ export default function LedgerControlSetup() {
                 </div>
 
                 <div className="space-y-6">
-                    <Card className="bg-slate-500/10 border-slate-200">
+                    <Card className="bg-slate-500/10 border-border">
                         <CardHeader>
                             <CardTitle className="text-lg flex items-center gap-2">
                                 <Shield className="h-5 w-5 text-primary" />
                                 Posting Standards
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="text-sm space-y-4 text-slate-600">
+                        <CardContent className="text-sm space-y-4 text-muted-foreground">
                             <p>According to Oracle Fusion standards, every primary ledger must have a designated Rounding Account to ensure accounting data integrity.</p>
-                            <div className="p-3 bg-white rounded border border-slate-200">
-                                <h4 className="font-bold text-slate-800 mb-1">Mandatory Fields:</h4>
+                            <div className="p-3 bg-card rounded border border-border">
+                                <h4 className="font-bold text-foreground mb-1">Mandatory Fields:</h4>
                                 <ul className="list-disc pl-4 space-y-1">
                                     <li>Suspense Account (if enabled)</li>
                                     <li>Rounding Account</li>

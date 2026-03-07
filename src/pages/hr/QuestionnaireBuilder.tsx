@@ -129,7 +129,7 @@ export default function QuestionnaireBuilder() {
             <div className="max-w-5xl mx-auto space-y-6 pb-12">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 rounded-lg">
                             <ClipboardList className="h-6 w-6" />

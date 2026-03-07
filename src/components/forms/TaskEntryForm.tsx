@@ -56,7 +56,7 @@ export function TaskEntryForm() {
   };
 
   const statusColors: Record<string, string> = {
-    todo: "bg-gray-100 text-gray-800",
+    todo: "bg-muted text-foreground",
     inprogress: "bg-blue-100 text-blue-800",
     review: "bg-purple-100 text-purple-800",
     done: "bg-green-100 text-green-800",

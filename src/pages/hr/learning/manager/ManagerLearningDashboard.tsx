@@ -98,7 +98,7 @@ export default function ManagerLearningDashboard() {
                         <Card key={member.personId} className="hover:shadow-md transition-shadow">
                             <CardHeader className="flex flex-row items-center gap-4 pb-2">
                                 <div className="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center">
-                                    <Users className="h-6 w-6 text-slate-500" />
+                                    <Users className="h-6 w-6 text-muted-foreground" />
                                 </div>
                                 <div>
                                     <CardTitle className="text-lg">{member.firstName} {member.lastName}</CardTitle>

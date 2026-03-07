@@ -231,7 +231,7 @@ export function HedgeAccountingWorkbench() {
             cell: (item) => {
                 const colors: Record<string, string> = {
                     ACTIVE: "bg-emerald-500/10 text-emerald-700 border-emerald-200",
-                    INACTIVE: "bg-gray-100 text-gray-700 border-gray-200",
+                    INACTIVE: "bg-muted text-foreground/90 border-border",
                     TERMINATED: "bg-red-500/10 text-red-700 border-red-200",
                 };
                 return (
@@ -492,7 +492,7 @@ export function HedgeAccountingWorkbench() {
                             {unhedgedDeals.slice(0, 3).map((deal) => (
                                 <div
                                     key={deal.id}
-                                    className="flex justify-between items-center p-3 bg-white rounded-lg border border-amber-100"
+                                    className="flex justify-between items-center p-3 bg-card rounded-lg border border-amber-100"
                                 >
                                     <div>
                                         <span className="font-mono font-bold text-sm">{deal.dealNumber}</span>

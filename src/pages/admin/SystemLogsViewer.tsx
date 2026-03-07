@@ -83,9 +83,9 @@ export default function SystemLogsViewer() {
             case 'info':
                 return 'bg-blue-100 text-blue-800';
             case 'debug':
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-muted text-foreground';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-muted text-foreground';
         }
     };
 
@@ -111,8 +111,8 @@ export default function SystemLogsViewer() {
             {/* Filters */}
             <Card className="p-4">
                 <div className="flex items-center gap-2 mb-4">
-                    <Filter className="w-5 h-5 text-gray-400" />
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Filters</h3>
+                    <Filter className="w-5 h-5 text-muted-foreground/70" />
+                    <h3 className="text-sm font-semibold text-foreground dark:text-gray-200">Filters</h3>
                     {hasActiveFilters && (
                         <Button variant="default"
                             onClick={clearFilters}
@@ -127,11 +127,11 @@ export default function SystemLogsViewer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {/* Search */}
                     <div>
-                        <Label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-foreground/90 mb-1">
                             Search
                         </Label>
                         <div className="relative">
-                            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                            <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground/70" />
                             <Input
                                 type="text"
                                 value={filters.search}
@@ -145,7 +145,7 @@ export default function SystemLogsViewer() {
 
                     {/* Level Filter */}
                     <div>
-                        <Label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-foreground/90 mb-1">
                             Log Level
                         </Label>
                         <Select value={filters.level} onValueChange={(val) => setFilters({ ...filters, level: val })}>
@@ -164,7 +164,7 @@ export default function SystemLogsViewer() {
 
                     {/* User Filter */}
                     <div>
-                        <Label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-foreground/90 mb-1">
                             User
                         </Label>
                         <Input
@@ -177,7 +177,7 @@ export default function SystemLogsViewer() {
 
                     {/* Endpoint Filter */}
                     <div>
-                        <Label className="block text-sm font-medium text-gray-700 mb-1">
+                        <Label className="block text-sm font-medium text-foreground/90 mb-1">
                             Endpoint
                         </Label>
                         <Input
@@ -191,7 +191,7 @@ export default function SystemLogsViewer() {
 
                 {/* Log Count */}
                 <div className="mt-4 flex items-center gap-4">
-                    <Label className="text-sm font-medium text-gray-700">
+                    <Label className="text-sm font-medium text-foreground/90">
                         Show:
                     </Label>
                     <div className="flex items-center gap-2">
@@ -201,7 +201,7 @@ export default function SystemLogsViewer() {
                                 onClick={() => setCount(value)}
                                 className={cn(`px-3 py-1 text-sm rounded-md ${count === value
                                     ? 'bg-blue-100 text-blue-700 font-medium'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    : 'bg-muted text-foreground/90 hover:bg-gray-200'
                                     }`)}
                             >
                                 {value}
@@ -216,8 +216,8 @@ export default function SystemLogsViewer() {
                 <div className="px-4 py-3 border-b bg-gray-500/10">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-gray-400" />
-                            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">
+                            <FileText className="w-5 h-5 text-muted-foreground/70" />
+                            <h3 className="text-sm font-semibold text-foreground dark:text-gray-200">
                                 Log Entries ({logs.length})
                             </h3>
                         </div>
@@ -238,7 +238,7 @@ export default function SystemLogsViewer() {
                             <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
                         </div>
                     ) : logs.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
+                        <div className="text-center py-12 text-muted-foreground">
                             No logs found matching your filters
                         </div>
                     ) : (

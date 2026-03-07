@@ -122,13 +122,14 @@ export default function CurriculumBuilder() {
                         <CardHeader><CardTitle>Existing Curricula</CardTitle></CardHeader>
                         <CardContent className="space-y-2">
                             {loadingCurricula ? <Loader2 className="animate-spin" /> : curricula?.map((c: any) => (
-                                <div role="button" tabIndex={0} key={c.id}
-                                    className={cn(`p-3 border rounded cursor-pointer hover:bg-muted ${selectedCurriculum?.id === c.id ? 'border-primary bg-muted' : ''}`)}
-                                    onClick={() => setSelectedCurriculum(c)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="font-medium">{c.title}</div>
-                                    <div className="text-xs text-muted-foreground">{c.description}</div>
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCurriculum(c)}>
+                                <div key={c.id}
+                                                                    className={cn(`p-3 border rounded cursor-pointer hover:bg-muted ${selectedCurriculum?.id === c.id ? 'border-primary bg-muted' : ''}`)}
+                                                                >
+                                                                    <div className="font-medium">{c.title}</div>
+                                                                    <div className="text-xs text-muted-foreground">{c.description}</div>
+                                                                </div>
+                                </Button>
                             ))}
                         </CardContent>
                     </Card>
@@ -227,10 +228,12 @@ function CoursePicker({ onSelect }: { onSelect: (id: string) => void }) {
     return (
         <div className="h-72 overflow-y-auto space-y-2">
             {courses?.map((c: any) => (
-                <div key={c.id} className="flex items-center justify-between p-2 hover:bg-muted rounded border cursor-pointer" onClick={() => onSelect(c.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                    <span className="text-sm font-medium">{c.title}</span>
-                    <Plus className="h-4 w-4 text-muted-foreground" />
-                </div>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => onSelect(c.id)}>
+                <div key={c.id} className="flex items-center justify-between p-2 hover:bg-muted rounded border cursor-pointer">
+                                    <span className="text-sm font-medium">{c.title}</span>
+                                    <Plus className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                </Button>
             ))}
         </div>
     );

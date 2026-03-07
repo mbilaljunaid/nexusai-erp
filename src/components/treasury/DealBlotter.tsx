@@ -333,12 +333,12 @@ export function DealBlotter() {
             cell: (item) => {
                 const status = item.status || "DRAFT";
                 const colors: Record<string, string> = {
-                    DRAFT: "bg-slate-100 text-slate-700 border-slate-200",
+                    DRAFT: "bg-muted text-foreground/90 border-border",
                     PENDING: "bg-amber-500/10 text-amber-700 border-amber-200",
                     CONFIRMED: "bg-blue-500/10 text-blue-700 border-blue-200",
                     ACTIVE: "bg-emerald-500/10 text-emerald-700 border-emerald-200",
                     SETTLED: "bg-purple-500/10 text-purple-700 border-purple-200",
-                    MATURED: "bg-gray-100 text-gray-700 border-gray-200",
+                    MATURED: "bg-muted text-foreground/90 border-border",
                 };
                 return (
                     <Badge className={cn(`${colors[status] || colors.DRAFT} border font-medium`)}>

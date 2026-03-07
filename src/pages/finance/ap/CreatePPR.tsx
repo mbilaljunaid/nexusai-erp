@@ -169,10 +169,10 @@ export default function CreatePPR() {
                     <div className="flex justify-between">
                         {steps.map((step) => (
                             <div key={step.id} className="flex flex-col items-center gap-2">
-                                <div className={cn(`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step.id ?"bg-blue-600 text-white" :"bg-white border-2 border-gray-300 text-gray-500"}`)}>
+                                <div className={cn(`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${currentStep >= step.id ?"bg-blue-600 text-white" :"bg-card border-2 border-gray-300 text-muted-foreground"}`)}>
                                     {currentStep > step.id ? <CheckCircle2 className="w-5 h-5" /> : step.id}
                                 </div>
-                                <span className={cn(`text-xs font-medium ${currentStep >= step.id ?"text-blue-900 dark:text-blue-200" :"text-gray-500"}`)}>{step.name}</span>
+                                <span className={cn(`text-xs font-medium ${currentStep >= step.id ?"text-blue-900 dark:text-blue-200" :"text-muted-foreground"}`)}>{step.name}</span>
                             </div>
                         ))}
                     </div>
@@ -286,7 +286,7 @@ export default function CreatePPR() {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                    <div className="p-4 bg-slate-500/10 border rounded text-sm text-slate-600 mt-4">
+                                    <div className="p-4 bg-slate-500/10 border rounded text-sm text-muted-foreground mt-4">
                                         Note: Only invoices with'Validated' status and'Approved' workflow will be selected in the next step.
                                     </div>
                                 </div>
@@ -349,7 +349,7 @@ export default function CreatePPR() {
                         )}
 
                     </CardContent>
-                    <div className="p-6 border-t flex justify-between bg-slate-50/50 rounded-b-lg">
+                    <div className="p-6 border-t flex justify-between bg-muted/50/50 rounded-b-lg">
                         <Button variant="outline" onClick={handleBack} disabled={currentStep === 1}>
                             <ChevronLeft className="mr-2 h-4 w-4" /> Back
                         </Button>

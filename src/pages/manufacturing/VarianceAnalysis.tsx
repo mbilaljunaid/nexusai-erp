@@ -210,7 +210,7 @@ export default function VarianceAnalysis() {
                 <CardContent>
                     <div className="space-y-4">
                         {[1, 2].map((i) => (
-                            <div key={i} className="flex justify-between items-center bg-white p-3 rounded-lg border border-red-100 shadow-sm">
+                            <div key={i} className="flex justify-between items-center bg-card p-3 rounded-lg border border-red-100 shadow-sm">
                                 <div className="space-y-1">
                                     <p className="text-sm font-semibold">Order #WO-2024-00{i} - Significant Waste</p>
                                     <p className="text-xs text-muted-foreground">Work Center: CC-STAMPING-01. Actual usage 25% above standard.</p>

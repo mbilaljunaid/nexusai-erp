@@ -19,8 +19,8 @@ export function GenericModuleDashboard() {
     return (
         <ModuleLayout>
             <div className="mb-6">
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200">{title}</h1>
-                <p className="text-gray-500 mt-2">{title} functionality is part of the NexusAI Enterprise Platform.</p>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-gray-200">{title}</h1>
+                <p className="text-muted-foreground mt-2">{title} functionality is part of the NexusAI Enterprise Platform.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -44,7 +44,7 @@ export function GenericModuleDashboard() {
                                 <Sparkles className="h-4 w-4" />
                                 AI Copilot Support Planned
                             </div>
-                            <div className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                            <div className="flex items-center gap-2 bg-muted text-foreground/90 px-3 py-1 rounded-full text-sm font-medium">
                                 <Box className="h-4 w-4" />
                                 Enterprise Modules
                             </div>

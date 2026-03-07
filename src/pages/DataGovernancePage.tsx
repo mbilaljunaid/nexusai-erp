@@ -77,13 +77,15 @@ export default function DataGovernancePage() {
             <p className="text-2xl font-bold text-green-600">{loading ? "..." : stats.dataQualityScore}%</p>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:bg-slate-500/10" onClick={() => setLocation("/mdm/duplicates")} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-          <CardContent className="pt-6">
-            <p className="text-muted-foreground text-sm">Open Duplicate Sets</p>
-            <p className="text-2xl font-bold text-orange-600">{loading ? "..." : stats.openDuplicateSets}</p>
-            <p className="text-xs text-muted-foreground mt-1">Click to resolve</p>
-          </CardContent>
-        </Card>
+        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation("/mdm/duplicates")}>
+              <Card className="cursor-pointer hover:bg-slate-500/10">
+                        <CardContent className="pt-6">
+                          <p className="text-muted-foreground text-sm">Open Duplicate Sets</p>
+                          <p className="text-2xl font-bold text-orange-600">{loading ? "..." : stats.openDuplicateSets}</p>
+                          <p className="text-xs text-muted-foreground mt-1">Click to resolve</p>
+                        </CardContent>
+                      </Card>
+              </Button>
         <Card>
           <CardContent className="pt-6">
             <p className="text-muted-foreground text-sm">Active Policies</p>

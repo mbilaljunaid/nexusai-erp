@@ -328,7 +328,7 @@ export default function SystemConfiguration() {
                                 {/* Empty State */}
                                 {!isLoading && !error && featureFlags.length === 0 && (
                                     <div className="p-12 text-center">
-                                        <Settings className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                                        <Settings className="w-12 h-12 mx-auto mb-4 text-muted-foreground/70" />
                                         <p className="text-muted-foreground">No feature flags configured</p>
                                     </div>
                                 )}

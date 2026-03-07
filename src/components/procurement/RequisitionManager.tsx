@@ -70,13 +70,15 @@ export function RequisitionManager() {
                             <p className="text-muted-foreground col-span-2">No items in catalog.</p>
                         ) : (
                             items.map((item: any) => (
-                                <Card key={item.id} className="cursor-pointer hover:border-primary" onClick={() => addToCart(item)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <CardContent className="p-4">
-                                        <h4 className="font-semibold">{item.itemNumber}</h4>
-                                        <p className="text-sm text-muted-foreground">{item.description}</p>
-                                        <Badge variant="secondary" className="mt-2">{item.categoryName || "General"}</Badge>
-                                    </CardContent>
-                                </Card>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => addToCart(item)}>
+                                <Card key={item.id} className="cursor-pointer hover:border-primary">
+                                                                    <CardContent className="p-4">
+                                                                        <h4 className="font-semibold">{item.itemNumber}</h4>
+                                                                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                                                                        <Badge variant="secondary" className="mt-2">{item.categoryName || "General"}</Badge>
+                                                                    </CardContent>
+                                                                </Card>
+                                </Button>
                             ))
                         )}
                     </div>

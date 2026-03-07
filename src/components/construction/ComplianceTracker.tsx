@@ -183,7 +183,7 @@ export function ComplianceTracker({ projectId }: ComplianceTrackerProps) {
         "PENDING": { color: "bg-yellow-100 text-yellow-800 border-yellow-200", label: "Pending" },
         "APPROVED": { color: "bg-green-100 text-green-800 border-green-200", label: "Approved" },
         "EXPIRED": { color: "bg-red-100 text-red-800 border-red-200", label: "Expired" },
-        "REJECTED": { color: "bg-gray-100 text-gray-800 border-gray-200", label: "Rejected" }
+        "REJECTED": { color: "bg-muted text-foreground border-border", label: "Rejected" }
     };
 
     // Calculate summary stats
@@ -591,11 +591,12 @@ export function ComplianceTracker({ projectId }: ComplianceTrackerProps) {
                                         <div>{format(new Date(selectedRecord.expiryDate), "MMMM d, yyyy")}</div>
                                         <div className="text-xs mt-1">
                                             {getExpiryStatus(selectedRecord.expiryDate) && (
-                                                <span role="button" tabIndex={0} className={getExpiryStatus(selectedRecord.expiryDate)!.color}
-                                                    onClick={() => trackComplianceExpiry("viewed", Math.floor((new Date(selectedRecord.expiryDate!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                                >
-                                                    {getExpiryStatus(selectedRecord.expiryDate)!.text}
-                                                </span>
+                                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => trackComplianceExpiry("viewed", Math.floor((new Date(selectedRecord.expiryDate!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))}>
+                                                <span className={getExpiryStatus(selectedRecord.expiryDate)!.color}
+                                                                                                >
+                                                                                                    {getExpiryStatus(selectedRecord.expiryDate)!.text}
+                                                                                                </span>
+                                                </Button>
                                             )}
                                         </div>
                                     </div>

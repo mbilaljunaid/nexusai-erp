@@ -48,7 +48,7 @@ export default function BillingPlans() {
             <h2 className="text-2xl font-bold mb-2" data-testid={`text-plan-name-${plan.id}`}>{plan.name}</h2>
             <div className="mb-6">
               <span className="text-4xl font-bold">${plan.price}</span>
-              <span className="text-gray-600 ml-2">/{plan.billingCycle}</span>
+              <span className="text-muted-foreground ml-2">/{plan.billingCycle}</span>
             </div>
 
             <ul className="space-y-3 mb-6 flex-1">

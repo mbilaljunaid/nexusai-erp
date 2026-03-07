@@ -83,7 +83,7 @@ export default function OvertimeComplianceDashboard() {
         { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={cn(`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{formatCurrency(row.gross_pay)}</div> },
         {
             id: "jurisdiction", header: "Jurisdiction", width: "150px", cell: (row) => {
-                const style = JURI_STYLES[row.jurisdiction] ?? { bg: 'bg-gray-100', text: 'text-gray-500' };
+                const style = JURI_STYLES[row.jurisdiction] ?? { bg: 'bg-muted', text: 'text-muted-foreground' };
                 return <div className="w-full"><span className={cn(`juri-tag ${style.bg} ${style.text}`)}>{row.jurisdiction}</span></div>;
             }
         }
@@ -121,7 +121,7 @@ export default function OvertimeComplianceDashboard() {
                     {reportLoading ? (
                         <div className="loading">Loading…</div>
                     ) : (
-                        <div className="min-h-72 h-full border border-gray-200 rounded-lg">
+                        <div className="min-h-72 h-full border border-border rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={otColumns}
                                 data={report}
@@ -174,7 +174,7 @@ export default function OvertimeComplianceDashboard() {
                         <div key={r.id} className="rule-card">
                             <div className="rc-top">
                                 <span className="rc-code">{r.rule_code}</span>
-                                <span className={cn(`rc-juri ${JURI_STYLES[r.jurisdiction]?.text ?? 'text-gray-500'}`)}>{r.jurisdiction}</span>
+                                <span className={cn(`rc-juri ${JURI_STYLES[r.jurisdiction]?.text ?? 'text-muted-foreground'}`)}>{r.jurisdiction}</span>
                             </div>
                             <div className="rc-grid">
                                 <div className="rcg"><span>Daily Threshold</span><strong>{r.daily_threshold_hours}h</strong></div>

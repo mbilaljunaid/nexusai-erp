@@ -53,7 +53,7 @@ export default function ComplianceExceptions() {
       width: "300px",
       cell: (v: Violation) => (
         <div className="px-2 h-full flex flex-col justify-center">
-          <span className="font-bold text-slate-900 dark:text-slate-200">{v.ruleName}</span>
+          <span className="font-bold text-foreground dark:text-slate-200">{v.ruleName}</span>
           <span className="text-xs text-muted-foreground truncate max-w-[400px]">{v.description}</span>
         </div>
       )
@@ -177,12 +177,12 @@ export default function ComplianceExceptions() {
       <Card className="overflow-hidden">
         <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <h3 className="font-bold text-slate-700">Exception Queue</h3>
+            <h3 className="font-bold text-foreground/90">Exception Queue</h3>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Filter by rule or entity..."
-                className="pl-9 h-9 w-72 bg-white border-slate-200"
+                className="pl-9 h-9 w-72 bg-card border-border"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

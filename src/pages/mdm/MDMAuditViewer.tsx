@@ -123,44 +123,45 @@ export default function MDMAuditViewer() {
                         </Card>
                     ) : (
                         auditLogs.map((log: AuditLog) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedLog(log)}>
                             <Card
-                                key={log.id}
-                                className={cn(`cursor-pointer transition-all ${selectedLog?.id === log.id
-                                        ? "border-primary ring-2 ring-primary"
-                                        : "hover:border-primary/50"
-                                    }`)}
-                                onClick={() => setSelectedLog(log)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader className="pb-3">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <CardTitle className="text-base">
-                                                    {log.action} {log.entityType}
-                                                </CardTitle>
-                                                <Badge className={actionColors[log.action]}>
-                                                    {log.action}
-                                                </Badge>
-                                            </div>
-                                            <CardDescription className="text-xs">
-                                                ID: {log.entityId}
-                                            </CardDescription>
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="space-y-2">
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <User className="w-4 h-4 text-muted-foreground" />
-                                        <span className="text-muted-foreground">{log.actor}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <Calendar className="w-4 h-4 text-muted-foreground" />
-                                        <span className="text-muted-foreground">
-                                            {formatDateTime(log.timestamp)}
-                                        </span>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                            key={log.id}
+                                                            className={cn(`cursor-pointer transition-all ${selectedLog?.id === log.id
+                                                                    ? "border-primary ring-2 ring-primary"
+                                                                    : "hover:border-primary/50"
+                                                                }`)}
+                                                        >
+                                                            <CardHeader className="pb-3">
+                                                                <div className="flex items-start justify-between">
+                                                                    <div className="flex-1">
+                                                                        <div className="flex items-center gap-2 mb-1">
+                                                                            <CardTitle className="text-base">
+                                                                                {log.action} {log.entityType}
+                                                                            </CardTitle>
+                                                                            <Badge className={actionColors[log.action]}>
+                                                                                {log.action}
+                                                                            </Badge>
+                                                                        </div>
+                                                                        <CardDescription className="text-xs">
+                                                                            ID: {log.entityId}
+                                                                        </CardDescription>
+                                                                    </div>
+                                                                </div>
+                                                            </CardHeader>
+                                                            <CardContent className="space-y-2">
+                                                                <div className="flex items-center gap-2 text-sm">
+                                                                    <User className="w-4 h-4 text-muted-foreground" />
+                                                                    <span className="text-muted-foreground">{log.actor}</span>
+                                                                </div>
+                                                                <div className="flex items-center gap-2 text-sm">
+                                                                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                                                                    <span className="text-muted-foreground">
+                                                                        {formatDateTime(log.timestamp)}
+                                                                    </span>
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ))
                     )}
                 </div>

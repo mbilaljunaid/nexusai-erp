@@ -241,7 +241,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
             {/* Main Workbench Grid */}
             <div className="grid grid-cols-2 gap-4 flex-1 overflow-hidden">
                 {/* Left: Bank Statement Lines */}
-                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-blue-500 bg-white">
+                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-blue-500 bg-card">
                     <CardHeader className="py-2 px-4 bg-muted/30 border-b flex flex-row items-center justify-between space-y-0">
                         <CardTitle className="text-sm font-medium">Bank Statement Lines</CardTitle>
                         <Badge variant="outline">{selectedLines.size} Selected</Badge>
@@ -264,7 +264,7 @@ export function ReconciliationWorkbench({ accountId }: ReconciliationWorkbenchPr
                 </Card>
 
                 {/* Right: System Transactions */}
-                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-purple-500 bg-white">
+                <Card className="flex flex-col h-full overflow-hidden border-2 border-l-purple-500 bg-card">
                     <CardHeader className="py-2 px-4 bg-muted/30 border-b flex flex-row items-center justify-between space-y-0">
                         <CardTitle className="text-sm font-medium">System Transactions</CardTitle>
                         <Badge variant="outline">{selectedTrx.size} Selected</Badge>

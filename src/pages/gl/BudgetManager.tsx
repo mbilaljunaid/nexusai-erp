@@ -117,7 +117,7 @@ export default function BudgetManager() {
                     </CardHeader>
                     <CardContent>
                         <Progress value={65} className="h-1.5 bg-blue-950" indicatorClassName="bg-blue-500" />
-                        <p className="text-[10px] text-gray-500 mt-2">65% of annual allocation consumed</p>
+                        <p className="text-[10px] text-muted-foreground mt-2">65% of annual allocation consumed</p>
                     </CardContent>
                 </Card>
                 <Card className="glass-morphism border-0 shadow-lg p-1">
@@ -137,13 +137,13 @@ export default function BudgetManager() {
                         <CardTitle className="text-3xl font-black text-white">$434,000</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-[10px] text-gray-500 leading-relaxed">Encumbrances of $24k excluded from availability</p>
+                        <p className="text-[10px] text-muted-foreground leading-relaxed">Encumbrances of $24k excluded from availability</p>
                     </CardContent>
                 </Card>
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="bg-white/5 border border-white/10 p-1 rounded-xl h-12">
+                <TabsList className="bg-card/5 border border-white/10 p-1 rounded-xl h-12">
                     <TabsTrigger value="monitors" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg px-6">
                         <Target className="w-4 h-4 mr-2" /> Funds Monitor
                     </TabsTrigger>
@@ -162,7 +162,7 @@ export default function BudgetManager() {
                                 <CardTitle className="text-xl font-bold flex items-center gap-2">
                                     <TrendingUp className="h-5 w-5 text-blue-400" /> Funds Available Inquiry
                                 </CardTitle>
-                                <CardDescription className="text-gray-400">Real-time status of budget vs actuals by account combination.</CardDescription>
+                                <CardDescription className="text-muted-foreground/70">Real-time status of budget vs actuals by account combination.</CardDescription>
                             </div>
                             <div className="flex gap-2 w-80">
                                 <ContextualSearch
@@ -177,26 +177,26 @@ export default function BudgetManager() {
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>
-                                <TableHeader className="bg-white/5">
+                                <TableHeader className="bg-card/5">
                                     <TableRow className="border-white/5 hover:bg-transparent">
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Account CCID</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-muted-foreground/70">Account CCID</TableHead>
                                         <TableHead className="py-4 text-xs font-bold uppercase text-blue-400">Budget</TableHead>
                                         <TableHead className="py-4 text-xs font-bold uppercase text-emerald-400">Actual</TableHead>
                                         <TableHead className="py-4 text-xs font-bold uppercase text-amber-400">Encumbrance</TableHead>
                                         <TableHead className="py-4 text-xs font-bold uppercase text-white">Available</TableHead>
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Usage %</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-muted-foreground/70">Usage %</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {loading ? (
-                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-40 text-center text-gray-500"><Loader2 className="h-8 w-8 animate-spin mx-auto opacity-20" /></TableCell></TableRow>
+                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-40 text-center text-muted-foreground"><Loader2 className="h-8 w-8 animate-spin mx-auto opacity-20" /></TableCell></TableRow>
                                     ) : balances.length === 0 ? (
-                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-60 text-center text-gray-500 flex flex-col items-center justify-center italic"><AlertTriangle className="h-8 w-8 mb-2 opacity-20" /> No funds inquiry data found for this period.</TableCell></TableRow>
+                                        <TableRow className="hover:bg-transparent"><TableCell colSpan={6} className="h-60 text-center text-muted-foreground flex flex-col items-center justify-center italic"><AlertTriangle className="h-8 w-8 mb-2 opacity-20" /> No funds inquiry data found for this period.</TableCell></TableRow>
                                     ) : (
                                         balances.map((b) => {
                                             const usage = (parseFloat(b.actualAmount) / parseFloat(b.budgetAmount)) * 100;
                                             return (
-                                                <TableRow key={b.id} className="border-white/5 hover:bg-white/5 transition-colors">
+                                                <TableRow key={b.id} className="border-white/5 hover:bg-card/5 transition-colors">
                                                     <TableCell className="font-mono text-xs text-blue-200">{b.codeCombinationId}</TableCell>
                                                     <TableCell className="font-bold text-blue-400">${formatNumber(parseFloat(b.budgetAmount))}</TableCell>
                                                     <TableCell className="text-emerald-400">${formatNumber(parseFloat(b.actualAmount))}</TableCell>
@@ -204,8 +204,8 @@ export default function BudgetManager() {
                                                     <TableCell className="font-black text-white">${formatNumber(parseFloat(b.fundsAvailable))}</TableCell>
                                                     <TableCell className="w-32">
                                                         <div className="flex flex-col gap-1">
-                                                            <Progress value={usage} className="h-1 bg-white/5" indicatorClassName={usage > 90 ? "bg-red-500" : usage > 70 ? "bg-amber-500" : "bg-blue-500"} />
-                                                            <span className="text-[9px] font-bold text-gray-500">{usage.toFixed(1)}% used</span>
+                                                            <Progress value={usage} className="h-1 bg-card/5" indicatorClassName={usage > 90 ? "bg-red-500" : usage > 70 ? "bg-amber-500" : "bg-blue-500"} />
+                                                            <span className="text-[9px] font-bold text-muted-foreground">{usage.toFixed(1)}% used</span>
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>
@@ -224,7 +224,7 @@ export default function BudgetManager() {
                                 <CardTitle className="text-xl font-bold flex items-center gap-2">
                                     <BadgeDollarSign className="h-5 w-5 text-emerald-400" /> Budget Versions & Control
                                 </CardTitle>
-                                <CardDescription className="text-gray-400">Manage budget definitions and version control status.</CardDescription>
+                                <CardDescription className="text-muted-foreground/70">Manage budget definitions and version control status.</CardDescription>
                             </div>
                             <div className="flex gap-2">
                                 <Dialog>
@@ -316,29 +316,29 @@ export default function BudgetManager() {
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>
-                                <TableHeader className="bg-white/5">
+                                <TableHeader className="bg-card/5">
                                     <TableRow className="border-white/5 hover:bg-transparent">
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Budget Name</TableHead>
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Ledger</TableHead>
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Period Range</TableHead>
-                                        <TableHead className="py-4 text-xs font-bold uppercase text-gray-400">Status</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-muted-foreground/70">Budget Name</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-muted-foreground/70">Ledger</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-muted-foreground/70">Period Range</TableHead>
+                                        <TableHead className="py-4 text-xs font-bold uppercase text-muted-foreground/70">Status</TableHead>
                                         <TableHead className="py-4 text-right pr-6">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    <TableRow className="border-white/5 hover:bg-white/5">
+                                    <TableRow className="border-white/5 hover:bg-card/5">
                                         <TableCell className="font-semibold text-white">FY2026 Corporate Base</TableCell>
-                                        <TableCell className="text-gray-400">Primary Ledger</TableCell>
-                                        <TableCell className="text-gray-400">Jan-26 to Dec-26</TableCell>
+                                        <TableCell className="text-muted-foreground/70">Primary Ledger</TableCell>
+                                        <TableCell className="text-muted-foreground/70">Jan-26 to Dec-26</TableCell>
                                         <TableCell><StatusBadge status="Active" label="Open / Active" /></TableCell>
                                         <TableCell className="text-right pr-6">
                                             <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">Manage</Button>
                                         </TableCell>
                                     </TableRow>
-                                    <TableRow className="border-white/5 hover:bg-white/5">
+                                    <TableRow className="border-white/5 hover:bg-card/5">
                                         <TableCell className="font-semibold text-white">Q1 2026 Revised</TableCell>
-                                        <TableCell className="text-gray-400">Primary Ledger</TableCell>
-                                        <TableCell className="text-gray-400">Jan-26 to Mar-26</TableCell>
+                                        <TableCell className="text-muted-foreground/70">Primary Ledger</TableCell>
+                                        <TableCell className="text-muted-foreground/70">Jan-26 to Mar-26</TableCell>
                                         <TableCell><StatusBadge status="Draft" /></TableCell>
                                         <TableCell className="text-right pr-6">
                                             <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">Edit</Button>

@@ -319,7 +319,7 @@ export default function PersonalDetails() {
                                 <p className="text-muted-foreground text-sm">Manage multiple concurrent roles and responsibilities</p>
                             </div>
                             {/* In Oracle, adding an assignment is a complex wizard */}
-                            <Button variant="outline" size="sm" className="bg-white hover:bg-zinc-500/10 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+                            <Button variant="outline" size="sm" className="bg-card hover:bg-zinc-500/10 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
                                 <Plus className="h-4 w-4 mr-2" /> Add Assignment
                             </Button>
                         </div>
@@ -369,7 +369,7 @@ export default function PersonalDetails() {
                             </Button>
                         </div>
 
-                        <div className="min-h-72 h-full border border-gray-200 rounded-lg">
+                        <div className="min-h-72 h-full border border-border rounded-lg">
                             <InteractiveSpreadsheet
                                 columns={documentColumns}
                                 data={documents}

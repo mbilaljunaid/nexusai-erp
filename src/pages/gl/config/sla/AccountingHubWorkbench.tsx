@@ -28,36 +28,36 @@ export default function AccountingHubWorkbench() {
             <div className="flex flex-col gap-6">
                 {/* Status Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="bg-slate-500/10 border-slate-200">
+                    <Card className="bg-slate-500/10 border-border">
                         <CardHeader className="py-4">
-                            <CardTitle className="text-sm font-medium text-slate-500 uppercase flex items-center gap-2">
+                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase flex items-center gap-2">
                                 <Layers className="h-4 w-4" /> Event Models
                             </CardTitle>
-                            <div className="text-2xl font-bold text-slate-900 dark:text-slate-200 mt-1">12</div>
+                            <div className="text-2xl font-bold text-foreground dark:text-slate-200 mt-1">12</div>
                         </CardHeader>
                     </Card>
-                    <Card className="bg-slate-500/10 border-slate-200">
+                    <Card className="bg-slate-500/10 border-border">
                         <CardHeader className="py-4">
-                            <CardTitle className="text-sm font-medium text-slate-500 uppercase flex items-center gap-2">
+                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase flex items-center gap-2">
                                 <BookOpen className="h-4 w-4" /> Journal Types
                             </CardTitle>
-                            <div className="text-2xl font-bold text-slate-900 dark:text-slate-200 mt-1">45</div>
+                            <div className="text-2xl font-bold text-foreground dark:text-slate-200 mt-1">45</div>
                         </CardHeader>
                     </Card>
-                    <Card className="bg-slate-500/10 border-slate-200">
+                    <Card className="bg-slate-500/10 border-border">
                         <CardHeader className="py-4">
-                            <CardTitle className="text-sm font-medium text-slate-500 uppercase flex items-center gap-2">
+                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase flex items-center gap-2">
                                 <Calculator className="h-4 w-4" /> Account Rules
                             </CardTitle>
-                            <div className="text-2xl font-bold text-slate-900 dark:text-slate-200 mt-1">28</div>
+                            <div className="text-2xl font-bold text-foreground dark:text-slate-200 mt-1">28</div>
                         </CardHeader>
                     </Card>
-                    <Card className="bg-slate-500/10 border-slate-200">
+                    <Card className="bg-slate-500/10 border-border">
                         <CardHeader className="py-4">
-                            <CardTitle className="text-sm font-medium text-slate-500 uppercase flex items-center gap-2">
+                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase flex items-center gap-2">
                                 <Database className="h-4 w-4" /> Mapping Sets
                             </CardTitle>
-                            <div className="text-2xl font-bold text-slate-900 dark:text-slate-200 mt-1">8</div>
+                            <div className="text-2xl font-bold text-foreground dark:text-slate-200 mt-1">8</div>
                         </CardHeader>
                     </Card>
                 </div>

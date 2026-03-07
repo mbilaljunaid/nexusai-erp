@@ -101,9 +101,9 @@ export function PpmWorkbench() {
             accessorKey: "status",
             cell: (item) => {
                 const colors: Record<string, string> = {
-                    UNCOSTED: "bg-gray-100", COSTED: "bg-blue-100 text-blue-700", DISTRIBUTED: "bg-emerald-100 text-emerald-700"
+                    UNCOSTED: "bg-muted", COSTED: "bg-blue-100 text-blue-700", DISTRIBUTED: "bg-emerald-100 text-emerald-700"
                 };
-                return <Badge className={colors[item.status] || "bg-gray-100"}>{item.status}</Badge>
+                return <Badge className={colors[item.status] || "bg-muted"}>{item.status}</Badge>
             }
         },
         {
@@ -126,8 +126,8 @@ export function PpmWorkbench() {
         <div className="p-8 space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-500">
             <div className="flex justify-between items-start">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-200">Project Financials</h1>
-                    <p className="text-lg text-slate-500 mt-2">Cost Performance, Asset Capitalization, and Budget Control</p>
+                    <h1 className="text-4xl font-black tracking-tight text-foreground dark:text-slate-200">Project Financials</h1>
+                    <p className="text-lg text-muted-foreground mt-2">Cost Performance, Asset Capitalization, and Budget Control</p>
                 </div>
                 <div className="flex gap-4 items-center">
                     <ProjectSelector value={projectId} onChange={setProjectId} />
@@ -139,7 +139,7 @@ export function PpmWorkbench() {
             </div>
 
             <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="bg-slate-100 p-1 rounded-lg">
+                <TabsList className="bg-muted p-1 rounded-lg">
                     <TabsTrigger value="overview" className="gap-2"><TrendingUp className="w-4 h-4" /> Overview</TabsTrigger>
                     <TabsTrigger value="costs" className="gap-2"><DollarSign className="w-4 h-4" /> Expenditures</TabsTrigger>
                     <TabsTrigger value="assets" className="gap-2"><Briefcase className="w-4 h-4" /> Assets & CIP</TabsTrigger>
@@ -177,8 +177,8 @@ export function PpmWorkbench() {
                     {!projectId ? (
                         <div className="p-12 text-center border-2 border-dashed rounded-xl bg-slate-500/10">
                             <Layers className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-200">Select a Project</h3>
-                            <p className="text-slate-500">Please select a project to view assets.</p>
+                            <h3 className="text-lg font-medium text-foreground dark:text-slate-200">Select a Project</h3>
+                            <p className="text-muted-foreground">Please select a project to view assets.</p>
                         </div>
                     ) : (
                         <Card>

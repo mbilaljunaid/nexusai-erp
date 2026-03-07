@@ -119,7 +119,7 @@ export default function PerformanceCalibrationBoard() {
             <div className="max-w-[1400px] mx-auto pb-12 space-y-6">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm flex-wrap gap-4 lg:flex-nowrap">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm flex-wrap gap-4 lg:flex-nowrap">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-lg hidden sm:block">
                             <LineChart className="h-6 w-6" />
@@ -176,9 +176,9 @@ export default function PerformanceCalibrationBoard() {
                                     <div className="flex-1 grid grid-cols-3 grid-rows-3 gap-4">
                                         {gridDefinition.map((box) => (
                                             <div key={box.id} className={cn(`flex flex-col rounded-xl border-2 ${box.color} ${box.border} overflow-hidden shadow-sm h-56`)}>
-                                                <div className="p-2 border-b bg-white/50 dark:bg-black/20 flex justify-between items-center backdrop-blur-sm">
+                                                <div className="p-2 border-b bg-card/50 dark:bg-black/20 flex justify-between items-center backdrop-blur-sm">
                                                     <span className="font-semibold text-sm tracking-tight">{box.label}</span>
-                                                    <Badge variant="outline" className="text-[10px] bg-white dark:bg-zinc-950 font-mono">
+                                                    <Badge variant="outline" className="text-[10px] bg-card dark:bg-zinc-950 font-mono">
                                                         {getEmployeesForBox(box.x, box.y).length}
                                                     </Badge>
                                                 </div>
@@ -188,7 +188,7 @@ export default function PerformanceCalibrationBoard() {
                                                         <div
                                                             ref={provided.innerRef}
                                                             {...provided.droppableProps}
-                                                            className={cn(`flex-1 p-2 overflow-y-auto space-y-2 transition-colors ${snapshot.isDraggingOver ? 'bg-black/5 dark:bg-white/5' : ''}`)}
+                                                            className={cn(`flex-1 p-2 overflow-y-auto space-y-2 transition-colors ${snapshot.isDraggingOver ? 'bg-black/5 dark:bg-card/5' : ''}`)}
                                                         >
                                                             {getEmployeesForBox(box.x, box.y).map((emp, index) => (
                                                                 <Draggable key={emp.id} draggableId={emp.id} index={index}>
@@ -197,7 +197,7 @@ export default function PerformanceCalibrationBoard() {
                                                                             ref={provided.innerRef}
                                                                             {...provided.draggableProps}
                                                                             {...provided.dragHandleProps}
-                                                                            className={cn(`bg-white dark:bg-zinc-950 border p-2 rounded-lg shadow-sm group hover:border-blue-400 dark:hover:border-blue-500 transition-all ${snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-500 scale-105' : ''}`)}
+                                                                            className={cn(`bg-card dark:bg-zinc-950 border p-2 rounded-lg shadow-sm group hover:border-blue-400 dark:hover:border-blue-500 transition-all ${snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-500 scale-105' : ''}`)}
                                                                         >
                                                                             <div className="flex items-center gap-3">
                                                                                 <div className="relative">

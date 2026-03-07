@@ -133,11 +133,11 @@ export default function YTDBalanceUpload() {
                             </CardHeader>
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                                    <div className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm text-center">
+                                    <div className="p-4 bg-card dark:bg-zinc-900 rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm text-center">
                                         <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Total Rows</p>
                                         <p className="text-3xl font-black">1,452</p>
                                     </div>
-                                    <div className="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm text-center">
+                                    <div className="p-4 bg-card dark:bg-zinc-900 rounded-xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm text-center">
                                         <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Employees</p>
                                         <p className="text-3xl font-black">428</p>
                                     </div>
@@ -154,7 +154,7 @@ export default function YTDBalanceUpload() {
                                 </div>
 
                                 <h4 className="font-semibold text-sm mb-3">Identified Exceptions</h4>
-                                <div className="bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-lg overflow-hidden flex flex-col">
+                                <div className="bg-card dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 rounded-lg overflow-hidden flex flex-col">
                                     <div className="grid grid-cols-12 gap-4 px-4 py-2 bg-muted/40 border-b text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                         <div className="col-span-1">Row</div>
                                         <div className="col-span-2">Emp ID</div>

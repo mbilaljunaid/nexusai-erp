@@ -180,11 +180,13 @@ export default function LockboxWorkbench() {
                     <div className="import-box">
                         <div className="ib-title">Import Lockbox File</div>
                         <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFile} hidden />
-                        <div className="drop-zone" role="button" tabIndex={0} onClick={() => fileRef.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                            <UploadCloud className="h-6 w-6"  color="#9ca3af" />
-                            <div className="dz-text">Upload CSV or paste below</div>
-                            <div className="dz-sub">check#, remit_ref, payer, account, amount, date</div>
-                        </div>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => fileRef.current?.click()}>
+                        <div className="drop-zone">
+                                                    <UploadCloud className="h-6 w-6"  color="#9ca3af" />
+                                                    <div className="dz-text">Upload CSV or paste below</div>
+                                                    <div className="dz-sub">check#, remit_ref, payer, account, amount, date</div>
+                                                </div>
+                        </Button>
                         <Textarea className="csv-paste" placeholder="check001,INV-5042,ACME Corp,12345,15000,2026-01-15" value={csvContent} onChange={e => setCsvContent(e.target.value)} rows={4} aria-label="CSV lockbox content" />
                         <div className="date-row">
                             <Label className="dl">Batch Date</Label>
@@ -221,13 +223,15 @@ export default function LockboxWorkbench() {
                         {safeBatches.map(b => {
                             const cfg = BATCH_STATUS_CFG[b.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                             return (
-                                <div key={b.id} className={cn(`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`)} role="button" tabIndex={0} onClick={() => setSelectedBatch(b)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <div className="bc-top">
-                                        <span className="bc-date mono">{formatDate(b.batch_date)}</span>
-                                        <span className={cn(`bc-status ${cfg.bg} ${cfg.color}`)}>{b.status}</span>
-                                    </div>
-                                    <div className="bc-meta">{b.item_count} items · {fmt(b.total_amount)}</div>
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedBatch(b)}>
+                                <div key={b.id} className={cn(`batch-card ${selectedBatch?.id === b.id ? 'selected' : ''}`)}>
+                                                                    <div className="bc-top">
+                                                                        <span className="bc-date mono">{formatDate(b.batch_date)}</span>
+                                                                        <span className={cn(`bc-status ${cfg.bg} ${cfg.color}`)}>{b.status}</span>
+                                                                    </div>
+                                                                    <div className="bc-meta">{b.item_count} items · {fmt(b.total_amount)}</div>
+                                                                </div>
+                                </Button>
                             );
                         })}
                         {safeBatches.length === 0 && <div className="empty">No lockbox batches</div>}

@@ -91,19 +91,20 @@ export default function LifeEvents() {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                             {lifeEvents.map((event) => (
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedEvent(event.id)}>
                                 <Card
-                                    key={event.id}
-                                    className="cursor-pointer border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/50 hover:shadow-md transition-all group"
-                                    onClick={() => setSelectedEvent(event.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <CardContent className="p-6 text-center space-y-4">
-                                        <div className={cn(`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${event.bg} group-hover:scale-110 transition-transform`)}>
-                                            <event.icon className={cn(`h-8 w-8 ${event.color}`)} />
-                                        </div>
-                                        <h3 className="font-semibold">{event.title}</h3>
-                                        <Button variant="link" className="text-teal-600 p-0 h-auto">Report Event &rarr;</Button>
-                                    </CardContent>
-                                </Card>
+                                                                    key={event.id}
+                                                                    className="cursor-pointer border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/50 hover:shadow-md transition-all group"
+                                                                >
+                                                                    <CardContent className="p-6 text-center space-y-4">
+                                                                        <div className={cn(`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${event.bg} group-hover:scale-110 transition-transform`)}>
+                                                                            <event.icon className={cn(`h-8 w-8 ${event.color}`)} />
+                                                                        </div>
+                                                                        <h3 className="font-semibold">{event.title}</h3>
+                                                                        <Button variant="link" className="text-teal-600 p-0 h-auto">Report Event &rarr;</Button>
+                                                                    </CardContent>
+                                                                </Card>
+                                </Button>
                             ))}
                         </div>
                     </>

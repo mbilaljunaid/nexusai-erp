@@ -19,6 +19,7 @@ import { i18n} from'@/lib/i18n';
 import { cn} from'@/lib/utils';
 import { useEnterpriseStore} from'@/lib/enterpriseStore';
 import { format} from'date-fns';
+import { Button } from "@/components/ui/button";
 
 // Mock Oracle-style Action & Reason history for Effective Dating
 const MOCK_ASSIGNMENT_HISTORY = [
@@ -152,87 +153,88 @@ export default function AssignmentHistory() {
 
                                             {/* Card payload */}
                                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)]">
-                                                <div role="button" tabIndex={0}
-                                                    onClick={() => toggleExpand(record.id)}
-                                                    className={cn(
-                                                       "p-4 rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow cursor-pointer",
-                                                        current &&"border-primary/50 shadow-primary/5"
-                                                    )} onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
-                                                >
-                                                    <div className="flex justify-between items-start mb-2">
-                                                        <div>
-                                                            <div className="flex items-center gap-2 mb-1">
-                                                                <span className="font-semibold text-sm">
-                                                                    {format(new Date(record.effectiveStartDate),"MMM d, yyyy")}
-                                                                </span>
-                                                                <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                                                                <span className={cn("text-sm", current ?"font-bold text-primary" :"text-muted-foreground")}>
-                                                                    {current ?"Present" : format(new Date(record.effectiveEndDate),"MMM d, yyyy")}
-                                                                </span>
-                                                            </div>
-                                                            <div className="flex items-center gap-2 mt-2">
-                                                                <Badge variant={ACTION_COLORS[record.actionCode] ||'default'}>
-                                                                    {record.actionCode}
-                                                                </Badge>
-                                                                <span className="text-xs text-muted-foreground border-l pl-2 border-border">
-                                                                    Reason: {record.actionReasonCode}
-                                                                </span>
-                                                            </div>
-                                                        </div>
+                                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleExpand(record.id)}>
+                                                <div
+                                                                                                    className={cn(
+                                                                                                       "p-4 rounded-xl border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow cursor-pointer",
+                                                                                                        current &&"border-primary/50 shadow-primary/5"
+                                                                                                    )}
+                                                                                                >
+                                                                                                    <div className="flex justify-between items-start mb-2">
+                                                                                                        <div>
+                                                                                                            <div className="flex items-center gap-2 mb-1">
+                                                                                                                <span className="font-semibold text-sm">
+                                                                                                                    {format(new Date(record.effectiveStartDate),"MMM d, yyyy")}
+                                                                                                                </span>
+                                                                                                                <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                                                                                                <span className={cn("text-sm", current ?"font-bold text-primary" :"text-muted-foreground")}>
+                                                                                                                    {current ?"Present" : format(new Date(record.effectiveEndDate),"MMM d, yyyy")}
+                                                                                                                </span>
+                                                                                                            </div>
+                                                                                                            <div className="flex items-center gap-2 mt-2">
+                                                                                                                <Badge variant={ACTION_COLORS[record.actionCode] ||'default'}>
+                                                                                                                    {record.actionCode}
+                                                                                                                </Badge>
+                                                                                                                <span className="text-xs text-muted-foreground border-l pl-2 border-border">
+                                                                                                                    Reason: {record.actionReasonCode}
+                                                                                                                </span>
+                                                                                                            </div>
+                                                                                                        </div>
 
-                                                        <div className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center">
-                                                            {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                                        </div>
-                                                    </div>
+                                                                                                        <div className="h-6 w-6 rounded-full bg-secondary/50 flex items-center justify-center">
+                                                                                                            {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                                                                                        </div>
+                                                                                                    </div>
 
-                                                    {/* Expanded snapshot details */}
-                                                    {expanded && (
-                                                        <div className="mt-4 pt-4 border-t border-border/50 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 text-xs">
+                                                                                                    {/* Expanded snapshot details */}
+                                                                                                    {expanded && (
+                                                                                                        <div className="mt-4 pt-4 border-t border-border/50 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 text-xs">
 
-                                                            <div className="flex items-start gap-2">
-                                                                <Briefcase className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                                                                <div>
-                                                                    <div className="font-medium text-foreground">{record.jobTitle}</div>
-                                                                    <div className="text-muted-foreground">{record.jobCode}</div>
-                                                                </div>
-                                                            </div>
+                                                                                                            <div className="flex items-start gap-2">
+                                                                                                                <Briefcase className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                                                                                                                <div>
+                                                                                                                    <div className="font-medium text-foreground">{record.jobTitle}</div>
+                                                                                                                    <div className="text-muted-foreground">{record.jobCode}</div>
+                                                                                                                </div>
+                                                                                                            </div>
 
-                                                            <div className="flex items-start gap-2">
-                                                                <Building2 className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                                                                <div>
-                                                                    <div className="font-medium text-foreground">{record.department}</div>
-                                                                </div>
-                                                            </div>
+                                                                                                            <div className="flex items-start gap-2">
+                                                                                                                <Building2 className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                                                                                                                <div>
+                                                                                                                    <div className="font-medium text-foreground">{record.department}</div>
+                                                                                                                </div>
+                                                                                                            </div>
 
-                                                            <div className="flex items-start gap-2">
-                                                                <MapPin className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                                                                <div>
-                                                                    <div className="font-medium text-foreground">{record.location}</div>
-                                                                </div>
-                                                            </div>
+                                                                                                            <div className="flex items-start gap-2">
+                                                                                                                <MapPin className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                                                                                                                <div>
+                                                                                                                    <div className="font-medium text-foreground">{record.location}</div>
+                                                                                                                </div>
+                                                                                                            </div>
 
-                                                            <div className="flex items-start gap-2">
-                                                                <User className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                                                                <div>
-                                                                    <div className="font-medium text-foreground">{record.manager}</div>
-                                                                    <div className="text-muted-foreground">Manager</div>
-                                                                </div>
-                                                            </div>
+                                                                                                            <div className="flex items-start gap-2">
+                                                                                                                <User className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                                                                                                                <div>
+                                                                                                                    <div className="font-medium text-foreground">{record.manager}</div>
+                                                                                                                    <div className="text-muted-foreground">Manager</div>
+                                                                                                                </div>
+                                                                                                            </div>
 
-                                                            <div className="flex items-start gap-2 sm:col-span-2 mt-1">
-                                                                <Tag className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                                                                <div className="flex flex-wrap gap-4">
-                                                                    <span className="text-muted-foreground">FTE: <span className="font-medium text-foreground">{record.fte}</span></span>
-                                                                    <span className="text-muted-foreground">Hours: <span className="font-medium text-foreground">{record.workingHours}/wk</span></span>
-                                                                    <span className="text-muted-foreground">Status: <span className="font-medium text-foreground">{record.status}</span></span>
-                                                                    {record.contractType && <span className="text-muted-foreground">Contract: <span className="font-medium text-foreground">{record.contractType}</span></span>}
-                                                                    {record.probationEndDate && <span className="text-muted-foreground">Probation Ends: <span className="font-medium text-amber-600">{format(new Date(record.probationEndDate),"MMM d, yyyy")}</span></span>}
-                                                                </div>
-                                                            </div>
+                                                                                                            <div className="flex items-start gap-2 sm:col-span-2 mt-1">
+                                                                                                                <Tag className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                                                                                                                <div className="flex flex-wrap gap-4">
+                                                                                                                    <span className="text-muted-foreground">FTE: <span className="font-medium text-foreground">{record.fte}</span></span>
+                                                                                                                    <span className="text-muted-foreground">Hours: <span className="font-medium text-foreground">{record.workingHours}/wk</span></span>
+                                                                                                                    <span className="text-muted-foreground">Status: <span className="font-medium text-foreground">{record.status}</span></span>
+                                                                                                                    {record.contractType && <span className="text-muted-foreground">Contract: <span className="font-medium text-foreground">{record.contractType}</span></span>}
+                                                                                                                    {record.probationEndDate && <span className="text-muted-foreground">Probation Ends: <span className="font-medium text-amber-600">{format(new Date(record.probationEndDate),"MMM d, yyyy")}</span></span>}
+                                                                                                                </div>
+                                                                                                            </div>
 
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                                                                        </div>
+                                                                                                    )}
+                                                                                                </div>
+                                                </Button>
                                             </div>
                                         </div>
                                     )

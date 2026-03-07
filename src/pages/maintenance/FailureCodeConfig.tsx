@@ -79,7 +79,7 @@ export default function FailureCodeConfig() {
                                 <Button
                                     variant={selectedType ==='CAUSE' && selectedParent === problem.id ?"secondary" :"ghost"}
                                     size="sm"
-                                    className="w-full justify-start text-xs h-8 text-slate-700"
+                                    className="w-full justify-start text-xs h-8 text-foreground/90"
                                     onClick={() => { setSelectedType("CAUSE"); setSelectedParent(problem.id);}}
                                 >
                                     <AlertTriangle className="h-3 w-3 mr-2" /> {problem.name}
@@ -89,7 +89,7 @@ export default function FailureCodeConfig() {
                                         key={cause.id}
                                         variant={selectedType ==='REMEDY' && selectedParent === cause.id ?"secondary" :"ghost"}
                                         size="sm"
-                                        className="w-full justify-start text-xs h-8 ml-4 text-slate-500"
+                                        className="w-full justify-start text-xs h-8 ml-4 text-muted-foreground"
                                         onClick={() => { setSelectedType("REMEDY"); setSelectedParent(cause.id);}}
                                     >
                                         ↳ {cause.name}
@@ -105,13 +105,13 @@ export default function FailureCodeConfig() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             {selectedType} Codes
-                            {selectedParent && <span className="text-muted-foreground font-normal text-sm ml-2 bg-slate-100 px-2 py-0.5 rounded-full">(Filtered Context)</span>}
+                            {selectedParent && <span className="text-muted-foreground font-normal text-sm ml-2 bg-muted px-2 py-0.5 rounded-full">(Filtered Context)</span>}
                         </CardTitle>
                         <CardDescription>Manage standardized taxonomy nodes for reliability tracking inline.</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-1 p-0 relative">
                         {isLoading ? (
-                            <div className="absolute inset-0 flex items-center justify-center bg-white/50">
+                            <div className="absolute inset-0 flex items-center justify-center bg-card/50">
                                 <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                             </div>
                         ) : (

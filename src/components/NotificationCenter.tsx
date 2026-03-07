@@ -301,11 +301,12 @@ export function NotificationCenter() {
 
       {open && (
         <>
-          <div role="button" tabIndex={0}
-            className="fixed inset-0"
-            onClick={() => setOpen(false)}
-            data-testid="overlay-notifications-backdrop" onKeyDown={(e) => { if (e.key ==='Enter' || e.key ==='') { e.preventDefault(); e.currentTarget.click();}}}
-          />
+          <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setOpen(false)}>
+                  <div
+                              className="fixed inset-0"
+                              data-testid="overlay-notifications-backdrop"
+                            />
+                  </Button>
           <Card
             className="absolute right-0 mt-2 w-96 animate-in slide-in-from-top-2 shadow-xl"
             data-testid="panel-notifications"

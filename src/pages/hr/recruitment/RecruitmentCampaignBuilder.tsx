@@ -66,7 +66,7 @@ export default function RecruitmentCampaignBuilder() {
             <div className="max-w-6xl mx-auto pb-12 space-y-6">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-300 rounded-lg">
                             <Megaphone className="h-6 w-6" />
@@ -135,7 +135,7 @@ export default function RecruitmentCampaignBuilder() {
                                             <div className="flex justify-between items-center mb-3">
                                                 <h4 className="text-sm font-semibold">Included Pools</h4>
                                             </div>
-                                            <div className="flex items-center justify-between p-2 bg-white dark:bg-zinc-950 border rounded-md">
+                                            <div className="flex items-center justify-between p-2 bg-card dark:bg-zinc-950 border rounded-md">
                                                 <div className="flex items-center gap-3">
                                                     <Users className="h-4 w-4 text-muted-foreground" />
                                                     <span className="text-sm font-medium">Senior Dev Managers (US West)</span>
@@ -173,7 +173,7 @@ export default function RecruitmentCampaignBuilder() {
 
                             <Card className="shadow-sm bg-purple-500/10 dark:bg-fuchsia-900/10 border-fuchsia-100 dark:border-fuchsia-900/40 border-2">
                                 <CardContent className="p-6 flex flex-col items-center justify-center text-center h-full space-y-4">
-                                    <div className="h-16 w-16 bg-white dark:bg-zinc-950 rounded-full flex items-center justify-center shadow-sm border border-fuchsia-200">
+                                    <div className="h-16 w-16 bg-card dark:bg-zinc-950 rounded-full flex items-center justify-center shadow-sm border border-fuchsia-200">
                                         <Target className="h-8 w-8 text-fuchsia-600" />
                                     </div>
                                     <div>
@@ -205,7 +205,7 @@ export default function RecruitmentCampaignBuilder() {
                                         <div className="border rounded-lg shadow-sm">
                                             <div className="bg-zinc-500/10 dark:bg-zinc-900/50 p-3 px-4 border-b flex justify-between items-center rounded-t-lg">
                                                 <span className="font-medium text-sm">Step 1: Initial Outreach</span>
-                                                <Badge variant="outline" className="bg-white dark:bg-zinc-800">Day 1 (Send immediately)</Badge>
+                                                <Badge variant="outline" className="bg-card dark:bg-zinc-800">Day 1 (Send immediately)</Badge>
                                             </div>
                                             <div className="p-4 space-y-4">
                                                 <div className="space-y-2">
@@ -265,11 +265,11 @@ export default function RecruitmentCampaignBuilder() {
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label className="text-xs text-muted-foreground">Headline</Label>
-                                                    <Input defaultValue="Scale Your Career with Us" className="h-8 text-sm bg-white dark:bg-zinc-950" />
+                                                    <Input defaultValue="Scale Your Career with Us" className="h-8 text-sm bg-card dark:bg-zinc-950" />
                                                 </div>
                                                 <div className="space-y-2">
                                                     <Label className="text-xs text-muted-foreground">Background Image ID</Label>
-                                                    <Input defaultValue="img_hero_summit_1" className="h-8 text-sm bg-white dark:bg-zinc-950 font-mono" />
+                                                    <Input defaultValue="img_hero_summit_1" className="h-8 text-sm bg-card dark:bg-zinc-950 font-mono" />
                                                 </div>
                                             </div>
 
@@ -297,14 +297,14 @@ export default function RecruitmentCampaignBuilder() {
                                         </div>
 
                                         {/* Mock Browser Window */}
-                                        <div className="border rounded-xl shadow-lg bg-white dark:bg-zinc-950 overflow-hidden h-[500px] flex flex-col">
+                                        <div className="border rounded-xl shadow-lg bg-card dark:bg-zinc-950 overflow-hidden h-[500px] flex flex-col">
                                             <div className="h-10 bg-zinc-100 dark:bg-zinc-900 border-b flex items-center px-4 gap-2">
                                                 <div className="flex gap-1.5">
                                                     <div className="w-3 h-3 rounded-full bg-red-400" />
                                                     <div className="w-3 h-3 rounded-full bg-amber-400" />
                                                     <div className="w-3 h-3 rounded-full bg-emerald-400" />
                                                 </div>
-                                                <div className="mx-auto bg-white dark:bg-zinc-950 text-[10px] px-4 py-1 rounded text-muted-foreground border flex items-center gap-2">
+                                                <div className="mx-auto bg-card dark:bg-zinc-950 text-[10px] px-4 py-1 rounded text-muted-foreground border flex items-center gap-2">
                                                     <Globe className="h-3 w-3" /> careers.nexusai.com/c/eng-summit-q3
                                                 </div>
                                             </div>
@@ -313,7 +313,7 @@ export default function RecruitmentCampaignBuilder() {
                                                     <h2 className="text-2xl font-bold">Scale Your Career with Us</h2>
                                                     <p className="mt-2 text-indigo-200 text-sm max-w-sm">Join the Engineering Leadership Summit.</p>
                                                 </div>
-                                                <div className="max-w-sm mx-auto p-6 bg-white dark:bg-zinc-900 shadow-xl rounded-xl -mt-8 relative border">
+                                                <div className="max-w-sm mx-auto p-6 bg-card dark:bg-zinc-900 shadow-xl rounded-xl -mt-8 relative border">
                                                     <h3 className="font-semibold text-center mb-4 text-sm">Register Interest</h3>
                                                     <div className="space-y-3">
                                                         <div className="h-8 bg-muted rounded w-full" />

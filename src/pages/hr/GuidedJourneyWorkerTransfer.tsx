@@ -77,7 +77,7 @@ export default function GuidedJourneyWorkerTransfer() {
                 {steps.map((step, idx) => (
                     <React.Fragment key={step.num}>
                         <div className="flex flex-col items-center">
-                            <div className={cn(`w-10 h-10 rounded-full flex items-center justify-center border-2 ${currentStep >= step.num ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-zinc-300 text-zinc-400'}`)}>
+                            <div className={cn(`w-10 h-10 rounded-full flex items-center justify-center border-2 ${currentStep >= step.num ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-card border-zinc-300 text-zinc-400'}`)}>
                                 <step.icon className="h-4 w-4" />
                             </div>
                             <span className={cn(`text-xs font-medium mt-2 ${currentStep >= step.num ? 'text-indigo-900 dark:text-indigo-100' : 'text-muted-foreground'}`)}>
@@ -117,13 +117,13 @@ export default function GuidedJourneyWorkerTransfer() {
                                             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 placeholder="Search by name or ID..."
-                                                className="pl-9 bg-white dark:bg-zinc-950"
+                                                className="pl-9 bg-card dark:bg-zinc-950"
                                                 value={selectedEmployee}
                                                 onChange={(e) => setSelectedEmployee(e.target.value)}
                                             />
                                         </div>
                                         {selectedEmployee && (
-                                            <Button variant="outline" className="shrink-0 bg-white dark:bg-zinc-950">
+                                            <Button variant="outline" className="shrink-0 bg-card dark:bg-zinc-950">
                                                 <UserCircle className="h-4 w-4 mr-2" /> View Profile
                                             </Button>
                                         )}
@@ -135,13 +135,13 @@ export default function GuidedJourneyWorkerTransfer() {
                                     <Label className="text-xs text-muted-foreground">Effective Date</Label>
                                     <div className="relative mt-1">
                                         <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                        <DatePicker className="pl-9 bg-white dark:bg-zinc-950" value={effectiveDate} onChange={v => setEffectiveDate(v)} />
+                                        <DatePicker className="pl-9 bg-card dark:bg-zinc-950" value={effectiveDate} onChange={v => setEffectiveDate(v)} />
                                     </div>
                                 </div>
                                 <div className="flex-1 md:w-48">
                                     <Label className="text-xs text-muted-foreground">Action Reason</Label>
                                     <Select value={transferReason} onValueChange={setTransferReason}>
-                                        <SelectTrigger className="mt-1 bg-white dark:bg-zinc-950">
+                                        <SelectTrigger className="mt-1 bg-card dark:bg-zinc-950">
                                             <SelectValue placeholder="Select Reason" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -163,7 +163,7 @@ export default function GuidedJourneyWorkerTransfer() {
                     {/* Step 1: Assignment */}
                     {currentStep === 1 && (
                         <>
-                            <div className="bg-zinc-500/10 dark:bg-white/5 border-b p-4 px-6">
+                            <div className="bg-zinc-500/10 dark:bg-card/5 border-b p-4 px-6">
                                 <div className="flex gap-2 items-center">
                                     <Briefcase className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                     <h3 className="font-semibold text-lg">Assignment Details</h3>
@@ -233,7 +233,7 @@ export default function GuidedJourneyWorkerTransfer() {
                     {/* Step 2: Compensation */}
                     {currentStep === 2 && (
                         <>
-                            <div className="bg-zinc-500/10 dark:bg-white/5 border-b p-4 px-6">
+                            <div className="bg-zinc-500/10 dark:bg-card/5 border-b p-4 px-6">
                                 <div className="flex gap-2 items-center">
                                     <DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                                     <h3 className="font-semibold text-lg">Compensation Setup</h3>
@@ -297,7 +297,7 @@ export default function GuidedJourneyWorkerTransfer() {
                     {/* Step 3: Review */}
                     {currentStep === 3 && (
                         <>
-                            <div className="bg-zinc-500/10 dark:bg-white/5 border-b p-4 px-6">
+                            <div className="bg-zinc-500/10 dark:bg-card/5 border-b p-4 px-6">
                                 <div className="flex gap-2 items-center">
                                     <CheckCircle2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                     <h3 className="font-semibold text-lg">Review & Submit</h3>

@@ -36,9 +36,9 @@ export default function MatchRuleList() {
                 <div className="flex items-center gap-2">
                     {row.activeFlag ?
                         <CheckCircle2 className="w-4 h-4 text-green-600" /> :
-                        <XCircle className="w-4 h-4 text-gray-400" />
+                        <XCircle className="w-4 h-4 text-muted-foreground/70" />
                     }
-                    <span className={row.activeFlag ? "text-green-700" : "text-gray-500"}>
+                    <span className={row.activeFlag ? "text-green-700" : "text-muted-foreground"}>
                         {row.activeFlag ? "Active" : "Inactive"}
                     </span>
                 </div>

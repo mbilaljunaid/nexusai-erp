@@ -191,7 +191,7 @@ export default function LandingPage() {
               href="https://github.com/mbilaljunaid/nexusai-erp"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-card/10 hover:bg-card/20 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white transition-all"
             >
               <Star className="w-4 h-4" /> Star on GitHub
             </a>
@@ -199,12 +199,12 @@ export default function LandingPage() {
               href="https://github.com/mbilaljunaid/nexusai-erp/fork"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-card/10 hover:bg-card/20 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white transition-all"
             >
               <GitFork className="w-4 h-4" /> Fork
             </a>
             <Link to="/docs/contributing">
-              <a className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white transition-all">
+              <a className="inline-flex items-center gap-2 px-4 py-2 bg-card/10 hover:bg-card/20 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white transition-all">
                 <Heart className="w-4 h-4" /> Contribute
               </a>
             </Link>
@@ -373,7 +373,7 @@ export default function LandingPage() {
               <motion.div {...animations.slideInRight}>
                 <GradientCard variant="dark" className="p-8">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-lg bg-card/10 flex items-center justify-center">
                       <Code2 className="w-6 h-6" />
                     </div>
                     <div>
@@ -383,19 +383,19 @@ export default function LandingPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-card/5 rounded-lg">
                       <span className="text-sm">Source Code</span>
                       <Badge className="bg-green-500/20 text-green-300 border-0">Public</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-card/5 rounded-lg">
                       <span className="text-sm">License</span>
                       <Badge className="bg-blue-500/20 text-blue-300 border-0">AGPL-3.0</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-card/5 rounded-lg">
                       <span className="text-sm">Commercial Use</span>
                       <Badge className="bg-purple-500/20 text-purple-300 border-0">Allowed</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-card/5 rounded-lg">
                       <span className="text-sm">Self-Hosting</span>
                       <Badge className="bg-orange-500/20 text-orange-300 border-0">Unlimited</Badge>
                     </div>

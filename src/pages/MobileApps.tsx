@@ -25,34 +25,35 @@ export default function MobileApps() {
         <div className="space-y-3">
           <h2 className="text-xl font-bold">Available Apps</h2>
           {apps.map((app: any) => (
-            <Card
-              key={app.id}
-              className={cn(`cursor-pointer transition-all ${selectedApp === app.id ? "ring-2 ring-blue-500" : ""}`)}
-              onClick={() => setSelectedApp(app.id)}
-              data-testid={`card-app-${app.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-            >
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold flex items-center gap-2">
-                      <Smartphone className="h-4 w-4" />
-                      {app.appName}
-                    </h4>
-                    <div className="flex gap-2">
-                      <Badge variant="outline">{app.platform}</Badge>
-                      <Badge variant="secondary">v{app.version}</Badge>
-                    </div>
-                  </div>
-                  <div className="text-right space-y-1">
-                    <div className="flex items-center gap-1 text-sm font-medium">
-                      <TrendingUp className="h-4 w-4 text-green-600" />
-                      {app.rating}★
-                    </div>
-                    <div className="text-xs text-muted-foreground">{formatNumber(app.downloadCount)} downloads</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedApp(app.id)}>
+              <Card
+                            key={app.id}
+                            className={cn(`cursor-pointer transition-all ${selectedApp === app.id ? "ring-2 ring-blue-500" : ""}`)}
+                            data-testid={`card-app-${app.id}`}
+                          >
+                            <CardContent className="pt-6">
+                              <div className="flex items-center justify-between">
+                                <div className="space-y-2">
+                                  <h4 className="font-semibold flex items-center gap-2">
+                                    <Smartphone className="h-4 w-4" />
+                                    {app.appName}
+                                  </h4>
+                                  <div className="flex gap-2">
+                                    <Badge variant="outline">{app.platform}</Badge>
+                                    <Badge variant="secondary">v{app.version}</Badge>
+                                  </div>
+                                </div>
+                                <div className="text-right space-y-1">
+                                  <div className="flex items-center gap-1 text-sm font-medium">
+                                    <TrendingUp className="h-4 w-4 text-green-600" />
+                                    {app.rating}★
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">{formatNumber(app.downloadCount)} downloads</div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+              </Button>
           ))}
         </div>
 

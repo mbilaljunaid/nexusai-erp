@@ -71,28 +71,29 @@ export default function OnboardingWorkbench() {
 
                         {hires.map((hire: any) => (
                             <div key={hire.id} className="border rounded-lg overflow-hidden">
-                                <div role="button" tabIndex={0}
-                                    className="flex items-center justify-between p-4 bg-card hover:bg-muted/50 cursor-pointer transition-colors"
-                                    onClick={() => toggleRow(hire.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                                            {hire.candidateName.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-lg">{hire.candidateName}</h3>
-                                            <p className="text-sm text-muted-foreground">{hire.jobTitle} • Starting Soon</p>
-                                        </div>
-                                    </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleRow(hire.id)}>
+                                <div
+                                                                    className="flex items-center justify-between p-4 bg-card hover:bg-muted/50 cursor-pointer transition-colors"
+                                                                >
+                                                                    <div className="flex items-center gap-4">
+                                                                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                                                                            {hire.candidateName.charAt(0)}
+                                                                        </div>
+                                                                        <div>
+                                                                            <h3 className="font-semibold text-lg">{hire.candidateName}</h3>
+                                                                            <p className="text-sm text-muted-foreground">{hire.jobTitle} • Starting Soon</p>
+                                                                        </div>
+                                                                    </div>
 
-                                    <div className="flex items-center gap-6">
-                                        <div className="flex flex-col items-end gap-1 w-48">
-                                            <span className="text-xs text-muted-foreground">{hire.completedTasks}/{hire.totalTasks} Tasks</span>
-                                            <Progress value={hire.progress} className="h-2" />
-                                        </div>
-                                        {expandedRow === hire.id ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
-                                    </div>
-                                </div>
+                                                                    <div className="flex items-center gap-6">
+                                                                        <div className="flex flex-col items-end gap-1 w-48">
+                                                                            <span className="text-xs text-muted-foreground">{hire.completedTasks}/{hire.totalTasks} Tasks</span>
+                                                                            <Progress value={hire.progress} className="h-2" />
+                                                                        </div>
+                                                                        {expandedRow === hire.id ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
+                                                                    </div>
+                                                                </div>
+                                </Button>
 
                                 {expandedRow === hire.id && (
                                     <div className="p-4 bg-muted/20 border-t space-y-2">

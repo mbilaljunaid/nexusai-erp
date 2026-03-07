@@ -125,13 +125,13 @@ export default function WarehouseOperations() {
                 <DashboardWidget title="Active Picking Tasks" icon={Package}>
                     <div className="flex flex-col">
                         <span className="text-2xl font-bold text-orange-400">{tasks.length}</span>
-                        <span className="text-xs text-slate-500">In process</span>
+                        <span className="text-xs text-muted-foreground">In process</span>
                     </div>
                 </DashboardWidget>
                 <DashboardWidget title="Staged LPNs" icon={Layers}>
                     <div className="flex flex-col">
                         <span className="text-2xl font-bold text-purple-400">12</span>
-                        <span className="text-xs text-slate-500">Awaiting shipment</span>
+                        <span className="text-xs text-muted-foreground">Awaiting shipment</span>
                     </div>
                 </DashboardWidget>
                 <DashboardWidget title="Throughput (H)" icon={Truck}>
@@ -155,7 +155,7 @@ export default function WarehouseOperations() {
                         <CardHeader className="flex flex-row items-center justify-between space-y-0">
                             <div>
                                 <CardTitle className="text-white">Release Planning</CardTitle>
-                                <CardDescription className="text-slate-400">Select orders to release for picking</CardDescription>
+                                <CardDescription className="text-muted-foreground/70">Select orders to release for picking</CardDescription>
                             </div>
                             <Button
                                 onClick={() => createWaveMutation.mutate()}
@@ -169,7 +169,7 @@ export default function WarehouseOperations() {
                         <CardContent>
                             <div className="overflow-hidden rounded-lg border border-slate-800 h-[400px]">
                                 {readyOrders.length === 0 ? (
-                                    <div className="p-12 text-center text-slate-500 italic h-full flex items-center justify-center">No pending orders found in registry</div>
+                                    <div className="p-12 text-center text-muted-foreground italic h-full flex items-center justify-center">No pending orders found in registry</div>
                                 ) : (
                                     <InteractiveSpreadsheet
                                         columns={readyOrderColumns}
@@ -187,7 +187,7 @@ export default function WarehouseOperations() {
                     <Card className="bg-slate-900/50 border-slate-800">
                         <CardHeader>
                             <CardTitle className="text-white">Picking Execution Queue</CardTitle>
-                            <CardDescription className="text-slate-400">Scan items and confirm pick quantities</CardDescription>
+                            <CardDescription className="text-muted-foreground/70">Scan items and confirm pick quantities</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -196,18 +196,18 @@ export default function WarehouseOperations() {
                                         <CardContent className="p-6 space-y-4">
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Task ID: {task.taskNumber}</p>
+                                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Task ID: {task.taskNumber}</p>
                                                     <h3 className="text-lg font-bold text-white mt-1">Item: {task.itemId}</h3>
                                                 </div>
                                                 <StatusBadge status={task.status} />
                                             </div>
                                             <div className="py-4 border-y border-slate-800 flex justify-between items-center">
                                                 <div className="space-y-1">
-                                                    <p className="text-xs text-slate-500">Quantity Needed</p>
-                                                    <p className="text-2xl font-mono text-white">{task.quantityPlanned} <span className="text-sm text-slate-500">{task.uom}</span></p>
+                                                    <p className="text-xs text-muted-foreground">Quantity Needed</p>
+                                                    <p className="text-2xl font-mono text-white">{task.quantityPlanned} <span className="text-sm text-muted-foreground">{task.uom}</span></p>
                                                 </div>
                                                 <div className="text-right space-y-1">
-                                                    <p className="text-xs text-slate-500">Location</p>
+                                                    <p className="text-xs text-muted-foreground">Location</p>
                                                     <p className="text-sm font-mono text-slate-300">ZONE-A-04-12</p>
                                                 </div>
                                             </div>
@@ -229,7 +229,7 @@ export default function WarehouseOperations() {
                                     </Card>
                                 ))}
                                 {tasks.length === 0 && (
-                                    <div className="col-span-full py-12 border-2 border-dashed border-slate-800 rounded-xl flex flex-col items-center justify-center text-slate-500">
+                                    <div className="col-span-full py-12 border-2 border-dashed border-slate-800 rounded-xl flex flex-col items-center justify-center text-muted-foreground">
                                         <Package className="h-12 w-12 mb-4 opacity-20" />
                                         <p>No active tasks assigned to this station</p>
                                     </div>
@@ -243,7 +243,7 @@ export default function WarehouseOperations() {
                     <Card className="bg-slate-900/50 border-slate-800">
                         <CardHeader>
                             <CardTitle className="text-white">LPN Registry (License Plate Numbers)</CardTitle>
-                            <CardDescription className="text-slate-400">Track handling units and container contents</CardDescription>
+                            <CardDescription className="text-muted-foreground/70">Track handling units and container contents</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -258,7 +258,7 @@ export default function WarehouseOperations() {
                                         </div>
                                         <div>
                                             <p className="font-mono text-white text-sm">{lpn.id}</p>
-                                            <p className="text-xs text-slate-500">{lpn.type} • {lpn.contents}</p>
+                                            <p className="text-xs text-muted-foreground">{lpn.type} • {lpn.contents}</p>
                                         </div>
                                         <Badge className="ml-auto bg-slate-800 text-xs">{lpn.status}</Badge>
                                     </div>

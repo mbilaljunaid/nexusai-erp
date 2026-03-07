@@ -264,7 +264,7 @@ export default function LearningManagement() {
               </p>
             </div>
             <Button
-              className="whitespace-nowrap bg-white text-indigo-600 hover:bg-slate-500/15 font-black shadow-xl h-12 px-8"
+              className="whitespace-nowrap bg-card text-indigo-600 hover:bg-slate-500/15 font-black shadow-xl h-12 px-8"
               onClick={() => {
                 open();
                 sendMessage("I need AI-powered course recommendations based on my career goals and current skill set.");
@@ -418,7 +418,7 @@ export default function LearningManagement() {
               {enrollments?.map((enrollment: any) => (
                 <Card key={enrollment.enrollmentId}>
                   <CardContent className="p-6 flex items-center gap-6">
-                    <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center">
+                    <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
                       <PlayCircle className="h-6 w-6 text-indigo-600" />
                     </div>
                     <div className="flex-1">

@@ -217,29 +217,30 @@ export default function TransferRuleBuilder() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {rules?.map((rule: TransferRule) => (
-                            <div role="button" tabIndex={0}
-                                key={rule.id}
-                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id
-                                    ? "border-primary bg-primary/5"
-                                    : "border-border hover:bg-accent"
-                                    }`)}
-                                onClick={() => loadRule(rule)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="flex justify-between items-start">
-                                    <div className="font-medium">{rule.name}</div>
-                                    <div
-                                        className={cn(`px-2 py-0.5 rounded text-xs ${rule.isActive
-                                            ? "bg-green-100 text-green-700"
-                                            : "bg-gray-100 text-gray-700"
-                                            }`)}
-                                    >
-                                        {rule.isActive ? "Active" : "Inactive"}
-                                    </div>
-                                </div>
-                                <div className="text-xs text-muted-foreground mt-1">
-                                    {rule.schedule.frequency} • {rule.transferType}
-                                </div>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => loadRule(rule)}>
+                            <div
+                                                            key={rule.id}
+                                                            className={cn(`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id
+                                                                ? "border-primary bg-primary/5"
+                                                                : "border-border hover:bg-accent"
+                                                                }`)}
+                                                        >
+                                                            <div className="flex justify-between items-start">
+                                                                <div className="font-medium">{rule.name}</div>
+                                                                <div
+                                                                    className={cn(`px-2 py-0.5 rounded text-xs ${rule.isActive
+                                                                        ? "bg-green-100 text-green-700"
+                                                                        : "bg-muted text-foreground/90"
+                                                                        }`)}
+                                                                >
+                                                                    {rule.isActive ? "Active" : "Inactive"}
+                                                                </div>
+                                                            </div>
+                                                            <div className="text-xs text-muted-foreground mt-1">
+                                                                {rule.schedule.frequency} • {rule.transferType}
+                                                            </div>
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>

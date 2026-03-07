@@ -161,7 +161,7 @@ export default function SSPManager() {
         >
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200">SSP Manager</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200">SSP Manager</h1>
                     <p className="text-muted-foreground mt-1">Manage Standalone Selling Prices for Allocations.</p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

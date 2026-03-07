@@ -147,7 +147,7 @@ export default function CaseDetail() {
                                 {comments.map((c: any) => (
                                     <div key={c.id} className="flex gap-3">
                                         <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
-                                            <User className="h-4 w-4 text-slate-500" />
+                                            <User className="h-4 w-4 text-muted-foreground" />
                                         </div>
                                         <div className="flex-1 space-y-1">
                                             <div className="flex items-center gap-2">

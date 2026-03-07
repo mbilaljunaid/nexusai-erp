@@ -47,8 +47,8 @@ export default function CommitmentDashboard() {
 
     const varColumns: SpreadsheetColumn<VarRow>[] = [
         { id: "resource", header: "Resource", width: "150px", cell: (v) => <span className="font-semibold">{v.resource_id}</span> },
-        { id: "type", header: "Type", width: "150px", cell: (v) => <span className="text-[10px] font-mono text-gray-500">{v.resource_type}</span> },
-        { id: "period", header: "Period", width: "100px", cell: (v) => <span className="text-gray-500 whitespace-nowrap">{fmtDate(v.period_start)}</span> },
+        { id: "type", header: "Type", width: "150px", cell: (v) => <span className="text-[10px] font-mono text-muted-foreground">{v.resource_type}</span> },
+        { id: "period", header: "Period", width: "100px", cell: (v) => <span className="text-muted-foreground whitespace-nowrap">{fmtDate(v.period_start)}</span> },
         { id: "planHrs", header: "Plan Hrs", width: "100px", cell: (v) => <span className="font-mono">{v.planned_hours}</span> },
         { id: "actHrs", header: "Act Hrs", width: "100px", cell: (v) => <span className="font-mono">{v.actual_hours}</span> },
         { id: "delHrs", header: "Δ Hrs", width: "100px", cell: (v) => <span className={cn(`font-mono ${v.hour_variance < 0 ? 'text-red-600' : 'text-emerald-600'}`)}>{v.hour_variance > 0 ? '+' : ''}{v.hour_variance}</span> },
@@ -68,7 +68,7 @@ export default function CommitmentDashboard() {
             <div className="flex justify-between mb-4">
                 <div>
 
-                    <p className="text-[13px] text-gray-500 mt-1 mb-0">Cost overrun alerts · Resource plan vs actuals · Threshold detection</p>
+                    <p className="text-[13px] text-muted-foreground mt-1 mb-0">Cost overrun alerts · Resource plan vs actuals · Threshold detection</p>
                 </div>
                 <Button variant="default" size="sm" onClick={() => detectMut.mutate()} disabled={detectMut.isPending} className="text-white text-xs flex items-center gap-1 disabled:opacity-50">
                     <TrendingDown className="h-[13px] w-[13px]"  /> Run Exception Detection
@@ -86,9 +86,9 @@ export default function CommitmentDashboard() {
                             ['Acknowledged', summary.acknowledged, 'text-emerald-600', 'border-l-emerald-600']
                         ] as const
                     ).map(([l, v, textClass, borderClass]) => (
-                        <div key={l as string} className={cn(`bg-white border border-gray-200 rounded-xl py-2.5 px-4 flex-1 border-l-[4px] ${borderClass}`)}>
+                        <div key={l as string} className={cn(`bg-card border border-border rounded-xl py-2.5 px-4 flex-1 border-l-[4px] ${borderClass}`)}>
                             <div className={cn(`text-[22px] font-extrabold font-mono ${textClass}`)}>{v as number}</div>
-                            <div className="text-[11px] text-gray-400 mt-0.5">{l as string}</div>
+                            <div className="text-[11px] text-muted-foreground/70 mt-0.5">{l as string}</div>
                         </div>
                     ))}
                 </div>
@@ -106,7 +106,7 @@ export default function CommitmentDashboard() {
                     <div className="flex gap-1 mb-3">
                         <div className="flex gap-1">
                             {(['alerts', 'variance'] as const).map(t => (
-                                <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
+                                <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-border rounded-lg text-xs font-semibold cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>
                                     {t === 'alerts' ? `Budget Alerts (${alerts.length})` : 'Resource Variance'}
                                 </Button>
                             ))}
@@ -129,14 +129,14 @@ export default function CommitmentDashboard() {
                                         <div>
                                             <div className="flex items-center gap-1.5 mb-0.5">
                                                 <Icon size={13} color={cfg.iconColor} />
-                                                <span className="text-xs font-bold text-gray-900 dark:text-gray-200">{a.alert_type.replace(/_/g, ' ')}</span>
+                                                <span className="text-xs font-bold text-foreground dark:text-gray-200">{a.alert_type.replace(/_/g, ' ')}</span>
                                                 <span className={cn(`text-[10px] font-bold ${cfg.color}`)}>{a.severity}</span>
                                             </div>
-                                            <div className="text-[11px] text-gray-700">{a.description}</div>
-                                            {a.budget_amount && <div className="text-[10px] text-gray-500 mt-0.5">Budget: {fmt(a.budget_amount)} · Actual: {fmt(a.actual_amount)} · Variance: {Number(a.variance_pct).toFixed(1)}%</div>}
+                                            <div className="text-[11px] text-foreground/90">{a.description}</div>
+                                            {a.budget_amount && <div className="text-[10px] text-muted-foreground mt-0.5">Budget: {fmt(a.budget_amount)} · Actual: {fmt(a.actual_amount)} · Variance: {Number(a.variance_pct).toFixed(1)}%</div>}
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[10px] text-gray-400">{fmtDate(a.created_at)}</span>
+                                            <span className="text-[10px] text-muted-foreground/70">{fmtDate(a.created_at)}</span>
                                             {!a.is_acknowledged && (
                                                 <Button variant="default" size="sm" onClick={() => ackMut.mutate(a.id)} className="text-white text-[10px] flex items-center gap-1">
                                                     <CheckCheck className="h-2.5 w-2.5"  /> Acknowledge
@@ -146,12 +146,12 @@ export default function CommitmentDashboard() {
                                     </div>
                                 );
                             })}
-                            {alerts.length === 0 && <div className="text-center text-gray-400 p-6">{showAck ? 'No acknowledged alerts' : '✓ No open budget alerts'}</div>}
+                            {alerts.length === 0 && <div className="text-center text-muted-foreground/70 p-6">{showAck ? 'No acknowledged alerts' : '✓ No open budget alerts'}</div>}
                         </div>
                     )}
 
                     {tab === 'variance' && (
-                        <div className="min-h-[400px] h-full border border-gray-200 rounded-xl">
+                        <div className="min-h-[400px] h-full border border-border rounded-xl">
                             <InteractiveSpreadsheet
                                 columns={varColumns}
                                 data={variance}

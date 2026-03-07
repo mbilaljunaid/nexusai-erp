@@ -63,7 +63,7 @@ export default function APIGateway() {
 
       <div>
 
-        <p className="text-gray-600">Manage API keys and authentication tokens</p>
+        <p className="text-muted-foreground">Manage API keys and authentication tokens</p>
       </div>
 
       <Card className="p-6">
@@ -96,12 +96,12 @@ export default function APIGateway() {
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-semibold text-lg" data-testid={`text-key-${key.id}`}>{key.name}</h3>
-                    <p className="text-xs text-gray-500">Created: {formatDate(key.createdAt)}</p>
+                    <p className="text-xs text-muted-foreground">Created: {formatDate(key.createdAt)}</p>
                   </div>
                   <StatusBadge status={key.status} />
                 </div>
 
-                <div className="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-sm break-all flex justify-between items-center">
+                <div className="bg-muted dark:bg-gray-900 p-3 rounded font-mono text-sm break-all flex justify-between items-center">
                   <span data-testid={`key-value-${key.id}`}>
                     {showSecrets.includes(key.id) ? key.key : '••••••••' + key.key.slice(-4)}
                   </span>
@@ -150,7 +150,7 @@ export default function APIGateway() {
             </Card>
           ))}
           {apiKeys.length === 0 && (
-            <Card className="p-8 text-center text-gray-500">
+            <Card className="p-8 text-center text-muted-foreground">
               <p>No API keys yet. Create one to get started.</p>
             </Card>
           )}

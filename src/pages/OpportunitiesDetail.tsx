@@ -59,7 +59,7 @@ function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
         <Sparkles className="h-8 w-8 text-primary" />
       </div>
       <div>
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-200">NexusAI Analysis</h3>
+        <h3 className="text-lg font-semibold text-foreground dark:text-slate-200">NexusAI Analysis</h3>
         <p className="text-muted-foreground text-sm max-w-xs mx-auto mt-2">
           Use the unified NexusAI engine to analyze this deal's win probability, risks, and next best actions.
         </p>
@@ -136,7 +136,7 @@ export default function OpportunitiesDetail() {
     { id: "proposal", label: "Proposal", color: "bg-purple-500/10 dark:bg-purple-950/30", borderColor: "border-purple-200 dark:border-purple-800" },
     { id: "negotiation", label: "Negotiation", color: "bg-orange-500/10 dark:bg-orange-950/30", borderColor: "border-orange-200 dark:border-orange-800" },
     { id: "closed_won", label: "Closed Won", color: "bg-green-500/10 dark:bg-green-950/30", borderColor: "border-green-200 dark:border-green-800" },
-    { id: "closed_lost", label: "Closed Lost", color: "bg-gray-500/10 dark:bg-gray-900/30", borderColor: "border-gray-200 dark:border-gray-800" },
+    { id: "closed_lost", label: "Closed Lost", color: "bg-gray-500/10 dark:bg-gray-900/30", borderColor: "border-border dark:border-gray-800" },
   ];
 
   // Kanban Drag & Drop Logic
@@ -212,7 +212,7 @@ export default function OpportunitiesDetail() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-200">Opportunities</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200">Opportunities</h1>
             <p className="text-muted-foreground">Manage your sales pipeline and track deal progress.</p>
           </div>
         </div>
@@ -395,29 +395,30 @@ export default function OpportunitiesDetail() {
                         onDragStart={(e) => handleDragStart(e, opp)}
                         className="cursor-grab active:cursor-grabbing"
                       >
-                        <Card
-                          className={cn(`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`)}
-                          onClick={() => setSelectedOpp(opp)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                          <CardContent className="p-4">
-                            <div className="mb-4">
-                              <p className="font-bold leading-tight group-hover:text-primary transition-colors text-[15px]">{opp.name}</p>
-                              <p className="text-xs text-muted-foreground mt-1.5 font-medium flex items-center gap-1.5 italic">
-                                <span className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-                                {getAccountName(opp.accountId)}
-                              </p>
-                            </div>
-                            <div className="flex justify-between items-center bg-muted/30 p-2.5 rounded-lg border border-transparent group-hover:border-primary/10 transition-colors">
-                              <div className="flex items-center gap-1.5">
-                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-none bg-background/50 font-bold">
-                                  {opp.probability}%
-                                </Badge>
-                              </div>
-                              <span className="text-[15px] font-black">{formatCurrency(opp.amount)}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedOpp(opp)}>
+                            <Card
+                                                      className={cn(`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`)}
+                                                    >
+                                                      <CardContent className="p-4">
+                                                        <div className="mb-4">
+                                                          <p className="font-bold leading-tight group-hover:text-primary transition-colors text-[15px]">{opp.name}</p>
+                                                          <p className="text-xs text-muted-foreground mt-1.5 font-medium flex items-center gap-1.5 italic">
+                                                            <span className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+                                                            {getAccountName(opp.accountId)}
+                                                          </p>
+                                                        </div>
+                                                        <div className="flex justify-between items-center bg-muted/30 p-2.5 rounded-lg border border-transparent group-hover:border-primary/10 transition-colors">
+                                                          <div className="flex items-center gap-1.5">
+                                                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-none bg-background/50 font-bold">
+                                                              {opp.probability}%
+                                                            </Badge>
+                                                          </div>
+                                                          <span className="text-[15px] font-black">{formatCurrency(opp.amount)}</span>
+                                                        </div>
+                                                      </CardContent>
+                                                    </Card>
+                            </Button>
                       </div>
                     ))}
                     {stageOpps.length === 0 && (

@@ -163,18 +163,21 @@ export default function BenefitsProgramSetup() {
 
         return (
             <div key={node.id} className="ml-4">
-                <div role="button" tabIndex={0}
-                    className={cn(`flex items-center gap-2 py-1.5 px-2 rounded-md cursor-pointer group transition-colors ${isSelected ? 'bg-zinc-100 dark:bg-zinc-800' : 'hover:bg-zinc-500/10 dark:hover:bg-zinc-800/50'}`)}
-                    onClick={() => setSelectedNodeId(node.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                >
-                    <div className="w-4 h-4 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100" onClick={(e) => { e.stopPropagation(); toggleNode(node); }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        {hasChildren ? (node.isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />) : <div className="w-4 h-4" />}
-                    </div>
-                    {getIconForType(node.type)}
-                    <span className={cn(`text-sm select-none ${isSelected ? 'font-semibold' : 'text-muted-foreground group-hover:text-foreground'}`)}>
-                        {node.name} <span className="text-xs text-zinc-400 font-normal hidden group-hover:inline-block">({node.code})</span>
-                    </span>
-                </div>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedNodeId(node.id)}>
+                <div
+                                    className={cn(`flex items-center gap-2 py-1.5 px-2 rounded-md cursor-pointer group transition-colors ${isSelected ? 'bg-zinc-100 dark:bg-zinc-800' : 'hover:bg-zinc-500/10 dark:hover:bg-zinc-800/50'}`)}
+                                >
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={(e) => { e.stopPropagation(); toggleNode(node); }}>
+                                    <div className="w-4 h-4 flex items-center justify-center cursor-pointer opacity-70 hover:opacity-100">
+                                                            {hasChildren ? (node.isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />) : <div className="w-4 h-4" />}
+                                                        </div>
+                                    </Button>
+                                    {getIconForType(node.type)}
+                                    <span className={cn(`text-sm select-none ${isSelected ? 'font-semibold' : 'text-muted-foreground group-hover:text-foreground'}`)}>
+                                        {node.name} <span className="text-xs text-zinc-400 font-normal hidden group-hover:inline-block">({node.code})</span>
+                                    </span>
+                                </div>
+                </Button>
                 {hasChildren && node.isExpanded && (
                     <div className="border-l border-zinc-200 dark:border-zinc-800 ml-4 pl-1 my-1">
                         {node.children!.map(child => renderTree(child))}
@@ -197,7 +200,7 @@ export default function BenefitsProgramSetup() {
             <div className="max-w-[1400px] mx-auto pb-12 space-y-6">
 
                 {/* Header Actions */}
-                <div className="flex justify-between items-center bg-white dark:bg-zinc-950 p-4 rounded-xl border shadow-sm flex-wrap gap-4">
+                <div className="flex justify-between items-center bg-card dark:bg-zinc-950 p-4 rounded-xl border shadow-sm flex-wrap gap-4">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/30 dark:text-fuchsia-300 rounded-lg hidden sm:block">
                             <Umbrella className="h-6 w-6" />

@@ -186,69 +186,70 @@ export function LeadTable({ leads, onSelectLead, onBulkAction }: LeadTableProps)
             {sortedLeads.map((lead) => {
               const initials = lead.name.split(' ').map(n => n[0]).join('');
               return (
-                <TableRow 
-                  key={lead.id}
-                  className="cursor-pointer"
-                  onClick={() => onSelectLead?.(lead)}
-                  data-testid={`row-lead-${lead.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                >
-                  <TableCell onClick={(e) => e.stopPropagation()}>
-                    <Checkbox 
-                      checked={selectedIds.includes(lead.id)}
-                      onCheckedChange={() => toggleSelect(lead.id)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                          {initials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium text-sm">{lead.name}</p>
-                        <p className="text-xs text-muted-foreground">{lead.company}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary" className={cn(`text-xs ${statusColors[lead.status]}`)}>
-                      {lead.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Progress value={lead.score} className="w-12 h-2" />
-                      <span className="text-sm font-mono">{lead.score}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-mono text-sm">
-                    ${formatNumber(lead.value)}
-                  </TableCell>
-                  <TableCell onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Call">
-                        <Phone className="h-3 w-3" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Email">
-                        <Mail className="h-3 w-3" />
-                      </Button>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="More options">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>View Details</DropdownMenuItem>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Add Note</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </TableCell>
-                </TableRow>
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => onSelectLead?.(lead)}>
+                  <TableRow 
+                                    key={lead.id}
+                                    className="cursor-pointer"
+                                    data-testid={`row-lead-${lead.id}`}
+                                  >
+                                    <TableCell onClick={(e) => e.stopPropagation()}>
+                                      <Checkbox 
+                                        checked={selectedIds.includes(lead.id)}
+                                        onCheckedChange={() => toggleSelect(lead.id)}
+                                      />
+                                    </TableCell>
+                                    <TableCell>
+                                      <div className="flex items-center gap-3">
+                                        <Avatar className="h-8 w-8">
+                                          <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                                            {initials}
+                                          </AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                          <p className="font-medium text-sm">{lead.name}</p>
+                                          <p className="text-xs text-muted-foreground">{lead.company}</p>
+                                        </div>
+                                      </div>
+                                    </TableCell>
+                                    <TableCell>
+                                      <Badge variant="secondary" className={cn(`text-xs ${statusColors[lead.status]}`)}>
+                                        {lead.status}
+                                      </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                      <div className="flex items-center gap-2">
+                                        <Progress value={lead.score} className="w-12 h-2" />
+                                        <span className="text-sm font-mono">{lead.score}</span>
+                                      </div>
+                                    </TableCell>
+                                    <TableCell className="font-mono text-sm">
+                                      ${formatNumber(lead.value)}
+                                    </TableCell>
+                                    <TableCell onClick={(e) => e.stopPropagation()}>
+                                      <div className="flex items-center gap-1">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Call">
+                                          <Phone className="h-3 w-3" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Email">
+                                          <Mail className="h-3 w-3" />
+                                        </Button>
+                                        <DropdownMenu>
+                                          <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="More options">
+                                              <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                          </DropdownMenuTrigger>
+                                          <DropdownMenuContent align="end">
+                                            <DropdownMenuItem>View Details</DropdownMenuItem>
+                                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                                            <DropdownMenuItem>Add Note</DropdownMenuItem>
+                                            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                                          </DropdownMenuContent>
+                                        </DropdownMenu>
+                                      </div>
+                                    </TableCell>
+                                  </TableRow>
+                  </Button>
               );
             })}
           </TableBody>

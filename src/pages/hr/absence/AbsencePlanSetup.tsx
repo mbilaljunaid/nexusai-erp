@@ -66,7 +66,7 @@ export default function AbsencePlanSetup() {
                                         <h4 className="font-semibold text-amber-900 dark:text-amber-400 text-sm mb-1">Deduction Hierarchy</h4>
                                         <p className="text-xs text-amber-800 dark:text-amber-500 mb-3">When overlapping occurs, choose which plan balance draws down first.</p>
                                         <Select defaultValue="PRIMARY_FIRST">
-                                            <SelectTrigger className="bg-white dark:bg-zinc-950 border-amber-500/30">
+                                            <SelectTrigger className="bg-card dark:bg-zinc-950 border-amber-500/30">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>

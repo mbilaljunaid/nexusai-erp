@@ -442,7 +442,7 @@ export function RiskDashboard() {
                                 .map((u) => (
                                     <div
                                         key={u.id}
-                                        className="flex justify-between items-center p-3 bg-white rounded-lg border border-red-200"
+                                        className="flex justify-between items-center p-3 bg-card rounded-lg border border-red-200"
                                     >
                                         <div>
                                             <span className="font-bold text-red-700">{u.counterpartyName}</span>
@@ -521,7 +521,7 @@ export function RiskDashboard() {
                         <p className="text-2xl font-black text-red-400">
                             ${formatNumber(Number(riskMetrics?.valueAtRisk95 || 0))}
                         </p>
-                        <p className="text-[10px] text-slate-400 mt-1">1-Day Potential Loss</p>
+                        <p className="text-[10px] text-muted-foreground/70 mt-1">1-Day Potential Loss</p>
                     </CardContent>
                 </Card>
             </div>

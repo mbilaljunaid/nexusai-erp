@@ -78,7 +78,7 @@ export default function KnowledgeBaseDashboard() {
                             </p>
                             <div className="flex gap-2 flex-wrap">
                                 {(article.tags || []).map((tag: string) => (
-                                    <span key={tag} className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600">#{tag}</span>
+                                    <span key={tag} className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground">#{tag}</span>
                                 ))}
                             </div>
                         </CardContent>

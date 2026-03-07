@@ -76,7 +76,7 @@ export function WorkforceAnalyticsCard({ metrics, skillGaps }: WorkforceAnalytic
                                 <div className="relative pt-1">
                                     <Progress
                                         value={100 - gap.gap}
-                                        className="h-1 bg-white/10"
+                                        className="h-1 bg-card/10"
                                     />
                                 </div>
                             </div>

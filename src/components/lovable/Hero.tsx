@@ -62,7 +62,7 @@ export function PremiumHero({
                 {[...Array(20)].map((_, i) => (
                     <motion.div
                         key={i}
-                        className="absolute w-2 h-2 bg-white/20 rounded-full"
+                        className="absolute w-2 h-2 bg-card/20 rounded-full"
                         style={{
                             left:`${Math.random() * 100}%`,
                             top:`${Math.random() * 100}%`,
@@ -108,7 +108,7 @@ export function PremiumHero({
                                 <Button
                                     size="lg"
                                     onClick={(primaryCTA as any).onClick}
-                                    className="bg-white text-gray-900 dark:text-gray-200 hover:bg-gray-500/15 text-lg px-8"
+                                    className="bg-card text-foreground dark:text-gray-200 hover:bg-gray-500/15 text-lg px-8"
                                 >
                                     {(primaryCTA as any).label}
                                 </Button>
@@ -120,7 +120,7 @@ export function PremiumHero({
                                     size="lg"
                                     variant="outline"
                                     onClick={(secondaryCTA as any).onClick}
-                                    className="border-white text-white hover:bg-white/10 text-lg px-8"
+                                    className="border-white text-white hover:bg-card/10 text-lg px-8"
                                 >
                                     {(secondaryCTA as any).label}
                                 </Button>

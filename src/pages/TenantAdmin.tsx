@@ -65,8 +65,8 @@ export default function TenantAdmin() {
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-semibold text-lg" data-testid={`text-tenant-name-${tenant.id}`}>{tenant.name}</h3>
-                  <p className="text-sm text-gray-500">@{tenant.slug}</p>
-                  <p className="text-xs text-gray-400 mt-1">{tenant.id}</p>
+                  <p className="text-sm text-muted-foreground">@{tenant.slug}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">{tenant.id}</p>
                 </div>
                 <div data-testid={`status-${tenant.id}`}>
                   <StatusBadge status={tenant.status} />
@@ -75,7 +75,7 @@ export default function TenantAdmin() {
             </Card>
           ))}
           {tenants.length === 0 && (
-            <Card className="p-8 text-center text-gray-500">
+            <Card className="p-8 text-center text-muted-foreground">
               <p>No tenants yet. Create one to get started.</p>
             </Card>
           )}

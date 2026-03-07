@@ -504,86 +504,88 @@ export function ServiceMarketplace() {
               {viewMode === "cards" ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {visiblePackages?.map((pkg) => (
-                    <Card 
-                      key={pkg.id} 
-                      className="cursor-pointer hover-elevate"
-                      onClick={() => setSelectedPackage(pkg)}
-                      data-testid={`card-package-${pkg.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                    >
-                      <CardHeader className="pb-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <CardTitle className="text-lg line-clamp-1">{pkg.title}</CardTitle>
-                          <Badge variant="secondary" className="shrink-0">
-                            {categories?.find(c => c.id === pkg.categoryId)?.name || "Other"}
-                          </Badge>
-                        </div>
-                        <CardDescription className="line-clamp-2">{pkg.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="pb-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="flex items-center gap-1 text-muted-foreground">
-                            <Star className="w-4 h-4 text-yellow-500" />
-                            {Number(pkg.averageRating || 0).toFixed(1)}
-                          </span>
-                          <span className="flex items-center gap-1 text-muted-foreground">
-                            <Clock className="w-4 h-4" />
-                            {pkg.deliveryDays} days
-                          </span>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="pt-2">
-                        <div className="flex items-center justify-between w-full">
-                          <span className="text-xl font-bold text-primary flex items-center gap-1">
-                            <DollarSign className="w-5 h-5" />
-                            {Number(pkg.price).toFixed(2)}
-                          </span>
-                          <span className="text-xs text-muted-foreground">{pkg.totalOrders} orders</span>
-                        </div>
-                      </CardFooter>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedPackage(pkg)}>
+                      <Card 
+                                            key={pkg.id} 
+                                            className="cursor-pointer hover-elevate"
+                                            data-testid={`card-package-${pkg.id}`}
+                                          >
+                                            <CardHeader className="pb-2">
+                                              <div className="flex items-start justify-between gap-2">
+                                                <CardTitle className="text-lg line-clamp-1">{pkg.title}</CardTitle>
+                                                <Badge variant="secondary" className="shrink-0">
+                                                  {categories?.find(c => c.id === pkg.categoryId)?.name || "Other"}
+                                                </Badge>
+                                              </div>
+                                              <CardDescription className="line-clamp-2">{pkg.description}</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="pb-2">
+                                              <div className="flex items-center justify-between text-sm">
+                                                <span className="flex items-center gap-1 text-muted-foreground">
+                                                  <Star className="w-4 h-4 text-yellow-500" />
+                                                  {Number(pkg.averageRating || 0).toFixed(1)}
+                                                </span>
+                                                <span className="flex items-center gap-1 text-muted-foreground">
+                                                  <Clock className="w-4 h-4" />
+                                                  {pkg.deliveryDays} days
+                                                </span>
+                                              </div>
+                                            </CardContent>
+                                            <CardFooter className="pt-2">
+                                              <div className="flex items-center justify-between w-full">
+                                                <span className="text-xl font-bold text-primary flex items-center gap-1">
+                                                  <DollarSign className="w-5 h-5" />
+                                                  {Number(pkg.price).toFixed(2)}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground">{pkg.totalOrders} orders</span>
+                                              </div>
+                                            </CardFooter>
+                                          </Card>
+                      </Button>
                   ))}
                 </div>
               ) : (
                 <div className="space-y-2">
                   {visiblePackages?.map((pkg) => (
-                    <Card 
-                      key={pkg.id} 
-                      className="cursor-pointer hover-elevate"
-                      onClick={() => setSelectedPackage(pkg)}
-                      data-testid={`row-package-${pkg.id}`} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                    >
-                      <CardContent className="py-4">
-                        <div className="flex items-center justify-between gap-4 flex-wrap">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="font-semibold truncate">{pkg.title}</h3>
-                              <Badge variant="secondary" className="shrink-0 text-xs">
-                                {categories?.find(c => c.id === pkg.categoryId)?.name || "Other"}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground line-clamp-1">{pkg.description}</p>
-                          </div>
-                          <div className="flex items-center gap-6 text-sm">
-                            <span className="flex items-center gap-1 text-muted-foreground">
-                              <Star className="w-4 h-4 text-yellow-500" />
-                              {Number(pkg.averageRating || 0).toFixed(1)}
-                            </span>
-                            <span className="flex items-center gap-1 text-muted-foreground">
-                              <Clock className="w-4 h-4" />
-                              {pkg.deliveryDays}d
-                            </span>
-                            <span className="flex items-center gap-1 text-muted-foreground">
-                              <ShoppingCart className="w-4 h-4" />
-                              {pkg.totalOrders}
-                            </span>
-                            <span className="text-lg font-bold text-primary flex items-center gap-1">
-                              <DollarSign className="w-4 h-4" />
-                              {Number(pkg.price).toFixed(0)}
-                            </span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedPackage(pkg)}>
+                      <Card 
+                                            key={pkg.id} 
+                                            className="cursor-pointer hover-elevate"
+                                            data-testid={`row-package-${pkg.id}`}
+                                          >
+                                            <CardContent className="py-4">
+                                              <div className="flex items-center justify-between gap-4 flex-wrap">
+                                                <div className="flex-1 min-w-0">
+                                                  <div className="flex items-center gap-2 mb-1">
+                                                    <h3 className="font-semibold truncate">{pkg.title}</h3>
+                                                    <Badge variant="secondary" className="shrink-0 text-xs">
+                                                      {categories?.find(c => c.id === pkg.categoryId)?.name || "Other"}
+                                                    </Badge>
+                                                  </div>
+                                                  <p className="text-sm text-muted-foreground line-clamp-1">{pkg.description}</p>
+                                                </div>
+                                                <div className="flex items-center gap-6 text-sm">
+                                                  <span className="flex items-center gap-1 text-muted-foreground">
+                                                    <Star className="w-4 h-4 text-yellow-500" />
+                                                    {Number(pkg.averageRating || 0).toFixed(1)}
+                                                  </span>
+                                                  <span className="flex items-center gap-1 text-muted-foreground">
+                                                    <Clock className="w-4 h-4" />
+                                                    {pkg.deliveryDays}d
+                                                  </span>
+                                                  <span className="flex items-center gap-1 text-muted-foreground">
+                                                    <ShoppingCart className="w-4 h-4" />
+                                                    {pkg.totalOrders}
+                                                  </span>
+                                                  <span className="text-lg font-bold text-primary flex items-center gap-1">
+                                                    <DollarSign className="w-4 h-4" />
+                                                    {Number(pkg.price).toFixed(0)}
+                                                  </span>
+                                                </div>
+                                              </div>
+                                            </CardContent>
+                                          </Card>
+                      </Button>
                   ))}
                 </div>
               )}

@@ -189,12 +189,12 @@ export default function TechnicalDocumentationPage() {
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link to="/docs/implementation">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-500/15" data-testid="button-implementation">
+                <Button size="lg" className="bg-card text-blue-600 hover:bg-slate-500/15" data-testid="button-implementation">
                   Implementation Guide
                 </Button>
               </Link>
               <Link to="/docs/contributing">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-contribute-docs">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-card/10" data-testid="button-contribute-docs">
                   Contribute
                 </Button>
               </Link>

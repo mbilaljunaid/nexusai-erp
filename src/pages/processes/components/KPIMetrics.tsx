@@ -50,7 +50,7 @@ export function KPIMetrics({ metrics, layout = 'grid' }: KPIMetricsProps) {
             <div className="flex items-center gap-1 text-xs">
               {metric.trend === 'up' && <TrendingUp className="w-3 h-3 text-green-600" />}
               {metric.trend === 'down' && <TrendingDown className="w-3 h-3 text-red-600" />}
-              {metric.trend === 'stable' && <Minus className="w-3 h-3 text-gray-600" />}
+              {metric.trend === 'stable' && <Minus className="w-3 h-3 text-muted-foreground" />}
               <span className="text-muted-foreground">
                 {metric.trend === 'up' ? 'Improving' : metric.trend === 'down' ? 'Declining' : 'Stable'}
               </span>

@@ -127,16 +127,18 @@ export default function AutoInvoiceValidation() {
                     <div className="hist-box">
                         <div className="hb-title">Run History</div>
                         {runs.map(r => {
-                            const cfgClass = STATUS_CFG[r.status] ?? 'bg-gray-100 text-gray-500';
+                            const cfgClass = STATUS_CFG[r.status] ?? 'bg-muted text-muted-foreground';
                             return (
-                                <div key={r.id} className={cn(`run-card ${activeRun?.id === r.id ? 'selected' : ''}`)} role="button" tabIndex={0} onClick={() => setActiveRun(r)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                    <div className="rc-top">
-                                        <span className="rc-ref mono">{r.source_ref || r.source_type}</span>
-                                        <span className={cn(`rc-status ${cfgClass}`)}>{r.status}</span>
-                                    </div>
-                                    <div className="rc-meta">{r.total_lines} lines · {r.valid_lines} valid · {r.error_lines} err</div>
-                                    <div className="rc-date small">{formatDateTime(r.run_at)}</div>
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setActiveRun(r)}>
+                                <div key={r.id} className={cn(`run-card ${activeRun?.id === r.id ? 'selected' : ''}`)}>
+                                                                    <div className="rc-top">
+                                                                        <span className="rc-ref mono">{r.source_ref || r.source_type}</span>
+                                                                        <span className={cn(`rc-status ${cfgClass}`)}>{r.status}</span>
+                                                                    </div>
+                                                                    <div className="rc-meta">{r.total_lines} lines · {r.valid_lines} valid · {r.error_lines} err</div>
+                                                                    <div className="rc-date small">{formatDateTime(r.run_at)}</div>
+                                                                </div>
+                                </Button>
                             );
                         })}
                         {runs.length === 0 && <div className="empty">No validation runs yet</div>}
@@ -175,7 +177,7 @@ export default function AutoInvoiceValidation() {
                             </div>
 
                             {activeRun.validation_errors?.length > 0 ? (
-                                <div className="h-72 border border-gray-200 rounded-lg overflow-hidden">
+                                <div className="h-72 border border-border rounded-lg overflow-hidden">
                                     <InteractiveSpreadsheet
                                         columns={errColumns}
                                         data={activeRun.validation_errors}

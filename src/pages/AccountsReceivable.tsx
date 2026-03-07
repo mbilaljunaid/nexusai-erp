@@ -100,21 +100,22 @@ export default function AccountsReceivable() {
                     <h3 className="text-lg font-semibold mb-4">Quick Access</h3>
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         {navigationCards.map((card) => (
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation(card.href)}>
                             <Card
-                                key={card.href}
-                                className="cursor-pointer hover:shadow-md transition-shadow group"
-                                onClick={() => setLocation(card.href)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <CardHeader>
-                                    <div className="flex items-center gap-3">
-                                        <div className={cn(`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`)}>
-                                            <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
-                                        </div>
-                                        <CardTitle className="text-base">{card.title}</CardTitle>
-                                    </div>
-                                    <CardDescription className="mt-2">{card.description}</CardDescription>
-                                </CardHeader>
-                            </Card>
+                                                            key={card.href}
+                                                            className="cursor-pointer hover:shadow-md transition-shadow group"
+                                                        >
+                                                            <CardHeader>
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className={cn(`p-2 rounded-lg bg-opacity-10 group-hover:bg-opacity-20 transition-colors ${card.color.replace('text-', 'bg-')}`)}>
+                                                                        <card.icon className={cn(`h-6 w-6 ${card.color}`)} />
+                                                                    </div>
+                                                                    <CardTitle className="text-base">{card.title}</CardTitle>
+                                                                </div>
+                                                                <CardDescription className="mt-2">{card.description}</CardDescription>
+                                                            </CardHeader>
+                                                        </Card>
+                            </Button>
                         ))}
                     </div>
                 </div>

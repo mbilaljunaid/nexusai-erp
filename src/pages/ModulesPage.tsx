@@ -196,12 +196,12 @@ export default function ModulesPage() {
       teal: { bg: "bg-teal-100 dark:bg-teal-900/30", text: "text-teal-600 dark:text-teal-400", badge: "bg-teal-500" },
       rose: { bg: "bg-rose-100 dark:bg-rose-900/30", text: "text-rose-600 dark:text-rose-400", badge: "bg-rose-500" },
       red: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-600 dark:text-red-400", badge: "bg-red-500" },
-      slate: { bg: "bg-slate-100 dark:bg-slate-900/30", text: "text-slate-600 dark:text-slate-400", badge: "bg-slate-500" },
+      slate: { bg: "bg-muted dark:bg-slate-900/30", text: "text-muted-foreground dark:text-muted-foreground/70", badge: "bg-slate-500" },
       amber: { bg: "bg-amber-100 dark:bg-amber-900/30", text: "text-amber-600 dark:text-amber-400", badge: "bg-amber-500" },
       emerald: { bg: "bg-emerald-100 dark:bg-emerald-900/30", text: "text-emerald-600 dark:text-emerald-400", badge: "bg-emerald-500" },
       violet: { bg: "bg-violet-100 dark:bg-violet-900/30", text: "text-violet-600 dark:text-violet-400", badge: "bg-violet-500" },
       sky: { bg: "bg-sky-100 dark:bg-sky-900/30", text: "text-sky-600 dark:text-sky-400", badge: "bg-sky-500" },
-      gray: { bg: "bg-gray-100 dark:bg-gray-900/30", text: "text-gray-600 dark:text-gray-400", badge: "bg-gray-500" }
+      gray: { bg: "bg-muted dark:bg-gray-900/30", text: "text-muted-foreground dark:text-muted-foreground/70", badge: "bg-gray-500" }
     };
     return colors[color] || colors.blue;
   };
@@ -386,12 +386,12 @@ export default function ModulesPage() {
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link to="/demo">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-slate-500/15" data-testid="button-schedule-demo">
+                <Button size="lg" className="bg-card text-blue-600 hover:bg-slate-500/15" data-testid="button-schedule-demo">
                   Schedule a Demo <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
               <Link to="/docs/training-guides">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-explore-training">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-card/10" data-testid="button-explore-training">
                   Explore Training
                 </Button>
               </Link>

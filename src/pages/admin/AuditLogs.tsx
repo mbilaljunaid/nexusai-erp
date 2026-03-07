@@ -29,7 +29,7 @@ const getActionColor = (type: string) => {
         case 'demo': return 'bg-green-100 text-green-800';
         case 'billing': return 'bg-orange-100 text-orange-800';
         case 'user': return 'bg-pink-100 text-pink-800';
-        default: return 'bg-gray-100 text-gray-800';
+        default: return 'bg-muted text-foreground';
     }
 };
 

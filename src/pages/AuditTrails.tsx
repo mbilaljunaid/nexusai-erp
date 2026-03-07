@@ -66,7 +66,7 @@ export default function AuditTrails() {
       id: "entityId",
       header: "Entity ID",
       width: "15%",
-      cell: (l: any) => <div className="p-2"><span className="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded">{l.entityId}</span></div>
+      cell: (l: any) => <div className="p-2"><span className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded">{l.entityId}</span></div>
     },
     {
       id: "actorId",
@@ -156,12 +156,12 @@ export default function AuditTrails() {
       <Card className="overflow-hidden">
         <div className="p-4 border-b bg-muted/30 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <h3 className="font-bold text-slate-700 italic">Audit Ledger</h3>
+            <h3 className="font-bold text-foreground/90 italic">Audit Ledger</h3>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search by action, user, or ID..."
-                className="pl-9 h-9 w-80 bg-white border-slate-200"
+                className="pl-9 h-9 w-80 bg-card border-border"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

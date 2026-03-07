@@ -58,7 +58,7 @@ export default function ESSDashboard() {
                         </div>
                     </div>
                     <div className="flex gap-3">
-                        <Badge variant="outline" className="bg-white/5 border-white/10 text-white px-3 py-1">
+                        <Badge variant="outline" className="bg-card/5 border-white/10 text-white px-3 py-1">
                             Emp ID: 10425
                         </Badge>
                         <Badge variant="outline" className="bg-teal-500/20 border-teal-500/30 text-teal-300 px-3 py-1">
@@ -70,15 +70,17 @@ export default function ESSDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {quickActions.map((action) => (
                         action.external ? (
-                            <Card key={action.name} className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden" onClick={() => window.open(action.path, '_blank')} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                                <CardContent className="p-6">
-                                    <div className={cn(`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`)}>
-                                        <action.icon className="h-6 w-6" />
-                                    </div>
-                                    <h3 className="font-semibold text-lg">{action.name}</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">Compliance utilities</p>
-                                </CardContent>
-                            </Card>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => window.open(action.path, '_blank')}>
+                            <Card key={action.name} className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden">
+                                                            <CardContent className="p-6">
+                                                                <div className={cn(`p-3 rounded-2xl ${action.bg} ${action.color} w-fit mb-4 group-hover:scale-110 transition-transform`)}>
+                                                                    <action.icon className="h-6 w-6" />
+                                                                </div>
+                                                                <h3 className="font-semibold text-lg">{action.name}</h3>
+                                                                <p className="text-sm text-muted-foreground mt-1">Compliance utilities</p>
+                                                            </CardContent>
+                                                        </Card>
+                            </Button>
                         ) : (
                             <Link key={action.name} href={action.path}>
                                 <Card className="hover:shadow-lg transition-all cursor-pointer group border-zinc-200/50 dark:border-zinc-800/50 hover:border-teal-500/30 overflow-hidden">
@@ -185,7 +187,7 @@ export default function ESSDashboard() {
                                 <p className="text-teal-100/80 text-sm mb-4">Ask our AI Assistant any HR policy questions or request time off.</p>
                                 <Button
                                     variant="secondary"
-                                    className="w-full bg-white text-teal-600 hover:bg-zinc-500/15"
+                                    className="w-full bg-card text-teal-600 hover:bg-zinc-500/15"
                                     onClick={() => open()}
                                 >
                                     Launch NexusAI

@@ -67,15 +67,15 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="md:col-span-1 bg-white border-2 border-slate-100 shadow-sm rounded-2xl">
+                <Card className="md:col-span-1 bg-card border-2 border-border shadow-sm rounded-2xl">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-bold text-slate-500">Readiness Score</CardTitle>
+                        <CardTitle className="text-sm font-bold text-muted-foreground">Readiness Score</CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center justify-center pt-2">
                         <div className={cn(`w-28 h-28 rounded-full border-8 flex items-center justify-center ${scoreColor}`)}>
                             <span className="text-4xl font-extrabold">{readiness.score}%</span>
                         </div>
-                        <p className="mt-4 text-xs font-medium text-slate-500 flex items-center gap-1">
+                        <p className="mt-4 text-xs font-medium text-muted-foreground flex items-center gap-1">
                             <ShieldAlert className="h-3 w-3" />
                             Enterprise Target: 95%
                         </p>
@@ -87,19 +87,19 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                         <FileJson className="absolute -right-4 -bottom-4 w-24 h-24 text-white/10 group-hover:scale-110 transition-transform" />
                         <h4 className="text-sm font-medium text-indigo-100">Audit Package</h4>
                         <p className="text-2xl font-bold mt-1">Ready</p>
-                        <Button variant="secondary" size="sm" className="mt-4 h-8 bg-white/20 text-white border-none hover:bg-white/30 backdrop-blur-md">
+                        <Button variant="secondary" size="sm" className="mt-4 h-8 bg-card/20 text-white border-none hover:bg-card/30 backdrop-blur-md">
                             <Download className="h-3.5 w-3.5 mr-2" />
                             Download JSON
                         </Button>
                     </div>
 
-                    <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col justify-between">
+                    <div className="p-5 bg-card border border-border rounded-2xl shadow-sm flex flex-col justify-between">
                         <div>
-                            <h4 className="text-sm font-medium text-slate-500 flex items-center gap-2">
+                            <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                                 <ShieldAlert className="h-4 w-4 text-rose-500" />
                                 Critical Exposures
                             </h4>
-                            <p className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-200">{readiness.criticalUnresolved}</p>
+                            <p className="text-2xl font-bold mt-2 text-foreground dark:text-slate-200">{readiness.criticalUnresolved}</p>
                         </div>
                         <div className="mt-2">
                             <Badge variant="outline" className="text-rose-600 border-rose-100 bg-rose-500/10 text-[10px]">
@@ -109,25 +109,25 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                         </div>
                     </div>
 
-                    <div className="p-5 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col justify-between">
+                    <div className="p-5 bg-card border border-border rounded-2xl shadow-sm flex flex-col justify-between">
                         <div>
-                            <h4 className="text-sm font-medium text-slate-500 flex items-center gap-2">
+                            <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                                 <CheckCircle className="h-4 w-4 text-emerald-500" />
                                 Resolution Efficiency
                             </h4>
-                            <p className="text-2xl font-bold mt-2 text-slate-900 dark:text-slate-200">
+                            <p className="text-2xl font-bold mt-2 text-foreground dark:text-slate-200">
                                 {readiness.totalViolations > 0
                                     ? Math.round((readiness.resolvedCount / readiness.totalViolations) * 100)
                                     : 100}%
                             </p>
                         </div>
-                        <p className="text-xs text-slate-400 font-medium">Of total governance events</p>
+                        <p className="text-xs text-muted-foreground/70 font-medium">Of total governance events</p>
                     </div>
                 </div>
             </div>
 
             <Card className="rounded-2xl border-none bg-slate-500/10 ring-1 ring-slate-200 shadow-sm overflow-hidden">
-                <CardHeader className="bg-white border-b border-slate-100 py-4 flex flex-row items-center justify-between">
+                <CardHeader className="bg-card border-b border-border py-4 flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-lg font-bold flex items-center gap-2">
                             <Activity className="h-5 w-5 text-indigo-500" />
@@ -135,7 +135,7 @@ export function RegulatoryReadinessReport({ data }: RegulatoryReadinessReportPro
                         </CardTitle>
                         <CardDescription>Breakdown of active governance rules by inherent risk severity.</CardDescription>
                     </div>
-                    <Button variant="outline" size="sm" className="h-9 rounded-xl border-slate-200">
+                    <Button variant="outline" size="sm" className="h-9 rounded-xl border-border">
                         <FileText className="h-4 w-4 mr-2" />
                         Full Disclosure Report
                     </Button>

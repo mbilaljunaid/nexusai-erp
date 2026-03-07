@@ -19,7 +19,7 @@ const INDUSTRIES = [
     { id: "telecom", name: "Telecommunications", icon: Wifi, color: "text-blue-500", bgColor: "bg-blue-500/10", description: "Network & Billing" },
     { id: "hospitality", name: "Hospitality", icon: Hotel, color: "text-purple-500", bgColor: "bg-purple-500/10", description: "Reservations & Guest CRM" },
     { id: "logistics", name: "Logistics", icon: Boxes, color: "text-orange-500", bgColor: "bg-orange-500/10", description: "Shipping & Supply Chain" },
-    { id: "automotive", name: "Automotive", icon: Car, color: "text-slate-500", bgColor: "bg-slate-500/10", description: "Production & Sales" },
+    { id: "automotive", name: "Automotive", icon: Car, color: "text-muted-foreground", bgColor: "bg-slate-500/10", description: "Production & Sales" },
     { id: "banking", name: "Banking & Finance", icon: Landmark, color: "text-yellow-500", bgColor: "bg-yellow-500/10", description: "Core Banking & Loans" },
     { id: "insurance", name: "Insurance", icon: Shield, color: "text-indigo-500", bgColor: "bg-indigo-500/10", description: "Policies & Claims" },
     { id: "government", name: "Government", icon: Landmark, color: "text-teal-500", bgColor: "bg-teal-500/10", description: "Citizen Services" },
@@ -31,7 +31,7 @@ const INDUSTRIES = [
     { id: "saas", name: "SaaS", icon: Wifi, color: "text-sky-500", bgColor: "bg-sky-500/10", description: "Subscriptions & CS" },
     { id: "ecommerce", name: "E-commerce", icon: ShoppingBag, color: "text-pink-500", bgColor: "bg-pink-500/10", description: "Online Store" },
     // From industryConfig.ts (3)
-    { id: "manufacturing", name: "Manufacturing", icon: Boxes, color: "text-gray-500", bgColor: "bg-gray-500/10", description: "Production & MRP" },
+    { id: "manufacturing", name: "Manufacturing", icon: Boxes, color: "text-muted-foreground", bgColor: "bg-gray-500/10", description: "Production & MRP" },
     { id: "financial_services", name: "Financial Services", icon: Landmark, color: "text-green-600", bgColor: "bg-green-500/10", description: "Investment & Wealth" },
     { id: "technology", name: "Technology", icon: Wifi, color: "text-indigo-600", bgColor: "bg-indigo-500/10", description: "Software & IT" },
 ];
@@ -97,20 +97,21 @@ export function IndustrySelectionStep({ data, onNext, onBack }: IndustrySelectio
                     const isSelected = selectedIndustry === industry.id;
 
                     return (
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedIndustry(industry.id)}>
                         <Card
-                            key={industry.id}
-                            className={cn(`cursor-pointer transition-all hover:scale-105 ${isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md"
-                                }`)}
-                            onClick={() => setSelectedIndustry(industry.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                        >
-                            <CardContent className="p-4 text-center space-y-2">
-                                <div className={cn(`w-12 h-12 mx-auto rounded-lg ${industry.bgColor} flex items-center justify-center`)}>
-                                    <Icon className={cn(`w-6 h-6 ${industry.color}`)} />
-                                </div>
-                                <h3 className="font-medium text-sm">{industry.name}</h3>
-                                <p className="text-xs text-muted-foreground">{industry.description}</p>
-                            </CardContent>
-                        </Card>
+                                                    key={industry.id}
+                                                    className={cn(`cursor-pointer transition-all hover:scale-105 ${isSelected ? "ring-2 ring-primary shadow-lg" : "hover:shadow-md"
+                                                        }`)}
+                                                >
+                                                    <CardContent className="p-4 text-center space-y-2">
+                                                        <div className={cn(`w-12 h-12 mx-auto rounded-lg ${industry.bgColor} flex items-center justify-center`)}>
+                                                            <Icon className={cn(`w-6 h-6 ${industry.color}`)} />
+                                                        </div>
+                                                        <h3 className="font-medium text-sm">{industry.name}</h3>
+                                                        <p className="text-xs text-muted-foreground">{industry.description}</p>
+                                                    </CardContent>
+                                                </Card>
+                        </Button>
                     );
                 })}
             </div>

@@ -33,7 +33,7 @@ export default function LcmAuditLogSideSheet({ entityId, entityTable = 'lcm_trad
             case 'DELETE': return <Trash2 className="h-4 w-4 text-red-500" />;
             case 'CLOSE': return <CheckCircle className="h-4 w-4 text-green-500" />;
             case 'ALLOCATE': return <Calculator className="h-4 w-4 text-purple-500" />;
-            default: return <History className="h-4 w-4 text-gray-500" />;
+            default: return <History className="h-4 w-4 text-muted-foreground" />;
         }
     };
 

@@ -174,7 +174,7 @@ export default function ServiceRequestPortal() {
                                     <div className="flex justify-between items-start">
                                         <span className="font-medium text-sm">{sr.requestNumber}</span>
                                         <div className={cn(`text-xs px-2 py-1 rounded-full ${sr.status === 'NEW' ? 'bg-blue-100 text-blue-800' :
-                                            sr.status === 'CONVERTED' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
+                                            sr.status === 'CONVERTED' ? 'bg-green-100 text-green-800' : 'bg-muted'
                                             }`)}>
                                             {sr.status}
                                         </div>

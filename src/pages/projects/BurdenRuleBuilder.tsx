@@ -189,23 +189,24 @@ export default function BurdenRuleBuilder() {
                             <Table>
                                 <TableBody>
                                     {rules.map((rule) => (
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRuleId(rule.id)}>
                                         <TableRow
-                                            key={rule.id}
-                                            className={selectedRuleId === rule.id ? "bg-blue-500/10 border-l-4 border-l-blue-600" : "cursor-pointer"}
-                                            onClick={() => setSelectedRuleId(rule.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <TableCell className="font-medium p-4 py-3">
-                                                <div className="flex justify-between items-center w-full">
-                                                    <div>
-                                                        <div className="font-bold">{rule.name}</div>
-                                                        <div className="text-xs text-muted-foreground mt-1">v{rule.version} &middot; {rule.tiers.length} Tiers</div>
-                                                    </div>
-                                                    <Badge variant={rule.status === "ACTIVE" ? "default" : "secondary"}>
-                                                        {rule.status}
-                                                    </Badge>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
+                                                                                    key={rule.id}
+                                                                                    className={selectedRuleId === rule.id ? "bg-blue-500/10 border-l-4 border-l-blue-600" : "cursor-pointer"}
+                                                                                >
+                                                                                    <TableCell className="font-medium p-4 py-3">
+                                                                                        <div className="flex justify-between items-center w-full">
+                                                                                            <div>
+                                                                                                <div className="font-bold">{rule.name}</div>
+                                                                                                <div className="text-xs text-muted-foreground mt-1">v{rule.version} &middot; {rule.tiers.length} Tiers</div>
+                                                                                            </div>
+                                                                                            <Badge variant={rule.status === "ACTIVE" ? "default" : "secondary"}>
+                                                                                                {rule.status}
+                                                                                            </Badge>
+                                                                                        </div>
+                                                                                    </TableCell>
+                                                                                </TableRow>
+                                        </Button>
                                     ))}
                                 </TableBody>
                             </Table>
@@ -227,7 +228,7 @@ export default function BurdenRuleBuilder() {
                                 </div>
                             ) : (
                                 <Tabs defaultValue="tiers" className="space-y-4">
-                                    <TabsList className="bg-slate-100">
+                                    <TabsList className="bg-muted">
                                         <TabsTrigger value="tiers">Build Tiers</TabsTrigger>
                                         <TabsTrigger value="simulate">Run Simulation</TabsTrigger>
                                     </TabsList>

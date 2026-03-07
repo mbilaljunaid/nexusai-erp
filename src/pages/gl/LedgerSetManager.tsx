@@ -280,37 +280,38 @@ export default function LedgerSetManager() {
                                 </TableHeader>
                                 <TableBody>
                                     {ledgerSets.map((set) => (
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedSetId(set.id)}>
                                         <TableRow
-                                            key={set.id}
-                                            className={selectedSetId === set.id ? "bg-blue-500/10" : "cursor-pointer hover:bg-muted/50"}
-                                            onClick={() => setSelectedSetId(set.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <TableCell className="font-medium">
-                                                {set.name}
-                                                {set.description && (
-                                                    <div className="text-xs text-muted-foreground">{set.description}</div>
-                                                )}
-                                            </TableCell>
-                                            <TableCell><Badge variant="outline">{set.reportingCurrency}</Badge></TableCell>
-                                            <TableCell>{set.assignedLedgers}</TableCell>
-                                            <TableCell>
-                                                <Switch
-                                                    checked={set.status === "ACTIVE"}
-                                                    onCheckedChange={() => toggleStatusMutation.mutate({ id: set.id, status: set.status })}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex gap-1">
-                                                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }} aria-label="Edit">
-                                                        <Edit className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }} aria-label="Delete">
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
+                                                                                    key={set.id}
+                                                                                    className={selectedSetId === set.id ? "bg-blue-500/10" : "cursor-pointer hover:bg-muted/50"}
+                                                                                >
+                                                                                    <TableCell className="font-medium">
+                                                                                        {set.name}
+                                                                                        {set.description && (
+                                                                                            <div className="text-xs text-muted-foreground">{set.description}</div>
+                                                                                        )}
+                                                                                    </TableCell>
+                                                                                    <TableCell><Badge variant="outline">{set.reportingCurrency}</Badge></TableCell>
+                                                                                    <TableCell>{set.assignedLedgers}</TableCell>
+                                                                                    <TableCell>
+                                                                                        <Switch
+                                                                                            checked={set.status === "ACTIVE"}
+                                                                                            onCheckedChange={() => toggleStatusMutation.mutate({ id: set.id, status: set.status })}
+                                                                                            onClick={(e) => e.stopPropagation()}
+                                                                                        />
+                                                                                    </TableCell>
+                                                                                    <TableCell>
+                                                                                        <div className="flex gap-1">
+                                                                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }} aria-label="Edit">
+                                                                                                <Edit className="h-4 w-4" />
+                                                                                            </Button>
+                                                                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); }} aria-label="Delete">
+                                                                                                <Trash2 className="h-4 w-4" />
+                                                                                            </Button>
+                                                                                        </div>
+                                                                                    </TableCell>
+                                                                                </TableRow>
+                                        </Button>
                                     ))}
                                 </TableBody>
                             </Table>

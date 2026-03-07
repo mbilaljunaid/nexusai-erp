@@ -44,31 +44,33 @@ export function RelationshipViewer({ partyId }: RelationshipViewerProps) {
 
             <div className="grid gap-4">
                 {relationships.map((rel: any) => (
-                    <Card key={rel.id} className="cursor-pointer hover:border-blue-300 transition-colors" onClick={() => {
-                        const otherId = rel.subjectId === partyId ? rel.objectId : rel.subjectId;
-                        setLocation(`/mdm/parties/${otherId}`);
-                    }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <CardContent className="p-4 flex items-center gap-4">
-                            {/* Icon for the RELATED party */}
-                            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border shrink-0">
-                                {rel.relatedPartyType === 'ORGANIZATION' ? <Building2 className="w-5 h-5 text-blue-600" /> : <User className="w-5 h-5 text-green-600" />}
-                            </div>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                            const otherId = rel.subjectId === partyId ? rel.objectId : rel.subjectId;
+                                            setLocation(`/mdm/parties/${otherId}`);
+                                        }}>
+                    <Card key={rel.id} className="cursor-pointer hover:border-blue-300 transition-colors">
+                                            <CardContent className="p-4 flex items-center gap-4">
+                                                {/* Icon for the RELATED party */}
+                                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center border shrink-0">
+                                                    {rel.relatedPartyType === 'ORGANIZATION' ? <Building2 className="w-5 h-5 text-blue-600" /> : <User className="w-5 h-5 text-green-600" />}
+                                                </div>
 
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="font-medium">{rel.relatedPartyName}</span>
-                                    <Badge variant="outline" className="text-xs">{rel.relatedPartyType}</Badge>
-                                </div>
-                                <div className="flex items-center text-sm text-muted-foreground gap-2">
-                                    <span>{rel.direction === 'Subject' ? 'is' : 'has'}</span>
-                                    <Badge variant="secondary" className="font-mono text-xs">{rel.relationshipCode}</Badge>
-                                    <span>{rel.direction === 'Subject' ? 'of' : ''} this party</span>
-                                </div>
-                            </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="font-medium">{rel.relatedPartyName}</span>
+                                                        <Badge variant="outline" className="text-xs">{rel.relatedPartyType}</Badge>
+                                                    </div>
+                                                    <div className="flex items-center text-sm text-muted-foreground gap-2">
+                                                        <span>{rel.direction === 'Subject' ? 'is' : 'has'}</span>
+                                                        <Badge variant="secondary" className="font-mono text-xs">{rel.relationshipCode}</Badge>
+                                                        <span>{rel.direction === 'Subject' ? 'of' : ''} this party</span>
+                                                    </div>
+                                                </div>
 
-                            <ArrowRight className="w-4 h-4 text-gray-400" />
-                        </CardContent>
-                    </Card>
+                                                <ArrowRight className="w-4 h-4 text-muted-foreground/70" />
+                                            </CardContent>
+                                        </Card>
+                    </Button>
                 ))}
             </div>
         </div>

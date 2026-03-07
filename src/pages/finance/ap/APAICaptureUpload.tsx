@@ -89,7 +89,7 @@ export default function APAICaptureUpload() {
         if (type.includes("pdf")) return <FileText className="h-8 w-8 text-red-500" />;
         if (type.includes("audio")) return <FileAudio className="h-8 w-8 text-purple-500" />;
         if (type.includes("spreadsheet") || type.includes("excel")) return <FileSpreadsheet className="h-8 w-8 text-green-500" />;
-        return <FileText className="h-8 w-8 text-gray-500" />;
+        return <FileText className="h-8 w-8 text-muted-foreground" />;
     };
 
     const lineItemColumns: SpreadsheetColumn<any>[] = [
@@ -129,7 +129,7 @@ export default function APAICaptureUpload() {
                                     accept="image/*,.pdf,.xlsx,.xls,audio/*"
                                 />
                                 <Label htmlFor="file-upload" className="cursor-pointer">
-                                    <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                                    <Upload className="h-12 w-12 mx-auto text-muted-foreground/70 mb-4" />
                                     <p className="text-sm font-medium">Click to upload or drag and drop</p>
                                     <p className="text-xs text-muted-foreground mt-1">
                                         Images, PDFs, Excel, or Audio files

@@ -89,7 +89,7 @@ export function RuleBuilder({ onSave, initialLogic, legislationCode = "GLOBAL" }
                             Quick Start: {legislationCode} Templates
                         </Label>
                         <Select onValueChange={applyTemplate}>
-                            <SelectTrigger className="h-9 bg-white border-indigo-200">
+                            <SelectTrigger className="h-9 bg-card border-indigo-200">
                                 <SelectValue placeholder="Choose a legislative template..." />
                             </SelectTrigger>
                             <SelectContent>
@@ -224,11 +224,11 @@ export function RuleBuilder({ onSave, initialLogic, legislationCode = "GLOBAL" }
             )}
 
             {(type === "IDENTIFICATION" || type === "GHOST_EMPLOYEE") && (
-                <div className="p-4 rounded-xl bg-slate-500/10 border border-slate-200 flex items-start gap-3 animate-in fade-in slide-in-from-top-1">
+                <div className="p-4 rounded-xl bg-slate-500/10 border border-border flex items-start gap-3 animate-in fade-in slide-in-from-top-1">
                     <ShieldCheck className="h-5 w-5 text-green-600 mt-0.5" />
                     <div>
-                        <p className="text-sm font-bold text-slate-800">Dynamic Heuristic Rule</p>
-                        <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                        <p className="text-sm font-bold text-foreground">Dynamic Heuristic Rule</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed mt-1">
                             This strategy uses built-in localized logic to validate data based on the
                             Legislation Code and Entity context. No additional parameters are required.
                         </p>

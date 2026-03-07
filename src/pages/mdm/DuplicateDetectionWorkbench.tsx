@@ -137,25 +137,26 @@ export default function DuplicateDetectionWorkbench() {
                             <p className="text-sm text-muted-foreground">No duplicates found</p>
                         ) : (
                             duplicateSets.map((set: DuplicateSet) => (
-                                <div role="button" tabIndex={0}
-                                    key={set.id}
-                                    className={cn(`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-accent ${selectedSet === set.id ? "bg-accent border-primary" : ""
-                                        }`)}
-                                    onClick={() => setSelectedSet(set.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                >
-                                    <div className="flex items-center justify-between mb-1">
-                                        <Badge variant="outline">
-                                            <Users className="w-3 h-3 mr-1" />
-                                            {set.partyIds.length} records
-                                        </Badge>
-                                        <Badge variant={set.matchScore >= 90 ? "destructive" : "warning"}>
-                                            {set.matchScore}% match
-                                        </Badge>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        {format(new Date(set.createdAt), "MMM d, yyyy")}
-                                    </p>
-                                </div>
+                                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedSet(set.id)}>
+                                <div
+                                                                    key={set.id}
+                                                                    className={cn(`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-accent ${selectedSet === set.id ? "bg-accent border-primary" : ""
+                                                                        }`)}
+                                                                >
+                                                                    <div className="flex items-center justify-between mb-1">
+                                                                        <Badge variant="outline">
+                                                                            <Users className="w-3 h-3 mr-1" />
+                                                                            {set.partyIds.length} records
+                                                                        </Badge>
+                                                                        <Badge variant={set.matchScore >= 90 ? "destructive" : "warning"}>
+                                                                            {set.matchScore}% match
+                                                                        </Badge>
+                                                                    </div>
+                                                                    <p className="text-xs text-muted-foreground">
+                                                                        {format(new Date(set.createdAt), "MMM d, yyyy")}
+                                                                    </p>
+                                                                </div>
+                                </Button>
                             ))
                         )}
                     </CardContent>
@@ -182,48 +183,49 @@ export default function DuplicateDetectionWorkbench() {
                                 {/* Side-by-side comparison */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {partyDetails.map((party: Party) => (
-                                        <div role="button" tabIndex={0}
-                                            key={party.id}
-                                            className={cn(`p-4 border rounded-lg cursor-pointer transition-all ${selectedSurvivor === party.id
-                                                ? "border-primary ring-2 ring-primary bg-primary/5"
-                                                : "hover:border-primary/50"
-                                                }`)}
-                                            onClick={() => setSelectedSurvivor(party.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                        >
-                                            <div className="flex items-start justify-between mb-3">
-                                                <Badge>{party.type}</Badge>
-                                                {selectedSurvivor === party.id && (
-                                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                                )}
-                                            </div>
+                                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedSurvivor(party.id)}>
+                                        <div
+                                                                                    key={party.id}
+                                                                                    className={cn(`p-4 border rounded-lg cursor-pointer transition-all ${selectedSurvivor === party.id
+                                                                                        ? "border-primary ring-2 ring-primary bg-primary/5"
+                                                                                        : "hover:border-primary/50"
+                                                                                        }`)}
+                                                                                >
+                                                                                    <div className="flex items-start justify-between mb-3">
+                                                                                        <Badge>{party.type}</Badge>
+                                                                                        {selectedSurvivor === party.id && (
+                                                                                            <CheckCircle className="w-5 h-5 text-primary" />
+                                                                                        )}
+                                                                                    </div>
 
-                                            <h3 className="font-semibold mb-2">{party.name}</h3>
+                                                                                    <h3 className="font-semibold mb-2">{party.name}</h3>
 
-                                            <div className="space-y-1 text-sm">
-                                                {party.email && (
-                                                    <div className="flex justify-between">
-                                                        <span className="text-muted-foreground">Email:</span>
-                                                        <span className="font-mono">{party.email}</span>
-                                                    </div>
-                                                )}
-                                                {party.phone && (
-                                                    <div className="flex justify-between">
-                                                        <span className="text-muted-foreground">Phone:</span>
-                                                        <span className="font-mono">{party.phone}</span>
-                                                    </div>
-                                                )}
-                                                <div className="flex justify-between">
-                                                    <span className="text-muted-foreground">Created:</span>
-                                                    <span>{format(new Date(party.createdAt), "MMM d, yyyy")}</span>
-                                                </div>
-                                            </div>
+                                                                                    <div className="space-y-1 text-sm">
+                                                                                        {party.email && (
+                                                                                            <div className="flex justify-between">
+                                                                                                <span className="text-muted-foreground">Email:</span>
+                                                                                                <span className="font-mono">{party.email}</span>
+                                                                                            </div>
+                                                                                        )}
+                                                                                        {party.phone && (
+                                                                                            <div className="flex justify-between">
+                                                                                                <span className="text-muted-foreground">Phone:</span>
+                                                                                                <span className="font-mono">{party.phone}</span>
+                                                                                            </div>
+                                                                                        )}
+                                                                                        <div className="flex justify-between">
+                                                                                            <span className="text-muted-foreground">Created:</span>
+                                                                                            <span>{format(new Date(party.createdAt), "MMM d, yyyy")}</span>
+                                                                                        </div>
+                                                                                    </div>
 
-                                            <div className="mt-3 pt-3 border-t">
-                                                <p className="text-xs text-muted-foreground">
-                                                    ID: {party.id}
-                                                </p>
-                                            </div>
-                                        </div>
+                                                                                    <div className="mt-3 pt-3 border-t">
+                                                                                        <p className="text-xs text-muted-foreground">
+                                                                                            ID: {party.id}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </div>
+                                        </Button>
                                     ))}
                                 </div>
 

@@ -58,7 +58,7 @@ export default function WmsMasterData() {
                                             </div>
                                             <div>
                                                 <h4 className="font-semibold">{zone.name}</h4>
-                                                <p className="text-sm text-slate-500">Type: {zone.type} • Priority: {zone.priority}</p>
+                                                <p className="text-sm text-muted-foreground">Type: {zone.type} • Priority: {zone.priority}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -101,9 +101,9 @@ export default function WmsMasterData() {
                                             <Navigation className="w-5 h-5 text-purple-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-slate-500 uppercase font-bold tracking-tighter">Loc Code</p>
+                                            <p className="text-xs text-muted-foreground uppercase font-bold tracking-tighter">Loc Code</p>
                                             <p className="font-mono text-white">A1-04-12-{i + 1}</p>
-                                            <p className="text-xs text-slate-400">Zone: STORAGE • Empty</p>
+                                            <p className="text-xs text-muted-foreground/70">Zone: STORAGE • Empty</p>
                                         </div>
                                     </div>
                                 ))}
@@ -134,8 +134,8 @@ export default function WmsMasterData() {
                                             <Badge variant="outline">Default</Badge>
                                         </div>
                                         <h4 className="font-bold text-white mb-1">{unit.name}</h4>
-                                        <p className="text-xs text-slate-500">Dims: {unit.dims}</p>
-                                        <p className="text-xs text-slate-500 mt-1">Capacity: {unit.wt}</p>
+                                        <p className="text-xs text-muted-foreground">Dims: {unit.dims}</p>
+                                        <p className="text-xs text-muted-foreground mt-1">Capacity: {unit.wt}</p>
                                     </Card>
                                 ))}
                             </div>
@@ -153,14 +153,14 @@ export default function WmsMasterData() {
                                 <Settings2 className="w-5 h-5 text-blue-400 mt-1" />
                                 <div>
                                     <h4 className="font-bold text-blue-400">System Directed Putaway</h4>
-                                    <p className="text-sm text-slate-400">Current Strategy: Empty Bin First (Consolidation Enabled)</p>
+                                    <p className="text-sm text-muted-foreground/70">Current Strategy: Empty Bin First (Consolidation Enabled)</p>
                                 </div>
                             </div>
                             <div className="p-4 bg-orange-500/5 border border-orange-500/20 rounded-lg flex items-start gap-4">
                                 <Settings2 className="w-5 h-5 text-orange-400 mt-1" />
                                 <div>
                                     <h4 className="font-bold text-orange-400">Wave Release Logic</h4>
-                                    <p className="text-sm text-slate-400">Current Strategy: Priority + FIFO</p>
+                                    <p className="text-sm text-muted-foreground/70">Current Strategy: Priority + FIFO</p>
                                 </div>
                             </div>
                         </CardContent>

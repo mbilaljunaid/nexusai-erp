@@ -37,7 +37,7 @@ const NINE_BOX_GRID = [
     { id: "HIGH_PERF_HIGH_POT", label: "Star / High Potential", performance: 3, potential: 3, color: "bg-emerald-500/10 border-emerald-300" },
 
     // Row 2 (Medium Performance)
-    { id: "MED_PERF_LOW_POT", label: "Effective Performer", performance: 2, potential: 1, color: "bg-slate-500/10 border-slate-200" },
+    { id: "MED_PERF_LOW_POT", label: "Effective Performer", performance: 2, potential: 1, color: "bg-slate-500/10 border-border" },
     { id: "MED_PERF_MED_POT", label: "Core Talent", performance: 2, potential: 2, color: "bg-blue-500/10 border-blue-200" },
     { id: "MED_PERF_HIGH_POT", label: "High Potential", performance: 2, potential: 3, color: "bg-cyan-500/10 border-cyan-200" },
 
@@ -93,7 +93,7 @@ function DraggableCandidate({ candidate, onAutoPosition }: { candidate: Candidat
             ref={setNodeRef}
             {...listeners}
             {...attributes}
-            className={cn(`bg-white border rounded-lg p-2 cursor-move hover:shadow-md transition-shadow relative ${readinessColor} ${isDragging ? "opacity-50" : ""
+            className={cn(`bg-card border rounded-lg p-2 cursor-move hover:shadow-md transition-shadow relative ${readinessColor} ${isDragging ? "opacity-50" : ""
                 }`)}
         >
             <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ function DroppableBox({
                 }`)}
         >
             <div className="mb-2">
-                <h4 className="text-xs font-semibold text-gray-700">{box.label}</h4>
+                <h4 className="text-xs font-semibold text-foreground/90">{box.label}</h4>
                 <div className="flex gap-1 mt-1">
                     <Badge variant="outline" className="text-[10px] px-1 py-0">
                         Perf: {box.performance}
@@ -158,7 +158,7 @@ function DroppableBox({
                         Pot: {box.potential}
                     </Badge>
                     {candidates.length > 0 && (
-                        <Badge variant="outline" className="text-[10px] px-1 py-0 bg-white">
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 bg-card">
                             {candidates.length}
                         </Badge>
                     )}
@@ -376,10 +376,10 @@ export function NineBoxMatrix({ candidates, onPositionChange, onAutoPosition, pl
             {/* 9-Box Grid */}
             <div ref={matrixRef}>
                 <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                    <div className="border-2 border-gray-300 rounded-lg p-4 bg-white">
+                    <div className="border-2 border-gray-300 rounded-lg p-4 bg-card">
                         {/* Y-axis label */}
                         <div className="flex gap-2">
-                            <div className="flex flex-col justify-around items-center w-12 text-xs font-semibold text-gray-600">
+                            <div className="flex flex-col justify-around items-center w-12 text-xs font-semibold text-muted-foreground">
                                 <div className="rotate-[-90deg] whitespace-nowrap">Performance →</div>
                             </div>
 
@@ -424,10 +424,10 @@ export function NineBoxMatrix({ candidates, onPositionChange, onAutoPosition, pl
                         </div>
 
                         {/* X-axis label */}
-                        <div className="text-center text-xs font-semibold text-gray-600 mt-2">
+                        <div className="text-center text-xs font-semibold text-muted-foreground mt-2">
                             Potential →
                         </div>
-                        <div className="flex justify-around text-[10px] text-gray-500 mt-1">
+                        <div className="flex justify-around text-[10px] text-muted-foreground mt-1">
                             <span>Low</span>
                             <span>Medium</span>
                             <span>High</span>

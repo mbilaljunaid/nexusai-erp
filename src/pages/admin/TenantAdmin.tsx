@@ -106,7 +106,7 @@ export default function TenantAdmin() {
       id: "status", header: "Status", width: 120, cell: (item) => (
         <Badge
           variant="secondary"
-          className={item.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-gray-600"}
+          className={item.status === "active" ? "bg-green-500/10 text-green-600" : "bg-gray-500/10 text-muted-foreground"}
         >
           {item.status === "active" ? "Active" : "Inactive"}
         </Badge>

@@ -74,12 +74,12 @@ export default function TrialPlanManagementDashboard() {
                                 <CardHeader>
                                     <Badge>{plan.tier}</Badge>
                                     <CardTitle className="text-2xl mt-2">{plan.display_name}</CardTitle>
-                                    <p className="text-gray-500 text-sm">{plan.description}</p>
+                                    <p className="text-muted-foreground text-sm">{plan.description}</p>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-4xl font-bold mb-4">
                                         ${plan.price_monthly}
-                                        <span className="text-base font-normal text-gray-500">/mo</span>
+                                        <span className="text-base font-normal text-muted-foreground">/mo</span>
                                     </div>
                                     <div className="space-y-2 text-sm">
                                         {plan.features.slice(0, 5).map((feature: string, i: number) => (
@@ -104,7 +104,7 @@ export default function TrialPlanManagementDashboard() {
                                     <div key={trial.id} className="flex items-center justify-between p-3 border rounded">
                                         <div>
                                             <div className="font-medium">{trial.email}</div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="text-sm text-muted-foreground">
                                                 Started: {formatDate(trial.trial_started_at)}
                                             </div>
                                         </div>

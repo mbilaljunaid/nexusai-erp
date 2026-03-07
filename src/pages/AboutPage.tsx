@@ -75,12 +75,12 @@ export default function AboutPage() {
           </div>
           <div className="flex gap-4 justify-center flex-wrap">
             <a href="https://github.com/mbilaljunaid/nexusai-erp" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="bg-white text-slate-900 dark:text-slate-200 hover:bg-slate-500/15" data-testid="button-github-about">
+              <Button size="lg" className="bg-card text-foreground dark:text-slate-200 hover:bg-slate-500/15" data-testid="button-github-about">
                 <Star className="mr-2 w-5 h-5" /> Star on GitHub
               </Button>
             </a>
             <a href="https://github.com/mbilaljunaid/nexusai-erp/fork" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" data-testid="button-fork-about">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-card/10" data-testid="button-fork-about">
                 <GitFork className="mr-2 w-5 h-5" /> Fork Repository
               </Button>
             </a>

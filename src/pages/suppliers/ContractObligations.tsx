@@ -84,7 +84,7 @@ export default function ContractObligations() {
                 {[['Total', summary?.total ?? 0, '#6b7280'], ['Pending', summary?.pending ?? 0, '#1d4ed8'], ['Overdue', summary?.overdue ?? 0, '#dc2626'], ['Met', summary?.met ?? 0, '#059669'], ['At Risk', `${summary?.currency_code ?? 'USD'} ${formatNumber(Number(summary?.total_at_risk ?? 0))}`, '#d97706']].map(([l, v, c]) => (
                     <Card key={l as string} className="px-4 py-2.5 flex-1 shadow-sm border-l-[4px]" style={{ borderLeftColor: c as string }}>
                         <div className="text-xl font-extrabold font-mono">{v}</div>
-                        <div className="text-[11px] text-gray-400 mt-0.5">{l}</div>
+                        <div className="text-[11px] text-muted-foreground/70 mt-0.5">{l}</div>
                     </Card>
                 ))}
             </div>
@@ -136,7 +136,7 @@ export default function ContractObligations() {
             {/* Filters */}
             <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending', 'InReview', 'Overdue', 'Met', 'Waived'].map(s => (
-                    <Button variant="secondary" size="sm" key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-lg text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-border rounded-lg text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>
                         {s || 'All'}
                     </Button>
                 ))}
@@ -148,46 +148,48 @@ export default function ContractObligations() {
                     const cfg = OB_STATUS[ob.status] ?? { bg: '#f3f4f6', color: '#6b7280' };
                     const sel = selected?.id === ob.id;
                     return (
-                        <Card key={ob.id} onClick={() => setSelected(sel ? null : ob)} className={cn(`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`)} style={{ borderLeftColor: cfg.color }} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                            <div className="flex justify-between items-start mb-0.5">
-                                <div>
-                                    <span className="text-[13px] font-bold text-gray-900 dark:text-gray-200">{ob.title}</span>
-                                    <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 font-semibold">{ob.obligation_type}</span>
-                                </div>
-                                <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: cfg.bg, color: cfg.color }}>{ob.status}</span>
-                            </div>
-                            <div className="flex gap-4 text-[11px] text-gray-500">
-                                <span><Clock  className="inline h-2.5 w-2.5" /> Due: {fmt(ob.due_date)}</span>
-                                <span>Supplier: {ob.supplier_id}</span>
-                                <span>Contract: {ob.contract_id}</span>
-                                {ob.escalation_level > 0 && <span className="text-red-600 font-bold">{ESC_LABELS[ob.escalation_level]}</span>}
-                                {ob.penalty_amount && <span className="text-amber-600 font-semibold">{ob.currency_code} {formatNumber(Number(ob.penalty_amount))}</span>}
-                            </div>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelected(sel ? null : ob)}>
+                        <Card key={ob.id} className={cn(`px-3.5 py-2.5 cursor-pointer shadow-sm border-l-[4px] ${sel ? 'border-y-blue-700 border-r-blue-700' : ''}`)} style={{ borderLeftColor: cfg.color }}>
+                                                    <div className="flex justify-between items-start mb-0.5">
+                                                        <div>
+                                                            <span className="text-[13px] font-bold text-foreground dark:text-gray-200">{ob.title}</span>
+                                                            <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-semibold">{ob.obligation_type}</span>
+                                                        </div>
+                                                        <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: cfg.bg, color: cfg.color }}>{ob.status}</span>
+                                                    </div>
+                                                    <div className="flex gap-4 text-[11px] text-muted-foreground">
+                                                        <span><Clock  className="inline h-2.5 w-2.5" /> Due: {fmt(ob.due_date)}</span>
+                                                        <span>Supplier: {ob.supplier_id}</span>
+                                                        <span>Contract: {ob.contract_id}</span>
+                                                        {ob.escalation_level > 0 && <span className="text-red-600 font-bold">{ESC_LABELS[ob.escalation_level]}</span>}
+                                                        {ob.penalty_amount && <span className="text-amber-600 font-semibold">{ob.currency_code} {formatNumber(Number(ob.penalty_amount))}</span>}
+                                                    </div>
 
-                            {sel && (
-                                <div className="mt-2.5 pt-2.5 border-t border-dashed border-gray-200">
-                                    {ob.description && <p className="text-xs text-gray-700 mb-2">{ob.description}</p>}
-                                    {ob.status === 'Pending' && (
-                                        <div className="flex gap-1.5 items-center mb-1.5">
-                                            <Input placeholder="Evidence URL" value={evidenceUrl} onChange={e => setEvidenceUrl(e.target.value)} className="flex-1 px-2 py-1 border border-gray-300 rounded-md text-[11px]" aria-label="Evidence URL" />
-                                            <Button variant="default" size="sm" disabled={!evidenceUrl} onClick={e => { e.stopPropagation(); evidenceMut.mutate({ id: ob.id, url: evidenceUrl }); }} className="text-white text-[11px] disabled:opacity-50">Submit Evidence</Button>
-                                        </div>
-                                    )}
-                                    <div className="flex gap-1.5">
-                                        {ob.status === 'InReview' && <>
-                                            <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} className="text-white text-[11px] flex items-center gap-1"><CheckCircle2 className="h-[11px] w-[11px]"  /> Mark Met</Button>
-                                            <Button variant="secondary" size="sm" onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Waived' }); }} className="text-white text-[11px]">Waive</Button>
-                                        </>}
-                                        {ob.status === 'Overdue' && (
-                                            <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} className="text-white text-[11px] flex items-center gap-1"><ArrowUp className="h-[11px] w-[11px]"  /> Escalate</Button>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </Card>
+                                                    {sel && (
+                                                        <div className="mt-2.5 pt-2.5 border-t border-dashed border-border">
+                                                            {ob.description && <p className="text-xs text-foreground/90 mb-2">{ob.description}</p>}
+                                                            {ob.status === 'Pending' && (
+                                                                <div className="flex gap-1.5 items-center mb-1.5">
+                                                                    <Input placeholder="Evidence URL" value={evidenceUrl} onChange={e => setEvidenceUrl(e.target.value)} className="flex-1 px-2 py-1 border border-gray-300 rounded-md text-[11px]" aria-label="Evidence URL" />
+                                                                    <Button variant="default" size="sm" disabled={!evidenceUrl} onClick={e => { e.stopPropagation(); evidenceMut.mutate({ id: ob.id, url: evidenceUrl }); }} className="text-white text-[11px] disabled:opacity-50">Submit Evidence</Button>
+                                                                </div>
+                                                            )}
+                                                            <div className="flex gap-1.5">
+                                                                {ob.status === 'InReview' && <>
+                                                                    <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} className="text-white text-[11px] flex items-center gap-1"><CheckCircle2 className="h-[11px] w-[11px]"  /> Mark Met</Button>
+                                                                    <Button variant="secondary" size="sm" onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Waived' }); }} className="text-white text-[11px]">Waive</Button>
+                                                                </>}
+                                                                {ob.status === 'Overdue' && (
+                                                                    <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} className="text-white text-[11px] flex items-center gap-1"><ArrowUp className="h-[11px] w-[11px]"  /> Escalate</Button>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </Card>
+                        </Button>
                     );
                 })}
-                {obligations.length === 0 && <div className="text-center text-gray-400 py-7">No obligations found</div>}
+                {obligations.length === 0 && <div className="text-center text-muted-foreground/70 py-7">No obligations found</div>}
             </div>
         </StandardPage>
     );

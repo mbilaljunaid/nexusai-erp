@@ -192,25 +192,26 @@ export default function ConsolidationWorkbench() {
                                     <Label>Select Consolidation Group</Label>
                                     <div className="space-y-2">
                                         {ledgerSets.map((set) => (
+                                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedLedgerSet(set.id)}>
                                             <Card
-                                                key={set.id}
-                                                className={cn(`cursor-pointer transition-all ${selectedLedgerSet === set.id ? 'ring-2 ring-blue-500 bg-blue-500/10' : 'hover:bg-muted'}`)}
-                                                onClick={() => setSelectedLedgerSet(set.id)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                            >
-                                                <CardContent className="pt-4 pb-4">
-                                                    <div className="flex justify-between items-start">
-                                                        <div>
-                                                            <h4 className="font-medium">{set.name}</h4>
-                                                            <p className="text-xs text-muted-foreground mt-1">
-                                                                {set.entities} entities • Reporting: {set.currency}
-                                                            </p>
-                                                        </div>
-                                                        {selectedLedgerSet === set.id && (
-                                                            <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                                                        )}
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
+                                                                                            key={set.id}
+                                                                                            className={cn(`cursor-pointer transition-all ${selectedLedgerSet === set.id ? 'ring-2 ring-blue-500 bg-blue-500/10' : 'hover:bg-muted'}`)}
+                                                                                        >
+                                                                                            <CardContent className="pt-4 pb-4">
+                                                                                                <div className="flex justify-between items-start">
+                                                                                                    <div>
+                                                                                                        <h4 className="font-medium">{set.name}</h4>
+                                                                                                        <p className="text-xs text-muted-foreground mt-1">
+                                                                                                            {set.entities} entities • Reporting: {set.currency}
+                                                                                                        </p>
+                                                                                                    </div>
+                                                                                                    {selectedLedgerSet === set.id && (
+                                                                                                        <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                                                                                                    )}
+                                                                                                </div>
+                                                                                            </CardContent>
+                                                                                        </Card>
+                                            </Button>
                                         ))}
                                     </div>
                                     <Button

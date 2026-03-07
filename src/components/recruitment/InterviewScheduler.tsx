@@ -289,24 +289,25 @@ export function InterviewScheduler({
                             <Label>Interviewers *</Label>
                             <div className="border rounded-lg p-3 space-y-2 max-h-48 overflow-y-auto">
                                 {availableInterviewers.map((interviewer) => (
-                                    <div role="button" tabIndex={0}
-                                        key={interviewer.id}
-                                        className={cn(`p-2 rounded cursor-pointer border transition-colors ${formData.interviewerIds.includes(interviewer.id)
-                                                ? 'border-primary bg-primary/10'
-                                                : 'border-transparent hover:bg-muted'
-                                            }`)}
-                                        onClick={() => toggleInterviewer(interviewer.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <p className="font-medium text-sm">{interviewer.name}</p>
-                                                <p className="text-xs text-muted-foreground">{interviewer.email}</p>
-                                            </div>
-                                            {formData.interviewerIds.includes(interviewer.id) && (
-                                                <Badge variant="default" className="text-xs">Selected</Badge>
-                                            )}
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleInterviewer(interviewer.id)}>
+                                    <div
+                                                                            key={interviewer.id}
+                                                                            className={cn(`p-2 rounded cursor-pointer border transition-colors ${formData.interviewerIds.includes(interviewer.id)
+                                                                                    ? 'border-primary bg-primary/10'
+                                                                                    : 'border-transparent hover:bg-muted'
+                                                                                }`)}
+                                                                        >
+                                                                            <div className="flex items-center justify-between">
+                                                                                <div>
+                                                                                    <p className="font-medium text-sm">{interviewer.name}</p>
+                                                                                    <p className="text-xs text-muted-foreground">{interviewer.email}</p>
+                                                                                </div>
+                                                                                {formData.interviewerIds.includes(interviewer.id) && (
+                                                                                    <Badge variant="default" className="text-xs">Selected</Badge>
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 ))}
                             </div>
                             <p className="text-xs text-muted-foreground">

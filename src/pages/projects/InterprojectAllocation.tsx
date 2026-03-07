@@ -279,29 +279,30 @@ export default function InterprojectAllocation() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {rules?.map((rule: AllocationRule) => (
-                            <div role="button" tabIndex={0}
-                                key={rule.id}
-                                className={cn(`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
-                                    }`)}
-                                onClick={() => {
-                                    setSelectedRule(rule.id || null);
-                                    setRuleName(rule.name);
-                                    setDescription(rule.description);
-                                    setSourceProject(rule.sourceProjectId.toString());
-                                    setTargetProjects(rule.targetProjects);
-                                    setAllocationBasis(rule.allocationBasis);
-                                    setSchedule(rule.schedule);
-                                    setIsActive(rule.isActive);
-                                }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                            >
-                                <div className="font-medium">{rule.name}</div>
-                                <div className="text-xs text-muted-foreground mt-1">
-                                    {rule.targetProjects.length} targets • {rule.allocationBasis}
-                                </div>
-                                <Badge variant={rule.isActive ? "default" : "secondary"} className="mt-2">
-                                    {rule.isActive ? "Active" : "Inactive"}
-                                </Badge>
-                            </div>
+                            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
+                                                                setSelectedRule(rule.id || null);
+                                                                setRuleName(rule.name);
+                                                                setDescription(rule.description);
+                                                                setSourceProject(rule.sourceProjectId.toString());
+                                                                setTargetProjects(rule.targetProjects);
+                                                                setAllocationBasis(rule.allocationBasis);
+                                                                setSchedule(rule.schedule);
+                                                                setIsActive(rule.isActive);
+                                                            }}>
+                            <div
+                                                            key={rule.id}
+                                                            className={cn(`p-3 rounded-lg cursor-pointer border ${selectedRule === rule.id ? "border-primary bg-primary/5" : "border-border hover:bg-accent"
+                                                                }`)}
+                                                        >
+                                                            <div className="font-medium">{rule.name}</div>
+                                                            <div className="text-xs text-muted-foreground mt-1">
+                                                                {rule.targetProjects.length} targets • {rule.allocationBasis}
+                                                            </div>
+                                                            <Badge variant={rule.isActive ? "default" : "secondary"} className="mt-2">
+                                                                {rule.isActive ? "Active" : "Inactive"}
+                                                            </Badge>
+                                                        </div>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>

@@ -5,6 +5,7 @@ import { Building2, Mail, MapPin, ArrowRight, Fingerprint } from "lucide-react";
 import { api } from "@/lib/api";
 import { useState } from "react";
 import { ArSideSheet } from "./ArSideSheet";
+import { Button } from "@/components/ui/button";
 
 export function ArCustomerList() {
     const { data: customers, isLoading } = useQuery({
@@ -33,58 +34,59 @@ export function ArCustomerList() {
         <>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {customers.map((customer: any) => (
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCustomer(customer)}>
                     <Card
-                        key={customer.id}
-                        onClick={() => setSelectedCustomer(customer)}
-                        className="group hover:border-emerald-500/50 transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer overflow-hidden border-t-2 border-t-emerald-500 hover:scale-[1.02] active:scale-[0.98]" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                    >
-                        <CardContent className="p-5">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/15 transition-colors w-fit">
-                                    <Fingerprint className="h-5 w-5 text-emerald-600" />
-                                </div>
-                                <Badge variant="secondary" className="text-[10px] font-black uppercase tracking-widest">
-                                    Registry Record
-                                </Badge>
-                            </div>
+                                            key={customer.id}
+                                            className="group hover:border-emerald-500/50 transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer overflow-hidden border-t-2 border-t-emerald-500 hover:scale-[1.02] active:scale-[0.98]"
+                                        >
+                                            <CardContent className="p-5">
+                                                <div className="flex justify-between items-start mb-4">
+                                                    <div className="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/15 transition-colors w-fit">
+                                                        <Fingerprint className="h-5 w-5 text-emerald-600" />
+                                                    </div>
+                                                    <Badge variant="secondary" className="text-[10px] font-black uppercase tracking-widest">
+                                                        Registry Record
+                                                    </Badge>
+                                                </div>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-emerald-700 transition-colors">
-                                        {customer.name}
-                                    </h3>
-                                    <div className="space-y-1.5 opacity-80">
-                                        <div className="flex items-center text-xs text-muted-foreground">
-                                            <Building2 className="mr-1.5 h-3 w-3" />
-                                            {customer.customerType} Party
-                                        </div>
-                                        <div className="flex items-center text-xs text-muted-foreground">
-                                            <Mail className="mr-1.5 h-3 w-3" />
-                                            {customer.contactEmail || "No official email"}
-                                        </div>
-                                        <div className="flex items-center text-xs text-muted-foreground">
-                                            <MapPin className="mr-1.5 h-3 w-3" />
-                                            {customer.address || "No registry address"}
-                                        </div>
-                                    </div>
-                                </div>
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <h3 className="font-bold text-lg leading-tight mb-2 group-hover:text-emerald-700 transition-colors">
+                                                            {customer.name}
+                                                        </h3>
+                                                        <div className="space-y-1.5 opacity-80">
+                                                            <div className="flex items-center text-xs text-muted-foreground">
+                                                                <Building2 className="mr-1.5 h-3 w-3" />
+                                                                {customer.customerType} Party
+                                                            </div>
+                                                            <div className="flex items-center text-xs text-muted-foreground">
+                                                                <Mail className="mr-1.5 h-3 w-3" />
+                                                                {customer.contactEmail || "No official email"}
+                                                            </div>
+                                                            <div className="flex items-center text-xs text-muted-foreground">
+                                                                <MapPin className="mr-1.5 h-3 w-3" />
+                                                                {customer.address || "No registry address"}
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                <div className="pt-3 border-t border-emerald-50">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-[10px] uppercase font-black text-muted-foreground/60 tracking-wider">Status</span>
-                                        <Badge variant={customer.status === "Active" ? "default" : "secondary"} className="h-4 px-1.5 text-[9px]">
-                                            {customer.status}
-                                        </Badge>
-                                    </div>
-                                </div>
-                            </div>
+                                                    <div className="pt-3 border-t border-emerald-50">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="text-[10px] uppercase font-black text-muted-foreground/60 tracking-wider">Status</span>
+                                                            <Badge variant={customer.status === "Active" ? "default" : "secondary"} className="h-4 px-1.5 text-[9px]">
+                                                                {customer.status}
+                                                            </Badge>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                            <div className="mt-4 pt-3 flex items-center justify-between text-xs font-bold text-emerald-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                                <span>Manage Accounts</span>
-                                <ArrowRight className="h-3 w-3" />
-                            </div>
-                        </CardContent>
-                    </Card>
+                                                <div className="mt-4 pt-3 flex items-center justify-between text-xs font-bold text-emerald-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                                                    <span>Manage Accounts</span>
+                                                    <ArrowRight className="h-3 w-3" />
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                    </Button>
                 ))}
             </div>
 

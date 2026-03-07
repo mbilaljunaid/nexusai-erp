@@ -120,7 +120,7 @@ export default function AdminRoles() {
             </Card>
           ))}
           {roles.length === 0 && (
-            <Card className="p-8 text-center text-gray-500">
+            <Card className="p-8 text-center text-muted-foreground">
               <p>No roles yet. Create one to get started.</p>
             </Card>
           )}

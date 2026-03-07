@@ -109,12 +109,12 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
     };
 
     return (
-        <Card className="w-full max-w-2xl mx-auto shadow-xl border-slate-200">
+        <Card className="w-full max-w-2xl mx-auto shadow-xl border-border">
             <CardHeader className="bg-slate-500/10 border-b pb-6">
                 <div className="flex justify-between items-center">
                     <div>
-                        <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-200">Hire New Worker</CardTitle>
-                        <CardDescription className="text-slate-500">Step {step} of 2: {step === 1 ? "Personal Details" : "Employment Information"}</CardDescription>
+                        <CardTitle className="text-2xl font-bold text-foreground dark:text-slate-200">Hire New Worker</CardTitle>
+                        <CardDescription className="text-muted-foreground">Step {step} of 2: {step === 1 ? "Personal Details" : "Employment Information"}</CardDescription>
                     </div>
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
                         <ShieldCheck className="h-6 w-6 text-primary" />
@@ -148,7 +148,7 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
                                     <FormItem>
                                         <FormLabel className="font-semibold">Legal Employer</FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl><SelectTrigger className="bg-white"><SelectValue placeholder="Select Employer" /></SelectTrigger></FormControl>
+                                            <FormControl><SelectTrigger className="bg-card"><SelectValue placeholder="Select Employer" /></SelectTrigger></FormControl>
                                             <SelectContent>
                                                 <SelectItem value="le1">Acme US Corp</SelectItem>
                                                 <SelectItem value="le2">Acme UK Ltd</SelectItem>
@@ -164,7 +164,7 @@ export function HireWorkerWizard({ onClose }: { onClose?: () => void }) {
 
                                 <div className="pt-4 border-t">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">Compliance Analytics</h3>
+                                        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Compliance Analytics</h3>
                                         <Button
                                             type="button"
                                             variant="outline"

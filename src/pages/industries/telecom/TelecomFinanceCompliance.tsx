@@ -62,7 +62,7 @@ export default function TelecomFinanceCompliance() {
       <DashboardWidget title="Transactions" colSpan={1}>
         <div className="flex items-center gap-4">
           <div className="p-2 rounded-full bg-/15">
-            <List className="h-4 w-4 text-slate-600" />
+            <List className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
             <div className="text-2xl font-bold tracking-tight">{transactions.length}</div>

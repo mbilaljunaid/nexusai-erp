@@ -122,7 +122,7 @@ export default function RecipeManager() {
             cell: (row: any) => (
                 <div className="p-2">
                     <div className="font-medium">{row.name}</div>
-                    <div className="text-xs text-slate-500 truncate max-w-48">{row.description}</div>
+                    <div className="text-xs text-muted-foreground truncate max-w-48">{row.description}</div>
                 </div>
             )
         },
@@ -134,7 +134,7 @@ export default function RecipeManager() {
                 const f = Array.isArray(formulas) ? formulas.find((x: any) => x.id === row.formulaId) : null;
                 return (
                     <div className="flex items-center gap-2 p-2">
-                        <FlaskConical className="h-3 w-3 text-slate-400" />
+                        <FlaskConical className="h-3 w-3 text-muted-foreground/70" />
                         <span className="text-sm">{f?.name || row.formulaId}</span>
                     </div>
                 );
@@ -148,10 +148,10 @@ export default function RecipeManager() {
                 const r = routings.find(x => x.id === row.routingId);
                 return row.routingId ? (
                     <div className="flex items-center gap-2 p-2">
-                        <Settings className="h-3 w-3 text-slate-400" />
+                        <Settings className="h-3 w-3 text-muted-foreground/70" />
                         <span className="text-sm">{r?.routingNumber || "Standard Routing"}</span>
                     </div>
-                ) : <span className="text-slate-400 text-xs italic p-2">No routing linked</span>;
+                ) : <span className="text-muted-foreground/70 text-xs italic p-2">No routing linked</span>;
             }
         },
         {

@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Loader2, Search } from "lucide-react";
 import { List } from "react-window";
+import { Button } from "@/components/ui/button";
 
 export interface Column<T> {
     header: string | React.ReactNode;
@@ -127,38 +128,39 @@ export function StandardTable<T>({
         if (!item) return null;
 
         return (
-            <div role="button" tabIndex={0}
-                style={style}
-                {...ariaAttributes}
-                className={cn(
-                    "flex border-b border-border bg-background transition-colors hover:bg-muted/30",
-                    onRowClick && "cursor-pointer"
-                )}
-                onClick={() => onRowClick && onRowClick(item)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-            >
-                {columns.map((col: Column<T>, colIdx: number) => {
-                    const width = col.width || `${100 / columns.length}%`;
-                    return (
-                        <div
-                            key={colIdx}
-                            className={cn("py-3 px-4 text-sm flex items-center shrink-0 overflow-hidden", col.className)}
-                            style={{ width, flexBasis: width }}
+            <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => onRowClick && onRowClick(item)}>
+            <div
+                            style={style}
+                            {...ariaAttributes}
+                            className={cn(
+                                "flex border-b border-border bg-background transition-colors hover:bg-muted/30",
+                                onRowClick && "cursor-pointer"
+                            )}
                         >
-                            {(() => {
-                                try {
-                                    if (col.cell && typeof col.cell === "function") {
-                                        return col.cell(item);
-                                    }
-                                    if (col.accessorKey) return (item[col.accessorKey as keyof T] as React.ReactNode);
-                                    return null;
-                                } catch {
-                                    return <span className="text-destructive text-xs text-nowrap">Error</span>;
-                                }
-                            })()}
+                            {columns.map((col: Column<T>, colIdx: number) => {
+                                const width = col.width || `${100 / columns.length}%`;
+                                return (
+                                    <div
+                                        key={colIdx}
+                                        className={cn("py-3 px-4 text-sm flex items-center shrink-0 overflow-hidden", col.className)}
+                                        style={{ width, flexBasis: width }}
+                                    >
+                                        {(() => {
+                                            try {
+                                                if (col.cell && typeof col.cell === "function") {
+                                                    return col.cell(item);
+                                                }
+                                                if (col.accessorKey) return (item[col.accessorKey as keyof T] as React.ReactNode);
+                                                return null;
+                                            } catch {
+                                                return <span className="text-destructive text-xs text-nowrap">Error</span>;
+                                            }
+                                        })()}
+                                    </div>
+                                );
+                            })}
                         </div>
-                    );
-                })}
-            </div>
+            </Button>
         );
     };
 

@@ -125,7 +125,7 @@ export function AdvancedSchedulingBoard() {
             case "PAUSED":
                 return { icon: AlertCircle, color: "text-yellow-600", label: "Paused" };
             case "SCHEDULED":
-                return { icon: Clock, color: "text-gray-600", label: "Scheduled" };
+                return { icon: Clock, color: "text-muted-foreground", label: "Scheduled" };
         }
     };
 
@@ -344,7 +344,7 @@ export function AdvancedSchedulingBoard() {
                                                     const isWithinSpan = idx >= visibleStartCol && idx < visibleStartCol + visibleSpan;
 
                                                     return (
-                                                        <div key={idx} className="relative h-16 border-l border-b border-gray-200">
+                                                        <div key={idx} className="relative h-16 border-l border-b border-border">
                                                             {isStart && isWithinSpan && (
                                                                 <div
                                                                     className={cn(

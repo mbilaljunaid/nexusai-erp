@@ -196,19 +196,21 @@ export default function TechnicianTaskView() {
 
             <div className="p-4 space-y-4">
                 {isLoading ? <Skeleton className="h-24 w-full" /> : myTasks?.map((wo: any) => (
-                    <Card key={wo.id} onClick={() => setSelectedTask(wo)} className="cursor-pointer active:scale-95 transition-transform" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <CardContent className="p-4">
-                            <div className="flex justify-between items-start mb-2">
-                                <span className="font-bold">{wo.workOrderNumber}</span>
-                                <Badge>{wo.status}</Badge>
-                            </div>
-                            <p className="text-sm line-clamp-2 mb-3">{wo.description}</p>
-                            <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Workshop B</span>
-                                <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Due Today</span>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedTask(wo)}>
+                    <Card key={wo.id} className="cursor-pointer active:scale-95 transition-transform">
+                                            <CardContent className="p-4">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <span className="font-bold">{wo.workOrderNumber}</span>
+                                                    <Badge>{wo.status}</Badge>
+                                                </div>
+                                                <p className="text-sm line-clamp-2 mb-3">{wo.description}</p>
+                                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                                    <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Workshop B</span>
+                                                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Due Today</span>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                    </Button>
                 ))}
 
                 {myTasks?.length === 0 && (

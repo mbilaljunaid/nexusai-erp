@@ -64,7 +64,7 @@ export default function PortalLogin() {
                 <div className="h-10 w-10 bg-emerald-600 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold text-xl">N</span>
                 </div>
-                <span className="font-bold text-2xl tracking-tight text-slate-800">Nexus<span className="text-emerald-600">Portal</span></span>
+                <span className="font-bold text-2xl tracking-tight text-foreground">Nexus<span className="text-emerald-600">Portal</span></span>
             </div>
 
             <Card className="w-full max-w-md shadow-lg border-emerald-100/50">

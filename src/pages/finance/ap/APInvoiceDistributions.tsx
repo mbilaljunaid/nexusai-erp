@@ -132,7 +132,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
     const isBalanced = Math.abs(totalCalculated - lineAmount) <= 0.01;
 
     const distColumns: SpreadsheetColumn<DistributionLine>[] = [
-        { id: "lineNumber", header: "No.", width: "80px", cell: (row) => <div className="text-center text-slate-500 font-medium">{row.lineNumber}</div> },
+        { id: "lineNumber", header: "No.", width: "80px", cell: (row) => <div className="text-center text-muted-foreground font-medium">{row.lineNumber}</div> },
         {
             id: "type", header: "Type", width: "160px", cell: (row) => (
                 <Select value={row.distributionLineType} onValueChange={v => handleDistributionChange(row.lineNumber - 1, "distributionLineType", v)}>
@@ -198,7 +198,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
             description="Manage accounting splits for this invoice line."
             actions={
                 <div className="flex gap-2 text-sm font-medium">
-                    <div className="px-3 py-1 bg-slate-100 rounded text-slate-700">
+                    <div className="px-3 py-1 bg-muted rounded text-foreground/90">
                         Line Amount: ${lineAmount.toFixed(2)}
                     </div>
                     <div className={cn(`px-3 py-1 rounded ${isBalanced ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`)}>
@@ -207,7 +207,7 @@ export function APInvoiceDistributions({ invoiceId, invoiceLineId, lineAmount, o
                 </div>
             }
         >
-            <Card className="border-slate-200 shadow-sm mt-4">
+            <Card className="border-border shadow-sm mt-4">
                 <CardContent className="p-0 border-b">
                     <InteractiveSpreadsheet
                         columns={distColumns}

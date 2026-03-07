@@ -286,7 +286,7 @@ export default function UseCasesPage() {
                     <p className="text-slate-300 mb-4 text-sm">{useCase.description}</p>
                     <div className="space-y-1">
                       {useCase.metrics.map((metric, m) => (
-                        <div key={m} className="flex items-center gap-2 text-xs text-slate-400">
+                        <div key={m} className="flex items-center gap-2 text-xs text-muted-foreground/70">
                           <div className="w-1 h-1 bg-blue-400 rounded-full" />
                           {metric}
                         </div>
@@ -324,7 +324,7 @@ export default function UseCasesPage() {
                     <p className="text-slate-300 mb-4 text-sm">{useCase.description}</p>
                     <div className="space-y-1">
                       {useCase.metrics.map((metric, m) => (
-                        <div key={m} className="flex items-center gap-2 text-xs text-slate-400">
+                        <div key={m} className="flex items-center gap-2 text-xs text-muted-foreground/70">
                           <div className="w-1 h-1 bg-purple-400 rounded-full" />
                           {metric}
                         </div>
@@ -375,7 +375,7 @@ export default function UseCasesPage() {
                 </Button>
               </Link>
               <Link to="/industries">
-                <Button variant="outline" className="text-white border-white hover:bg-white/10" data-testid="button-explore-industries">
+                <Button variant="outline" className="text-white border-white hover:bg-card/10" data-testid="button-explore-industries">
                   Explore Industries
                 </Button>
               </Link>

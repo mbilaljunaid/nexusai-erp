@@ -299,23 +299,24 @@ export default function ConstructionContractWorkbench() {
                         ) : (
                             <div className="divide-y">
                                 {contracts.map(contract => (
-                                    <div role="button" tabIndex={0}
-                                        key={contract.id}
-                                        className={cn(`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${selectedContractId === contract.id ? "bg-muted border-l-4 border-primary" : ""}`)}
-                                        onClick={() => setSelectedContractId(contract.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
-                                    >
-                                        <div className="flex justify-between items-start mb-1">
-                                            <span className="font-semibold">{contract.contractNumber}</span>
-                                            <Badge variant={contract.status === "ACTIVE" ? "default" : "secondary"}>
-                                                {contract.status}
-                                            </Badge>
-                                        </div>
-                                        <p className="text-sm font-medium truncate mb-2">{contract.subject}</p>
-                                        <div className="text-xs text-muted-foreground flex justify-between">
-                                            <span>Orig: ${formatNumber(Number(contract.originalAmount))}</span>
-                                            <span className="font-bold text-primary">Rev: ${formatNumber(Number(contract.revisedAmount))}</span>
-                                        </div>
-                                    </div>
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedContractId(contract.id)}>
+                                    <div
+                                                                            key={contract.id}
+                                                                            className={cn(`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${selectedContractId === contract.id ? "bg-muted border-l-4 border-primary" : ""}`)}
+                                                                        >
+                                                                            <div className="flex justify-between items-start mb-1">
+                                                                                <span className="font-semibold">{contract.contractNumber}</span>
+                                                                                <Badge variant={contract.status === "ACTIVE" ? "default" : "secondary"}>
+                                                                                    {contract.status}
+                                                                                </Badge>
+                                                                            </div>
+                                                                            <p className="text-sm font-medium truncate mb-2">{contract.subject}</p>
+                                                                            <div className="text-xs text-muted-foreground flex justify-between">
+                                                                                <span>Orig: ${formatNumber(Number(contract.originalAmount))}</span>
+                                                                                <span className="font-bold text-primary">Rev: ${formatNumber(Number(contract.revisedAmount))}</span>
+                                                                            </div>
+                                                                        </div>
+                                    </Button>
                                 ))}
                             </div>
                         )}

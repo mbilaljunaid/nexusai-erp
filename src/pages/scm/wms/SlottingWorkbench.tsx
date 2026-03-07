@@ -52,11 +52,11 @@ export default function SlottingWorkbench() {
                                             <Badge variant="outline" className="text-[10px] uppercase border-purple-500/20 text-purple-400">{rec.reason}</Badge>
                                         </div>
                                         <div className="flex items-center gap-2 text-sm">
-                                            <span className="text-slate-500">{rec.current}</span>
+                                            <span className="text-muted-foreground">{rec.current}</span>
                                             <ArrowRightLeft className="w-4 h-4 text-purple-400" />
                                             <span className="text-green-400 font-mono">{rec.recommended}</span>
                                         </div>
-                                        <p className="text-xs text-slate-500 mt-2">Expected Benefit: <span className="text-white">{rec.benefit}</span></p>
+                                        <p className="text-xs text-muted-foreground mt-2">Expected Benefit: <span className="text-white">{rec.benefit}</span></p>
                                     </div>
                                     <Button className="ml-4 bg-slate-900 border border-slate-800 hover:bg-purple-900/40 text-xs py-1 h-8">
                                         Generate Move Task
@@ -82,7 +82,7 @@ export default function SlottingWorkbench() {
                                     />
                                 ))}
                             </div>
-                            <div className="flex justify-between items-center mt-4 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                            <div className="flex justify-between items-center mt-4 text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
                                 <span>Low Activity</span>
                                 <div className="flex-1 mx-4 h-1 bg-gradient-to-r from-blue-500 via-orange-500 to-red-500 rounded" />
                                 <span>High Traffic</span>
@@ -96,7 +96,7 @@ export default function SlottingWorkbench() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-slate-400">Golden Zone Occupancy</span>
+                                <span className="text-muted-foreground/70">Golden Zone Occupancy</span>
                                 <span className="text-white font-bold">72%</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -104,7 +104,7 @@ export default function SlottingWorkbench() {
                             </div>
 
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-slate-400">Honeycombing Index</span>
+                                <span className="text-muted-foreground/70">Honeycombing Index</span>
                                 <span className="text-white font-bold">14.2%</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
