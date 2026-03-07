@@ -11,6 +11,16 @@ import { Header, Footer } from "@/components/Navigation";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
 export default function DemoManagement() {
@@ -20,6 +30,7 @@ export default function DemoManagement() {
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetDemoId, setResetDemoId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchIndustries();
@@ -100,15 +111,18 @@ export default function DemoManagement() {
     }
   };
 
-  const resetDemo = async (demoId: string) => {
-    if (!confirm("Reset this demo environment?")) return;
+  const performReset = async () => {
+    if (!resetDemoId) return;
     try {
-      await fetch(`/api/demos/${demoId}/reset`, {
+      await fetch(`/api/demos/${resetDemoId}/reset`, {
         method: "POST",
         headers: { "x-user-role": "admin" },
       });
       fetchDemos();
     } catch (e) {
+      toast({ variant: 'destructive', description: "Failed to reset demo" });
+    } finally {
+      setResetDemoId(null);
     }
   };
 
@@ -218,7 +232,7 @@ export default function DemoManagement() {
                             <Button variant="outline" size="sm" data-testid={`button-copy-demo-${demo.id}`}>
                               <Copy className="w-4 h-4" />
                             </Button>
-                            <Button variant="outline" size="sm" onClick={() => resetDemo(demo.id)} data-testid={`button-reset-demo-${demo.id}`}>
+                            <Button variant="outline" size="sm" onClick={() => setResetDemoId(demo.id)} data-testid={`button-reset-demo-${demo.id}`}>
                               <RefreshCw className="w-4 h-4" />
                             </Button>
                             <Button variant="outline" size="sm" className="text-red-400" data-testid={`button-delete-demo-${demo.id}`}>
@@ -233,6 +247,23 @@ export default function DemoManagement() {
               </Card>
             </TabsContent>
           </Tabs>
+
+          <AlertDialog open={!!resetDemoId} onOpenChange={(open) => !open && setResetDemoId(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset Demo Environment</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to reset this demo environment? All custom data will be cleared and the environment will be restored to its initial state. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={performReset} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Reset Environment
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
       <Footer />

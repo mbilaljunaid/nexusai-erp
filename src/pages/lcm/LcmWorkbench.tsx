@@ -39,6 +39,10 @@ export default function LcmWorkbench() {
     const [page, setPage] = useState(1);
     const [inventoryOrgId, setInventoryOrgId] = useState<string>();
 
+    // AZ: Controlled form state
+    const [newOpName, setNewOpName] = useState("");
+    const [newOpRef, setNewOpRef] = useState("");
+
     const invOrgHeaders = buildScopeHeaders({ "inventory-org": inventoryOrgId });
 
     // Fetch Trade Operations
@@ -105,18 +109,16 @@ export default function LcmWorkbench() {
                             <div className="py-6 space-y-4">
                                 <div className="space-y-2">
                                     <Label className="text-sm font-medium">Operation Name</Label>
-                                    <Input placeholder="e.g. Q1 Europe Electronics Import" id="new-op-name" />
+                                    <Input placeholder="e.g. Q1 Europe Electronics Import" id="new-op-name" value={newOpName} onChange={e => setNewOpName(e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-sm font-medium">Reference #</Label>
-                                    <Input placeholder="Internal Ref / BL #" id="new-op-ref" />
+                                    <Input placeholder="Internal Ref / BL #" id="new-op-ref" value={newOpRef} onChange={e => setNewOpRef(e.target.value)} />
                                 </div>
                                 <Button
                                     className="w-full"
                                     onClick={() => {
-                                        const name = (document.getElementById('new-op-name') as HTMLInputElement)?.value || "New Operation";
-                                        const ref = (document.getElementById('new-op-ref') as HTMLInputElement)?.value;
-                                        createMutation.mutate({ name, operationNumber: ref });
+                                        createMutation.mutate({ name: newOpName || "New Operation", operationNumber: newOpRef });
                                     }}
                                     disabled={createMutation.isPending}
                                 >
@@ -217,53 +219,53 @@ export default function LcmWorkbench() {
                                     ) : (
                                         tradeOperations.map((op: any) => (
                                             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation(`/scm/lcm/operations/${op.id}`)}>
-                                            <TableRow key={op.id} className="cursor-pointer hover:bg-muted/50">
-                                                                                            <TableCell className="font-mono font-medium text-primary">
-                                                                                                {op.operationNumber}
-                                                                                            </TableCell>
-                                                                                            <TableCell>
-                                                                                                <div className="flex flex-col">
-                                                                                                    <span className="font-medium text-sm">{op.name}</span>
-                                                                                                    <span className="text-[10px] text-muted-foreground uppercase">{op.vessel || op.carrier || "Carrier Pending"}</span>
-                                                                                                </div>
-                                                                                            </TableCell>
-                                                                                            <TableCell>
-                                                                                                <div className="flex flex-col gap-1">
-                                                                                                    <div className="flex items-center gap-2 text-[10px]">
-                                                                                                        <Badge variant="outline" className="px-1 py-0 h-4 min-w-8 justify-center">ETD</Badge>
-                                                                                                        <span className="text-muted-foreground">{op.departureDate ? format(new Date(op.departureDate), 'MMM d') : 'Pending'}</span>
-                                                                                                    </div>
-                                                                                                    <div className="flex items-center gap-2 text-[10px]">
-                                                                                                        <Badge variant="outline" className="px-1 py-0 h-4 min-w-8 justify-center">ETA</Badge>
-                                                                                                        <span className="text-muted-foreground font-medium">{op.arrivalDate ? format(new Date(op.arrivalDate), 'MMM d') : 'Pending'}</span>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </TableCell>
-                                                                                            <TableCell>
-                                                                                                <StatusBadge status={op.status} className="text-[10px] uppercase" />
-                                                                                            </TableCell>
-                                                                                            <TableCell>
-                                                                                                <StatusBadge status={op.approvalStatus?.replace('_', ' ') || 'DRAFT'} className="text-[10px] uppercase" />
-                                                                                            </TableCell>
-                                                                                            <TableCell className="text-right">
-                                                                                                <DropdownMenu>
-                                                                                                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                                                                                        <Button variant="ghost" className="h-8 w-8 p-0">
-                                                                                                            <MoreHorizontal className="h-4 w-4" />
-                                                                                                        </Button>
-                                                                                                    </DropdownMenuTrigger>
-                                                                                                    <DropdownMenuContent align="end">
-                                                                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                                                                        <DropdownMenuItem onClick={() => setLocation(`/scm/lcm/operations/${op.id}`)}>
-                                                                                                            <ExternalLink className="mr-2 h-4 w-4" /> View Console
-                                                                                                        </DropdownMenuItem>
-                                                                                                        <DropdownMenuSeparator />
-                                                                                                        <DropdownMenuItem>Add Shipment Lines</DropdownMenuItem>
-                                                                                                        <DropdownMenuItem>Log Actual Charges</DropdownMenuItem>
-                                                                                                    </DropdownMenuContent>
-                                                                                                </DropdownMenu>
-                                                                                            </TableCell>
-                                                                                        </TableRow>
+                                                <TableRow key={op.id} className="cursor-pointer hover:bg-muted/50">
+                                                    <TableCell className="font-mono font-medium text-primary">
+                                                        {op.operationNumber}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex flex-col">
+                                                            <span className="font-medium text-sm">{op.name}</span>
+                                                            <span className="text-[10px] text-muted-foreground uppercase">{op.vessel || op.carrier || "Carrier Pending"}</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex flex-col gap-1">
+                                                            <div className="flex items-center gap-2 text-[10px]">
+                                                                <Badge variant="outline" className="px-1 py-0 h-4 min-w-8 justify-center">ETD</Badge>
+                                                                <span className="text-muted-foreground">{op.departureDate ? format(new Date(op.departureDate), 'MMM d') : 'Pending'}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-2 text-[10px]">
+                                                                <Badge variant="outline" className="px-1 py-0 h-4 min-w-8 justify-center">ETA</Badge>
+                                                                <span className="text-muted-foreground font-medium">{op.arrivalDate ? format(new Date(op.arrivalDate), 'MMM d') : 'Pending'}</span>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <StatusBadge status={op.status} className="text-[10px] uppercase" />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <StatusBadge status={op.approvalStatus?.replace('_', ' ') || 'DRAFT'} className="text-[10px] uppercase" />
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                                <DropdownMenuItem onClick={() => setLocation(`/scm/lcm/operations/${op.id}`)}>
+                                                                    <ExternalLink className="mr-2 h-4 w-4" /> View Console
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem>Add Shipment Lines</DropdownMenuItem>
+                                                                <DropdownMenuItem>Log Actual Charges</DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </TableCell>
+                                                </TableRow>
                                             </Button>
                                         ))
                                     )}

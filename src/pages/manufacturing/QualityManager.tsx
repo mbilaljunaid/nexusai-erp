@@ -34,6 +34,10 @@ export default function QualityManager() {
     const [pageSize, setPageSize] = useState(50);
     const [viewType, setViewType] = useState("inspections");
 
+    // AZ: Form states for selected inspection
+    const [inspectionFindings, setInspectionFindings] = useState("");
+    const [inspectionPurity, setInspectionPurity] = useState("99.2");
+
     const { data, isLoading } = useQuery<{ items: Inspection[], total: number }>({
         queryKey: ["/api/manufacturing/quality-inspections", page, pageSize],
         queryFn: async () => {
@@ -93,7 +97,12 @@ export default function QualityManager() {
         { id: "inspectionDate", header: "Date", width: "150px", cell: (row: Inspection) => <span>{row.inspectionDate ? formatDate(row.inspectionDate) : '-'}</span> },
         {
             id: "actions", header: "Actions", width: "150px", cell: (row: Inspection) => (
-                <Button variant="ghost" size="sm" onClick={() => { setSelectedInspection(row); setIsSheetOpen(true); }}>
+                <Button variant="ghost" size="sm" onClick={() => {
+                    setSelectedInspection(row);
+                    setInspectionFindings(row.findings || "");
+                    setInspectionPurity("99.2"); // Default, would be limsResults but we'll re-sync when loaded
+                    setIsSheetOpen(true);
+                }}>
                     <Search className="h-4 w-4 mr-1" /> View/Edit
                 </Button>
             )
@@ -102,16 +111,17 @@ export default function QualityManager() {
 
     const handleUpdate = (status: string) => {
         if (!selectedInspection) return;
-        const findings = (document.getElementById("findings") as HTMLTextAreaElement).value;
+
+        const purityParsed = parseFloat(inspectionPurity);
         const results = [
             {
                 inspectionId: selectedInspection.id,
                 parameterName: "Purity", minValue: 98.0, maxValue: 100.0,
-                actualValue: parseFloat((document.getElementById("purity-val") as HTMLInputElement).value),
-                result: parseFloat((document.getElementById("purity-val") as HTMLInputElement).value) >= 98.0 ? "PASS" : "FAIL"
+                actualValue: purityParsed,
+                result: purityParsed >= 98.0 ? "PASS" : "FAIL"
             }
         ];
-        updateMutation.mutate({ id: selectedInspection.id, status, findings, results });
+        updateMutation.mutate({ id: selectedInspection.id, status, findings: inspectionFindings, results });
     };
 
     return (
@@ -172,10 +182,10 @@ export default function QualityManager() {
                             <div className="space-y-4">
                                 <Label className="text-sm font-bold flex items-center gap-2"><FlaskConical className="h-4 w-4" /> LIMS Results (Detailed)</Label>
                                 <div className="space-y-3 rounded-lg border p-3 bg-muted/30">
-                                    <div className="grid grid-cols-3 gap-2 items-center"><span className="text-xs font-medium">Purity (%)</span><div className="text-xs text-muted-foreground">Min: 98.0</div><Input id="purity-val" className="h-8 text-right font-mono" defaultValue={limsResults.find(r => r.parameterName === "Purity")?.actualValue || "99.2"} /></div>
+                                    <div className="grid grid-cols-3 gap-2 items-center"><span className="text-xs font-medium">Purity (%)</span><div className="text-xs text-muted-foreground">Min: 98.0</div><Input id="purity-val" value={inspectionPurity} onChange={(e) => setInspectionPurity(e.target.value)} className="h-8 text-right font-mono" /></div>
                                 </div>
                             </div>
-                            <div className="space-y-2"><Label htmlFor="findings">Inspector Findings</Label><Textarea id="findings" placeholder="Describe defects..." defaultValue={selectedInspection.findings} /></div>
+                            <div className="space-y-2"><Label htmlFor="findings">Inspector Findings</Label><Textarea id="findings" placeholder="Describe defects..." value={inspectionFindings} onChange={(e) => setInspectionFindings(e.target.value)} /></div>
                             <div className="grid grid-cols-2 gap-3">
                                 <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => handleUpdate("pass")}><CheckCircle2 className="mr-2 h-4 w-4" /> Pass</Button>
                                 <Button variant="destructive" className="w-full" onClick={() => handleUpdate("fail")}><XCircle className="mr-2 h-4 w-4" /> Fail / Reject</Button>

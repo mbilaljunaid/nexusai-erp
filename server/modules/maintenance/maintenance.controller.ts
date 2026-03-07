@@ -11,6 +11,9 @@ import { maintenanceSCMService } from "./services/MaintenanceSCMService";
 import { assetHealthService } from "./services/AssetHealthService";
 import { projectCostingIntegration } from "../../services/ProjectCostingIntegration"; // External
 import { inventoryReorderService } from "../../services/InventoryReorderService"; // External
+import { db } from "../../db";
+import * as schema from "../../../shared/schema";
+import { eq } from "drizzle-orm";
 
 export class MaintenanceController {
 
@@ -527,16 +530,10 @@ export class MaintenanceController {
 
     async getPermitTypes(req: Request, res: Response) {
         try {
-            // Import supabase dynamically to avoid circular dependencies
-            const { supabase } = await import("../../lib/supabaseClient");
-
-            const { data, error } = await supabase
-                .from("permit_types")
-                .select("*")
-                .eq("is_active", true)
-                .order("name");
-
-            if (error) throw error;
+            const data = await db.query.maintPermitTypes.findMany({
+                where: eq(schema.maintPermitTypes.isActive, true),
+                orderBy: (types, { asc }) => [asc(types.name)],
+            });
 
             // Map database fields to frontend expected format
             const permitTypes = data.map((row: any) => ({
@@ -544,10 +541,10 @@ export class MaintenanceController {
                 name: row.name,
                 description: row.description,
                 category: row.category,
-                requiresApproval: row.requires_approval ?? true,
-                approvalLevels: row.approval_levels ?? 1,
-                validityHours: row.validity_hours ?? 8,
-                requiredDocuments: row.required_documents || []
+                requiresApproval: row.requiresApproval ?? true,
+                approvalLevels: row.approvalLevels ?? 1,
+                validityHours: row.validityHours ?? 8,
+                requiredDocuments: row.requiredDocuments || []
             }));
 
             res.json(permitTypes);
@@ -559,19 +556,13 @@ export class MaintenanceController {
     async getPermitType(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const { supabase } = await import("../../lib/supabaseClient");
 
-            const { data, error } = await supabase
-                .from("permit_types")
-                .select("*")
-                .eq("id", id)
-                .single();
+            const data = await db.query.maintPermitTypes.findFirst({
+                where: eq(schema.maintPermitTypes.id, id),
+            });
 
-            if (error) {
-                if (error.code === 'PGRST116') {
-                    return res.status(404).json({ error: "Permit type not found" });
-                }
-                throw error;
+            if (!data) {
+                return res.status(404).json({ error: "Permit type not found" });
             }
 
             // Map database fields to frontend expected format
@@ -580,10 +571,10 @@ export class MaintenanceController {
                 name: data.name,
                 description: data.description,
                 category: data.category,
-                requiresApproval: data.requires_approval ?? true,
-                approvalLevels: data.approval_levels ?? 1,
-                validityHours: data.validity_hours ?? 8,
-                requiredDocuments: data.required_documents || []
+                requiresApproval: data.requiresApproval ?? true,
+                approvalLevels: data.approvalLevels ?? 1,
+                validityHours: data.validityHours ?? 8,
+                requiredDocuments: data.requiredDocuments || []
             };
 
             res.json(permitType);

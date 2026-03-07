@@ -94,8 +94,8 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                 <div className="flex items-center space-x-3 p-2">
                     {getRiskIcon(row.risk_level)}
                     <div>
-                        <div className="font-medium">{row.customers?.name || 'Unknown'}</div>
-                        <div className="text-sm text-muted-foreground">{row.customers?.email}</div>
+                        <div className="font-medium">{row.customers?.name || row.customer_name || 'Unknown'}</div>
+                        <div className="text-sm text-muted-foreground">{row.customers?.email || ''}</div>
                     </div>
                 </div>
             )
@@ -165,7 +165,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
             width: "250px",
             cell: (row: any) => (
                 <div className="p-2">
-                    <div className="font-medium">{row.customers?.name || 'Unknown'}</div>
+                    <div className="font-medium">{row.customers?.name || row.customer_name || 'Unknown'}</div>
                     <div className="text-sm text-muted-foreground">ARR: ${formatNumber(row.current_arr)}</div>
                 </div>
             )
@@ -266,7 +266,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-red-600">
-                            {atRiskCustomers.filter(c => c.risk_level === 'critical').length}
+                            {(atRiskCustomers || []).filter(c => c.risk_level === 'critical').length}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">Customers</p>
                     </CardContent>
@@ -278,7 +278,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-orange-600">
-                            {atRiskCustomers.filter(c => c.risk_level === 'high').length}
+                            {(atRiskCustomers || []).filter(c => c.risk_level === 'high').length}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">Customers</p>
                     </CardContent>
@@ -290,7 +290,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">
-                            {renewalPipeline.length}
+                            {(renewalPipeline || []).length}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">Next 90 days</p>
                     </CardContent>
@@ -302,7 +302,7 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">
-                            ${renewalPipeline
+                            ${(renewalPipeline || [])
                                 .filter(r => r.churn_risk > 50)
                                 .reduce((sum, r) => sum + (r.current_arr || 0), 0)
                                 .toLocaleString()}

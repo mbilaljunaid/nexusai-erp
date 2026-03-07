@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "wouter";
 
 export default function ServiceRequestQueue() {
     const { toast } = useToast();
@@ -87,9 +88,9 @@ export default function ServiceRequestQueue() {
                                         ) : (
                                             sr.status === 'CONVERTED' && (
                                                 <Button variant="ghost" size="sm" asChild>
-                                                    <a href={`/maintenance/work-orders/${sr.workOrderId}`}>
+                                                    <Link href={`/maintenance/work-orders/${sr.workOrderId}`}>
                                                         View WO <ArrowRight className="ml-2 h-4 w-4" />
-                                                    </a>
+                                                    </Link>
                                                 </Button>
                                             )
                                         )}

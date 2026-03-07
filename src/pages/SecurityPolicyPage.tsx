@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { Link } from "wouter";
 
 export default function SecurityPolicyPage() {
   useEffect(() => {
@@ -88,9 +88,9 @@ export default function SecurityPolicyPage() {
                 <Mail className="w-6 h-6 text-blue-500" />
                 <div>
                   <p className="font-semibold">Security Contact</p>
-                  <a href="/contact?subject=security" className="text-blue-500 hover:underline" data-testid="link-security-contact">
+                  <Link href="/contact?subject=security" className="text-blue-500 hover:underline" data-testid="link-security-contact">
                     Contact Security Team
-                  </a>
+                  </Link>
                 </div>
               </div>
             </Card>
@@ -181,9 +181,9 @@ export default function SecurityPolicyPage() {
               Responsible disclosure reporters will be credited in our security acknowledgments.
             </p>
             <Button size="lg" className="bg-card text-green-600 hover:bg-slate-500/15" asChild data-testid="button-report-vulnerability">
-              <a href="/contact?subject=security">
+              <Link href="/contact?subject=security">
                 <Mail className="mr-2 w-5 h-5" /> Report a Vulnerability
-              </a>
+              </Link>
             </Button>
           </div>
         </section>

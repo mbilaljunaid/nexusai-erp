@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Video, Download } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { Link } from "wouter";
 
 export default function InterviewerDashboard() {
     const { user } = useAuth();
@@ -74,10 +74,10 @@ export default function InterviewerDashboard() {
 
                                 <div className="flex gap-2">
                                     <Button variant="outline" size="sm" asChild>
-                                        <a href={`/api/recruitment/interviews/${interview.id}/invite.ics`} download>
+                                        <Link href={`/api/recruitment/interviews/${interview.id}/invite.ics`} download>
                                             <Download className="w-4 h-4 mr-2" />
                                             Add to Calendar
-                                        </a>
+                                        </Link>
                                     </Button>
                                     {interview.status === 'SCHEDULED' && (
                                         <Button size="sm">Start Interview</Button>

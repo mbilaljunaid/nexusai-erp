@@ -29,6 +29,7 @@ export default function EcommerceDashboard() {
             setRMAs(rmasData);
             setAssets(assetsData);
         } catch (error) {
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -42,7 +43,7 @@ export default function EcommerceDashboard() {
 
     return (
         <StandardPage title="E-commerce Platform">
-            
+
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-4">

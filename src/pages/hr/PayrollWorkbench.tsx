@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
+
 interface PayrollRun {
     id: string;
     payroll_name: string;
@@ -137,9 +139,9 @@ export default function PayrollWorkbench() {
                             </Select>
                         </>
                     )}
-                    <a href={`/api/hr/payroll/runs/${row.id}/payslips`} target="_blank" rel="noreferrer noopener" className="act-link">
+                    <Link href={`/api/hr/payroll/runs/${row.id}/payslips`} target="_blank" rel="noreferrer noopener" className="act-link">
                         <FileText className="h-[13px] w-[13px]"  /> Payslips
-                    </a>
+                    </Link>
                 </div>
             )
         }

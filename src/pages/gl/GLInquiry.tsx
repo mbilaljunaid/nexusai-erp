@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { formatNumber } from '@/lib/formatters';
+import { Link } from "wouter";
 
 export default function GLInquiry() {
     const { currentLedgerId, activeLedger } = useLedger();
@@ -173,9 +174,9 @@ export default function GLInquiry() {
                                         lines.map((line: any, idx: number) => (
                                             <TableRow key={line.id || idx} className="hover:bg-muted/30 transition-colors">
                                                 <TableCell className="pl-6 font-mono text-xs font-semibold text-indigo-600">
-                                                    <a href={`/finance/gl/journals/${line.journalId}`} className="hover:underline flex items-center gap-1">
+                                                    <Link href={`/finance/gl/journals/${line.journalId}`} className="hover:underline flex items-center gap-1">
                                                         {line.journal?.journalNumber || "JE-???"}
-                                                    </a>
+                                                    </Link>
                                                 </TableCell>
                                                 <TableCell className="text-sm">
                                                     {line.journal?.accountingDate ? format(new Date(line.journal.accountingDate), 'dd-MMM-yyyy') : '-'}

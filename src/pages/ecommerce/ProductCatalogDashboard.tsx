@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveSpreadsheet } from '@/components/ui/InteractiveSpreadsheet';
-import PIMService from '@/services/pimService';
+import { PIMService } from '@/services/pimService';
 import { Package, Upload, FileText, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 
@@ -27,6 +27,7 @@ export default function ProductCatalogDashboard() {
             setProducts(productsData);
             setCategories(categoriesData);
         } catch (error) {
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -81,7 +82,7 @@ export default function ProductCatalogDashboard() {
         <StandardPage title="Product Catalog (PIM)">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground mt-1">Product Information Management</p>
                 </div>
                 <div className="flex space-x-3">

@@ -16,6 +16,16 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,6 +53,7 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
     }>({ isOpen: false, mode: 'create' });
     const [filterCategory, setFilterCategory] = useState('ALL');
     const [filterStatus, setFilterStatus] = useState('ALL');
+    const [goalToDelete, setGoalToDelete] = useState<Goal | null>(null);
 
     const { data: goals = [], isLoading } = useQuery<Goal[]>({
         queryKey: ['/api/performance/goals', personId],
@@ -252,11 +263,8 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
                                             <Button
                                                 size="icon"
                                                 variant="ghost"
-                                                onClick={() => {
-                                                    if (confirm(`Delete goal "${goal.title}"?`)) {
-                                                        deleteMutation.mutate(goal.id);
-                                                    }
-                                                }} aria-label="Delete"
+                                                onClick={() => setGoalToDelete(goal)}
+                                                aria-label="Delete"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
@@ -282,6 +290,29 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
                     }
                 }}
             />
+
+            <AlertDialog open={!!goalToDelete} onOpenChange={(open) => !open && setGoalToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Goal</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete the goal "{goalToDelete?.title}"? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                if (goalToDelete) deleteMutation.mutate(goalToDelete.id);
+                                setGoalToDelete(null);
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Delete Goal
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

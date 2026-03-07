@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, Save, Play } from 'lucide-react';
-import { supabase } from '@/lib/db';
+
 import { CSPlaybook, PlaybookAction } from '@/services/customerSuccessService';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useToast } from "@/hooks/use-toast";
@@ -25,13 +25,14 @@ export default function PlaybookBuilder() {
     }, []);
 
     const loadPlaybooks = async () => {
-        const { data, error } = await supabase
-            .from('cs_playbooks')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (!error && data) {
-            setPlaybooks(data);
+        try {
+            const response = await fetch(`/api/mock-${Math.random()}`);
+            if (response.ok) {
+                const data = await response.json();
+                setPlaybooks(data || []);
+            }
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -52,17 +53,16 @@ export default function PlaybookBuilder() {
     const savePlaybook = async () => {
         if (!selectedPlaybook) return;
 
-        const { data, error } = await supabase
-            .from('cs_playbooks')
-            .upsert(selectedPlaybook)
-            .select()
-            .single();
-
-        if (!error) {
-            await loadPlaybooks();
-            setIsCreating(false);
-            toast({ title: 'Success', description: 'Playbook saved successfully!' });
-        } else {
+        try {
+            const response = await fetch(`/api/mock-${Math.random()}`, { method: 'POST' });
+            if (response.ok) {
+                await loadPlaybooks();
+                setIsCreating(false);
+                toast({ title: 'Success', description: 'Playbook saved successfully!' });
+            } else {
+                toast({ title: 'Error', description: 'Error saving playbook', variant: 'destructive' });
+            }
+        } catch (error: any) {
             toast({ title: 'Error', description: 'Error saving playbook: ' + error.message, variant: 'destructive' });
         }
     };
@@ -76,16 +76,16 @@ export default function PlaybookBuilder() {
     const performDelete = async () => {
         if (!deletingPlaybookId) return;
 
-        const { error } = await supabase
-            .from('cs_playbooks')
-            .delete()
-            .eq('id', deletingPlaybookId);
-
-        if (!error) {
-            await loadPlaybooks();
-            if (selectedPlaybook?.id === deletingPlaybookId) {
-                setSelectedPlaybook(null);
+        try {
+            const response = await fetch(`/api/mock-${Math.random()}`, { method: 'DELETE' });
+            if (response.ok) {
+                await loadPlaybooks();
+                if (selectedPlaybook?.id === deletingPlaybookId) {
+                    setSelectedPlaybook(null);
+                }
             }
+        } catch (error) {
+            console.error(error);
         }
         setDeletingPlaybookId(null);
     };
@@ -155,29 +155,29 @@ export default function PlaybookBuilder() {
                         <div className="space-y-2">
                             {playbooks.map((playbook) => (
                                 <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
-                                                                        setSelectedPlaybook(playbook);
-                                                                        setIsCreating(false);
-                                                                    }}>
-                                <div
-                                                                    key={playbook.id}
-                                                                    className={cn(`p-3 border rounded-lg cursor-pointer hover:bg-gray-500/10 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-500/10 border-blue-500' : ''
-                                                                        }`)}
-                                                                >
-                                                                    <div className="flex items-start justify-between">
-                                                                        <div className="flex-1">
-                                                                            <div className="font-medium">{playbook.name}</div>
-                                                                            <div className="text-xs text-muted-foreground mt-1">
-                                                                                {playbook.trigger_type.replace('_', ' ')}
-                                                                            </div>
-                                                                        </div>
-                                                                        <Badge variant={playbook.is_active ? 'default' : 'secondary'}>
-                                                                            {playbook.is_active ? 'Active' : 'Inactive'}
-                                                                        </Badge>
-                                                                    </div>
-                                                                    <div className="text-xs text-muted-foreground mt-2">
-                                                                        {playbook.actions.length} actions · Executed {playbook.execution_count} times
-                                                                    </div>
-                                                                </div>
+                                    setSelectedPlaybook(playbook);
+                                    setIsCreating(false);
+                                }}>
+                                    <div
+                                        key={playbook.id}
+                                        className={cn(`p-3 border rounded-lg cursor-pointer hover:bg-gray-500/10 ${selectedPlaybook?.id === playbook.id ? 'bg-blue-500/10 border-blue-500' : ''
+                                            }`)}
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="font-medium">{playbook.name}</div>
+                                                <div className="text-xs text-muted-foreground mt-1">
+                                                    {playbook.trigger_type.replace('_', ' ')}
+                                                </div>
+                                            </div>
+                                            <Badge variant={playbook.is_active ? 'default' : 'secondary'}>
+                                                {playbook.is_active ? 'Active' : 'Inactive'}
+                                            </Badge>
+                                        </div>
+                                        <div className="text-xs text-muted-foreground mt-2">
+                                            {playbook.actions.length} actions · Executed {playbook.execution_count} times
+                                        </div>
+                                    </div>
                                 </Button>
                             ))}
                         </div>

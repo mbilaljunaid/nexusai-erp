@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
-import UsageAnalyticsService, { FeatureAdoptionMetric, StickinessStat } from '@/services/usageAnalyticsService';
+import { UsageAnalyticsService, FeatureAdoptionMetric, StickinessStat } from '@/services/usageAnalyticsService';
 import { TrendingUp, Users, Activity, Target, Loader2 } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { formatNumber } from '@/lib/formatters';
@@ -47,7 +47,7 @@ export default function UsageAnalyticsDashboard() {
             id: 'total_events',
             header: 'Events',
             width: "150px",
-            cell: (row: any) => <div className="p-2">{formatNumber(row.total_events)}</div>
+            cell: (row: any) => <div className="p-2">{formatNumber(row.total_events || row.events)}</div>
         },
         {
             id: 'unique_sessions',
@@ -68,7 +68,7 @@ export default function UsageAnalyticsDashboard() {
     return (
         <div className="space-y-6">
             <div>
-                
+
                 <p className="text-muted-foreground mt-1">Product usage, feature adoption, and engagement metrics</p>
             </div>
 

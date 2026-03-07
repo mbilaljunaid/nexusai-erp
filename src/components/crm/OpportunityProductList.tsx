@@ -5,6 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Trash2, Package } from "lucide-react";
@@ -37,6 +47,7 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
     const [selectedEntry, setSelectedEntry] = useState<PriceBookEntry | null>(null);
     const [quantity, setQuantity] = useState(1);
     const [unitPrice, setUnitPrice] = useState<string>("");
+    const [pendingPriceBookId, setPendingPriceBookId] = useState<string | null>(null);
 
     // Fetch Opportunity to get Price Book ID
     const { data: opportunity } = useQuery<Opportunity>({
@@ -173,9 +184,10 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                             value={priceBookId}
                             onChange={(val) => {
                                 if (lineItems.length > 0) {
-                                    if (!confirm("Changing the Price Book may affect existing line items. Continue?")) return;
+                                    setPendingPriceBookId(val);
+                                } else {
+                                    updateOppMutation.mutate(val);
                                 }
-                                updateOppMutation.mutate(val);
                             }}
                         />
                         {priceBookId && <Badge variant="outline" className="mt-6">Active Pricing</Badge>}
@@ -211,25 +223,25 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                                         ) : (
                                             displayProducts.map((item: any) => (
                                                 <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => handleSelect(item)}>
-                                                <div
-                                                                                                    key={item.id}
-                                                                                                    className="p-2 hover:bg-muted cursor-pointer flex items-center justify-between"
-                                                                                                >
-                                                                                                    <div>
-                                                                                                        <p className="font-medium text-sm">
-                                                                                                            {'productName' in item ? item.productName : item.name}
-                                                                                                        </p>
-                                                                                                        <p className="text-xs text-muted-foreground">
-                                                                                                            {'productCode' in item ? item.productCode : item.productCode}
-                                                                                                        </p>
-                                                                                                    </div>
-                                                                                                    <div className="text-right">
-                                                                                                        {'unitPrice' in item && (
-                                                                                                            <span className="block text-sm font-semibold">${Number(item.unitPrice).toFixed(2)}</span>
-                                                                                                        )}
-                                                                                                        <Badge variant="secondary" className="text-xs">Select</Badge>
-                                                                                                    </div>
-                                                                                                </div>
+                                                    <div
+                                                        key={item.id}
+                                                        className="p-2 hover:bg-muted cursor-pointer flex items-center justify-between"
+                                                    >
+                                                        <div>
+                                                            <p className="font-medium text-sm">
+                                                                {'productName' in item ? item.productName : item.name}
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                {'productCode' in item ? item.productCode : item.productCode}
+                                                            </p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            {'unitPrice' in item && (
+                                                                <span className="block text-sm font-semibold">${Number(item.unitPrice).toFixed(2)}</span>
+                                                            )}
+                                                            <Badge variant="secondary" className="text-xs">Select</Badge>
+                                                        </div>
+                                                    </div>
                                                 </Button>
                                             ))
                                         )}
@@ -348,6 +360,28 @@ export function OpportunityProductList({ opportunityId }: OpportunityProductList
                     </TableBody>
                 </Table>
             </div>
+
+            <AlertDialog open={!!pendingPriceBookId} onOpenChange={(open) => !open && setPendingPriceBookId(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Change Price Book</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Changing the Price Book may affect existing line items. Are you sure you want to continue?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                if (pendingPriceBookId) updateOppMutation.mutate(pendingPriceBookId);
+                                setPendingPriceBookId(null);
+                            }}
+                        >
+                            Continue
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

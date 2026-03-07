@@ -57,7 +57,22 @@ export const maintInspections = pgTable("maint_inspections", {
     updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// 3. Work Permtis (Safety)
+// 3. Permit Types (Safety/Configuration)
+export const maintPermitTypes = pgTable("permit_types", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 150 }).notNull(),
+    description: text("description"),
+    category: varchar("category", { length: 100 }),
+    requiresApproval: boolean("requires_approval").default(true),
+    approvalLevels: integer("approval_levels").default(1),
+    validityHours: integer("validity_hours").default(8),
+    requiredDocuments: jsonb("required_documents").default([]),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// 4. Work Permtis (Safety)
 export const maintPermits = pgTable("maint_permits", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     permitNumber: varchar("permit_number", { length: 50 }).notNull().unique(), // Auto-gen
@@ -104,3 +119,4 @@ export const maintPermitsRelations = relations(maintPermits, ({ one }) => ({
 export const insertMaintInspectionDefSchema = createInsertSchema(maintInspectionDefinitions);
 export const insertMaintInspectionSchema = createInsertSchema(maintInspections);
 export const insertMaintPermitSchema = createInsertSchema(maintPermits);
+export const insertMaintPermitTypeSchema = createInsertSchema(maintPermitTypes);

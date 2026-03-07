@@ -28,6 +28,7 @@ export default function MobileWarehouse() {
     const [view, setView] = useState<"menu" | "picking" | "receiving" | "counting">("menu");
     const [scanInput, setScanInput] = useState("");
     const [activeTask, setActiveTask] = useState<any>(null);
+    const [pickQty, setPickQty] = useState<string>("");
 
     const { data: tasksData = { data: [] } } = useQuery<any>({
         queryKey: ["/api/scm/wms/tasks", "WH-001"],
@@ -101,24 +102,24 @@ export default function MobileWarehouse() {
 
                 <div className="space-y-3 flex-1 overflow-y-auto">
                     {pickTasks.map((task: any) => (
-                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setActiveTask(task)}>
-                        <Card
-                                                    key={task.id}
-                                                    className="bg-slate-900 border-slate-800 active:scale-95 transition-transform"
-                                                >
-                                                    <CardContent className="p-4 flex justify-between items-center">
-                                                        <div>
-                                                            <p className="text-xs text-muted-foreground font-bold uppercase">{task.taskNumber}</p>
-                                                            <h3 className="text-lg font-bold text-white mt-1">{task.itemId}</h3>
-                                                            <p className="text-sm text-blue-400 font-mono mt-1">Loc: A-04-12-01</p>
-                                                        </div>
-                                                        <div className="text-right">
-                                                            <p className="text-2xl font-bold text-white">{task.quantityPlanned}</p>
-                                                            <span className="text-xs text-muted-foreground">{task.uom}</span>
-                                                        </div>
-                                                        <ChevronRight className="w-5 h-5 text-foreground/90 ml-4" />
-                                                    </CardContent>
-                                                </Card>
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => { setActiveTask(task); setPickQty(String(task.quantityPlanned)); }}>
+                            <Card
+                                key={task.id}
+                                className="bg-slate-900 border-slate-800 active:scale-95 transition-transform"
+                            >
+                                <CardContent className="p-4 flex justify-between items-center">
+                                    <div>
+                                        <p className="text-xs text-muted-foreground font-bold uppercase">{task.taskNumber}</p>
+                                        <h3 className="text-lg font-bold text-white mt-1">{task.itemId}</h3>
+                                        <p className="text-sm text-blue-400 font-mono mt-1">Loc: A-04-12-01</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-2xl font-bold text-white">{task.quantityPlanned}</p>
+                                        <span className="text-xs text-muted-foreground">{task.uom}</span>
+                                    </div>
+                                    <ChevronRight className="w-5 h-5 text-foreground/90 ml-4" />
+                                </CardContent>
+                            </Card>
                         </Button>
                     ))}
                     {pickTasks.length === 0 && (
@@ -178,7 +179,8 @@ export default function MobileWarehouse() {
                                         type="number"
                                         aria-label="Actual quantity to pick"
                                         className="text-3xl font-bold text-white bg-transparent border-0 w-full text-center outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                                        defaultValue={activeTask.quantityPlanned}
+                                        value={pickQty}
+                                        onChange={(e) => setPickQty(e.target.value)}
                                         id="qty-input"
                                     />
                                 </CardContent>
@@ -204,7 +206,7 @@ export default function MobileWarehouse() {
                     </Button>
                     <Button
                         className="bg-green-600 hover:bg-green-500 text-white h-16 font-bold text-lg"
-                        onClick={() => confirmPickMutation.mutate({ taskId: activeTask.id, qty: Number((document.getElementById('qty-input') as HTMLInputElement).value || 0) })}
+                        onClick={() => confirmPickMutation.mutate({ taskId: activeTask.id, qty: Number(pickQty) || 0 })}
                     >
                         Confirm Pick
                     </Button>

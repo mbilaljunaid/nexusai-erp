@@ -5,8 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import {
     GridManagementService,
-    OutageManagementService,
-    DemandResponseService,
     ComplianceService
 } from '@/services/energyUtilityService';
 import { Zap, AlertTriangle, TrendingDown, FileCheck, Loader2 } from "lucide-react";
@@ -26,17 +24,16 @@ export default function EnergyUtilityDashboard() {
 
     const loadData = async () => {
         try {
-            const [healthData, outagesData, programsData, filingsData] = await Promise.all([
+            const [healthData, filingsData] = await Promise.all([
                 GridManagementService.getAssetHealth(),
-                OutageManagementService.getActiveOutages(),
-                DemandResponseService.getPrograms(),
                 ComplianceService.getUpcomingFilings(30)
             ]);
             setGridHealth(healthData);
-            setOutages(outagesData);
-            setDRPrograms(programsData);
+            setOutages([]);
+            setDRPrograms([]);
             setFilings(filingsData);
         } catch (error) {
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -50,7 +47,7 @@ export default function EnergyUtilityDashboard() {
 
     return (
         <StandardPage title="Energy & Utilities Platform">
-            
+
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-4">

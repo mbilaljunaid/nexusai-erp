@@ -1,4 +1,6 @@
-import { supabase } from '../config/supabase';
+import { db } from '../db';
+import * as schema from '../../shared/schema';
+import { eq, and } from 'drizzle-orm';
 import type {
     ConfigurationTemplate,
     TemplateData,
@@ -17,75 +19,73 @@ export class TemplateService {
      * Get all templates
      */
     static async getAllTemplates(): Promise<ConfigurationTemplate[]> {
-        const { data, error } = await supabase
-            .from('configuration_templates')
-            .select('*')
-            .eq('is_active', true)
-            .order('sort_order', { ascending: true });
-
-        if (error) {
+        try {
+            const data = await db.query.configurationTemplates.findMany({
+                where: eq(schema.configurationTemplates.isActive, true),
+                orderBy: (templates, { asc }) => [asc(templates.sortOrder)],
+            });
+            return data as unknown as ConfigurationTemplate[];
+        } catch (error) {
             console.error('Error fetching templates:', error);
             throw new Error('Failed to fetch templates');
         }
-
-        return data || [];
     }
 
     /**
      * Get templates for a specific industry
      */
     static async getTemplatesByIndustry(industryId: string): Promise<ConfigurationTemplate[]> {
-        const { data, error } = await supabase
-            .from('configuration_templates')
-            .select('*')
-            .eq('industry_id', industryId)
-            .eq('is_active', true)
-            .order('sort_order', { ascending: true });
-
-        if (error) {
+        try {
+            const data = await db.query.configurationTemplates.findMany({
+                where: and(
+                    eq(schema.configurationTemplates.industryId, industryId),
+                    eq(schema.configurationTemplates.isActive, true)
+                ),
+                orderBy: (templates, { asc }) => [asc(templates.sortOrder)],
+            });
+            return data as unknown as ConfigurationTemplate[];
+        } catch (error) {
             console.error('Error fetching industry templates:', error);
             throw new Error('Failed to fetch industry templates');
         }
-
-        return data || [];
     }
 
     /**
      * Get templates for a specific module
      */
     static async getTemplatesByModule(moduleId: string): Promise<ConfigurationTemplate[]> {
-        const { data, error } = await supabase
-            .from('configuration_templates')
-            .select('*')
-            .eq('module_id', moduleId)
-            .eq('is_active', true)
-            .order('sort_order', { ascending: true });
-
-        if (error) {
+        try {
+            const data = await db.query.configurationTemplates.findMany({
+                where: and(
+                    eq(schema.configurationTemplates.moduleId, moduleId),
+                    eq(schema.configurationTemplates.isActive, true)
+                ),
+                orderBy: (templates, { asc }) => [asc(templates.sortOrder)],
+            });
+            return data as unknown as ConfigurationTemplate[];
+        } catch (error) {
             console.error('Error fetching module templates:', error);
             throw new Error('Failed to fetch module templates');
         }
-
-        return data || [];
     }
 
     /**
      * Get templates by category
      */
     static async getTemplatesByCategory(category: TemplateCategory): Promise<ConfigurationTemplate[]> {
-        const { data, error } = await supabase
-            .from('configuration_templates')
-            .select('*')
-            .eq('template_category', category)
-            .eq('is_active', true)
-            .order('sort_order', { ascending: true });
-
-        if (error) {
+        try {
+            const data = await db.query.configurationTemplates.findMany({
+                where: and(
+                    eq(schema.configurationTemplates.templateCategory, category),
+                    eq(schema.configurationTemplates.isActive, true)
+                ),
+                orderBy: (templates, { asc }) => [asc(templates.sortOrder)],
+            });
+            return data as unknown as ConfigurationTemplate[];
+        } catch (error) {
             console.error('Error fetching category templates:', error);
             throw new Error('Failed to fetch category templates');
         }
-
-        return data || [];
     }
 
     /**
@@ -95,40 +95,35 @@ export class TemplateService {
         industryId: string,
         moduleId: string
     ): Promise<ConfigurationTemplate | null> {
-        const { data, error } = await supabase
-            .from('configuration_templates')
-            .select('*')
-            .eq('industry_id', industryId)
-            .eq('module_id', moduleId)
-            .eq('is_default', true)
-            .eq('is_active', true)
-            .single();
-
-        if (error && error.code !== 'PGRST116') {
-            // PGRST116 is "no rows returned"
+        try {
+            const data = await db.query.configurationTemplates.findFirst({
+                where: and(
+                    eq(schema.configurationTemplates.industryId, industryId),
+                    eq(schema.configurationTemplates.moduleId, moduleId),
+                    eq(schema.configurationTemplates.isDefault, true),
+                    eq(schema.configurationTemplates.isActive, true)
+                )
+            });
+            return data ? (data as unknown as ConfigurationTemplate) : null;
+        } catch (error) {
             console.error('Error fetching default template:', error);
             throw new Error('Failed to fetch default template');
         }
-
-        return data || null;
     }
 
     /**
      * Get template by ID
      */
     static async getTemplateById(templateId: string): Promise<ConfigurationTemplate | null> {
-        const { data, error } = await supabase
-            .from('configuration_templates')
-            .select('*')
-            .eq('id', templateId)
-            .single();
-
-        if (error && error.code !== 'PGRST116') {
+        try {
+            const data = await db.query.configurationTemplates.findFirst({
+                where: eq(schema.configurationTemplates.id, templateId)
+            });
+            return data ? (data as unknown as ConfigurationTemplate) : null;
+        } catch (error) {
             console.error('Error fetching template:', error);
             throw new Error('Failed to fetch template');
         }
-
-        return data || null;
     }
 
     /**
@@ -169,43 +164,40 @@ export class TemplateService {
             );
 
             // 5. Record template application
-            const { data: application, error: appError } = await supabase
-                .from('template_applications')
-                .insert({
-                    tenant_id: tenantId,
-                    template_id: templateId,
-                    applied_by: userId,
+            try {
+                const [application] = await db.insert(schema.templateApplications).values({
+                    tenantId: tenantId,
+                    templateId: templateId,
+                    appliedBy: userId,
                     status: 'applied',
-                    applied_data: finalData,
+                    appliedData: finalData,
                     metadata: {
                         templateName: template.name,
                         templateVersion: template.version,
                         appliedItems,
                     },
-                })
-                .select()
-                .single();
+                }).returning({ id: schema.templateApplications.id });
 
-            if (appError) {
+                return {
+                    success: true,
+                    applicationId: application.id,
+                    appliedItems,
+                };
+            } catch (appError) {
                 console.error('Error recording template application:', appError);
                 throw new Error('Failed to record template application');
             }
 
-            return {
-                success: true,
-                applicationId: application.id,
-                appliedItems,
-            };
         } catch (error) {
             console.error('Error applying template:', error);
 
             // Record failed application
-            await supabase.from('template_applications').insert({
-                tenant_id: tenantId,
-                template_id: templateId,
-                applied_by: userId,
+            await db.insert(schema.templateApplications).values({
+                tenantId: tenantId,
+                templateId: templateId,
+                appliedBy: userId,
                 status: 'failed',
-                error_message: error instanceof Error ? error.message : 'Unknown error',
+                errorMessage: error instanceof Error ? error.message : 'Unknown error',
                 metadata: {
                     error: error instanceof Error ? error.stack : String(error),
                 },
@@ -297,18 +289,16 @@ export class TemplateService {
     static async getTemplateApplications(
         tenantId: string
     ): Promise<TemplateApplication[]> {
-        const { data, error } = await supabase
-            .from('template_applications')
-            .select('*')
-            .eq('tenant_id', tenantId)
-            .order('applied_at', { ascending: false });
-
-        if (error) {
+        try {
+            const data = await db.query.templateApplications.findMany({
+                where: eq(schema.templateApplications.tenantId, tenantId),
+                orderBy: (applications, { desc }) => [desc(applications.appliedAt)],
+            });
+            return data as unknown as TemplateApplication[];
+        } catch (error) {
             console.error('Error fetching template applications:', error);
             throw new Error('Failed to fetch template applications');
         }
-
-        return data || [];
     }
 
     /**
@@ -318,15 +308,14 @@ export class TemplateService {
         // TODO: Implement rollback logic
         // This would involve deleting the data that was inserted
 
-        const { error } = await supabase
-            .from('template_applications')
-            .update({
-                status: 'rolled_back',
-                updated_at: new Date().toISOString(),
-            })
-            .eq('id', applicationId);
-
-        if (error) {
+        try {
+            await db.update(schema.templateApplications)
+                .set({
+                    status: 'rolled_back',
+                    updatedAt: new Date(),
+                })
+                .where(eq(schema.templateApplications.id, applicationId));
+        } catch (error) {
             console.error('Error rolling back template:', error);
             throw new Error('Failed to rollback template');
         }

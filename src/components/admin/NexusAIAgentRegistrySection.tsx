@@ -13,6 +13,16 @@ import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
@@ -47,6 +57,7 @@ export function NexusAIAgentRegistrySection() {
     const [isLogsLoading, setIsLogsLoading] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [currentAgent, setCurrentAgent] = useState<Partial<AIAgent> | null>(null);
+    const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const { toast } = useToast();
 
@@ -121,11 +132,11 @@ export function NexusAIAgentRegistrySection() {
         }
     };
 
-    const handleDeleteAgent = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this agent? This will also delete associated tools and actions.")) return;
+    const performDeleteAgent = async () => {
+        if (!agentToDelete) return;
 
         try {
-            const resp = await fetch(`/api/nexus-ai/capabilities/${id}`, { method: "DELETE" });
+            const resp = await fetch(`/api/nexus-ai/capabilities/${agentToDelete}`, { method: "DELETE" });
             if (!resp.ok) throw new Error("Failed to delete agent");
 
             toast({
@@ -139,6 +150,8 @@ export function NexusAIAgentRegistrySection() {
                 title: "Error",
                 description: err.message
             });
+        } finally {
+            setAgentToDelete(null);
         }
     };
 
@@ -308,7 +321,7 @@ export function NexusAIAgentRegistrySection() {
                                                     <Button variant="ghost" size="icon" onClick={() => { setCurrentAgent(agent); setIsDialogOpen(true); }} aria-label="Edit">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteAgent(agent.id)} aria-label="Delete">
+                                                    <Button variant="ghost" size="icon" className="text-destructive" onClick={() => setAgentToDelete(agent.id)} aria-label="Delete">
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </TableCell>
@@ -425,6 +438,23 @@ export function NexusAIAgentRegistrySection() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            <AlertDialog open={!!agentToDelete} onOpenChange={(open) => !open && setAgentToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete AI Agent</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this agent? This will also permanently delete all associated tools and actions. This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={performDeleteAgent} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Delete Agent
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

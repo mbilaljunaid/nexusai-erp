@@ -56,6 +56,17 @@ export default function ExpensesDetail() {
   const [lineCategory, setLineCategory] = useState("TRAVEL");
   const [receiptLineId, setReceiptLineId] = useState("");
 
+  // AZ: Controlled state for dialogs
+  const [lineDate, setLineDate] = useState<string>("");
+  const [lineMerchant, setLineMerchant] = useState("");
+  const [lineAmount, setLineAmount] = useState("");
+  const [lineDescription, setLineDescription] = useState("");
+
+  const [rejectReason, setRejectReason] = useState("");
+
+  const [receiptFileName, setReceiptFileName] = useState("");
+  const [receiptFileUrl, setReceiptFileUrl] = useState("");
+
   // Fetch expense report
   const { data: report, isLoading: reportLoading } = useQuery<any>({
     queryKey: ["/api/expenses", reportId],
@@ -283,14 +294,10 @@ export default function ExpensesDetail() {
   });
 
   const handleReceiptUpload = () => {
-    const fileName = (document.getElementById('receiptFileName') as HTMLInputElement)?.value;
-    const fileUrl = (document.getElementById('receiptFileUrl') as HTMLInputElement)?.value;
-    const lineId = receiptLineId;
-
     uploadReceiptMutation.mutate({
-      fileName,
-      fileUrl: fileUrl || `/uploads/receipts/${Date.now()}.jpg`,
-      lineId: lineId || undefined,
+      fileName: receiptFileName,
+      fileUrl: receiptFileUrl || `/uploads/receipts/${Date.now()}.jpg`,
+      lineId: receiptLineId || undefined,
       fileSize: 125000,
       mimeType: 'image/jpeg'
     });
@@ -560,7 +567,7 @@ export default function ExpensesDetail() {
           <div className="space-y-4 py-4">
             <div>
               <Label className="text-sm font-medium mb-2 block">Date</Label>
-              <DatePicker onChange={() => { }} />
+              <DatePicker value={lineDate} onChange={setLineDate} />
             </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">Category</Label>
@@ -581,27 +588,27 @@ export default function ExpensesDetail() {
             </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">Merchant</Label>
-              <Input type="text" id="lineMerchant" placeholder="e.g., Hotel Grand" />
+              <Input type="text" id="lineMerchant" placeholder="e.g., Hotel Grand" value={lineMerchant} onChange={e => setLineMerchant(e.target.value)} />
             </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">Amount</Label>
-              <Input type="number" id="lineAmount" placeholder="0.00" step="0.01" />
+              <Input type="number" id="lineAmount" placeholder="0.00" step="0.01" value={lineAmount} onChange={e => setLineAmount(e.target.value)} />
             </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">Description</Label>
-              <Textarea id="lineDescription" placeholder="Purpose of expense..." />
+              <Textarea id="lineDescription" placeholder="Purpose of expense..." value={lineDescription} onChange={e => setLineDescription(e.target.value)} />
             </div>
           </div>
           <DialogFooter>
             <Button
               onClick={() => {
-                const date = (document.getElementById('lineDate') as HTMLInputElement)?.value;
-                const category = lineCategory;
-                const merchant = (document.getElementById('lineMerchant') as HTMLInputElement)?.value;
-                const amount = (document.getElementById('lineAmount') as HTMLInputElement)?.value;
-                const description = (document.getElementById('lineDescription') as HTMLTextAreaElement)?.value;
-
-                addLineMutation.mutate({ date, category, merchant, amount, description });
+                addLineMutation.mutate({
+                  date: lineDate || undefined,
+                  category: lineCategory,
+                  merchant: lineMerchant,
+                  amount: lineAmount,
+                  description: lineDescription
+                });
               }}
               disabled={addLineMutation.isPending}
             >
@@ -630,15 +637,16 @@ export default function ExpensesDetail() {
               id="rejectReason"
               placeholder="Reason for rejection (required)..."
               rows={4}
+              value={rejectReason}
+              onChange={e => setRejectReason(e.target.value)}
             />
           </div>
           <DialogFooter>
             <Button
               variant="destructive"
               onClick={() => {
-                const reason = (document.getElementById('rejectReason') as HTMLTextAreaElement)?.value;
-                if (reason) {
-                  rejectMutation.mutate(reason);
+                if (rejectReason.trim()) {
+                  rejectMutation.mutate(rejectReason);
                 } else {
                   toast({
                     title: "Reason Required",
@@ -676,6 +684,8 @@ export default function ExpensesDetail() {
                 type="text"
                 id="receiptFileName"
                 placeholder="e.g., dinner_receipt.jpg"
+                value={receiptFileName}
+                onChange={e => setReceiptFileName(e.target.value)}
               />
             </div>
             <div>
@@ -684,6 +694,8 @@ export default function ExpensesDetail() {
                 type="text"
                 id="receiptFileUrl"
                 placeholder="Will be auto-generated if not provided"
+                value={receiptFileUrl}
+                onChange={e => setReceiptFileUrl(e.target.value)}
               />
             </div>
             <div>

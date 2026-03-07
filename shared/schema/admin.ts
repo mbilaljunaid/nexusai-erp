@@ -132,3 +132,44 @@ export const insertAdminLogSchema: z.ZodObject<any> = createInsertSchema(adminLo
 export type InsertAdminLog = z.infer<typeof insertAdminLogSchema>;
 export type AdminLog = typeof adminLogs.$inferSelect;
 
+// ========== ADMIN: CONFIGURATION TEMPLATES ==========
+export const configurationTemplates = pgTable("configuration_templates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    industryId: varchar("industry_id"),
+    moduleId: varchar("module_id"),
+    templateData: jsonb("template_data").notNull().default({}),
+    templateCategory: varchar("template_category"),
+    isDefault: boolean("is_default").default(false),
+    sortOrder: integer("sort_order").default(0),
+    dependencies: jsonb("dependencies").default([]),
+    validationRules: jsonb("validation_rules").default({}),
+    version: varchar("version").default("1.0"),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertConfigurationTemplateSchema = createInsertSchema(configurationTemplates);
+export type InsertConfigurationTemplate = z.infer<typeof insertConfigurationTemplateSchema>;
+export type ConfigurationTemplateRow = typeof configurationTemplates.$inferSelect;
+
+export const templateApplications = pgTable("template_applications", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+    templateId: varchar("template_id").references(() => configurationTemplates.id).notNull(),
+    appliedBy: varchar("applied_by"),
+    appliedAt: timestamp("applied_at").default(sql`now()`),
+    status: varchar("status").default("applied"), // applied, rolled_back, failed
+    appliedData: jsonb("applied_data").notNull().default({}),
+    errorMessage: text("error_message"),
+    metadata: jsonb("metadata").default({}),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+export const insertTemplateApplicationSchema = createInsertSchema(templateApplications);
+export type InsertTemplateApplication = z.infer<typeof insertTemplateApplicationSchema>;
+export type TemplateApplicationRow = typeof templateApplications.$inferSelect;
+

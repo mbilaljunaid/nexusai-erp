@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Link } from "wouter";
 
 export default function JournalImport() {
     const { toast } = useToast();
@@ -118,7 +119,7 @@ export default function JournalImport() {
                                 onChange={handleFileChange}
                             />
                             <p className="text-sm text-muted-foreground mt-2">
-                                Download the standard <a href="/templates/journal_import_template.csv" className="text-blue-500 underline">CSV template</a>.
+                                Download the standard <Link href="/templates/journal_import_template.csv" className="text-blue-500 underline">CSV template</Link>.
                             </p>
                         </div>
                     </div>

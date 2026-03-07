@@ -27,6 +27,9 @@ export default function IntercompanyWorkbench() {
     const [leId, setLeId] = useState<string>();
     const scopeHeaders = buildScopeHeaders({ "legal-entity": leId });
 
+    // AZ: Controlled form state
+    const [rejectionReason, setRejectionReason] = useState("");
+
     // Mock User Org (In real app, get from Context)
     const currentOrgId = leId || "ICO-101";
 
@@ -137,10 +140,10 @@ export default function IntercompanyWorkbench() {
                             <DialogContent>
                                 <DialogHeader><DialogTitle>Reject Transaction</DialogTitle></DialogHeader>
                                 <div className="space-y-4">
-                                    <Input id={`reason-${item.id}`} placeholder="Enter Rejection Reason..." />
+                                    <Input id={`reason-${item.id}`} placeholder="Enter Rejection Reason..." value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} />
                                     <Button onClick={() => {
-                                        const el = document.getElementById(`reason-${item.id}`) as HTMLInputElement;
-                                        respondTransaction.mutate({ id: item.id, action: "REJECT", rejectionReason: el?.value || "No reason" });
+                                        respondTransaction.mutate({ id: item.id, action: "REJECT", rejectionReason: rejectionReason || "No reason" });
+                                        setRejectionReason("");
                                     }}>Confirm Rejection</Button>
                                 </div>
                             </DialogContent>

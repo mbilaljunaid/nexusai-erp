@@ -44,6 +44,10 @@ export default function ExpenseManagement() {
   const { toast } = useToast();
   const [buId, setBuId] = useState<string>();
 
+  // AZ: New Report Form States
+  const [reportTitle, setReportTitle] = useState("");
+  const [reportDescription, setReportDescription] = useState("");
+
   const scopeHeaders = buildScopeHeaders({ "business-unit": buId });
 
   // Fetch expense reports
@@ -370,6 +374,8 @@ export default function ExpenseManagement() {
                 type="text"
                 placeholder="e.g., Business Trip to NYC"
                 id="reportTitle"
+                value={reportTitle}
+                onChange={(e) => setReportTitle(e.target.value)}
               />
             </div>
             <div>
@@ -378,6 +384,8 @@ export default function ExpenseManagement() {
                 placeholder="Additional details..."
                 rows={3}
                 id="reportDescription"
+                value={reportDescription}
+                onChange={(e) => setReportDescription(e.target.value)}
               />
             </div>
           </div>
@@ -385,11 +393,9 @@ export default function ExpenseManagement() {
             <Button
               className="w-full"
               onClick={() => {
-                const title = (document.getElementById('reportTitle') as HTMLInputElement)?.value;
-                const description = (document.getElementById('reportDescription') as HTMLTextAreaElement)?.value;
-                createReportMutation.mutate({ title, description });
+                createReportMutation.mutate({ title: reportTitle, description: reportDescription });
               }}
-              disabled={createReportMutation.isPending}
+              disabled={createReportMutation.isPending || !reportTitle.trim()}
             >
               {createReportMutation.isPending ? (
                 <>
