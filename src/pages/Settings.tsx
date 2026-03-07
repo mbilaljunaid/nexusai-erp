@@ -344,7 +344,7 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-6 gap-3">
                 {ACCENT_COLORS.map((color) => (
-                  <button
+                  <Button variant="outline"
                     key={color.name}
                     onClick={() => setAccentColor(color)}
                     className={cn(`group relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all hover-elevate ${accentColor.name === color.name
@@ -362,7 +362,7 @@ export default function Settings() {
                       }}
                     />
                     <span className="text-xs font-medium">{color.name}</span>
-                  </button>
+                  </Button>
                 ))}
               </div>
               <div className="pt-4 border-t">

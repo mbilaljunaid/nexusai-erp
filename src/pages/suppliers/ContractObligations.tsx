@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface Obligation {
     id: string;
@@ -75,7 +76,7 @@ export default function ContractObligations() {
                 <div>
                     <p className="text-sm text-muted-foreground mt-1">Supplier compliance tracking · Evidence submission · Escalation management</p>
                 </div>
-                <button onClick={() => setShowNew(true)} className="px-4 py-2 bg-blue-700 text-white border-none rounded-lg font-semibold cursor-pointer text-sm">+ Add Obligation</button>
+                <Button variant="default" onClick={() => setShowNew(true)} className="text-white text-sm">+ Add Obligation</Button>
             </div>
 
             {/* KPIs */}
@@ -126,8 +127,8 @@ export default function ContractObligations() {
                         </div>
                     </div>
                     <div className="flex justify-end gap-1.5 mt-2.5">
-                        <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-100 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={createMut.isPending || !newOb.contractId || !newOb.title} onClick={() => createMut.mutate(newOb)} className="px-3 py-1.5 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Create</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={createMut.isPending || !newOb.contractId || !newOb.title} onClick={() => createMut.mutate(newOb)} className="text-white text-[11px] disabled:opacity-50">Create</Button>
                     </div>
                 </Card>
             )}
@@ -135,9 +136,9 @@ export default function ContractObligations() {
             {/* Filters */}
             <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending', 'InReview', 'Overdue', 'Met', 'Waived'].map(s => (
-                    <button key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-lg text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-lg text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
                         {s || 'All'}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -169,16 +170,16 @@ export default function ContractObligations() {
                                     {ob.status === 'Pending' && (
                                         <div className="flex gap-1.5 items-center mb-1.5">
                                             <Input placeholder="Evidence URL" value={evidenceUrl} onChange={e => setEvidenceUrl(e.target.value)} className="flex-1 px-2 py-1 border border-gray-300 rounded-md text-[11px]" aria-label="Evidence URL" />
-                                            <button disabled={!evidenceUrl} onClick={e => { e.stopPropagation(); evidenceMut.mutate({ id: ob.id, url: evidenceUrl }); }} className="px-2.5 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] cursor-pointer disabled:opacity-50">Submit Evidence</button>
+                                            <Button variant="default" size="sm" disabled={!evidenceUrl} onClick={e => { e.stopPropagation(); evidenceMut.mutate({ id: ob.id, url: evidenceUrl }); }} className="text-white text-[11px] disabled:opacity-50">Submit Evidence</Button>
                                         </div>
                                     )}
                                     <div className="flex gap-1.5">
                                         {ob.status === 'InReview' && <>
-                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} className="px-2.5 py-1 bg-green-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><CheckCircle2 className="h-[11px] w-[11px]"  /> Mark Met</button>
-                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Waived' }); }} className="px-2.5 py-1 bg-gray-500 text-white border-none rounded-md text-[11px] cursor-pointer">Waive</button>
+                                            <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} className="text-white text-[11px] flex items-center gap-1"><CheckCircle2 className="h-[11px] w-[11px]"  /> Mark Met</Button>
+                                            <Button variant="secondary" size="sm" onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Waived' }); }} className="text-white text-[11px]">Waive</Button>
                                         </>}
                                         {ob.status === 'Overdue' && (
-                                            <button onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} className="px-2.5 py-1 bg-red-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><ArrowUp className="h-[11px] w-[11px]"  /> Escalate</button>
+                                            <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} className="text-white text-[11px] flex items-center gap-1"><ArrowUp className="h-[11px] w-[11px]"  /> Escalate</Button>
                                         )}
                                     </div>
                                 </div>

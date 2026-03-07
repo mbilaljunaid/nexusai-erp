@@ -7,6 +7,7 @@ import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/formatters';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface CashTransaction {
     id: string;
@@ -66,57 +67,57 @@ export default function CashGrid({ accountId, legalEntityId, onAddTransaction, o
             </div>
 
             <div className="overflow-x-auto rounded-lg border border-slate-300 bg-white">
-                <table className="min-w-full text-sm">
-                    <thead className="bg-slate-100 border-b">
-                        <tr>
-                            <th className="px-4 py-3 text-left font-medium text-slate-600">Date</th>
-                            <th className="px-4 py-3 text-left font-medium text-slate-600">Reference</th>
-                            <th className="px-4 py-3 text-left font-medium text-slate-600">Description</th>
-                            <th className="px-4 py-3 text-left font-medium text-slate-600">Source</th>
-                            <th className="px-4 py-3 text-right font-medium text-slate-600">Amount</th>
-                            <th className="px-4 py-3 text-center font-medium text-slate-600">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200">
+                <Table className="min- text-sm">
+                    <TableHeader className="bg-slate-100 border-b">
+                        <TableRow>
+                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Date</TableHead>
+                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Reference</TableHead>
+                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Description</TableHead>
+                            <TableHead className="px-4 py-3 text-left font-medium text-slate-600">Source</TableHead>
+                            <TableHead className="px-4 py-3 text-right font-medium text-slate-600">Amount</TableHead>
+                            <TableHead className="px-4 py-3 text-center font-medium text-slate-600">Status</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody className="divide-y divide-slate-200">
                         {transactions?.length === 0 && (
-                            <tr>
-                                <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
+                            <TableRow>
+                                <TableCell colSpan={6} className="px-4 py-8 text-center text-slate-500">
                                     No transactions found.
-                                </td>
-                            </tr>
+                                </TableCell>
+                            </TableRow>
                         )}
                         {transactions?.map((row) => (
-                            <tr
+                            <TableRow
                                 key={row.id}
                                 className="hover:bg-slate-500/10 transition-colors cursor-pointer"
                                 onClick={() => onEditTransaction && onEditTransaction(row)}
                             >
-                                <td className="px-4 py-2 text-slate-900 dark:text-slate-200">
+                                <TableCell className="px-4 py-2 text-slate-900 dark:text-slate-200">
                                     {formatDate(row.transactionDate)}
-                                </td>
-                                <td className="px-4 py-2 text-slate-600 font-mono text-xs">{row.reference || '-'}</td>
-                                <td className="px-4 py-2 text-slate-700">{row.description || '-'}</td>
-                                <td className="px-4 py-2">
+                                </TableCell>
+                                <TableCell className="px-4 py-2 text-slate-600 font-mono text-xs">{row.reference || '-'}</TableCell>
+                                <TableCell className="px-4 py-2 text-slate-700">{row.description || '-'}</TableCell>
+                                <TableCell className="px-4 py-2">
                                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
                                         {row.sourceModule}
                                     </span>
-                                </td>
-                                <td className={cn(`px-4 py-2 text-right font-medium ${Number(row.amount) < 0 ? 'text-red-600' : 'text-green-600'
+                                </TableCell>
+                                <TableCell className={cn(`px-4 py-2 text-right font-medium ${Number(row.amount) < 0 ? 'text-red-600' : 'text-green-600'
                                     }`)}>
                                     {formatCurrency(Number(row.amount))}
-                                </td>
-                                <td className="px-4 py-2 text-center">
+                                </TableCell>
+                                <TableCell className="px-4 py-2 text-center">
                                     <span className={cn(`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.status === 'Reconciled' || row.status === 'Cleared'
                                         ? 'bg-green-100 text-green-800'
                                         : 'bg-yellow-100 text-yellow-800'
                                         }`)}>
                                         {row.status}
                                     </span>
-                                </td>
-                            </tr>
+                                </TableCell>
+                            </TableRow>
                         ))}
-                    </tbody>
-                </table>
+                    </TableBody>
+                </Table>
             </div>
 
             {/* Pagination Placeholder */}

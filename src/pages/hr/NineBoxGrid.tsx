@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 interface NineBoxEntry { employee_id: string; performance: number; potential: number; box_label: string; assessed_by: string; notes: string; }
 
 const BOX_CONFIG: Record<string, { bg: string; border: string; label: string }> = {
@@ -66,8 +67,8 @@ export default function NineBoxGrid() {
             actions={
                 <div className="flex gap-2">
                     <Input value={period} onChange={e => setPeriod(e.target.value)} placeholder="YYYY" className="h-7 rounded-[7px] text-xs w-20" aria-label="Year" />
-                    <button onClick={() => setShowAdd(true)} className="px-3 py-1.5 bg-violet-600 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-violet-700">+ Add Assessment</button>
-                    <button onClick={() => purgeMut.mutate()} className="px-3 py-1.5 bg-gray-100 text-gray-500 border-none rounded-lg text-[11px] cursor-pointer hover:bg-gray-200" title="GDPR purge expired records">🔒 GDPR Purge</button>
+                    <Button variant="default" size="sm" onClick={() => setShowAdd(true)} className="text-white text-[11px] hover:">+ Add Assessment</Button>
+                    <Button variant="secondary" size="sm" onClick={() => purgeMut.mutate()} className="text-gray-500 text-[11px] hover:" title="GDPR purge expired records">🔒 GDPR Purge</Button>
                 </div>
             }
         >
@@ -96,8 +97,8 @@ export default function NineBoxGrid() {
                         </div>
                     </div>
                     <div className="flex gap-1.5 justify-end">
-                        <button onClick={() => setShowAdd(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer hover:bg-gray-300">Cancel</button>
-                        <button disabled={!form.employeeId} onClick={() => addMut.mutate({ employeeId: form.employeeId, period, performance: parseInt(form.performance), potential: parseInt(form.potential), assessedBy: form.assessedBy || null, notes: form.notes || null })} className="px-3 py-1 bg-violet-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed">Save</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowAdd(false)} className="text-[11px] hover:">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={!form.employeeId} onClick={() => addMut.mutate({ employeeId: form.employeeId, period, performance: parseInt(form.performance), potential: parseInt(form.potential), assessedBy: form.assessedBy || null, notes: form.notes || null })} className="text-white text-[11px] hover: disabled:opacity-50 disabled:">Save</Button>
                     </div>
                 </Card>
             )}

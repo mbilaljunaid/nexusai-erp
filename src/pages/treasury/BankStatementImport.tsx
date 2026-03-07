@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload, FileText, CheckCircle2, AlertCircle, Link2, BarChart3 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
+import { Button } from "@/components/ui/button";
 
 
 interface ImportRecord {
@@ -108,7 +109,7 @@ export default function BankStatementImport() {
                 <div className="bsi-import-panel">
                     <div className="fmt-row">
                         {(['BAI2', 'MT940', 'CAMT053'] as const).map(f => (
-                            <button key={f} className={cn(`fmt-btn ${format === f ? 'active' : ''}`)} onClick={() => setFormat(f)}>{f}</button>
+                            <Button variant="default" key={f} className={cn(`fmt-btn ${format === f ? 'active' : ''}`)} onClick={() => setFormat(f)}>{f}</Button>
                         ))}
                     </div>
                     <input ref={fileRef} type="file" accept=".txt,.xml,.camt,.mt940,.bai2" onChange={handleFile} hidden />
@@ -118,14 +119,14 @@ export default function BankStatementImport() {
                         <div className="dz-sub">{format} format</div>
                     </div>
                     <Textarea className="paste-area" placeholder="Or paste statement content here…" value={pasteContent} onChange={e => setPasteContent(e.target.value)} rows={8} aria-label="Statement content" />
-                    <button
+                    <Button variant="default"
                         className="import-btn"
                         disabled={!pasteContent || importMutation.isPending}
                         onClick={() => importMutation.mutate({ format, rawContent: pasteContent })}
                         aria-label="Import statement"
                     >
                         {importMutation.isPending ? 'Importing…' : 'Import Statement'}
-                    </button>
+                    </Button>
                     {importMutation.isSuccess && (
                         <div className="success-msg">
                             <CheckCircle2 className="h-3.5 w-3.5"  /> Imported {importMutation.data?.transactionCount ?? 0} transactions
@@ -174,7 +175,7 @@ export default function BankStatementImport() {
                             </div>
                             <div className="filter-row">
                                 {['', 'Matched', 'Unmatched', 'Exception'].map(s => (
-                                    <button key={s} className={cn(`filter-pill ${matchFilter === s ? 'active' : ''}`)} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
+                                    <Button variant="default" key={s} className={cn(`filter-pill ${matchFilter === s ? 'active' : ''}`)} onClick={() => setMatchFilter(s)}>{s || 'All'}</Button>
                                 ))}
                             </div>
                             <div className="h-[400px]">
@@ -192,7 +193,7 @@ export default function BankStatementImport() {
                         </>
                     ) : (
                         <div className="no-select">
-                            <FileText className="h-12 w-12"  style={{ color: '#d1d5db', marginBottom: 12 }} />
+                            <FileText className="h-12 w-12 mb-3" style={{color: '#d1d5db'}}/>
                             <div>Select an import to view transactions</div>
                         </div>
                     )}

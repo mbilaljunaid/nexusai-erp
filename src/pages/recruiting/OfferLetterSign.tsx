@@ -7,6 +7,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface EsigDoc {
     id: string; document_type: string; applicant_id: string; candidate_name: string;
@@ -57,71 +58,71 @@ export default function OfferLetterSign() {
 
     return (
         <StandardPage title="E-Signature &amp; Offer Letters">
-            <div style={{ marginBottom: 16 }}>
+            <div className="mb-4">
 
-                <p style={{ fontSize: 13, color: '#6b7280', margin: '4px 0 0' }}>Digital signature collection · Audit trail · Expiry enforcement</p>
+                <p className="text-[13px] text-muted-foreground" style={{margin: '4px 0 0'}}>Digital signature collection · Audit trail · Expiry enforcement</p>
             </div>
 
             {/* KPI bar */}
             {summary && (
-                <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
+                <div className="flex gap-[10px] mb-[14px]">
                     {([['Pending', summary.pending, '#6b7280'], ['Sent', summary.sent, '#1d4ed8'], ['Signed', summary.signed, '#059669'], ['Declined', summary.declined, '#dc2626'], ['Expired', summary.expired, '#9ca3af']] as [string, number, string][]).map(([l, v, c]) => (
                         <div key={l} style={{ flex: 1, background: '#fff', border: '1px solid #e5e7eb', borderLeft: `4px solid ${c}`, borderRadius: 10, padding: '10px 14px' }}>
-                            <div style={{ fontSize: 22, fontWeight: 800, fontFamily: 'monospace', color: c }}>{v ?? 0}</div>
-                            <div style={{ fontSize: 11, color: '#9ca3af' }}>{l}</div>
+                            <div className="text-[22px] font-extrabold font-mono" style={{color: c}}>{v ?? 0}</div>
+                            <div className="text-[11px] text-muted-foreground">{l}</div>
                         </div>
                     ))}
                 </div>
             )}
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+            <div className="flex gap-1 mb-3">
                 {(['docs', 'new', 'sign'] as const).map(t => (
-                    <button key={t} onClick={() => setTab(t)} style={{ padding: '7px 18px', border: '1px solid #e5e7eb', borderRadius: 8, background: tab === t ? '#111827' : '#fff', color: tab === t ? '#fff' : '#6b7280', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                    <Button variant={tab === t ? "default" : "secondary"} size="sm" key={t} onClick={() => setTab(t)}>
                         {t === 'docs' ? `All Documents (${docs.length})` : t === 'new' ? '+ New Document' : '✍ Sign Document'}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
             {/* Documents list */}
             {tab === 'docs' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div className="flex flex-col gap-[6px]">
                     {docs.map(d => {
                         const cfg = STATUS_CFG[d.status] ?? STATUS_CFG.Pending;
                         return (
-                            <div key={d.id} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                                    <FileText className="h-3.5 w-3.5"  color="#9ca3af" />
+                            <div key={d.id} className="bg-card rounded-[10px] py-[12px] px-[16px] flex justify-between items-center" style={{border: '1px solid #e5e7eb'}}>
+                                <div className="flex gap-3 items-center">
+                                    <FileText className="h-3.5 w-3.5" color="#9ca3af" />
                                     <div>
-                                        <div style={{ fontSize: 13, fontWeight: 700 }}>{d.document_type.replace(/_/g, ' ')} — {d.candidate_name ?? d.applicant_id}</div>
-                                        <div style={{ fontSize: 11, color: '#6b7280' }}>{d.candidate_email ?? '—'} · Created {fmtDate(d.created_at)} · Expires {fmtDate(d.expires_at)}</div>
+                                        <div className="text-[13px] font-bold">{d.document_type.replace(/_/g, ' ')} — {d.candidate_name ?? d.applicant_id}</div>
+                                        <div className="text-[11px] text-muted-foreground">{d.candidate_email ?? '—'} · Created {fmtDate(d.created_at)} · Expires {fmtDate(d.expires_at)}</div>
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                                    <span style={{ padding: '3px 10px', borderRadius: 999, fontSize: 10, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{d.status}</span>
-                                    {d.status === 'Pending' && <button onClick={() => sendMut.mutate(d.id)} style={{ padding: '4px 10px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer' }}>Send</button>}
-                                    {(d.status === 'Sent' || d.status === 'Opened') && <button onClick={() => { setSignDocId(d.id); setTab('sign'); setSigned(false); }} style={{ padding: '4px 10px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer' }}>Sign</button>}
-                                    {d.status !== 'Signed' && d.status !== 'Declined' && <button onClick={() => declineMut.mutate(d.id)} style={{ padding: '4px 10px', background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer' }}>Decline</button>}
-                                    <button onClick={() => setAuditDoc(auditDoc?.id === d.id ? null : d)} style={{ padding: '4px 8px', background: '#f3f4f6', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}><Eye className="h-2.5 w-2.5"  />Trail</button>
+                                <div className="flex gap-[6px] items-center">
+                                    <span className="py-[3px] px-[10px] rounded-[999px] text-[10px] font-bold" style={{background: cfg.bg, color: cfg.color}}>{d.status}</span>
+                                    {d.status === 'Pending' && <Button variant="default" size="sm" onClick={() => sendMut.mutate(d.id)} >Send</Button>}
+                                    {(d.status === 'Sent' || d.status === 'Opened') && <Button variant="default" size="sm" onClick={() => { setSignDocId(d.id); setTab('sign'); setSigned(false); }} >Sign</Button>}
+                                    {d.status !== 'Signed' && d.status !== 'Declined' && <Button variant="destructive" size="sm" onClick={() => declineMut.mutate(d.id)} >Decline</Button>}
+                                    <Button variant="secondary" size="sm" onClick={() => setAuditDoc(auditDoc?.id === d.id ? null : d)} style={{ display: 'flex', alignItems: 'center', gap: 2 }}><Eye className="h-2.5 w-2.5" />Trail</Button>
                                 </div>
                             </div>
                         );
                     })}
-                    {docs.length === 0 && <div style={{ textAlign: 'center', color: '#9ca3af', padding: 32 }}>No documents — create a new offer letter or agreement</div>}
+                    {docs.length === 0 && <div className="text-center text-muted-foreground p-8">No documents — create a new offer letter or agreement</div>}
                     {/* Audit trail inline */}
                     {auditDoc && audit && (
-                        <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 10, padding: 14 }}>
-                            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Audit Trail — {auditDoc.candidate_name}</div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <div className="rounded-[10px] p-[14px]" style={{background: '#f9fafb', border: '1px solid #e5e7eb'}}>
+                            <div className="text-[12px] font-bold mb-2">Audit Trail — {auditDoc.candidate_name}</div>
+                            <div className="flex flex-col gap-[6px]">
                                 {(audit.audit_trail as any[] ?? []).map((ev: any, i: number) => (
-                                    <div key={i} style={{ display: 'flex', gap: 10, fontSize: 11, alignItems: 'center' }}>
-                                        <span style={{ padding: '1px 7px', borderRadius: 4, background: '#111827', color: '#fff', fontSize: 10 }}>{ev.event}</span>
-                                        <span style={{ color: '#6b7280' }}>{formatDateTime(ev.at)}</span>
-                                        {ev.ip && <span style={{ color: '#9ca3af' }}>IP: {ev.ip}</span>}
+                                    <div key={i} className="flex gap-[10px] text-[11px] items-center">
+                                        <span className="py-[1px] px-[7px] rounded-1 text-[10px]" style={{background: '#111827', color: '#fff'}}>{ev.event}</span>
+                                        <span className="text-muted-foreground">{formatDateTime(ev.at)}</span>
+                                        {ev.ip && <span className="text-muted-foreground">IP: {ev.ip}</span>}
                                         {ev.reason && <span style={{ color: '#dc2626' }}>Reason: {ev.reason}</span>}
                                     </div>
                                 ))}
-                                {(audit.audit_trail as any[] ?? []).length === 0 && <span style={{ fontSize: 11, color: '#9ca3af' }}>No audit events yet</span>}
+                                {(audit.audit_trail as any[] ?? []).length === 0 && <span className="text-[11px] text-muted-foreground">No audit events yet</span>}
                             </div>
                         </div>
                     )}
@@ -130,59 +131,58 @@ export default function OfferLetterSign() {
 
             {/* New Document form */}
             {tab === 'new' && (
-                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20, maxWidth: 640 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>Create New Document</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <Label style={{ fontSize: 10, fontWeight: 700 }}>Document Type</Label>
+                <div className="bg-card rounded-3 p-5" style={{border: '1px solid #e5e7eb', maxWidth: 640}}>
+                    <div className="text-[14px] font-bold mb-[14px]">Create New Document</div>
+                    <div className="grid gap-[10px]" style={{gridTemplateColumns: '1fr 1fr'}}>
+                        <div className="flex flex-col gap-[3px]">
+                            <Label className="text-[10px] font-bold">Document Type</Label>
                             <Select value={form.documentType} onValueChange={v => setForm(p => ({ ...p, documentType: v }))}>
-                                <SelectTrigger style={{ padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: 7, fontSize: 12 }} aria-label="Document type"><SelectValue /></SelectTrigger>
+                                <SelectTrigger className="py-[7px] px-[10px] rounded-[7px] text-[12px]" style={{border: '1px solid #d1d5db'}} aria-label="Document type"><SelectValue /></SelectTrigger>
                                 <SelectContent>{['OFFER_LETTER', 'NDA', 'EMPLOYMENT_AGREEMENT', 'POLICY_ACK', 'BACKGROUND_CONSENT'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                             </Select>
                         </div>
                         {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Candidate Email', 'email'], ['expiresInDays', 'Expires In (days)', 'number']].map(([k, l, t]) => (
-                            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                                <Label style={{ fontSize: 10, fontWeight: 700 }}>{l}</Label>
+                            <div key={k} className="flex flex-col gap-[3px]">
+                                <Label className="text-[10px] font-bold">{l}</Label>
                                 <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="h-9 text-xs" aria-label={l} />
                             </div>
                         ))}
-                        <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                            <Label style={{ fontSize: 10, fontWeight: 700 }}>Document Content (HTML)</Label>
+                        <div className="flex flex-col gap-[3px]" style={{gridColumn: '1/-1'}}>
+                            <Label className="text-[10px] font-bold">Document Content (HTML)</Label>
                             <Textarea rows={4} value={form.htmlContent} onChange={e => setForm(p => ({ ...p, htmlContent: e.target.value }))} placeholder="<p>Dear Candidate, we are delighted to offer you...</p>" className="font-mono text-xs resize-y" aria-label="Document content" />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 14 }}>
-                        <button onClick={() => setTab('docs')} style={{ padding: '7px 16px', background: '#f3f4f6', border: 'none', borderRadius: 7, fontSize: 12, cursor: 'pointer' }}>Cancel</button>
-                        <button disabled={!form.applicantId || createMut.isPending} onClick={() => createMut.mutate(form)} style={{ padding: '7px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 7, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Create Document</button>
+                    <div className="flex gap-2 justify-end mt-[14px]">
+                        <Button variant="secondary" size="sm" onClick={() => setTab('docs')} >Cancel</Button>
+                        <Button variant="default" size="sm" disabled={!form.applicantId || createMut.isPending} onClick={() => createMut.mutate(form)} >Create Document</Button>
                     </div>
                 </div>
             )}
 
             {/* Sign document */}
             {tab === 'sign' && (
-                <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20, maxWidth: 540 }}>
+                <div className="bg-card rounded-3 p-5" style={{border: '1px solid #e5e7eb', maxWidth: 540}}>
                     {signed ? (
-                        <div style={{ textAlign: 'center', padding: 32 }}>
-                            <CheckCircle2 className="h-10 w-10"  color="#059669" style={{ marginBottom: 10 }} />
-                            <div style={{ fontSize: 16, fontWeight: 700, color: '#059669' }}>Document Signed Successfully</div>
-                            <button onClick={() => setTab('docs')} style={{ marginTop: 14, padding: '8px 18px', background: '#111827', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>Back to Documents</button>
+                        <div className="text-center p-8">
+                            <CheckCircle2 className="h-10 w-10 mb-[10px]" color="#059669"/>
+                            <div className="text-[16px] font-bold" style={{color: '#059669'}}>Document Signed Successfully</div>
+                            <Button variant="secondary" size="sm" onClick={() => setTab('docs')} style={{ marginTop: 14 }}>Back to Documents</Button>
                         </div>
                     ) : (
                         <>
-                            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>Sign Document</div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
-                                <Label style={{ fontSize: 10, fontWeight: 700 }}>Document ID</Label>
+                            <div className="text-[14px] font-bold mb-[10px]">Sign Document</div>
+                            <div className="flex flex-col gap-1 mb-3">
+                                <Label className="text-[10px] font-bold">Document ID</Label>
                                 <Input value={signDocId} onChange={e => setSignDocId(e.target.value)} placeholder="Paste document ID or use Send → Sign from list" className="h-9 text-xs" aria-label="Document ID" />
                             </div>
-                            <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 6, color: '#374151', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <PenLine className="h-3 w-3"  /> Draw your signature below
+                            <div className="text-[11px] font-bold mb-[6px] text-foreground flex items-center gap-1">
+                                <PenLine className="h-3 w-3" /> Draw your signature below
                             </div>
-                            <canvas ref={canvasRef} width={500} height={120} onMouseDown={startDraw} onMouseMove={draw} onMouseUp={endDraw} onMouseLeave={endDraw}
-                                style={{ border: '2px dashed #e5e7eb', borderRadius: 8, cursor: 'crosshair', touchAction: 'none', width: '100%', display: 'block', background: '#fafafa' }} />
-                            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 10 }}>
-                                <button onClick={clearCanvas} style={{ padding: '6px 14px', background: '#f3f4f6', border: 'none', borderRadius: 7, fontSize: 11, cursor: 'pointer' }}>Clear</button>
-                                <button onClick={() => setTab('docs')} style={{ padding: '6px 14px', background: '#f3f4f6', border: 'none', borderRadius: 7, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                                <button disabled={!signDocId || signMut.isPending} onClick={() => signMut.mutate({ id: signDocId, sig: captureSignature() })} style={{ padding: '6px 16px', background: '#059669', color: '#fff', border: 'none', borderRadius: 7, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Submit Signature</button>
+                            <canvas ref={canvasRef} width={500} height={120} onMouseDown={startDraw} onMouseMove={draw} onMouseUp={endDraw} onMouseLeave={endDraw} className="rounded-2" style={{border: '2px dashed #e5e7eb', cursor: 'crosshair', touchAction: 'none', width: '100%', display: 'block', background: '#fafafa'}}/>
+                            <div className="flex gap-2 justify-end mt-[10px]">
+                                <Button variant="secondary" size="sm" onClick={clearCanvas} >Clear</Button>
+                                <Button variant="secondary" size="sm" onClick={() => setTab('docs')} >Cancel</Button>
+                                <Button variant="default" size="sm" disabled={!signDocId || signMut.isPending} onClick={() => signMut.mutate({ id: signDocId, sig: captureSignature() })} >Submit Signature</Button>
                             </div>
                         </>
                     )}

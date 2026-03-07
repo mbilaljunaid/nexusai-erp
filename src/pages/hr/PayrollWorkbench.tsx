@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 interface PayrollRun {
     id: string;
     payroll_name: string;
@@ -111,20 +112,20 @@ export default function PayrollWorkbench() {
             id: "actions", header: "Actions", width: "300px", cell: (row) => (
                 <div className="action-cell">
                     {row.status === 'Draft' && (
-                        <button className="act-btn blue" onClick={() => processMutation.mutate(row.id)} aria-label="Process run">
+                        <Button variant="default" className="act-btn blue" onClick={() => processMutation.mutate(row.id)} aria-label="Process run">
                             <PlayCircle className="h-[13px] w-[13px]"  /> Process
-                        </button>
+                        </Button>
                     )}
                     {row.status === 'Review' && (
-                        <button className="act-btn green" onClick={() => approveMutation.mutate(row.id)} aria-label="Approve run">
+                        <Button variant="default" className="act-btn green" onClick={() => approveMutation.mutate(row.id)} aria-label="Approve run">
                             <CheckCircle2 className="h-[13px] w-[13px]"  /> Approve
-                        </button>
+                        </Button>
                     )}
                     {row.status === 'Approved' && (
                         <>
-                            <button className="act-btn purple" onClick={() => glMutation.mutate(row.id)} aria-label="Post to GL">
+                            <Button variant="default" className="act-btn purple" onClick={() => glMutation.mutate(row.id)} aria-label="Post to GL">
                                 GL Post
-                            </button>
+                            </Button>
                             <Select onValueChange={v => v && payFileMutation.mutate({ id: row.id, format: v })}>
                                 <SelectTrigger className="fmt-select" aria-label="Generate payment file"><SelectValue placeholder="Pay File…" /></SelectTrigger>
                                 <SelectContent>
@@ -149,9 +150,9 @@ export default function PayrollWorkbench() {
             title="Global Payroll Workbench"
             description="Multi-country payroll processing, GL costing & statutory payment files"
             actions={
-                <button className="create-run-btn" onClick={() => setShowCreateForm(true)} aria-label="Create payroll run">
+                <Button variant="default" className="create-run-btn" onClick={() => setShowCreateForm(true)} aria-label="Create payroll run">
                     + Create Run
-                </button>
+                </Button>
             }
         >
 
@@ -166,13 +167,13 @@ export default function PayrollWorkbench() {
             {/* Country filter */}
             <div className="country-filters">
                 {['', ...COUNTRIES].map(c => (
-                    <button
+                    <Button variant="default"
                         key={c}
                         className={cn(`country-pill ${countryFilter === c ? 'active' : ''}`)}
                         onClick={() => setCountryFilter(c)}
                     >
                         {c || 'All Countries'}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -214,10 +215,10 @@ export default function PayrollWorkbench() {
                             </Select>
                         </div>
                         <div className="modal-actions">
-                            <button className="mcancel" onClick={() => setShowCreateForm(false)}>Cancel</button>
-                            <button className="msubmit" onClick={() => createMutation.mutate(createForm)} disabled={createMutation.isPending}>
+                            <Button variant="default" className="mcancel" onClick={() => setShowCreateForm(false)}>Cancel</Button>
+                            <Button variant="default" className="msubmit" onClick={() => createMutation.mutate(createForm)} disabled={createMutation.isPending}>
                                 {createMutation.isPending ? 'Creating…' : 'Create Run'}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

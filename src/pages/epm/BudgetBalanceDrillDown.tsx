@@ -200,12 +200,12 @@ export default function BudgetBalanceDrillDown() {
                                             >
                                                 <TableCell>
                                                     {balance.hasChildren && (
-                                                        <button onClick={(e) => { e.stopPropagation(); toggleExpand(balance.ccid); }}>
+                                                        <Button variant="default" onClick={(e) => { e.stopPropagation(); toggleExpand(balance.ccid); }}>
                                                             {expandedAccounts.has(balance.ccid) ?
                                                                 <ChevronDown className="h-4 w-4" /> :
                                                                 <ChevronRight className="h-4 w-4" />
                                                             }
-                                                        </button>
+                                                        </Button>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="font-medium">{balance.accountName}</TableCell>

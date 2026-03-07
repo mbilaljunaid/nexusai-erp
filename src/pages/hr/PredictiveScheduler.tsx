@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface Shift {
     id: string;
@@ -107,23 +108,23 @@ export default function PredictiveScheduler() {
                         <Label className="ll">Week Of</Label>
                         <DatePicker className="li" value={weekStart} onChange={v => setWeekStart(v)} aria-label="Week start date" />
                     </div>
-                    <button className="pub-btn" disabled={publishMutation.isPending || shifts.length === 0}
+                    <Button variant="default" className="pub-btn" disabled={publishMutation.isPending || shifts.length === 0}
                         onClick={() => publishMutation.mutate()} aria-label="Publish schedule">
                         <Send className="h-[13px] w-[13px]"  /> {publishMutation.isPending ? 'Publishing…' : 'Publish'}
-                    </button>
+                    </Button>
                 </div>
             }
         >
 
             <div className="tab-bar">
                 {(['schedule', 'forecast', 'generate'] as const).map(t => (
-                    <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)}
+                    <Button variant="default" key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)}
                         onClick={() => setActiveTab(t)} aria-pressed={activeTab === t}>
                         {t === 'schedule' && <Calendar className="h-3 w-3"  />}
                         {t === 'forecast' && <BarChart2 className="h-3 w-3"  />}
                         {t === 'generate' && <Zap className="h-3 w-3"  />}
                         {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -161,10 +162,10 @@ export default function PredictiveScheduler() {
                 <div className="forecast-panel">
                     <div className="fc-ctrl">
                         <div className="pf"><Label className="pl">Date</Label><DatePicker className="pi" value={coverageDate} onChange={v => setCoverageDate(v)} aria-label="Date for coverage" /></div>
-                        <button className="run-fc-btn" disabled={forecastMutation.isPending}
+                        <Button variant="default" className="run-fc-btn" disabled={forecastMutation.isPending}
                             onClick={() => forecastMutation.mutate({ locationId: location, startDate: coverageDate, endDate: coverageDate })} aria-label="Run forecast">
                             {forecastMutation.isPending ? 'Forecasting…' : 'Run Forecast'}
-                        </button>
+                        </Button>
                     </div>
 
                     {coverage && (
@@ -217,7 +218,7 @@ export default function PredictiveScheduler() {
                         <div className="gf"><Label className="gl">Max Hours / Employee</Label><Input className="gi" type="number" value={genParams.maxHoursPerEmployee} onChange={e => setGenParams(p => ({ ...p, maxHoursPerEmployee: parseInt(e.target.value) || 40 }))} aria-label="Max hours per employee" /></div>
                         <div className="gf"><Label className="gl">Shift Hours</Label><Input className="gi" type="number" value={genParams.shiftHours} onChange={e => setGenParams(p => ({ ...p, shiftHours: parseInt(e.target.value) || 8 }))} aria-label="Hours per shift" /></div>
                     </div>
-                    <button className="gen-btn" disabled={generateMutation.isPending}
+                    <Button variant="default" className="gen-btn" disabled={generateMutation.isPending}
                         onClick={() => generateMutation.mutate({
                             locationId: location,
                             weekStartDate: genParams.weekStartDate || weekStart,
@@ -225,7 +226,7 @@ export default function PredictiveScheduler() {
                             employeePool: genParams.employeeIds.split(',').map(id => ({ employeeId: id.trim(), maxHours: genParams.maxHoursPerEmployee })),
                         })} aria-label="Generate schedule">
                         <Zap className="h-[13px] w-[13px]"  /> {generateMutation.isPending ? 'Generating…' : 'Generate Schedule'}
-                    </button>
+                    </Button>
                     {generateMutation.isSuccess && (
                         <div className="gen-result">
                             ✅ {generateMutation.data?.shiftsGenerated} shifts generated · {Math.round((generateMutation.data?.coverage ?? 0) * 100)}% week coverage

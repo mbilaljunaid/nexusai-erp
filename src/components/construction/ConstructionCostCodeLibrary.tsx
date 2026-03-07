@@ -150,16 +150,16 @@ export default function ConstructionCostCodeLibrary() {
                 >
                     <div className="flex-1 flex items-center gap-2">
                         {hasChildren ? (
-                            <button
+                            <Button variant="default"
                                 onClick={() => toggleNode(node.id)}
-                                className="p-0 h-5 w-5 flex items-center justify-center hover:bg-muted rounded"
+                                className="h-5 w-5 flex items-center justify-center hover: rounded"
                             >
                                 {isExpanded ? (
                                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
                                 ) : (
                                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                                 )}
-                            </button>
+                            </Button>
                         ) : (
                             <div className="w-5" />
                         )}

@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface ReportSpreadsheetProps {
   data?: any[];
@@ -149,24 +150,24 @@ export function ReportSpreadsheet({ data = [], columns = [] }: ReportSpreadsheet
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto border rounded-md" ref={tableRef}>
-                <table className="w-full text-sm border-collapse">
-                  <thead>
-                    <tr className="bg-muted">
+                <Table className="text-sm">
+                  <TableHeader>
+                    <TableRow className="bg-muted">
                       {columns.map((col, idx) => (
-                        <th key={idx} className="border p-2 font-semibold text-left">
+                        <TableHead key={idx} className="border p-2 font-semibold text-left">
                           {col.label}
-                        </th>
+                        </TableHead>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {tableData.map((row, rowIdx) => (
-                      <tr key={rowIdx} className="border-t">
+                      <TableRow key={rowIdx} className="border-t">
                         {columns.map((col, colIdx) => {
                           const cellKey = `${rowIdx}-${colIdx}`;
                           const isSelected = selectedCells.has(cellKey);
                           return (
-                            <td
+                            <TableCell
                               key={colIdx}
                               onClick={(e) => handleCellClick(rowIdx, colIdx, e)}
                               className={cn(`border-r p-2 cursor-cell transition-colors ${
@@ -181,13 +182,13 @@ export function ReportSpreadsheet({ data = [], columns = [] }: ReportSpreadsheet
                                 className="w-full bg-transparent outline-none"
                                 data-testid={`input-cell-${rowIdx}-${colIdx}`}
                               />
-                            </td>
+                            </TableCell>
                           );
                         })}
-                      </tr>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
               <div className="mt-4 text-sm text-muted-foreground">
                 {selectedCells.size > 0 && (
@@ -257,26 +258,26 @@ export function ReportSpreadsheet({ data = [], columns = [] }: ReportSpreadsheet
             <CardContent>
               {pivotData.length > 0 ? (
                 <div className="overflow-x-auto border rounded-md">
-                  <table className="w-full text-sm border-collapse">
-                    <thead>
-                      <tr className="bg-muted">
-                        <th className="border p-2 font-semibold text-left">{pivotDimension}</th>
-                        <th className="border p-2 font-semibold text-right">Count</th>
-                        <th className="border p-2 font-semibold text-right">Sum</th>
-                        <th className="border p-2 font-semibold text-right">Average</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  <Table className="text-sm">
+                    <TableHeader>
+                      <TableRow className="bg-muted">
+                        <TableHead className="border p-2 font-semibold text-left">{pivotDimension}</TableHead>
+                        <TableHead className="border p-2 font-semibold text-right">Count</TableHead>
+                        <TableHead className="border p-2 font-semibold text-right">Sum</TableHead>
+                        <TableHead className="border p-2 font-semibold text-right">Average</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
                       {pivotData.map((row, idx) => (
-                        <tr key={idx} className="border-t hover:bg-accent">
-                          <td className="border p-2">{row.dimension}</td>
-                          <td className="border p-2 text-right">{row.count}</td>
-                          <td className="border p-2 text-right">{row.sum?.toFixed(2)}</td>
-                          <td className="border p-2 text-right">{row.average?.toFixed(2)}</td>
-                        </tr>
+                        <TableRow key={idx} className="border-t hover:bg-accent">
+                          <TableCell className="border p-2">{row.dimension}</TableCell>
+                          <TableCell className="border p-2 text-right">{row.count}</TableCell>
+                          <TableCell className="border p-2 text-right">{row.sum?.toFixed(2)}</TableCell>
+                          <TableCell className="border p-2 text-right">{row.average?.toFixed(2)}</TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">

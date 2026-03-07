@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 
 interface ScreeningResult {
@@ -127,7 +128,7 @@ export default function DebtCovenantMonitor() {
         {
             id: "action", header: "", width: "100px", cell: (row) => (
                 (row.match_status === 'PotentialMatch' || row.match_status === 'Confirmed') && !row.reviewed_by ? (
-                    <button className="review-btn" onClick={() => setSelectedResult(row)} aria-label={`Review ${row.entity_name}`}><Eye className="h-3 w-3"  /> Review</button>
+                    <Button variant="default" className="review-btn" onClick={() => setSelectedResult(row)} aria-label={`Review ${row.entity_name}`}><Eye className="h-3 w-3"  /> Review</Button>
                 ) : null
             )
         }
@@ -154,10 +155,10 @@ export default function DebtCovenantMonitor() {
             id: "action", header: "Actions", width: "150px", cell: (row) => (
                 <div className="recon-btns">
                     {row.status === 'Draft' && (
-                        <button className="tiny-btn blue" disabled={reviewSignoffMutation.isPending} onClick={() => reviewSignoffMutation.mutate(row.id)} aria-label={`Review recon for ${row.period_name}`}>Review</button>
+                        <Button variant="default" className="tiny-btn blue" disabled={reviewSignoffMutation.isPending} onClick={() => reviewSignoffMutation.mutate(row.id)} aria-label={`Review recon for ${row.period_name}`}>Review</Button>
                     )}
                     {row.status === 'Reviewed' && (
-                        <button className="tiny-btn green" disabled={approveSignoffMutation.isPending} onClick={() => approveSignoffMutation.mutate(row.id)} aria-label={`Approve recon for ${row.period_name}`}>Approve</button>
+                        <Button variant="default" className="tiny-btn green" disabled={approveSignoffMutation.isPending} onClick={() => approveSignoffMutation.mutate(row.id)} aria-label={`Approve recon for ${row.period_name}`}>Approve</Button>
                     )}
                     {row.status === 'Approved' && <CheckCircle2 className="h-3.5 w-3.5"  style={{ color: '#059669' }} />}
                 </div>
@@ -184,11 +185,11 @@ export default function DebtCovenantMonitor() {
             {/* Tabs */}
             <div className="dcm-tabs">
                 {(['sanctions', 'recon'] as const).map(t => (
-                    <button key={t} className={cn(`dcm-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
+                    <Button variant="default" key={t} className={cn(`dcm-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t === 'sanctions' ? '🛡 Sanctions Screening' : '📋 Bank Recon Sign-off'}
                         {t === 'sanctions' && pending > 0 && <span className="tab-badge">{pending}</span>}
                         {t === 'recon' && (reconSummary?.pending_approval > 0) && <span className="tab-badge">{reconSummary.pending_approval}</span>}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -215,14 +216,14 @@ export default function DebtCovenantMonitor() {
                                 <Label className="sl">Entity Name</Label>
                                 <Input placeholder="Full legal name" value={screenForm.entityName} onChange={e => setScreenForm(p => ({ ...p, entityName: e.target.value }))} className="h-9 text-[12px]" aria-label="Entity name" />
                             </div>
-                            <button className="screen-btn" disabled={!screenForm.entityName || screenMutation.isPending}
+                            <Button variant="default" className="screen-btn" disabled={!screenForm.entityName || screenMutation.isPending}
                                 onClick={() => screenMutation.mutate(screenForm)} aria-label="Screen entity">
                                 <Search className="h-3.5 w-3.5"  /> {screenMutation.isPending ? 'Screening…' : 'Screen Entity'}
-                            </button>
-                            <button className="batch-btn" disabled={batchScreenMutation.isPending}
+                            </Button>
+                            <Button variant="default" className="batch-btn" disabled={batchScreenMutation.isPending}
                                 onClick={() => batchScreenMutation.mutate({ entityType: 'Supplier' })} aria-label="Batch screen all suppliers">
                                 <RefreshCw className="h-3.5 w-3.5"  /> {batchScreenMutation.isPending ? 'Screening…' : 'Batch Screen Suppliers'}
-                            </button>
+                            </Button>
                             {screenMutation.isSuccess && screenMutation.data && (
                                 <div className={cn(`screen-result ${(screenMutation.data as ScreeningResult).match_status.toLowerCase()}`)}>
                                     <div className="sr-status">{(screenMutation.data as ScreeningResult).match_status}</div>
@@ -275,15 +276,15 @@ export default function DebtCovenantMonitor() {
                                     </RadioGroup>
                                 </div>
                                 <div className="rm-actions">
-                                    <button className="rm-cancel" onClick={() => setSelectedResult(null)} aria-label="Cancel review">Cancel</button>
-                                    <button
+                                    <Button variant="default" className="rm-cancel" onClick={() => setSelectedResult(null)} aria-label="Cancel review">Cancel</Button>
+                                    <Button variant="default"
                                         className={cn(`rm-confirm ${reviewOutcome === 'Confirmed' ? 'danger' : 'success'}`)}
                                         disabled={reviewMutation.isPending}
                                         onClick={() => reviewMutation.mutate({ id: selectedResult.id, outcome: reviewOutcome })}
                                         aria-label="Submit review"
                                     >
                                         Submit Review
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>

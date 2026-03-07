@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export interface NavItem {
   id: string;
@@ -22,7 +23,7 @@ export function IconNavigation({ items, activeId, onSelect }: IconNavigationProp
         const Icon = item.icon;
         const isActive = activeId === item.id;
         return (
-          <button
+          <Button variant="default"
             key={item.id}
             onClick={() => onSelect(item.id)}
             className={cn(`p-4 rounded-lg border transition-all flex flex-col items-center gap-2 text-center cursor-pointer ${isActive
@@ -33,7 +34,7 @@ export function IconNavigation({ items, activeId, onSelect }: IconNavigationProp
           >
             <Icon className={cn(`h-6 w-6 ${item.color}`)} />
             <p className="text-sm font-medium">{item.label}</p>
-          </button>
+          </Button>
         );
       })}
     </div>

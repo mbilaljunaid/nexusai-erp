@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface RestorePoint {
     id: string;
@@ -115,14 +116,14 @@ export default function BackupRestoreManager() {
         {
             id: "actions", header: "Actions", width: 150, cell: (item) => (
                 <div className="flex items-center justify-end gap-2 pr-4 w-full">
-                    <button
+                    <Button variant="default"
                         onClick={() => verifyBackup(item.id)}
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-200 flex items-center gap-1 text-sm font-medium"
+                        className="text-blue-600 hover:text-blue-900 dark:text-blue-200 flex items-center gap-1 text-sm"
                         title="Verify Backup"
                     >
                         <Play className="w-4 h-4" />
                         Verify
-                    </button>
+                    </Button>
                 </div>
             )
         }
@@ -138,10 +139,10 @@ export default function BackupRestoreManager() {
                         Create, verify, and manage database backups
                     </p>
                 </div>
-                <button
+                <Button variant="default"
                     onClick={createBackup}
                     disabled={creating}
-                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="text-white text-sm hover: disabled:opacity-50 disabled: flex items-center gap-2"
                 >
                     {creating ? (
                         <>
@@ -154,7 +155,7 @@ export default function BackupRestoreManager() {
                             Create Manual Backup
                         </>
                     )}
-                </button>
+                </Button>
             </div>
 
             {/* Warning Banner */}
@@ -247,9 +248,9 @@ export default function BackupRestoreManager() {
                 <p className="text-sm text-gray-600 mb-4">
                     Configure automated backup schedules to ensure regular data protection.
                 </p>
-                <button className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200">
+                <Button variant="secondary" className="text-gray-700 text-sm hover:">
                     Configure Schedule
-                </button>
+                </Button>
             </Card>
 
             <AlertDialog open={showBackupConfirm} onOpenChange={setShowBackupConfirm}>

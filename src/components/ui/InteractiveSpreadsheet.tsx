@@ -2,6 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export interface SpreadsheetColumn<T = any> {
     id?: string;
@@ -83,43 +84,43 @@ export function InteractiveSpreadsheet<T = any>({
                     </div>
                 )}
                 <div className="overflow-x-auto w-full">
-                    <table className="w-full border-collapse">
-                        <thead className="bg-slate-100/50 border-b">
-                            <tr>
+                    <Table >
+                        <TableHeader className="bg-slate-100/50 border-b">
+                            <TableRow>
                                 {columns.map((col, i) => (
-                                    <th key={col.id || `col-${i}`} className={`p-3 text-left text-sm font-medium text-muted-foreground whitespace-nowrap ${col.width || ''} ${col.headerClassName || ''}`}>
+                                    <TableHead key={col.id || `col-${i}`} className={`p-3 text-left text-sm font-medium text-muted-foreground whitespace-nowrap ${col.width || ''} ${col.headerClassName || ''}`}>
                                         {col.header || col.label}
-                                    </th>
+                                    </TableHead>
                                 ))}
-                            </tr>
-                        </thead>
-                        <tbody>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
                             {data.map((row, index) => {
                                 const rowAny = row as any;
                                 const isSelected = activeRow !== undefined && (activeRow === rowAny.id || activeRow === rowAny.lineNumber);
                                 return (
-                                    <tr
+                                    <TableRow
                                         key={rowAny.id || rowAny.lineNumber || index}
                                         className={`border-b group transition-colors ${isSelected ? 'bg-slate-100' : 'hover:bg-slate-50/50'} ${onRowSelect ? 'cursor-pointer' : ''}`}
                                         onClick={() => onRowSelect && onRowSelect(row)}
                                     >
                                         {columns.map((col, cIdx) => (
-                                            <td key={`${(row as any).id || index}-${col.id || cIdx}`} className={`p-2 align-top ${col.cellClassName || ''}`}>
+                                            <TableCell key={`${(row as any).id || index}-${col.id || cIdx}`} className={`p-2 align-top ${col.cellClassName || ''}`}>
                                                 {col.cell ? col.cell(row, index, (field, val) => handleUpdateRow(index, field, val)) : (col.id ? String((row as any)[col.id] ?? '') : '')}
-                                            </td>
+                                            </TableCell>
                                         ))}
-                                    </tr>
+                                    </TableRow>
                                 );
                             })}
                             {data.length === 0 && (
-                                <tr>
-                                    <td colSpan={columns.length} className="p-8 text-center text-muted-foreground">
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="p-8 text-center text-muted-foreground">
                                         No lines available.
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             )}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                 </div>
                 {footer && <div className="mt-4">{footer}</div>}
             </div>

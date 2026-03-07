@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, CheckCircle2, XCircle, Clock, Globe, Send, RefreshCw, BarChart3 } from 'lucide-react';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface EInvoiceDoc {
     id: string;
@@ -116,13 +117,13 @@ export default function EInvoicingDashboard() {
         { id: "submitted", header: "Submitted", width: "120px", cell: (d) => d.submitted_at ? formatDate(d.submitted_at) : '—' },
         {
             id: "actions", header: "Actions", width: "120px", cell: (d) => ['Submitted', 'Accepted'].includes(d.status) ? (
-                <button
+                <Button variant="default"
                     className="cancel-btn"
                     onClick={() => cancelMutation.mutate({ id: d.id, reason: 'User initiated cancellation' })}
                     aria-label={`Cancel e-invoice ${d.uuid}`}
                 >
                     Cancel
-                </button>
+                </Button>
             ) : null
         }
     ];
@@ -136,9 +137,9 @@ export default function EInvoicingDashboard() {
                     <h1 className="einv-title">E-Invoicing Compliance</h1>
                     <p className="einv-subtitle">ZATCA · SDI · CFDI · GST IRN · PEPPOL — multi-standard submission portal</p>
                 </div>
-                <button className="submit-btn" onClick={() => setShowSubmitModal(true)} aria-label="Submit new e-invoice">
+                <Button variant="default" className="submit-btn" onClick={() => setShowSubmitModal(true)} aria-label="Submit new e-invoice">
                     <Send className="h-[15px] w-[15px]"  /> Submit Invoice
-                </button>
+                </Button>
             </div>
 
             {/* KPI Strip */}
@@ -181,14 +182,14 @@ export default function EInvoicingDashboard() {
                 <div className="table-toolbar">
                     <div className="filter-row">
                         {['', 'Pending', 'Submitted', 'Accepted', 'Rejected', 'Cancelled'].map(s => (
-                            <button
+                            <Button variant="default"
                                 key={s}
                                 className={cn(`filter-pill ${statusFilter === s ? 'active' : ''}`)}
                                 onClick={() => setStatusFilter(s)}
                                 data-active={statusFilter === s}
                             >
                                 {s || 'All'}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                     <Select value={standardFilter} onValueChange={setStandardFilter}>
@@ -238,15 +239,15 @@ export default function EInvoicingDashboard() {
                             </div>
                         ))}
                         <div className="modal-actions">
-                            <button className="modal-cancel-btn" onClick={() => setShowSubmitModal(false)}>Cancel</button>
-                            <button
+                            <Button variant="default" className="modal-cancel-btn" onClick={() => setShowSubmitModal(false)}>Cancel</Button>
+                            <Button variant="default"
                                 className="modal-submit-btn"
                                 onClick={() => submitMutation.mutate({ ...submitForm })}
                                 disabled={submitMutation.isPending}
                                 aria-label="Confirm submit e-invoice"
                             >
                                 {submitMutation.isPending ? 'Submitting…' : 'Submit'}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

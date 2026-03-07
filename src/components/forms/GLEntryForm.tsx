@@ -19,6 +19,7 @@ import { Sparkles, AlertTriangle, Plus, Check } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export function GLEntryForm() {
   const { toast } = useToast();
@@ -297,20 +298,20 @@ export function GLEntryForm() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-2 font-medium">Account</th>
-                      <th className="text-right p-2 font-medium">Debit</th>
-                      <th className="text-right p-2 font-medium">Credit</th>
-                      <th className="text-left p-2 font-medium">Description</th>
-                      <th className="p-2">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table className="text-sm">
+                  <TableHeader>
+                    <TableRow className="border-b">
+                      <TableHead className="text-left p-2 font-medium">Account</TableHead>
+                      <TableHead className="text-right p-2 font-medium">Debit</TableHead>
+                      <TableHead className="text-right p-2 font-medium">Credit</TableHead>
+                      <TableHead className="text-left p-2 font-medium">Description</TableHead>
+                      <TableHead className="p-2">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {lines.map((line, idx) => (
-                      <tr key={line.id} className="border-b hover:bg-muted">
-                        <td className="p-2">
+                      <TableRow key={line.id} className="border-b hover:bg-muted">
+                        <TableCell className="p-2">
                           <Select value={line.account} onValueChange={(val) => {
                             const newLines = [...lines];
                             newLines[idx].account = val;
@@ -325,8 +326,8 @@ export function GLEntryForm() {
                               <SelectItem value="5100">5100 - Rent Expense</SelectItem>
                             </SelectContent>
                           </Select>
-                        </td>
-                        <td className="p-2 text-right">
+                        </TableCell>
+                        <TableCell className="p-2 text-right">
                           <Input
                             type="number"
                             placeholder="0.00"
@@ -338,8 +339,8 @@ export function GLEntryForm() {
                             }}
                             className="text-xs text-right font-mono h-8"
                           />
-                        </td>
-                        <td className="p-2 text-right">
+                        </TableCell>
+                        <TableCell className="p-2 text-right">
                           <Input
                             type="number"
                             placeholder="0.00"
@@ -351,8 +352,8 @@ export function GLEntryForm() {
                             }}
                             className="text-xs text-right font-mono h-8"
                           />
-                        </td>
-                        <td className="p-2">
+                        </TableCell>
+                        <TableCell className="p-2">
                           <Input
                             type="text"
                             placeholder="Description"
@@ -364,20 +365,20 @@ export function GLEntryForm() {
                             }}
                             className="text-xs h-8"
                           />
-                        </td>
-                        <td className="p-2">
+                        </TableCell>
+                        <TableCell className="p-2">
                           <Button variant="ghost" size="sm" onClick={() => setLines(lines.filter((_, i) => i !== idx))}>✕</Button>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                    <tr className="font-semibold border-t-2 bg-muted">
-                      <td className="p-2">Totals</td>
-                      <td className="p-2 text-right font-mono">${totalDebit.toFixed(2)}</td>
-                      <td className="p-2 text-right font-mono">${totalCredit.toFixed(2)}</td>
-                      <td colSpan={2}></td>
-                    </tr>
-                  </tbody>
-                </table>
+                    <TableRow className="font-semibold border-t-2 bg-muted">
+                      <TableCell className="p-2">Totals</TableCell>
+                      <TableCell className="p-2 text-right font-mono">${totalDebit.toFixed(2)}</TableCell>
+                      <TableCell className="p-2 text-right font-mono">${totalCredit.toFixed(2)}</TableCell>
+                      <TableCell colSpan={2}></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
 
               <Button variant="outline" size="sm" onClick={() => setLines([...lines, { id: Math.max(...lines.map(l => l.id)) + 1, account: "", debit: "", credit: "", desc: "" }])}>

@@ -208,7 +208,7 @@ export function AIScheduleOptimizer({
                             </CardHeader>
                             <CardContent>
                                 <div className="grid grid-cols-3 gap-3">
-                                    <button
+                                    <Button variant="default"
                                         onClick={() => setOptimizationGoal('cost')}
                                         className={cn(`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'cost'
                                                 ? 'border-primary bg-primary/5'
@@ -220,8 +220,8 @@ export function AIScheduleOptimizer({
                                         <p className="text-xs text-muted-foreground mt-1">
                                             Reduce overtime and labor expenses
                                         </p>
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button variant="default"
                                         onClick={() => setOptimizationGoal('coverage')}
                                         className={cn(`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'coverage'
                                                 ? 'border-primary bg-primary/5'
@@ -233,8 +233,8 @@ export function AIScheduleOptimizer({
                                         <p className="text-xs text-muted-foreground mt-1">
                                             Ensure adequate staffing at all times
                                         </p>
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button variant="default"
                                         onClick={() => setOptimizationGoal('balance')}
                                         className={cn(`p-4 border-2 rounded-lg text-left transition-colors ${optimizationGoal === 'balance'
                                                 ? 'border-primary bg-primary/5'
@@ -246,7 +246,7 @@ export function AIScheduleOptimizer({
                                         <p className="text-xs text-muted-foreground mt-1">
                                             Distribute shifts evenly across employees
                                         </p>
-                                    </button>
+                                    </Button>
                                 </div>
                             </CardContent>
                         </Card>

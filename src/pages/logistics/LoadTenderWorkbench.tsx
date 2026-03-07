@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 
 interface LoadTender {
@@ -81,7 +82,7 @@ export default function LoadTenderWorkbench() {
 
                     <p className="ltw-sub">EDI 204 Load Tender / EDI 990 Response management</p>
                 </div>
-                <button className="add-btn" onClick={() => setShowNew(true)} aria-label="New tender"><Plus className="h-[13px] w-[13px]"  /> New Tender</button>
+                <Button variant="default" className="add-btn" onClick={() => setShowNew(true)} aria-label="New tender"><Plus className="h-[13px] w-[13px]"  /> New Tender</Button>
             </div>
 
             <div className="kpis">
@@ -97,7 +98,7 @@ export default function LoadTenderWorkbench() {
 
             <div className="filter-row">
                 {['', 'Draft', 'Sent', 'Accepted', 'Declined', 'Cancelled'].map(s => (
-                    <button key={s} className={cn(`fp ${statusFilter === s ? 'active' : ''}`)} onClick={() => setStatusFilter(s)}>{s || 'All'}</button>
+                    <Button variant="default" key={s} className={cn(`fp ${statusFilter === s ? 'active' : ''}`)} onClick={() => setStatusFilter(s)}>{s || 'All'}</Button>
                 ))}
             </div>
 
@@ -124,8 +125,8 @@ export default function LoadTenderWorkbench() {
                                 </div>
                             </div>
                             <div className="nf-actions">
-                                <button className="cancel-btn" onClick={() => setShowNew(false)} aria-label="Cancel">Cancel</button>
-                                <button className="save-btn" disabled={createMutation.isPending} onClick={() => createMutation.mutate(newForm)} aria-label="Create tender">Create</button>
+                                <Button variant="default" className="cancel-btn" onClick={() => setShowNew(false)} aria-label="Cancel">Cancel</Button>
+                                <Button variant="default" className="save-btn" disabled={createMutation.isPending} onClick={() => createMutation.mutate(newForm)} aria-label="Create tender">Create</Button>
                             </div>
                         </div>
                     )}
@@ -159,14 +160,14 @@ export default function LoadTenderWorkbench() {
                                 </div>
                                 <div className="det-actions">
                                     {selected.status === 'Draft' && (
-                                        <button className="send-btn" disabled={sendMutation.isPending} onClick={() => sendMutation.mutate(selected.id)} aria-label="Send EDI 204">
+                                        <Button variant="default" className="send-btn" disabled={sendMutation.isPending} onClick={() => sendMutation.mutate(selected.id)} aria-label="Send EDI 204">
                                             <Send className="h-3 w-3"  /> {sendMutation.isPending ? 'Sending…' : 'Send EDI 204'}
-                                        </button>
+                                        </Button>
                                     )}
                                     {selected.status === 'Sent' && (
                                         <div className="resp-btns">
-                                            <button className="acc-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Accept' })} aria-label="Accept tender"><CheckCircle2 className="h-3 w-3"  /> Accept</button>
-                                            <button className="dec-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Decline' })} aria-label="Decline tender"><XCircle className="h-3 w-3"  /> Decline</button>
+                                            <Button variant="default" className="acc-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Accept' })} aria-label="Accept tender"><CheckCircle2 className="h-3 w-3"  /> Accept</Button>
+                                            <Button variant="default" className="dec-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Decline' })} aria-label="Decline tender"><XCircle className="h-3 w-3"  /> Decline</Button>
                                         </div>
                                     )}
                                 </div>

@@ -14,6 +14,7 @@ import { PromptDialog } from "@/components/shared/PromptDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatNumber } from "@/lib/formatters";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 
 interface Cycle { id: string; cycle_name: string; cycle_type: string; status: string; count_date: string; line_count: number; counted_lines: number; approved_by: string; created_at: string; }
@@ -68,7 +69,7 @@ export default function PhysicalInventory() {
         { id: "status", header: "Status", width: "100px", cell: (l) => <div className="px-1"><StatusBadge status={l.count_status} /></div> },
         {
             id: "action", header: "Action", width: "100px", cell: (l) => l.count_status === 'Pending' ? (
-                <button onClick={() => { setPendingCountLineId(l.id); setCountDialogOpen(true); }} className="px-1.5 py-0.5 bg-blue-500/10 border-none rounded text-[9px] cursor-pointer text-blue-700">Count</button>
+                <Button variant="default" onClick={() => { setPendingCountLineId(l.id); setCountDialogOpen(true); }} className="/10 rounded text-[9px] text-blue-700">Count</Button>
             ) : null
         }
     ];
@@ -76,7 +77,7 @@ export default function PhysicalInventory() {
     return (
         <>
             <StandardPage title="Physical Inventory" description="Cycle counts · Wall-to-wall · Variance analysis · Approval workflow"
-                actions={<button onClick={() => setShowNewCycle(true)} className="px-3.5 py-2 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ New Cycle</button>}>
+                actions={<Button variant="default" size="sm" onClick={() => setShowNewCycle(true)} className="text-white text-xs">+ New Cycle</Button>}>
 
                 {/* New cycle form */}
                 {showNewCycle && (
@@ -110,8 +111,8 @@ export default function PhysicalInventory() {
                             </div>
                         </div>
                         <div className="flex gap-1.5 justify-end">
-                            <button onClick={() => setShowNewCycle(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                            <button disabled={!cycleForm.cycleName} onClick={() => createCycleMut.mutate(cycleForm)} className="px-3 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] font-bold cursor-pointer disabled:opacity-50">Create</button>
+                            <Button variant="secondary" size="sm" onClick={() => setShowNewCycle(false)} className="text-[11px]">Cancel</Button>
+                            <Button variant="default" size="sm" disabled={!cycleForm.cycleName} onClick={() => createCycleMut.mutate(cycleForm)} className="text-white text-[11px] disabled:opacity-50">Create</Button>
                         </div>
                     </div>
                 )}
@@ -119,7 +120,7 @@ export default function PhysicalInventory() {
                 {/* Status filter */}
                 <div className="flex gap-1.5 mb-3">
                     {['', 'Planned', 'Counting', 'Under_Review', 'Approved', 'Posted', 'Cancelled'].map(s => (
-                        <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
+                        <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
                     ))}
                 </div>
 
@@ -141,9 +142,9 @@ export default function PhysicalInventory() {
                                             <Progress value={pct} className="h-full" indicatorClassName={pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'} />
                                         </div>
                                         {c.status === 'Counting' && (
-                                            <button onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 px-2.5 py-1 bg-violet-700 text-white border-none rounded text-[10px] cursor-pointer flex items-center gap-1">
+                                            <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 text-white rounded text-[10px] flex items-center gap-1">
                                                 <CheckCircle2 className="h-[9px] w-[9px]"  /> Approve
-                                            </button>
+                                            </Button>
                                         )}
                                     </div>
                                 );
@@ -166,14 +167,14 @@ export default function PhysicalInventory() {
                                 </div>
                             </div>
                             <div className="mb-2.5 flex gap-2">
-                                <button onClick={() => setShowAddLines(!showAddLines)} className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-lg text-[11px] cursor-pointer">+ Add Lines (CSV)</button>
+                                <Button variant="secondary" size="sm" onClick={() => setShowAddLines(!showAddLines)} className="border text-[11px]">+ Add Lines (CSV)</Button>
                                 <Input value={countBy} onChange={e => setCountBy(e.target.value)} placeholder="Counted by…" className="px-2 py-1 border border-gray-300 rounded-md text-[11px] w-28" aria-label="Counted by" />
                             </div>
                             {showAddLines && (
                                 <div className="bg-gray-500/10 border border-gray-200 rounded-lg p-2.5 mb-2.5">
                                     <div className="text-[10px] text-gray-500 mb-1">CSV format: ItemNumber, Location, BookQty, UnitCost (one per line)</div>
                                     <Textarea rows={4} value={linesText} onChange={e => setLinesText(e.target.value)} className="font-mono text-[10px] box-border" aria-label="CSV lines" />
-                                    <button onClick={() => addLinesMut.mutate({ cycleId: selectedCycle.id, lines: parseLines() })} disabled={!linesText.trim()} className="mt-1.5 px-3 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] cursor-pointer disabled:opacity-50">Add Lines</button>
+                                    <Button variant="default" size="sm" onClick={() => addLinesMut.mutate({ cycleId: selectedCycle.id, lines: parseLines() })} disabled={!linesText.trim()} className="mt-1.5 text-white text-[11px] disabled:opacity-50">Add Lines</Button>
                                 </div>
                             )}
                             <div className="h-[500px] w-full">

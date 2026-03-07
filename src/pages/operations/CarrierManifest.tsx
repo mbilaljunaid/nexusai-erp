@@ -13,6 +13,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface Manifest { id: string; manifest_number: string; carrier_scac: string; ship_date: string; total_packages: number; total_weight_kg: number; status: string; }
 interface ManifestPackage { id: string; tracking_number: string; customer_name: string; ship_to_city: string; ship_to_state: string; ship_to_zip: string; weight_kg: number; service_code: string; label_printed: boolean; label_zpl: string; }
@@ -62,7 +63,7 @@ export default function CarrierManifest() {
                     <h1 className="text-[22px] font-bold text-gray-900 dark:text-gray-200 m-0">Carrier Manifest</h1>
                     <p className="text-[13px] text-gray-500 mt-1 mb-0">Shipping manifests · ZPL label generation · Tender to carrier</p>
                 </div>
-                <button onClick={() => setShowNew(true)} className="px-4 py-2 bg-blue-700 text-white rounded-lg font-semibold cursor-pointer border-none">+ New Manifest</button>
+                <Button variant="default" onClick={() => setShowNew(true)} className="text-white">+ New Manifest</Button>
             </div>
 
             {/* KPIs */}
@@ -93,8 +94,8 @@ export default function CarrierManifest() {
                         ))}
                     </div>
                     <div className="flex justify-end gap-1.5 mt-2.5">
-                        <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-100 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={createMfstMut.isPending || !newMfst.carrierScac} onClick={() => createMfstMut.mutate(newMfst)} className="px-3 py-1.5 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer">Create</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={createMfstMut.isPending || !newMfst.carrierScac} onClick={() => createMfstMut.mutate(newMfst)} className="text-white text-[11px]">Create</Button>
                     </div>
                 </div>
             )}
@@ -128,9 +129,9 @@ export default function CarrierManifest() {
                                     <div className="text-xs text-gray-500">{selected.carrier_scac} · {selected.ship_date} · {selected.total_packages} packages</div>
                                 </div>
                                 <div className="flex gap-1.5">
-                                    <button onClick={() => setShowNewPkg(true)} className="px-3 py-1.5 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Package className="h-[11px] w-[11px]"  /> Add Package</button>
-                                    {selected.status === 'Open' && <button onClick={() => closeMut.mutate(selected.id)} className="px-3 py-1.5 bg-amber-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Archive className="h-[11px] w-[11px]"  /> Close</button>}
-                                    {selected.status === 'Closed' && <button onClick={() => tenderMut.mutate(selected.id)} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Send className="h-[11px] w-[11px]"  /> Tender</button>}
+                                    <Button variant="default" size="sm" onClick={() => setShowNewPkg(true)} className="text-white text-[11px] flex items-center gap-1"><Package className="h-[11px] w-[11px]"  /> Add Package</Button>
+                                    {selected.status === 'Open' && <Button variant="default" size="sm" onClick={() => closeMut.mutate(selected.id)} className="text-white text-[11px] flex items-center gap-1"><Archive className="h-[11px] w-[11px]"  /> Close</Button>}
+                                    {selected.status === 'Closed' && <Button variant="default" size="sm" onClick={() => tenderMut.mutate(selected.id)} className="text-white text-[11px] flex items-center gap-1"><Send className="h-[11px] w-[11px]"  /> Tender</Button>}
                                 </div>
                             </div>
 
@@ -155,8 +156,8 @@ export default function CarrierManifest() {
                                         </div>
                                     </div>
                                     <div className="flex justify-end gap-1.5 mt-2">
-                                        <button onClick={() => setShowNewPkg(false)} className="px-2.5 py-1 bg-gray-100 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                                        <button disabled={addPkgMut.isPending} onClick={() => addPkgMut.mutate(newPkg)} className="px-2.5 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer">Add & Generate Label</button>
+                                        <Button variant="secondary" size="sm" onClick={() => setShowNewPkg(false)} className="text-[11px]">Cancel</Button>
+                                        <Button variant="default" size="sm" disabled={addPkgMut.isPending} onClick={() => addPkgMut.mutate(newPkg)} className="text-white text-[11px]">Add & Generate Label</Button>
                                     </div>
                                 </div>
                             )}
@@ -180,9 +181,9 @@ export default function CarrierManifest() {
                                             <TableCell className="py-2 px-2.5">{p.service_code}</TableCell>
                                             <TableCell className="py-2 px-2.5"><span className={cn(`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-gray-400'}`)}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></TableCell>
                                             <TableCell className="py-2 px-2.5">
-                                                <button onClick={() => printMut.mutate(p.id)} className="flex items-center gap-1 px-2 py-1 bg-gray-900 text-white border-none rounded-md text-[10px] cursor-pointer">
+                                                <Button variant="secondary" size="sm" onClick={() => printMut.mutate(p.id)} className="flex items-center gap-1 text-white text-[10px]">
                                                     <Printer className="h-2.5 w-2.5"  /> Print ZPL
-                                                </button>
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}

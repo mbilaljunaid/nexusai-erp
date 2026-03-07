@@ -112,16 +112,16 @@ function DraggableCandidate({ candidate, onAutoPosition }: { candidate: Candidat
                     )}
                 </div>
                 {onAutoPosition && (
-                    <button
+                    <Button variant="default"
                         onClick={(e) => {
                             e.stopPropagation();
                             onAutoPosition(candidate.id);
                         }}
-                        className="text-purple-600 hover:text-purple-700 p-1"
+                        className="text-purple-600 hover:text-purple-700"
                         title="Auto-position"
                     >
                         <Sparkles className="h-3 w-3" />
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>

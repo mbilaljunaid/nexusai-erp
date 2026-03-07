@@ -37,6 +37,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ApPrepayApplication from "./ApPrepayApplication";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface ApSideSheetProps {
     open: boolean;
@@ -574,24 +575,24 @@ function InvoiceAccountingView({ invoiceId }: { invoiceId: number }) {
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <table className="w-full text-[10px]">
-                                <thead className="bg-muted/10 border-b">
-                                    <tr>
-                                        <th className="p-2 text-left">Account Class</th>
-                                        <th className="p-2 text-right">Debit</th>
-                                        <th className="p-2 text-right">Credit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <Table className="text-[10px]">
+                                <TableHeader className="bg-muted/10 border-b">
+                                    <TableRow>
+                                        <TableHead className="p-2 text-left">Account Class</TableHead>
+                                        <TableHead className="p-2 text-right">Debit</TableHead>
+                                        <TableHead className="p-2 text-right">Credit</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {journal.lines?.map((line: any) => (
-                                        <tr key={line.id} className="border-b last:border-0 hover:bg-muted/5">
-                                            <td className="p-2 font-medium">{line.accountingClass}</td>
-                                            <td className="p-2 text-right">{line.enteredDr ? Number(line.enteredDr).toFixed(2) : ""}</td>
-                                            <td className="p-2 text-right">{line.enteredCr ? Number(line.enteredCr).toFixed(2) : ""}</td>
-                                        </tr>
+                                        <TableRow key={line.id} className="border-b last:border-0 hover:bg-muted/5">
+                                            <TableCell className="p-2 font-medium">{line.accountingClass}</TableCell>
+                                            <TableCell className="p-2 text-right">{line.enteredDr ? Number(line.enteredDr).toFixed(2) : ""}</TableCell>
+                                            <TableCell className="p-2 text-right">{line.enteredCr ? Number(line.enteredCr).toFixed(2) : ""}</TableCell>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </CardContent>
                     </Card>
                 ))

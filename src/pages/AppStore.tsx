@@ -177,13 +177,13 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
             <Label className="text-sm font-medium mb-2 block">Your Rating</Label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
-                <button
+                <Button variant="default"
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
-                  className="p-1 hover-elevate rounded"
+                  className="hover-elevate rounded"
                   data-testid={`button-rating-star-${star}`}
                 >
                   <Star
@@ -192,7 +192,7 @@ function ReviewDialog({ app, open, onOpenChange }: ReviewDialogProps) {
                       : "text-muted-foreground"
                       }`)}
                   />
-                </button>
+                </Button>
               ))}
             </div>
           </div>

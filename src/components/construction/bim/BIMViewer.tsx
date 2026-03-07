@@ -259,7 +259,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                         {["Architecture", "Structure", "MEP", "Furniture", "Site"].map(layer => {
                             const isVisible = visibleLayers.includes(layer);
                             return (
-                                <button
+                                <Button variant="outline"
                                     key={layer}
                                     onClick={() => toggleLayer(layer)}
                                     className={cn(
@@ -275,7 +275,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                                     ) : (
                                         <EyeOff className="h-4 w-4 text-muted-foreground" />
                                     )}
-                                </button>
+                                </Button>
                             );
                         })}
                     </CardContent>
@@ -291,7 +291,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                     </CardHeader>
                     <CardContent className="space-y-2">
                         {models.map(model => (
-                            <button
+                            <Button variant="outline"
                                 key={model.id}
                                 onClick={() => setSelectedModel(model)}
                                 className={cn(
@@ -312,7 +312,7 @@ export function BIMViewer({ projectId, modelId, onClashDetected }: BIMViewerProp
                                         {model.format}
                                     </Badge>
                                 </div>
-                            </button>
+                            </Button>
                         ))}
                     </CardContent>
                 </Card>

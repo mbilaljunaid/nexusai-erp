@@ -196,7 +196,7 @@ export function NexusAIPanel() {
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {(["auditor","planner","executor","verifier","general"] as const).map(m => (
-                  <button
+                  <Button variant="default" size="sm"
                     key={m}
                     onClick={() => setAgentMode(m)}
                     className={cn(
@@ -207,7 +207,7 @@ export function NexusAIPanel() {
                     )}
                   >
                     {m}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -223,7 +223,7 @@ export function NexusAIPanel() {
                   const isActive = currentModule === mod || additionalContextModules.includes(mod);
                   const isCurrentRoute = currentModule === mod;
                   return (
-                    <button
+                    <Button variant="default" size="sm"
                       key={mod}
                       onClick={() => {
                         if (isCurrentRoute) return;
@@ -241,7 +241,7 @@ export function NexusAIPanel() {
                       )}
                     >
                       {mod}
-                    </button>
+                    </Button>
                   );
                })}
               </div>
@@ -265,13 +265,13 @@ export function NexusAIPanel() {
         {nudges && nudges.length > 0 && panelView ==="chat" && (
           <div className="px-4 py-2 border-b border-border bg-emerald-50/50 flex gap-2 overflow-x-auto scrollbar-hide">
             {nudges.map((n: any) => (
-              <button
+              <Button variant="default" size="sm"
                 key={n.id}
                 onClick={() => setInput(n.text)}
-                className="flex-shrink-0 bg-white border border-emerald-100 px-3 py-1 rounded-full text-[10px] font-bold text-emerald-700 flex items-center gap-1.5 shadow-sm hover:border-emerald-300 transition-colors italic whitespace-nowrap"
+                className="flex-shrink-0 border text-[10px] text-emerald-700 flex items-center gap-1.5 shadow-sm hover: transition-colors italic whitespace-nowrap"
               >
                 <Clock className="h-3 w-3" /> {n.text}
-              </button>
+              </Button>
             ))}
           </div>
         )}
@@ -289,7 +289,7 @@ export function NexusAIPanel() {
                   <div className="text-center py-8 text-muted-foreground text-xs">No conversations found</div>
                 ) : (
                   conversations.map(convo => (
-                    <button
+                    <Button variant="default"
                       key={convo.id}
                       onClick={() => loadConversation(convo.id)}
                       className={cn(
@@ -306,7 +306,7 @@ export function NexusAIPanel() {
                       <div className="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
                         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
                       </div>
-                    </button>
+                    </Button>
                   ))
                 )}
               </div>
@@ -356,16 +356,16 @@ export function NexusAIPanel() {
 
                     <div className="mt-2 w-full space-y-2">
                       {contextualSuggestions.map((suggestion, i) => (
-                        <button
+                        <Button variant="default" size="sm"
                           key={i}
-                          className="w-full text-left text-xs p-2.5 rounded-lg border border-border hover:bg-muted/50 hover:border-primary/20 transition-colors flex items-center gap-2 group"
+                          className="w-full text-left text-xs border hover:/50 hover:/20 transition-colors flex items-center gap-2 group"
                           onClick={() => setInput(suggestion)}
                         >
                           <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                           <span className="text-muted-foreground group-hover:text-foreground transition-colors">
                             {suggestion}
                           </span>
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>

@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface RevEvent { id: string; period_start: string; period_end: string; pct_complete: number; costs_incurred: number; costs_to_complete: number; revenue_recognized: number; cumulative_revenue: number; gl_posted: boolean; gl_reference: string; method: string; contract_value: number; }
 interface RevSummary { method: string; contract_value: number; total_recognized: number; cumulative: number; remaining: number; pct_recognized: number; period_count: number; gl_posted_count: number; }
@@ -53,7 +54,7 @@ export default function RevenueRecognition() {
         { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span className="font-mono font-bold text-emerald-600">{fmt(e.revenue_recognized)}</span> },
         { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span className="font-mono text-gray-500">{fmt(e.cumulative_revenue)}</span> },
         { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold"><CheckCircle2 className="h-[11px] w-[11px]"  /> Posted</span> : <span className="text-[10px] text-amber-600 font-semibold">Pending</span> },
-        { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <button onClick={() => postGLMut.mutate({ id: e.id })} className="py-1 px-2 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Post GL</button> : null }
+        { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <Button variant="default" size="sm" onClick={() => postGLMut.mutate({ id: e.id })} className="text-white text-[10px]">Post GL</Button> : null }
     ];
 
     return (
@@ -68,9 +69,9 @@ export default function RevenueRecognition() {
             {/* Project picker */}
             <div className="flex gap-2 mb-3.5">
                 <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="py-1.5 px-3 border border-gray-300 rounded-lg text-xs min-w-56" aria-label="Project ID" />
-                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load Project</button>
-                {activeProject && <button onClick={() => setShowSetup(true)} className="py-1.5 px-3.5 bg-gray-100 border border-gray-200 rounded-lg text-xs cursor-pointer">⚙ Setup Method</button>}
-                {activeProject && summary && <button onClick={() => setShowRecognize(true)} className="py-1.5 px-3.5 bg-emerald-600 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Recognize Revenue</button>}
+                <Button variant="default" size="sm" disabled={!projectId} onClick={() => setActiveProject(projectId)} className="text-white text-xs disabled:opacity-50">Load Project</Button>
+                {activeProject && <Button variant="secondary" size="sm" onClick={() => setShowSetup(true)} className="border text-xs">⚙ Setup Method</Button>}
+                {activeProject && summary && <Button variant="default" size="sm" onClick={() => setShowRecognize(true)} className="text-white text-xs">+ Recognize Revenue</Button>}
             </div>
 
             {activeProject && summary && (
@@ -130,8 +131,8 @@ export default function RevenueRecognition() {
                                 ))}
                             </div>
                             <div className="flex gap-1.5 justify-end mt-2">
-                                <button onClick={() => setShowSetup(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                                <button disabled={!setup.contractValue} onClick={() => setupMut.mutate({ ...setup, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Save Method</button>
+                                <Button variant="secondary" size="sm" onClick={() => setShowSetup(false)} className="text-[11px]">Cancel</Button>
+                                <Button variant="default" size="sm" disabled={!setup.contractValue} onClick={() => setupMut.mutate({ ...setup, projectId: activeProject })} className="text-white text-[11px] disabled:opacity-50">Save Method</Button>
                             </div>
                         </div>
                     )}
@@ -158,8 +159,8 @@ export default function RevenueRecognition() {
                                 ))}
                             </div>
                             <div className="flex gap-1.5 justify-end mt-2">
-                                <button onClick={() => setShowRecognize(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                                <button disabled={!recognize.periodStart || recognizeMut.isPending} onClick={() => recognizeMut.mutate({ ...recognize, projectId: activeProject })} className="py-1 px-3 bg-emerald-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Recognize</button>
+                                <Button variant="secondary" size="sm" onClick={() => setShowRecognize(false)} className="text-[11px]">Cancel</Button>
+                                <Button variant="default" size="sm" disabled={!recognize.periodStart || recognizeMut.isPending} onClick={() => recognizeMut.mutate({ ...recognize, projectId: activeProject })} className="text-white text-[11px] disabled:opacity-50">Recognize</Button>
                             </div>
                         </div>
                     )}

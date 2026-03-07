@@ -71,7 +71,7 @@ export function IndustrySelectionStep({ data, onNext, onBack }: IndustrySelectio
                     Select your industry to get personalized module recommendations
                 </p>
                 <p className="text-sm text-muted-foreground">
-                    Or <button onClick={handleSkip} className="text-primary hover:underline">skip this step</button> to choose modules manually
+                    Or <Button variant="default" onClick={handleSkip} className="text-primary hover:underline">skip this step</Button> to choose modules manually
                 </p>
             </div>
 
@@ -80,12 +80,12 @@ export function IndustrySelectionStep({ data, onNext, onBack }: IndustrySelectio
                 <div className="flex justify-center">
                     <Badge variant="secondary" className="px-4 py-2 text-sm">
                         Selected: {INDUSTRIES.find((i) => i.id === selectedIndustry)?.name}
-                        <button
+                        <Button variant="destructive"
                             onClick={() => setSelectedIndustry(null)}
                             className="ml-2 hover:text-destructive"
                         >
                             <X className="w-3 h-3" />
-                        </button>
+                        </Button>
                     </Badge>
                 </div>
             )}

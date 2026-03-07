@@ -9,6 +9,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 
 interface BudgetAlert { id: string; project_id: string; alert_type: string; severity: string; budget_amount: number; actual_amount: number; variance_pct: number; description: string; is_acknowledged: boolean; created_at: string; }
@@ -69,9 +70,9 @@ export default function CommitmentDashboard() {
 
                     <p className="text-[13px] text-gray-500 mt-1 mb-0">Cost overrun alerts · Resource plan vs actuals · Threshold detection</p>
                 </div>
-                <button onClick={() => detectMut.mutate()} disabled={detectMut.isPending} className="py-2 px-3.5 bg-purple-600 text-white border-none rounded-lg text-xs font-semibold cursor-pointer flex items-center gap-1 disabled:opacity-50">
+                <Button variant="default" size="sm" onClick={() => detectMut.mutate()} disabled={detectMut.isPending} className="text-white text-xs flex items-center gap-1 disabled:opacity-50">
                     <TrendingDown className="h-[13px] w-[13px]"  /> Run Exception Detection
-                </button>
+                </Button>
             </div>
 
             {/* Global KPIs */}
@@ -96,7 +97,7 @@ export default function CommitmentDashboard() {
             {/* Project picker */}
             <div className="flex gap-2 mb-3">
                 <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="text-xs min-w-56 h-8" aria-label="Project ID" />
-                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
+                <Button variant="default" size="sm" disabled={!projectId} onClick={() => setActiveProject(projectId)} className="text-white text-xs disabled:opacity-50">Load</Button>
             </div>
 
             {activeProject && (
@@ -105,9 +106,9 @@ export default function CommitmentDashboard() {
                     <div className="flex gap-1 mb-3">
                         <div className="flex gap-1">
                             {(['alerts', 'variance'] as const).map(t => (
-                                <button key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
+                                <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>
                                     {t === 'alerts' ? `Budget Alerts (${alerts.length})` : 'Resource Variance'}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                         {tab === 'alerts' && (
@@ -137,9 +138,9 @@ export default function CommitmentDashboard() {
                                         <div className="flex items-center gap-2">
                                             <span className="text-[10px] text-gray-400">{fmtDate(a.created_at)}</span>
                                             {!a.is_acknowledged && (
-                                                <button onClick={() => ackMut.mutate(a.id)} className="py-1 px-2.5 bg-emerald-600 text-white border-none rounded-md text-[10px] font-semibold cursor-pointer flex items-center gap-1">
+                                                <Button variant="default" size="sm" onClick={() => ackMut.mutate(a.id)} className="text-white text-[10px] flex items-center gap-1">
                                                     <CheckCheck className="h-2.5 w-2.5"  /> Acknowledge
-                                                </button>
+                                                </Button>
                                             )}
                                         </div>
                                     </div>

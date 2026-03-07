@@ -7,6 +7,7 @@ import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/
 import { StandardPage } from "@/components/layout/StandardPage";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface Quote { id: string; quote_number: string; customer_id: string; status: string; net_total: number; list_total: number; discount_pct: number; margin_pct: number | null; valid_until: string; currency: string; created_by: string; lines?: QuoteLine[]; }
 interface QuoteLine { id: string; line_number: number; product_id: string; description: string; quantity: number; unit_price: number; discount_pct: number; net_price: number; }
@@ -56,7 +57,7 @@ export default function CPQDashboard() {
                 return <span className={cn(`text-[9px] px-1.5 py-0.5 rounded-sm ${clss}`)}>{ren.status}</span>;
             }
         },
-        { id: "action", header: "", width: "100px", cell: (ren: any) => ren.status === 'Pending' ? <button onClick={() => renewMut.mutate(ren.id)} className="px-2 py-1 bg-emerald-600 text-white border-none rounded-[5px] text-[9px] cursor-pointer font-bold">Renew</button> : null }
+        { id: "action", header: "", width: "100px", cell: (ren: any) => ren.status === 'Pending' ? <Button variant="default" size="sm" onClick={() => renewMut.mutate(ren.id)} className="text-white ] text-[9px]">Renew</Button> : null }
     ];
 
     const evmColumns: SpreadsheetColumn<any>[] = [
@@ -80,7 +81,7 @@ export default function CPQDashboard() {
                 </div>
                 <div className="flex gap-1.5">
                     {[['cpq', 'Quotes'], ['renewal', 'Renewals'], ['evm', 'EVM']].map(([v, lbl]) => (
-                        <button key={v} onClick={() => setView(v as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${view === v ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`)}>{lbl}</button>
+                        <Button variant="secondary" size="sm" key={v} onClick={() => setView(v as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${view === v ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`)}>{lbl}</Button>
                     ))}
                 </div>
             </div>
@@ -97,7 +98,7 @@ export default function CPQDashboard() {
                     </div>
                     <div className="flex gap-1.5 mb-2.5">
                         {['', 'Draft', 'Pending_Approval', 'Approved', 'Presented', 'Won', 'Lost'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
+                            <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
                         ))}
                     </div>
                     <div className="flex gap-3.5">
@@ -119,7 +120,7 @@ export default function CPQDashboard() {
                                         </div>
                                         {acts.length > 0 && (
                                             <div className="flex gap-1 mt-1">
-                                                {acts.map(a => <button key={a.a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: q.id, action: a.a }); }} className={cn(`px-1.5 py-0.5 border-none rounded font-bold text-[9px] cursor-pointer ${a.textClass} ${a.bgClass}`)}>{a.label}</button>)}
+                                                {acts.map(a => <Button variant="default" key={a.a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: q.id, action: a.a }); }} className={cn(`px-1.5 py-0.5 border-none rounded font-bold text-[9px] cursor-pointer ${a.textClass} ${a.bgClass}`)}>{a.label}</Button>)}
                                             </div>
                                         )}
                                     </Card>

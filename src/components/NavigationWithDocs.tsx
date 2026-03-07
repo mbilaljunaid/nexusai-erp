@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { useState} from'react';
 import { Link} from'wouter';
 import { ChevronDown, BookOpen, Code2, Zap, Compass} from'lucide-react';
+import { Button } from "@/components/ui/button";
 
 export function Header() {
   const [isDocsOpen, setIsDocsOpen] = useState(false);
@@ -22,7 +23,7 @@ export function Header() {
           
           {/* Documentation Menu */}
           <div className="relative group">
-            <button
+            <Button variant="default"
               className="flex items-center gap-2 text-foreground hover:text-blue-600 transition-colors"
               onMouseEnter={() => setIsDocsOpen(true)}
               onMouseLeave={() => setIsDocsOpen(false)}
@@ -31,7 +32,7 @@ export function Header() {
               <BookOpen className="w-4 h-4" />
               Documentation
               <ChevronDown className={cn(`w-4 h-4 transition-transform ${isDocsOpen ?'rotate-180' :''}`)} />
-            </button>
+            </Button>
 
             {/* Dropdown Menu */}
             {isDocsOpen && (
@@ -164,9 +165,9 @@ export function Footer() {
 
         {/* Process Flows - Collapsible */}
         <div className="border-t border-slate-800 pt-8">
-          <button
+          <Button variant="default"
             onClick={() => setIsProcessesOpen(!isProcessesOpen)}
-            className="flex items-center gap-2 mb-4 text-white font-semibold hover:text-blue-400 transition-colors"
+            className="flex items-center gap-2 mb-4 text-white hover:text-blue-400 transition-colors"
             data-testid="button-processes-toggle"
           >
             <span>Process Flows (18 Processes)</span>
@@ -174,7 +175,7 @@ export function Footer() {
               className={cn(`w-5 h-5 transition-transform ${isProcessesOpen ?'rotate-180' :''}`)}
               data-testid="icon-chevron-processes"
             />
-          </button>
+          </Button>
 
           {isProcessesOpen && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

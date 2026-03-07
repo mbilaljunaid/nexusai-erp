@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ChevronRight, ChevronDown, Folder, File, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export interface TreeNode {
     id: string;
@@ -45,7 +46,7 @@ const TreeNodeItem = ({ node, level, onSelect }: TreeNodeProps) => {
                 )}
                 onClick={handleSelect} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
             >
-                <button
+                <Button variant="default"
                     onClick={handleToggle}
                     className={cn(
                         "h-4 w-4 shrink-0 mr-1 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors",
@@ -53,7 +54,7 @@ const TreeNodeItem = ({ node, level, onSelect }: TreeNodeProps) => {
                     )}
                 >
                     {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                </button>
+                </Button>
 
                 <span className="mr-2 text-muted-foreground">
                     {node.icon || (hasChildren ? <Folder className="h-4 w-4" /> : <File className="h-4 w-4" />)}

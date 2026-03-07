@@ -8,6 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 
 interface WHTRule {
@@ -137,14 +138,14 @@ export default function WHTRemittance() {
         { id: "status", header: "Status", width: "120px", cell: (b) => <span className={cn(`batch-status ${b.status.toLowerCase()}`)}>{b.status}</span> },
         {
             id: "actions", header: "Actions", width: "120px", cell: (b) => b.status === 'Pending' ? (
-                <button
+                <Button variant="default"
                     className="file-btn"
                     onClick={() => fileBatchMutation.mutate({ id: b.id, ref: `REF-${b.id.slice(0, 8).toUpperCase()}` })}
                     disabled={fileBatchMutation.isPending}
                     aria-label={`File remittance batch for ${b.period_name}`}
                 >
                     <FileCheck className="h-[13px] w-[13px]"  /> File
-                </button>
+                </Button>
             ) : null
         }
     ];
@@ -189,9 +190,9 @@ export default function WHTRemittance() {
             {/* Tabs */}
             <div className="wht-tabs">
                 {(['transactions', 'rules', 'batches'] as const).map(t => (
-                    <button key={t} className={cn(`wht-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
+                    <Button variant="default" key={t} className={cn(`wht-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -199,14 +200,14 @@ export default function WHTRemittance() {
                 <div className="wht-card">
                     <div className="card-header-row">
                         <h2 className="card-title">WHT Transactions — {period}</h2>
-                        <button
+                        <Button variant="default"
                             className="batch-btn"
                             onClick={() => createBatchMutation.mutate({ periodName: period, countryCode: country || 'ALL' })}
                             disabled={transactions.length === 0}
                             aria-label="Create remittance batch"
                         >
                             Create Remittance Batch
-                        </button>
+                        </Button>
                     </div>
                     <div className="h-[400px] w-full">
                         <InteractiveSpreadsheet
@@ -223,9 +224,9 @@ export default function WHTRemittance() {
                 <div className="wht-card">
                     <div className="card-header-row">
                         <h2 className="card-title">WHT Rules</h2>
-                        <button className="add-rule-btn" onClick={() => setShowRuleForm(v => !v)} aria-label="Add WHT rule">
+                        <Button variant="default" className="add-rule-btn" onClick={() => setShowRuleForm(v => !v)} aria-label="Add WHT rule">
                             <PlusCircle className="h-3.5 w-3.5"  /> Add Rule
-                        </button>
+                        </Button>
                     </div>
                     {showRuleForm && (
                         <div className="rule-form">
@@ -246,7 +247,7 @@ export default function WHTRemittance() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <button
+                            <Button variant="default"
                                 className="save-rule-btn"
                                 onClick={() => createRuleMutation.mutate({
                                     ...ruleForm, rate: parseFloat(ruleForm.rate),
@@ -257,7 +258,7 @@ export default function WHTRemittance() {
                                 aria-label="Save WHT rule"
                             >
                                 {createRuleMutation.isPending ? 'Saving…' : 'Save Rule'}
-                            </button>
+                            </Button>
                         </div>
                     )}
                     <div className="h-[400px] w-full">
@@ -335,8 +336,8 @@ function WKpi({ label, value, color, icon }: { label: string; value: string; col
         <div style={{ background: '#fff', border: `1px solid #e5e7eb`, borderLeft: `4px solid ${color}`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, minWidth: 160 }}>
             <div style={{ color }}>{icon}</div>
             <div>
-                <div style={{ fontSize: 20, fontWeight: 800, color }}>{value}</div>
-                <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{label}</div>
+                <div className="text-[20px] font-extrabold" style={{color}}>{value}</div>
+                <div className="text-[11px] text-muted-foreground mt-[2px]">{label}</div>
             </div>
         </div>
     );

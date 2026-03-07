@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface BGCOrder {
     id: string; applicant_id: string; candidate_name: string; package_type: string;
@@ -81,8 +82,8 @@ export default function BackgroundCheckStatus() {
         {
             id: "actions", header: "", width: "160px", cell: (row) => (
                 <div className="flex gap-1.5 justify-end w-full">
-                    <button onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} className="px-2 py-1 bg-gray-100 text-gray-700 border-none rounded-[5px] text-[10px] cursor-pointer">View</button>
-                    {row.status === 'Initiated' && <button onClick={(e) => { e.stopPropagation(); consentMut.mutate(row.id); }} className="px-2 py-1 bg-blue-700 text-white border-none rounded-[5px] text-[10px] cursor-pointer">Get Consent</button>}
+                    <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} className="text-gray-700 ] text-[10px]">View</Button>
+                    {row.status === 'Initiated' && <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); consentMut.mutate(row.id); }} className="text-white ] text-[10px]">Get Consent</Button>}
                 </div>
             )
         }
@@ -91,7 +92,7 @@ export default function BackgroundCheckStatus() {
     return (
         <StandardPage title="Background Check Management" description="FCRA compliant · Adverse action workflow · Component-level results">
             <div className="flex justify-between mb-4">
-                <button onClick={() => setShowNew(true)} className="px-3.5 py-2 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Initiate Check</button>
+                <Button variant="default" size="sm" onClick={() => setShowNew(true)} className="text-white text-xs">+ Initiate Check</Button>
             </div>
 
             {/* KPIs */}
@@ -109,7 +110,7 @@ export default function BackgroundCheckStatus() {
             {/* Filter row */}
             <div className="flex gap-1.5 mb-3">
                 {['', 'Initiated', 'In_Progress', 'Complete', 'Adverse_Action'].map(s => (
-                    <button key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
                 ))}
             </div>
 
@@ -133,8 +134,8 @@ export default function BackgroundCheckStatus() {
                         ))}
                     </div>
                     <div className="flex gap-1.5 justify-end mt-2.5">
-                        <button onClick={() => setShowNew(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={!form.applicantId} onClick={() => initMut.mutate(form)} className="px-3 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Initiate</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={!form.applicantId} onClick={() => initMut.mutate(form)} className="text-white text-[11px] disabled:opacity-50">Initiate</Button>
                     </div>
                 </Card>
             )}
@@ -159,7 +160,7 @@ export default function BackgroundCheckStatus() {
                     <Card className="w-80 p-4 shrink-0 shadow-sm">
                         <div className="flex justify-between mb-2.5">
                             <div className="text-[13px] font-bold">{selectedOrder.candidate_name ?? selectedOrder.applicant_id}</div>
-                            <button onClick={() => setSelectedOrder(null)} className="bg-transparent border-none cursor-pointer text-sm">✕</button>
+                            <Button variant="outline" onClick={() => setSelectedOrder(null)} className="text-sm">✕</Button>
                         </div>
                         <div className="text-[11px] text-gray-500 mb-2.5">
                             <div>Package: <strong>{selectedOrder.package_type}</strong></div>
@@ -195,7 +196,7 @@ export default function BackgroundCheckStatus() {
                                         <SelectContent>{['Clear', 'Hit', 'Unable_To_Verify'].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
                                     </Select>
                                     <Input placeholder="Details (optional)" value={componentForm.details} onChange={e => setComponentForm(p => ({ ...p, details: e.target.value }))} className="h-7 text-[10px]" aria-label="Details" />
-                                    <button onClick={() => componentMut.mutate({ id: selectedOrder.id, ...componentForm })} className="p-1 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer">Record</button>
+                                    <Button variant="default" size="sm" onClick={() => componentMut.mutate({ id: selectedOrder.id, ...componentForm })} className="text-white text-[10px]">Record</Button>
                                 </div>
                             </div>
                         )}
@@ -204,9 +205,9 @@ export default function BackgroundCheckStatus() {
                         {selectedOrder.status === 'Complete' && selectedOrder.adjudication === 'Consider' && (
                             <div className="bg-red-500/10 border border-red-200 rounded-lg p-2.5 mb-2.5">
                                 <div className="text-[10px] font-bold text-red-600 mb-1">Adverse Adjudication</div>
-                                <button onClick={() => adverseMut.mutate(selectedOrder.id)} className="w-full p-1.5 bg-red-600 text-white border-none rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1">
+                                <Button variant="destructive" size="sm" onClick={() => adverseMut.mutate(selectedOrder.id)} className="w-full text-white text-[10px] flex items-center justify-center gap-1">
                                     <ShieldAlert className="h-2.5 w-2.5"  /> Initiate Adverse Action
-                                </button>
+                                </Button>
                             </div>
                         )}
 
@@ -219,7 +220,7 @@ export default function BackgroundCheckStatus() {
                                     <SelectContent>{['Proceed', 'Withdraw', 'Conditional'].map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
                                 </Select>
                                 <Input placeholder="Notes" value={decisionForm.notes} onChange={e => setDecisionForm(p => ({ ...p, notes: e.target.value }))} className="h-7 text-[10px] mb-1" aria-label="Notes" />
-                                <button onClick={() => decisionMut.mutate({ id: selectedOrder.id, ...decisionForm })} className="w-full p-1.5 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Finalize</button>
+                                <Button variant="default" size="sm" onClick={() => decisionMut.mutate({ id: selectedOrder.id, ...decisionForm })} className="w-full text-white text-[10px]">Finalize</Button>
                             </div>
                         )}
                     </Card>

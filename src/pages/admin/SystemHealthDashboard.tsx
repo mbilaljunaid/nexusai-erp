@@ -7,6 +7,7 @@ import MetricCard from '../../components/admin/MetricCard';
 import AlertBanner from '../../components/admin/AlertBanner';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface HealthStatus {
     status: 'healthy' | 'degraded' | 'unhealthy';
@@ -92,7 +93,7 @@ export default function SystemHealthDashboard() {
             description="Real-time system monitoring and health status"
             actions={
                 <div className="flex items-center gap-3">
-                    <button
+                    <Button variant="default" size="sm"
                         onClick={() => setAutoRefresh(!autoRefresh)}
                         className={cn(`px-3 py-2 text-sm rounded-md border ${autoRefresh
                             ? 'bg-blue-500/10 text-blue-700 border-blue-200'
@@ -100,16 +101,16 @@ export default function SystemHealthDashboard() {
                             }`)}
                     >
                         {autoRefresh ? 'Auto-refresh: ON' : 'Auto-refresh: OFF'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="default"
                         onClick={() => {
                             refetchHealth();
                             refetchAlerts();
                         }}
-                        className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
+                        className="text-white text-sm hover:"
                     >
                         Refresh Now
-                    </button>
+                    </Button>
                 </div>
             }
         >

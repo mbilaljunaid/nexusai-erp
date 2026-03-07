@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Loader2, User, Clock, FileText, Database } from "lucide-react";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 import {
     Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
@@ -119,9 +120,9 @@ export default function CrmAuditTrail({ entityId }: { entityId?: string }) {
                                 <TableCell className="text-right">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <button className="text-xs text-primary hover:underline flex items-center gap-1 ml-auto">
+                                            <Button variant="default" size="sm" className="text-xs text-primary hover:underline flex items-center gap-1 ml-auto">
                                                 <FileText className="h-3.5 w-3.5" /> View
-                                            </button>
+                                            </Button>
                                         </DialogTrigger>
                                         <DialogContent className="sm:max-w-[600px]">
                                             <DialogHeader>

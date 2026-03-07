@@ -11,6 +11,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface RegEvent {
     id: string; title: string; regulation: string; jurisdiction: string;
@@ -81,8 +82,8 @@ export default function RegulatoryCalendar() {
             description="Filing deadlines · FCPA training compliance · Audit schedules"
             actions={
                 <div className="regulatory-calendar-actions">
-                    <button onClick={() => sweepMut.mutate()} className="btn-sweep"><RefreshCw className="h-[11px] w-[11px]"  /> Sweep Overdue</button>
-                    <button onClick={() => setTab('new')} className="btn-add">+ Add Event</button>
+                    <Button variant="default" onClick={() => sweepMut.mutate()} className="btn-sweep"><RefreshCw className="h-[11px] w-[11px]"  /> Sweep Overdue</Button>
+                    <Button variant="default" onClick={() => setTab('new')} className="btn-add">+ Add Event</Button>
                 </div>
             }
             className="regulatory-calendar"
@@ -117,16 +118,16 @@ export default function RegulatoryCalendar() {
             {/* Tabs */}
             <div className="tabs-container">
                 {(['calendar', 'fcpa', 'new'] as const).map(t => (
-                    <button key={t} onClick={() => setTab(t)} className={cn(`btn-tab ${tab === t ? 'btn-tab-active' : 'btn-tab-inactive'}`)}>
+                    <Button variant="default" key={t} onClick={() => setTab(t)} className={cn(`btn-tab ${tab === t ? 'btn-tab-active' : 'btn-tab-inactive'}`)}>
                         {t === 'calendar' ? `Events (${events.length})` : t === 'fcpa' ? 'FCPA Training' : '+ New Event'}
-                    </button>
+                    </Button>
                 ))}
                 {tab === 'calendar' && (
                     <>
                         {['', 'Upcoming', 'In_Progress', 'Completed', 'Overdue'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} className={cn(`btn-filter ${statusFilter === s ? 'btn-filter-active' : 'btn-filter-inactive'} ${s === '' ? 'btn-filter-first' : ''}`)}>{s || 'All'}</button>
+                            <Button variant="default" key={s} onClick={() => setStatusFilter(s)} className={cn(`btn-filter ${statusFilter === s ? 'btn-filter-active' : 'btn-filter-inactive'} ${s === '' ? 'btn-filter-first' : ''}`)}>{s || 'All'}</Button>
                         ))}
-                        {regFilter && <button onClick={() => setRegFilter('')} className="btn-filter-clear">✕ {regFilter}</button>}
+                        {regFilter && <Button variant="default" onClick={() => setRegFilter('')} className="btn-filter-clear">✕ {regFilter}</Button>}
                     </>
                 )}
             </div>
@@ -152,9 +153,9 @@ export default function RegulatoryCalendar() {
                                 <div className="event-actions">
                                     {e.status !== 'Completed' && e.status !== 'Waived' && (
                                         <>
-                                            {e.status === 'Upcoming' && <button onClick={() => statusMut.mutate({ id: e.id, status: 'In_Progress' })} className="btn-action-start">Start</button>}
-                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Completed' })} className="btn-action-complete"><CheckCircle2 className="h-[9px] w-[9px]"  />Complete</button>
-                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Waived' })} className="btn-action-waive">Waive</button>
+                                            {e.status === 'Upcoming' && <Button variant="default" onClick={() => statusMut.mutate({ id: e.id, status: 'In_Progress' })} className="btn-action-start">Start</Button>}
+                                            <Button variant="default" onClick={() => statusMut.mutate({ id: e.id, status: 'Completed' })} className="btn-action-complete"><CheckCircle2 className="h-[9px] w-[9px]"  />Complete</Button>
+                                            <Button variant="default" onClick={() => statusMut.mutate({ id: e.id, status: 'Waived' })} className="btn-action-waive">Waive</Button>
                                         </>
                                     )}
                                 </div>
@@ -169,7 +170,7 @@ export default function RegulatoryCalendar() {
             {tab === 'fcpa' && (
                 <div className="fcpa-container">
                     <div className="fcpa-header">
-                        <button onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw className="h-[11px] w-[11px]"  /> Sweep Overdue</button>
+                        <Button variant="default" onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw className="h-[11px] w-[11px]"  /> Sweep Overdue</Button>
                     </div>
                     <div className="min-h-72 h-full border border-gray-200 rounded-lg">
                         <InteractiveSpreadsheet
@@ -213,8 +214,8 @@ export default function RegulatoryCalendar() {
                         </div>
                     </div>
                     <div className="form-actions">
-                        <button onClick={() => setTab('calendar')} className="btn-cancel">Cancel</button>
-                        <button disabled={!form.title || !form.dueDate || createMut.isPending} onClick={() => createMut.mutate(form)} className="btn-submit">Create Event</button>
+                        <Button variant="default" onClick={() => setTab('calendar')} className="btn-cancel">Cancel</Button>
+                        <Button variant="default" disabled={!form.title || !form.dueDate || createMut.isPending} onClick={() => createMut.mutate(form)} className="btn-submit">Create Event</Button>
                     </div>
                 </div>
             )}

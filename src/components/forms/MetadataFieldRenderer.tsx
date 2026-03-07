@@ -14,6 +14,7 @@ import { ValidationEngine } from "@/lib/validationEngine";
 import { ConditionalLogicEngine } from "@/lib/conditionalLogicEngine";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
 
 interface MetadataFieldRendererProps {
   field: FormFieldConfig;
@@ -246,21 +247,21 @@ export function MetadataFieldRenderer({
                       disabled={readOnly || fieldState.disabled}
                       data-testid={`lineitem-amount-${field.name}-${index}`}
                     />
-                    <button
+                    <Button variant="default" size="sm"
                       type="button"
                       onClick={() => {
                         const newItems = (fieldProps.value || []).filter((_: unknown, i: number) => i !== index);
                         fieldProps.onChange(newItems);
                       }}
                       disabled={readOnly || fieldState.disabled}
-                      className="text-red-500 hover:text-red-700 px-2"
+                      className="text-red-500 hover:text-red-700"
                       data-testid={`lineitem-remove-${field.name}-${index}`}
                     >
                       ×
-                    </button>
+                    </Button>
                   </div>
                 ))}
-                <button
+                <Button variant="default"
                   type="button"
                   onClick={() => {
                     const newItems = [...(fieldProps.value || []), { description: "", amount: "" }];
@@ -271,7 +272,7 @@ export function MetadataFieldRenderer({
                   data-testid={`lineitem-add-${field.name}`}
                 >
                   + Add Line Item
-                </button>
+                </Button>
               </div>
             )}
 

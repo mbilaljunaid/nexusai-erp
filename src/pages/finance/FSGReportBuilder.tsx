@@ -7,6 +7,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 interface FSGRow {
     rowNum: number;
@@ -138,7 +139,7 @@ export default function FSGReportBuilder() {
         { id: "formula", header: "Formula (e.g. R1+R2)", width: "150px", cell: (row) => <Input className="h-7 px-2 py-1 font-mono" aria-label="Formula" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} /> },
         { id: "isBold", header: "Bold", width: "60px", cell: (row) => <div className="text-center w-full flex justify-center"><Checkbox aria-label="Bold" checked={!!row.isBold} onCheckedChange={c => updateRow(row.rowNum, 'isBold', !!c)} /></div> },
         { id: "isTotal", header: "Total", width: "60px", cell: (row) => <div className="text-center w-full flex justify-center"><Checkbox aria-label="Total" checked={!!row.isTotal} onCheckedChange={c => updateRow(row.rowNum, 'isTotal', !!c)} /></div> },
-        { id: "delete", header: "Del", width: "60px", cell: (row) => <button className="p-1 text-red-600 hover:bg-red-500/15 rounded w-full flex justify-center" aria-label="Delete" onClick={() => removeRow(row.rowNum)}><Trash2 className="h-3.5 w-3.5"  /></button> }
+        { id: "delete", header: "Del", width: "60px", cell: (row) => <Button variant="destructive" className="text-red-600 hover:/15 rounded w-full flex justify-center" aria-label="Delete" onClick={() => removeRow(row.rowNum)}><Trash2 className="h-3.5 w-3.5"  /></Button> }
     ];
 
     return (
@@ -148,7 +149,7 @@ export default function FSGReportBuilder() {
             actions={
                 <div className="fsg-tabs">
                     {(['library', 'builder'] as const).map(tab => (
-                        <button
+                        <Button variant="default"
                             key={tab}
                             className={cn(`fsg-tab ${activeTab === tab ? 'active' : ''}`)}
                             onClick={() => setActiveTab(tab)}
@@ -156,7 +157,7 @@ export default function FSGReportBuilder() {
                         >
                             {tab === 'library' ? <Table2 className="h-3.5 w-3.5"  /> : <BarChart3 className="h-3.5 w-3.5"  />}
                             {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                        </button>
+                        </Button>
                     ))}
                 </div>
             }
@@ -189,7 +190,7 @@ export default function FSGReportBuilder() {
                                 onChange={e => setRunParams(p => ({ ...p, ledgerId: e.target.value }))}
                                 aria-label="Ledger ID"
                             />
-                            <button
+                            <Button variant="default"
                                 className="run-btn"
                                 onClick={handleRun}
                                 disabled={runMutation.isPending || !selectedReport}
@@ -197,7 +198,7 @@ export default function FSGReportBuilder() {
                             >
                                 <Play className="h-3.5 w-3.5"  />
                                 {runMutation.isPending ? 'Running…' : 'Run'}
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -247,23 +248,23 @@ export default function FSGReportBuilder() {
                                 {REPORT_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                             </SelectContent>
                         </Select>
-                        <button
+                        <Button variant="default"
                             className="save-btn"
                             onClick={() => saveMutation.mutate({ name: reportName, reportType, rows, columns })}
                             disabled={saveMutation.isPending}
                             aria-label="Save report"
                         >
                             {saveMutation.isPending ? 'Saving…' : 'Save Report'}
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Rows Editor */}
                     <div className="editor-section">
                         <div className="editor-header">
                             <h2 className="panel-title">Rows</h2>
-                            <button className="add-row-btn" onClick={addRow} aria-label="Add row">
+                            <Button variant="default" className="add-row-btn" onClick={addRow} aria-label="Add row">
                                 <Plus className="h-3.5 w-3.5"  /> Add Row
-                            </button>
+                            </Button>
                         </div>
                         <div className="border rounded-lg overflow-hidden h-[400px]">
                             <InteractiveSpreadsheet

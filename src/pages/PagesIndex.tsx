@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react"; import { Input } from "@/components/ui/input"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Badge } from "@/components/ui/badge"; import { Search, Grid3x3, List } from "lucide-react"; import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
 
 const PAGES_BY_PACK = [
   { pack: "Core Modules", pages: ["Dashboard", "UserProfile", "Settings", "Notifications"] },
@@ -55,8 +56,8 @@ export default function PagesIndex() {
             <Input placeholder="Search pages..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" data-testid="input-search-pages" />
           </div>
           <div className="flex gap-1">
-            <button className={cn(`p-2 rounded ${viewMode === "grid" ? "bg-accent" : "bg-secondary"}`)} data-testid="button-view-grid"><Grid3x3 className="h-4 w-4" /></button>
-            <button className={cn(`p-2 rounded ${viewMode === "list" ? "bg-accent" : "bg-secondary"}`)} data-testid="button-view-list"><List className="h-4 w-4" /></button>
+            <Button variant="secondary" className={cn(`p-2 rounded ${viewMode === "grid" ? "bg-accent" : "bg-secondary"}`)} data-testid="button-view-grid"><Grid3x3 className="h-4 w-4" /></Button>
+            <Button variant="secondary" className={cn(`p-2 rounded ${viewMode === "list" ? "bg-accent" : "bg-secondary"}`)} data-testid="button-view-list"><List className="h-4 w-4" /></Button>
           </div>
         </div>
 

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 
 interface PaymentTerm {
@@ -77,9 +78,9 @@ export default function PaymentTermsMaster() {
             title="Payment Terms Master"
             description="Configure Net, EOM, Instalment-Split, and Immediate terms"
             actions={
-                <button className="add-btn" onClick={() => setShowNew(true)} aria-label="Add payment term">
+                <Button variant="default" className="add-btn" onClick={() => setShowNew(true)} aria-label="Add payment term">
                     <Plus className="h-3.5 w-3.5"  /> Add Term
-                </button>
+                </Button>
             }
         >
             <div className="ptm-layout">
@@ -140,9 +141,9 @@ export default function PaymentTermsMaster() {
                                 </div>
                             </div>
                             <div className="nf-actions">
-                                <button className="cancel-btn" onClick={() => setShowNew(false)} aria-label="Cancel">Cancel</button>
-                                <button className="save-btn" disabled={createMutation.isPending}
-                                    onClick={() => createMutation.mutate(newTerm)} aria-label="Save payment term">Save Term</button>
+                                <Button variant="default" className="cancel-btn" onClick={() => setShowNew(false)} aria-label="Cancel">Cancel</Button>
+                                <Button variant="default" className="save-btn" disabled={createMutation.isPending}
+                                    onClick={() => createMutation.mutate(newTerm)} aria-label="Save payment term">Save Term</Button>
                             </div>
                         </div>
                     )}
@@ -164,13 +165,13 @@ export default function PaymentTermsMaster() {
                                 <Input className="si" type="number" value={schedTest.totalAmount} onChange={e => setSchedTest(p => ({ ...p, totalAmount: parseFloat(e.target.value) || 0 }))} aria-label="Invoice amount" />
                             </div>
                         </div>
-                        <button className="calc-btn" disabled={!schedTest.termCode || schedMutation.isPending}
+                        <Button variant="default" className="calc-btn" disabled={!schedTest.termCode || schedMutation.isPending}
                             onClick={() => schedMutation.mutate({ ...schedTest, sourceType: 'Invoice', sourceId: crypto.randomUUID() })} aria-label="Calculate schedule">
                             <Calendar className="h-[13px] w-[13px]"  /> {schedMutation.isPending ? 'Calculating…' : 'Calculate Schedule'}
-                        </button>
+                        </Button>
 
                         {schedule.length > 0 && (
-                            <div style={{ marginTop: 10, border: '1px solid #e5e7eb', borderRadius: 8, overflow: 'hidden', height: 250 }}>
+                            <div className="mt-[10px] rounded-2 overflow-hidden" style={{border: '1px solid #e5e7eb', height: 250}}>
                                 <InteractiveSpreadsheet
                                     columns={scheduleColumns}
                                     data={schedule}

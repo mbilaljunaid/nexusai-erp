@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface ESGGoal { id: string; goal_code: string; goal_name: string; category: string; subcategory: string; unit: string; baseline_value: number; target_value: number; target_year: number; status: string; owner: string; }
 interface Actual { actual_value: number; period: string; data_source: string; }
@@ -79,7 +80,7 @@ export default function ESGPlanning() {
             description="ESG goal tracking · Budgetary control · Variance analysis"
             actions={
                 <div className="flex gap-1.5">
-                    {['goals', 'budget'].map(t => <button key={t} onClick={() => setTab(t as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`)}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</button>)}
+                    {['goals', 'budget'].map(t => <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t as any)} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer ${tab === t ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'}`)}>{t === 'goals' ? 'ESG Goals' : 'Budget Control'}</Button>)}
                 </div>
             }
         >
@@ -100,9 +101,9 @@ export default function ESGPlanning() {
                     {/* Category filter + New */}
                     <div className="flex gap-1.5 mb-2.5 justify-between">
                         <div className="flex gap-1.5">
-                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <button key={c} onClick={() => setCatFilter(c)} className={cn(`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${catFilter === c ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{c || 'All'}</button>)}
+                            {['', 'ENVIRONMENTAL', 'SOCIAL', 'GOVERNANCE'].map(c => <Button variant="secondary" size="sm" key={c} onClick={() => setCatFilter(c)} className={cn(`px-2.5 py-1.5 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${catFilter === c ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{c || 'All'}</Button>)}
                         </div>
-                        <button onClick={() => setShowNew(true)} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer">+ New Goal</button>
+                        <Button variant="default" size="sm" onClick={() => setShowNew(true)} className="text-white text-[11px]">+ New Goal</Button>
                     </div>
 
                     {showNew && (
@@ -124,8 +125,8 @@ export default function ESGPlanning() {
                                 </div>
                             </div>
                             <div className="flex gap-1.5 justify-end">
-                                <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                                <button disabled={!goalForm.goalCode || !goalForm.goalName} onClick={() => createGoalMut.mutate({ ...goalForm, baselineValue: parseFloat(goalForm.baselineValue) || null, targetValue: parseFloat(goalForm.targetValue) || null, targetYear: parseInt(goalForm.targetYear) || null })} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-emerald-700 disabled:opacity-50">Save</button>
+                                <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                                <Button variant="default" size="sm" disabled={!goalForm.goalCode || !goalForm.goalName} onClick={() => createGoalMut.mutate({ ...goalForm, baselineValue: parseFloat(goalForm.baselineValue) || null, targetValue: parseFloat(goalForm.targetValue) || null, targetYear: parseInt(goalForm.targetYear) || null })} className="text-white text-[11px] hover: disabled:opacity-50">Save</Button>
                             </div>
                         </div>
                     )}
@@ -189,7 +190,7 @@ export default function ESGPlanning() {
                                             <Input type={type} value={(actualForm as any)[key]} onChange={e => setActualForm(p => ({ ...p, [key]: e.target.value }))} className="w-full px-2 py-1 border border-green-200 rounded-[5px] text-[11px] box-border" aria-label={lbl} />
                                         </div>
                                     ))}
-                                    <button disabled={!actualForm.actualValue} onClick={() => recordActualMut.mutate({ goalId: selectedGoal.id, period: actualForm.period, actualValue: parseFloat(actualForm.actualValue), dataSource: actualForm.dataSource || null })} className="w-full py-1.5 bg-emerald-600 text-white border-none rounded-md text-[10px] cursor-pointer font-bold disabled:opacity-50 hover:bg-emerald-700">Record</button>
+                                    <Button variant="default" size="sm" disabled={!actualForm.actualValue} onClick={() => recordActualMut.mutate({ goalId: selectedGoal.id, period: actualForm.period, actualValue: parseFloat(actualForm.actualValue), dataSource: actualForm.dataSource || null })} className="w-full text-white text-[10px] disabled:opacity-50 hover:">Record</Button>
                                 </Card>
                             </div>
                         )}

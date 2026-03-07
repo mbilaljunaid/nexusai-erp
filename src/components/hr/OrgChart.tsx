@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronRight, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface OrgNode {
     personId: string;
@@ -43,12 +44,12 @@ const OrgTreeNode: React.FC<{ node: OrgNode; level: number }> = ({ node, level }
                     <p className="text-xs text-muted-foreground">{node.role}</p>
                 </div>
                 {hasChildren && (
-                    <button
+                    <Button variant="default"
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="p-1 hover:bg-zinc-500/15 dark:hover:bg-zinc-800 rounded-lg text-zinc-500"
+                        className="hover:/15 dark:hover: text-zinc-500"
                     >
                         {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                    </button>
+                    </Button>
                 )}
             </div>
             {hasChildren && isExpanded && (

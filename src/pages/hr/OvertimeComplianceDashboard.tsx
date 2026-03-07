@@ -9,6 +9,7 @@ import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatNumber } from "@/lib/formatters";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface OvertimeRule {
     id: string;
@@ -103,8 +104,8 @@ export default function OvertimeComplianceDashboard() {
 
             <div className="tab-bar">
                 {(['report', 'timecard', 'rules'] as const).map(t => (
-                    <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}
-                        data-active={activeTab === t}>{t.charAt(0).toUpperCase() + t.slice(1)}</button>
+                    <Button variant="default" key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}
+                        data-active={activeTab === t}>{t.charAt(0).toUpperCase() + t.slice(1)}</Button>
                 ))}
             </div>
 
@@ -115,7 +116,7 @@ export default function OvertimeComplianceDashboard() {
                             <Label className="pl">Week Starting</Label>
                             <DatePicker className="pi" value={weekDate} onChange={v => setWeekDate(v)} aria-label="Week start date" />
                         </div>
-                        <button className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw className="h-3.5 w-3.5"  /></button>
+                        <Button variant="default" className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw className="h-3.5 w-3.5"  /></Button>
                     </div>
                     {reportLoading ? (
                         <div className="loading">Loading…</div>
@@ -152,10 +153,10 @@ export default function OvertimeComplianceDashboard() {
                         <div className="ff"><Label className="fl">Clock Out</Label><Input className="fi" type="datetime-local" value={tc.clockOut} onChange={e => setTc(p => ({ ...p, clockOut: e.target.value }))} aria-label="Clock out time" /></div>
                         <div className="ff"><Label className="fl">Hourly Rate ($)</Label><Input className="fi" type="number" value={tc.hourlyRate} onChange={e => setTc(p => ({ ...p, hourlyRate: parseFloat(e.target.value) || 0 }))} aria-label="Hourly rate" /></div>
                     </div>
-                    <button className="calc-btn" disabled={!tc.employeeId || tcMutation.isPending}
+                    <Button variant="default" className="calc-btn" disabled={!tc.employeeId || tcMutation.isPending}
                         onClick={() => tcMutation.mutate(tc)} aria-label="Calculate overtime">
                         <Clock className="h-[13px] w-[13px]"  /> {tcMutation.isPending ? 'Calculating…' : 'Calculate OT'}
-                    </button>
+                    </Button>
                     {tcMutation.isSuccess && (
                         <div className="tc-result">
                             <div className="tcr-row"><span>Regular</span><strong>{formatNumber(tcMutation.data.regular_hours, 2)}h — {formatCurrency(tcMutation.data.regular_pay)}</strong></div>

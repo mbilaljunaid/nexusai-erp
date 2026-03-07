@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface Dispute { id: string; dispute_number: string; from_entity: string; to_entity: string; disputed_amount: number; currency: string; status: string; reason: string; opened_by: string; opened_at: string; events: DEvent[]; resolution: string; }
 interface DEvent { at: string; by: string; action: string; note: string; }
@@ -55,7 +56,7 @@ export default function ICDisputeWorkbench() {
         { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="font-mono">{row.disputed_amount ? `$${formatNumber(Number(row.disputed_amount), 2)}` : '—'}</div> },
         { id: "status", header: "Status", width: "100px", cell: (row) => { const clrClass = STATUS_CFG[row.status] ?? 'text-gray-500 bg-gray-500/10'; return <span className={cn(`ic-stat-badge ${clrClass}`)}>{row.status}</span>; } },
         { id: "opened_at", header: "Opened", width: "100px", cell: (row) => <div className="ic-col-date">{formatDate(row.opened_at)}</div> },
-        { id: "actions", header: "Actions", width: "200px", cell: (row) => <div className="ic-act-btns"><button onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} className="ic-btn-view">{selected?.id === row.id ? 'Unselect' : 'View'}</button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} className="ic-btn-review">Review</button><button onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} className="ic-btn-escalate">Escalate</button></>}</div> }
+        { id: "actions", header: "Actions", width: "200px", cell: (row) => <div className="ic-act-btns"><Button variant="default" onClick={(ev) => { ev.stopPropagation(); setSelected(selected?.id === row.id ? null : row); }} className="ic-btn-view">{selected?.id === row.id ? 'Unselect' : 'View'}</Button>{row.status !== 'Resolved' && row.status !== 'Closed' && <><Button variant="default" onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'REVIEW', note: 'Under review' }); }} className="ic-btn-review">Review</Button><Button variant="default" onClick={ev => { ev.stopPropagation(); eventMut.mutate({ id: row.id, action: 'ESCALATE', note: 'Escalated for management review' }); }} className="ic-btn-escalate">Escalate</Button></>}</div> }
     ];
 
     return (
@@ -63,7 +64,7 @@ export default function ICDisputeWorkbench() {
             title="IC Dispute Workbench"
             description="Intercompany discrepancy management · Dispute lifecycle · Resolution tracking"
             actions={
-                <button onClick={() => setShowNew(true)} className="ic-btn-new">+ Open Dispute</button>
+                <Button variant="default" onClick={() => setShowNew(true)} className="ic-btn-new">+ Open Dispute</Button>
             }
         >
             {/* KPI row */}
@@ -126,8 +127,8 @@ export default function ICDisputeWorkbench() {
                         </div>
                     </div>
                     <div className="ic-new-acts">
-                        <button onClick={() => setShowNew(false)} className="ic-btn-cancel">Cancel</button>
-                        <button disabled={!form.fromEntity || !form.toEntity} onClick={() => openMut.mutate({ ...form, disputedAmount: parseFloat(form.disputedAmount) || undefined, openedBy: 'current-user' })} className="ic-btn-open">Open Dispute</button>
+                        <Button variant="default" onClick={() => setShowNew(false)} className="ic-btn-cancel">Cancel</Button>
+                        <Button variant="default" disabled={!form.fromEntity || !form.toEntity} onClick={() => openMut.mutate({ ...form, disputedAmount: parseFloat(form.disputedAmount) || undefined, openedBy: 'current-user' })} className="ic-btn-open">Open Dispute</Button>
                     </div>
                 </div>
             )}
@@ -136,7 +137,7 @@ export default function ICDisputeWorkbench() {
             <div className="ic-filters">
                 <div className="ic-filter-btns">
                     {['', 'Open', 'Under_Review', 'Escalated', 'Resolved', 'Closed'].map(s => (
-                        <button key={s} onClick={() => setStatusFilter(s)} className={cn(`ic-btn-filter ${statusFilter === s ? 'active' : ''}`)}>{s || 'All'}</button>
+                        <Button variant="default" key={s} onClick={() => setStatusFilter(s)} className={cn(`ic-btn-filter ${statusFilter === s ? 'active' : ''}`)}>{s || 'All'}</Button>
                     ))}
                 </div>
                 <Input
@@ -188,14 +189,14 @@ export default function ICDisputeWorkbench() {
                                 <div className="ic-acts-title">Add Event</div>
                                 <Input value={eventNote} onChange={e => setEventNote(e.target.value)} placeholder="Event note…" className="ic-evt-in" aria-label="Event note" />
                                 <div className="ic-evt-btn-row">
-                                    <button disabled={!eventNote} onClick={() => eventMut.mutate({ id: selected.id, action: 'NOTE', note: eventNote })} className="ic-evt-btn">Add Note</button>
+                                    <Button variant="default" disabled={!eventNote} onClick={() => eventMut.mutate({ id: selected.id, action: 'NOTE', note: eventNote })} className="ic-evt-btn">Add Note</Button>
                                 </div>
                                 <div className="ic-res-sec">
                                     <div className="ic-acts-title">Resolve</div>
                                     <Input value={resolveText} onChange={e => setResolveText(e.target.value)} placeholder="Resolution notes…" className="ic-evt-in" aria-label="Resolution" />
-                                    <button disabled={!resolveText} onClick={() => resolveMut.mutate({ id: selected.id, resolution: resolveText })} className="ic-res-btn">
+                                    <Button variant="default" disabled={!resolveText} onClick={() => resolveMut.mutate({ id: selected.id, resolution: resolveText })} className="ic-res-btn">
                                         <CheckCircle2 className="h-2.5 w-2.5"  /> Resolve Dispute
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         )}

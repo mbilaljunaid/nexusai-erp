@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface NettingSession { id: string; session_name: string; period: string; currency: string; status: string; entities_in_scope: string[]; net_positions: NetPos[]; settlement_date: string; created_at: string; }
 interface NetPos { id?: string; entity: string; payable: number; receivable: number; net: number; }
@@ -69,7 +70,7 @@ export default function NettingCenter() {
             description="Multilateral netting · Transfer pricing · Arm-length analysis"
             actions={
                 <div className="flex gap-2">
-                    {['netting', 'tp'].map(t => <button key={t} onClick={() => setTab(t as any)} data-active={tab === t} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer hover:bg-gray-200 hover:text-gray-800 ${tab === t ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white' : 'bg-gray-100 text-gray-500'}`)}>{t === 'netting' ? 'Netting' : 'Transfer Pricing'}</button>)}
+                    {['netting', 'tp'].map(t => <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t as any)} data-active={tab === t} className={cn(`px-3.5 py-1.5 border-none rounded-lg font-bold text-[11px] cursor-pointer hover:bg-gray-200 hover:text-gray-800 ${tab === t ? 'bg-gray-900 text-white hover:bg-gray-800 hover:text-white' : 'bg-gray-100 text-gray-500'}`)}>{t === 'netting' ? 'Netting' : 'Transfer Pricing'}</Button>)}
                 </div>
             }
         >
@@ -78,7 +79,7 @@ export default function NettingCenter() {
                 {tab === 'netting' && (
                     <>
                         <div className="flex justify-end mb-2.5">
-                            <button onClick={() => setShowNew(true)} className="px-3.5 py-1.5 bg-blue-700 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer hover:bg-blue-800">+ New Session</button>
+                            <Button variant="default" size="sm" onClick={() => setShowNew(true)} className="text-white text-[11px] hover:">+ New Session</Button>
                         </div>
                         {showNew && (
                             <Card className="bg-slate-500/10 p-3.5 mb-3 shadow-sm">
@@ -96,8 +97,8 @@ export default function NettingCenter() {
                                     <Textarea rows={3} value={form.entitiesText} onChange={e => setForm(p => ({ ...p, entitiesText: e.target.value }))} className="font-mono text-xs" aria-label="Entities" />
                                 </div>
                                 <div className="flex gap-1.5 justify-end">
-                                    <button onClick={() => setShowNew(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer hover:bg-gray-300">Cancel</button>
-                                    <button onClick={() => createMut.mutate({ ...form, entitiesInScope: form.entitiesText.split('\n').map(s => s.trim()).filter(Boolean) })} disabled={!form.sessionName || !form.period} className="px-3 py-1 bg-blue-700 text-white border-none rounded-md text-[11px] font-bold cursor-pointer hover:bg-blue-800 disabled:opacity-50">Create</button>
+                                    <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px] hover:">Cancel</Button>
+                                    <Button variant="default" size="sm" onClick={() => createMut.mutate({ ...form, entitiesInScope: form.entitiesText.split('\n').map(s => s.trim()).filter(Boolean) })} disabled={!form.sessionName || !form.period} className="text-white text-[11px] hover: disabled:opacity-50">Create</Button>
                                 </div>
                             </Card>
                         )}
@@ -112,8 +113,8 @@ export default function NettingCenter() {
                                                 <span className={cn(`px-1.5 py-0.5 rounded-[4px] text-[9px] font-bold ${style.bg} ${style.text}`)}>{s.status}</span>
                                             </div>
                                             <div className="text-[10px] text-gray-400">{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
-                                            {s.status === 'Draft' && <button onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-blue-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-500/15">▶ Run Netting</button>}
-                                            {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-emerald-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-emerald-600 font-bold hover:bg-emerald-500/15 flex items-center gap-1"><CheckCircle2 className="h-[9px] w-[9px]"  /> Settle</button>}
+                                            {s.status === 'Draft' && <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-1.5 /10 ] text-[9px] text-blue-700 hover:/15">▶ Run Netting</Button>}
+                                            {s.status === 'Completed' && <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 /10 ] text-[9px] text-emerald-600 hover:/15 flex items-center gap-1"><CheckCircle2 className="h-[9px] w-[9px]"  /> Settle</Button>}
                                         </Card>
                                     );
                                 })}
@@ -145,7 +146,7 @@ export default function NettingCenter() {
                             <div className="w-80 shrink-0">
                                 <div className="flex justify-between mb-2 items-center">
                                     <div className="font-bold text-[13px]">TP Policies</div>
-                                    <button onClick={() => setShowNewPolicy(true)} className="px-2.5 py-1 bg-blue-700 text-white border-none rounded-[6px] text-[10px] cursor-pointer hover:bg-blue-800">+ Policy</button>
+                                    <Button variant="default" size="sm" onClick={() => setShowNewPolicy(true)} className="text-white ] text-[10px] hover:">+ Policy</Button>
                                 </div>
                                 {showNewPolicy && (
                                     <Card className="bg-slate-500/10 p-2.5 mb-2 shadow-sm">
@@ -160,8 +161,8 @@ export default function NettingCenter() {
                                             </div>
                                         ))}
                                         <div className="flex gap-1 justify-end mt-1.5">
-                                            <button onClick={() => setShowNewPolicy(false)} className="px-2 py-0.5 bg-gray-200 border-none rounded-[5px] text-[10px] cursor-pointer hover:bg-gray-300">Cancel</button>
-                                            <button onClick={() => createPolicyMut.mutate({ ...policyForm, benchmarkRangeLow: parseFloat(policyForm.benchmarkRangeLow) || null, benchmarkRangeHigh: parseFloat(policyForm.benchmarkRangeHigh) || null })} className="px-2 py-0.5 bg-blue-700 text-white border-none rounded-[5px] text-[10px] cursor-pointer hover:bg-blue-800">Save</button>
+                                            <Button variant="secondary" size="sm" onClick={() => setShowNewPolicy(false)} className="] text-[10px] hover:">Cancel</Button>
+                                            <Button variant="default" size="sm" onClick={() => createPolicyMut.mutate({ ...policyForm, benchmarkRangeLow: parseFloat(policyForm.benchmarkRangeLow) || null, benchmarkRangeHigh: parseFloat(policyForm.benchmarkRangeHigh) || null })} className="text-white ] text-[10px] hover:">Save</Button>
                                         </div>
                                     </Card>
                                 )}
@@ -170,7 +171,7 @@ export default function NettingCenter() {
                                         <div className="font-bold text-[12px]">{p.policy_name}</div>
                                         <div className="text-[9px] text-gray-400 mb-0.5">{p.method} · {p.transaction_category}</div>
                                         <div className="text-[10px] text-gray-700">Range: {p.benchmark_range_low ?? '—'}% – {p.benchmark_range_high ?? '—'}%</div>
-                                        <button onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} className="mt-1 px-1.5 py-0.5 bg-blue-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-500/15">Select for Analysis</button>
+                                        <Button variant="default" onClick={() => setAnalysisForm(af => ({ ...af, policyId: p.id }))} className="mt-1 /10 ] text-[9px] text-blue-700 hover:/15">Select for Analysis</Button>
                                     </Card>
                                 ))}
                             </div>
@@ -182,7 +183,7 @@ export default function NettingCenter() {
                                     <div className="flex gap-1.5 items-center">
                                         <Input placeholder="Period YYYY-MM" value={analysisForm.period} onChange={e => setAnalysisForm(p => ({ ...p, period: e.target.value }))} className="px-2 py-1 border border-gray-300 rounded-[6px] text-[11px] w-28" aria-label="Analysis period" />
                                         <Input type="number" placeholder="Actual margin %" value={analysisForm.actualMarginPct} onChange={e => setAnalysisForm(p => ({ ...p, actualMarginPct: e.target.value }))} className="px-2 py-1 border border-gray-300 rounded-[6px] text-[11px] w-28" aria-label="Actual margin pct" />
-                                        <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} className="px-3 py-1 bg-violet-600 text-white border-none rounded-[6px] text-[11px] cursor-pointer flex items-center hover:bg-violet-700 disabled:opacity-50"><BarChart3  className="mr-0.5 h-2.5 w-2.5" />Run Analysis</button>
+                                        <Button variant="default" size="sm" disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} className="text-white ] text-[11px] flex items-center hover: disabled:opacity-50"><BarChart3  className="mr-0.5 h-2.5 w-2.5" />Run Analysis</Button>
                                     </div>
                                 </div>
                                 <Card className="overflow-hidden h-[400px] shadow-sm">

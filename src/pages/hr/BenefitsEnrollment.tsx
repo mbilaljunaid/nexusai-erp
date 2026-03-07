@@ -9,6 +9,7 @@ import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface BenefitPlan {
     id: string;
@@ -123,8 +124,8 @@ export default function BenefitsEnrollment() {
         {
             id: "actions", header: "Actions", width: "150px", cell: (row) => !row.waived ? (
                 <>
-                    <button className="waive-btn" onClick={() => waiveMutation.mutate({ planId: row.plan_id })} aria-label={`Waive ${row.plan_name}`}>Waive</button>
-                    <button className="term-btn" onClick={() => terminateMutation.mutate(row.id)} aria-label={`Terminate ${row.plan_name}`}>Terminate</button>
+                    <Button variant="default" className="waive-btn" onClick={() => waiveMutation.mutate({ planId: row.plan_id })} aria-label={`Waive ${row.plan_name}`}>Waive</Button>
+                    <Button variant="default" className="term-btn" onClick={() => terminateMutation.mutate(row.id)} aria-label={`Terminate ${row.plan_name}`}>Terminate</Button>
                 </>
             ) : null
         }
@@ -167,9 +168,9 @@ export default function BenefitsEnrollment() {
             {/* Tabs */}
             <div className="be-tabs">
                 {(['catalog', 'enrollments', 'summary'] as const).map(t => (
-                    <button key={t} className={cn(`be-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
+                    <Button variant="default" key={t} className={cn(`be-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -194,9 +195,9 @@ export default function BenefitsEnrollment() {
                                     {enrolledPlanIds.has(plan.id) ? (
                                         <span className="enrolled-badge"><CheckCircle2 className="h-[13px] w-[13px]"  /> Enrolled</span>
                                     ) : (
-                                        <button className="enroll-btn" onClick={() => setEnrollingPlan(plan)} aria-label={`Enroll in ${plan.name}`}>
+                                        <Button variant="default" className="enroll-btn" onClick={() => setEnrollingPlan(plan)} aria-label={`Enroll in ${plan.name}`}>
                                             Enroll
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                             </div>
@@ -256,7 +257,7 @@ export default function BenefitsEnrollment() {
                     <div className="modal-box">
                         <div className="modal-head">
                             <h2 className="modal-title">Enroll: {enrollingPlan.name}</h2>
-                            <button className="modal-close" onClick={() => setEnrollingPlan(null)} aria-label="Close"><X className="h-5 w-5"  /></button>
+                            <Button variant="default" className="modal-close" onClick={() => setEnrollingPlan(null)} aria-label="Close"><X className="h-5 w-5"  /></Button>
                         </div>
                         <div className="enroll-costs">
                             Employee: <strong>{fmt(enrollingPlan.employee_cost, enrollingPlan.currency_code)}/period</strong>
@@ -270,7 +271,7 @@ export default function BenefitsEnrollment() {
                         <div className="deps-section">
                             <div className="deps-header">
                                 Dependents
-                                <button className="add-dep-btn" onClick={() => setDependents(d => [...d, { name: '', dob: '', relationship: 'Spouse' }])} aria-label="Add dependent">+ Add</button>
+                                <Button variant="default" className="add-dep-btn" onClick={() => setDependents(d => [...d, { name: '', dob: '', relationship: 'Spouse' }])} aria-label="Add dependent">+ Add</Button>
                             </div>
                             {dependents.map((d, i) => (
                                 <div key={i} className="dep-row">
@@ -282,13 +283,13 @@ export default function BenefitsEnrollment() {
                                             {['Spouse', 'Child', 'Parent', 'Domestic Partner'].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                                         </SelectContent>
                                     </Select>
-                                    <button className="dep-remove" onClick={() => setDependents(d => d.filter((_, j) => j !== i))} aria-label="Remove dependent"><X className="h-3.5 w-3.5"  /></button>
+                                    <Button variant="default" className="dep-remove" onClick={() => setDependents(d => d.filter((_, j) => j !== i))} aria-label="Remove dependent"><X className="h-3.5 w-3.5"  /></Button>
                                 </div>
                             ))}
                         </div>
                         <div className="modal-actions">
-                            <button className="mcancel" onClick={() => { setEnrollingPlan(null); setDependents([]); }}>Cancel</button>
-                            <button className="msubmit" disabled={enrollMutation.isPending || !employeeId} onClick={() =>
+                            <Button variant="default" className="mcancel" onClick={() => { setEnrollingPlan(null); setDependents([]); }}>Cancel</Button>
+                            <Button variant="default" className="msubmit" disabled={enrollMutation.isPending || !employeeId} onClick={() =>
                                 enrollMutation.mutate({
                                     planId: enrollingPlan.id,
                                     employeeId,
@@ -298,7 +299,7 @@ export default function BenefitsEnrollment() {
                                 })
                             } aria-label="Confirm enrollment">
                                 {enrollMutation.isPending ? 'Enrolling…' : 'Confirm Enrollment'}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

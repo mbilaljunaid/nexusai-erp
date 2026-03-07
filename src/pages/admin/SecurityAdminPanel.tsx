@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface IPEntry {
   ip: string;
@@ -210,22 +211,22 @@ export default function SecurityAdminPanel() {
           </div>
         </div>
         <div className="mt-4 flex gap-3">
-          <button
+          <Button variant="default"
             onClick={addToWhitelist}
             disabled={loading || !newIP}
-            className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="text-white text-sm hover: disabled:opacity-50 disabled: flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Add to Whitelist
-          </button>
-          <button
+          </Button>
+          <Button variant="destructive"
             onClick={addToBlacklist}
             disabled={loading || !newIP}
-            className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="text-white text-sm hover: disabled:opacity-50 disabled: flex items-center gap-2"
           >
             <Lock className="w-4 h-4" />
             Add to Blacklist
-          </button>
+          </Button>
         </div>
       </Card>
 
@@ -234,7 +235,7 @@ export default function SecurityAdminPanel() {
         {/* Tabs */}
         <div className="border-b">
           <div className="flex">
-            <button
+            <Button variant="outline"
               onClick={() => setActiveTab('whitelist')}
               className={cn(`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'whitelist'
                 ? 'border-green-600 text-green-700'
@@ -242,8 +243,8 @@ export default function SecurityAdminPanel() {
                 }`)}
             >
               Whitelist ({whitelist.length})
-            </button>
-            <button
+            </Button>
+            <Button variant="outline"
               onClick={() => setActiveTab('blacklist')}
               className={cn(`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'blacklist'
                 ? 'border-red-600 text-red-700'
@@ -251,7 +252,7 @@ export default function SecurityAdminPanel() {
                 }`)}
             >
               Blacklist ({blacklist.length})
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -278,13 +279,13 @@ export default function SecurityAdminPanel() {
                     )}
                   </div>
                 </div>
-                <button
+                <Button variant="destructive"
                   onClick={() => removeFromList(entry.ip, activeTab)}
-                  className="p-2 text-red-600 hover:bg-red-500/10 rounded-md"
+                  className="text-red-600 hover:/10"
                   title="Remove"
                 >
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             ))
           )}

@@ -8,6 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 interface RiskScore {
     id: string; employee_id: string; risk_score: number; risk_band: string;
     tenure_months: number; engagement_score: number; last_promotion_days: number;
@@ -84,9 +85,9 @@ export default function AttritionPrediction() {
         },
         {
             id: "actions", header: "Actions", width: "80px", cell: (row) => (
-                <button onClick={() => setSelected(selected?.id === row.id ? null : row)} className={cn(`py-1 px-2 text-[11px] border-none rounded cursor-pointer ${selected?.id === row.id ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-700'}`)}>
+                <Button variant="secondary" size="sm" onClick={() => setSelected(selected?.id === row.id ? null : row)} className={cn(`py-1 px-2 text-[11px] border-none rounded cursor-pointer ${selected?.id === row.id ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-700'}`)}>
                     {selected?.id === row.id ? 'Hide' : 'Select'}
-                </button>
+                </Button>
             )
         }
     ];
@@ -96,7 +97,7 @@ export default function AttritionPrediction() {
             title="Attrition Risk Prediction"
             description="SHAP-explained risk factors · Flight risk scoring · Retention signals"
             actions={
-                <button onClick={() => setShowScore(true)} className="py-2 px-3.5 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Score Employee</button>
+                <Button variant="default" size="sm" onClick={() => setShowScore(true)} className="text-white text-xs">+ Score Employee</Button>
             }
         >
             {/* Distribution KPIs */}
@@ -128,10 +129,10 @@ export default function AttritionPrediction() {
                         ))}
                     </div>
                     <div className="flex gap-2 justify-end mt-2.5">
-                        <button onClick={() => setShowScore(false)} className="py-1.5 px-3.5 bg-gray-200 border-none rounded-[7px] text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={!form.employeeId || scoreMut.isPending} onClick={() => scoreMut.mutate(Object.fromEntries(Object.entries(form).map(([k, v]) => [k, k === 'employeeId' ? v : Number(v)])))} className="py-1.5 px-3.5 bg-blue-700 text-white border-none rounded-[7px] text-[11px] font-bold cursor-pointer disabled:opacity-50">
+                        <Button variant="secondary" size="sm" onClick={() => setShowScore(false)} className="] text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={!form.employeeId || scoreMut.isPending} onClick={() => scoreMut.mutate(Object.fromEntries(Object.entries(form).map(([k, v]) => [k, k === 'employeeId' ? v : Number(v)])))} className="text-white ] text-[11px] disabled:opacity-50">
                             {scoreMut.isPending ? 'Scoring…' : 'Calculate Risk Score'}
-                        </button>
+                        </Button>
                     </div>
                 </Card>
             )}
@@ -139,7 +140,7 @@ export default function AttritionPrediction() {
             <div className="flex gap-3.5">
                 {/* Risk table */}
                 <div className="flex-1">
-                    {bandFilter && <div className="text-[11px] text-gray-500 mb-1.5">Showing: {BAND_CFG[bandFilter]?.label} — <button onClick={() => setBandFilter('')} className="bg-transparent border-none text-blue-700 cursor-pointer text-[11px]">Clear</button></div>}
+                    {bandFilter && <div className="text-[11px] text-gray-500 mb-1.5">Showing: {BAND_CFG[bandFilter]?.label} — <Button variant="outline" size="sm" onClick={() => setBandFilter('')} className="text-blue-700 text-[11px]">Clear</Button></div>}
                     <Card className="overflow-hidden h-full min-h-[400px]">
                         <InteractiveSpreadsheet
                             columns={riskColumns}
@@ -158,7 +159,7 @@ export default function AttritionPrediction() {
                         <Card className="p-3.5 mb-2.5 shadow-sm">
                             <div className="flex justify-between mb-2">
                                 <div className="font-bold text-[13px]">{selected.employee_id}</div>
-                                <button onClick={() => setSelected(null)} className="bg-transparent border-none cursor-pointer text-gray-400">✕</button>
+                                <Button variant="outline" onClick={() => setSelected(null)} className="text-gray-400">✕</Button>
                             </div>
                             <div className="mb-2.5 flex"><ScoreBar score={Number(selected.risk_score)} /></div>
                             <div className="text-[11px] font-bold mb-1.5 text-gray-700">Risk Factors (SHAP)</div>

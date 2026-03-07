@@ -54,7 +54,7 @@ export function MobileNavigation({ currentPath, onNavigate}: MobileNavigationPro
                         const Icon = item.icon;
                         const isActive = currentPath === item.path;
                         return (
-                            <button
+                            <Button variant="default"
                                 key={item.path}
                                 onClick={() => handleNavigate(item.path)}
                                 className={cn(
@@ -73,17 +73,17 @@ export function MobileNavigation({ currentPath, onNavigate}: MobileNavigationPro
                                         {item.badge}
                                     </span>
                                 )}
-                            </button>
+                            </Button>
                         );
                    })}
 
                     {/* More Menu */}
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
-                            <button className="flex flex-col items-center justify-center py-2 px-1 rounded-lg text-muted-foreground hover:bg-muted transition-colors">
+                            <Button variant="default" className="flex flex-col items-center justify-center text-muted-foreground hover: transition-colors">
                                 <Menu className="h-5 w-5 mb-1" />
                                 <span className="text-[10px] font-medium">More</span>
-                            </button>
+                            </Button>
                         </SheetTrigger>
                         <SheetContent side="bottom" className="h-[50vh]">
                             <SheetHeader>
@@ -94,7 +94,7 @@ export function MobileNavigation({ currentPath, onNavigate}: MobileNavigationPro
                                     const Icon = item.icon;
                                     const isActive = currentPath === item.path;
                                     return (
-                                        <button
+                                        <Button variant="default"
                                             key={item.path}
                                             onClick={() => handleNavigate(item.path)}
                                             className={cn(
@@ -113,24 +113,24 @@ export function MobileNavigation({ currentPath, onNavigate}: MobileNavigationPro
                                                     {item.badge}
                                                 </span>
                                             )}
-                                        </button>
+                                        </Button>
                                     );
                                })}
                                 <div className="border-t pt-2 mt-4">
-                                    <button
+                                    <Button variant="default"
                                         onClick={() => handleNavigate("/settings")}
-                                        className="w-full flex items-center gap-3 p-4 rounded-lg hover:bg-muted transition-colors"
+                                        className="w-full flex items-center gap-3 hover: transition-colors"
                                     >
                                         <Settings className="h-5 w-5" />
                                         <span className="font-medium">Settings</span>
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button variant="default"
                                         onClick={() => handleNavigate("/logout")}
-                                        className="w-full flex items-center gap-3 p-4 rounded-lg hover:bg-muted transition-colors text-red-600"
+                                        className="w-full flex items-center gap-3 hover: transition-colors text-red-600"
                                     >
                                         <LogOut className="h-5 w-5" />
                                         <span className="font-medium">Sign Out</span>
-                                    </button>
+                                    </Button>
                                 </div>
                             </nav>
                         </SheetContent>
@@ -165,7 +165,7 @@ export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue}: M
                     {actions.map((action, index) => {
                         const Icon = action.icon;
                         return (
-                            <button
+                            <Button variant="default"
                                 key={index}
                                 onClick={() => {
                                     if (action.onClick) action.onClick();
@@ -178,14 +178,14 @@ export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue}: M
                             >
                                 <Icon className="h-5 w-5" />
                                 <span className="font-medium text-sm">{action.label}</span>
-                            </button>
+                            </Button>
                         );
                    })}
                 </div>
             )}
 
             {/* Main FAB */}
-            <button
+            <Button variant="destructive"
                 onClick={() => setIsExpanded(!isExpanded)}
                 className={cn(
                    "h-14 w-14 rounded-full shadow-lg flex items-center justify-center transition-all",
@@ -207,7 +207,7 @@ export function MobileFAB({ onDailyLog, onEquipmentReport, onComplianceIssue}: M
                         d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     />
                 </svg>
-            </button>
+            </Button>
         </div>
     );
 }

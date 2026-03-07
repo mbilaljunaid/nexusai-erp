@@ -9,6 +9,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 
 interface LockboxBatch {
@@ -156,7 +157,7 @@ export default function LockboxWorkbench() {
         { id: "method", header: "Method", width: "100px", cell: (row) => <div>{row.match_method ? <span className="method-tag">{row.match_method}</span> : <span className="grey">—</span>}</div> },
         { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.match_status === 'Matched' ? <span className="status-green"><CheckCircle2 className="h-[11px] w-[11px]"  /> Matched</span> : <span className="status-orange"><AlertCircle className="h-[11px] w-[11px]"  /> {row.match_status}</span>}</div> },
         { id: "unapplied", header: "Unapplied", width: "120px", cell: (row) => <div className={cn(`mono ${row.unapplied_amount > 0 ? 'red' : 'grey'}`)}>{row.unapplied_amount > 0 ? fmt(row.unapplied_amount) : '—'}</div> },
-        { id: "action", header: "Action", width: "80px", cell: (row) => <div>{row.match_status !== 'Matched' && row.unapplied_amount > 0 && <button className="btn-match-action" onClick={() => setMatchingItem(row)}>Match</button>}</div> }
+        { id: "action", header: "Action", width: "80px", cell: (row) => <div>{row.match_status !== 'Matched' && row.unapplied_amount > 0 && <Button variant="default" className="btn-match-action" onClick={() => setMatchingItem(row)}>Match</Button>}</div> }
     ];
 
     return (
@@ -189,7 +190,7 @@ export default function LockboxWorkbench() {
                             <Label className="dl">Batch Date</Label>
                             <DatePicker className="di" value={batchDate} onChange={v => setBatchDate(v)} aria-label="Batch date" />
                         </div>
-                        <button className="import-btn" disabled={!csvContent || importMutation.isPending}
+                        <Button variant="default" className="import-btn" disabled={!csvContent || importMutation.isPending}
                             onClick={() => {
                                 const parsedItems = parseCSV(csvContent);
                                 importMutation.mutate({
@@ -206,7 +207,7 @@ export default function LockboxWorkbench() {
                                 });
                             }} aria-label="Import lockbox batch">
                             {importMutation.isPending ? 'Processing & Matching…' : 'Import & Auto-Match'}
-                        </button>
+                        </Button>
                         {importMutation.isSuccess && (
                             <div className="success-row">
                                 <CheckCircle2 className="h-3.5 w-3.5"  />
@@ -247,7 +248,7 @@ export default function LockboxWorkbench() {
                             <div className="filter-row-container">
                                 <div className="filter-buttons">
                                     {['', 'Matched', 'Unmatched', 'Partial', 'Overpayment'].map(s => (
-                                        <button key={s} className={cn(`filter-pill ${matchFilter === s ? 'active' : ''}`)} onClick={() => setMatchFilter(s)}>{s || 'All'}</button>
+                                        <Button variant="default" key={s} className={cn(`filter-pill ${matchFilter === s ? 'active' : ''}`)} onClick={() => setMatchFilter(s)}>{s || 'All'}</Button>
                                     ))}
                                 </div>
                                 <Input
@@ -269,7 +270,7 @@ export default function LockboxWorkbench() {
                         </>
                     ) : (
                         <div className="no-select">
-                            <Link2 className="h-10 w-10"  style={{ color: '#d1d5db', marginBottom: 12 }} />
+                            <Link2 className="h-10 w-10 mb-3" style={{color: '#d1d5db'}}/>
                             <div>Select a batch to view items</div>
                         </div>
                     )}
@@ -282,7 +283,7 @@ export default function LockboxWorkbench() {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h2>Manual Match</h2>
-                            <button className="close-btn" aria-label="Close modal" onClick={() => { setMatchingItem(null); setManualInvoiceSearch(''); }}><X className="h-5 w-5"  /></button>
+                            <Button variant="default" className="close-btn" aria-label="Close modal" onClick={() => { setMatchingItem(null); setManualInvoiceSearch(''); }}><X className="h-5 w-5"  /></Button>
                         </div>
                         <div className="modal-body">
                             <div className="match-context">
@@ -313,13 +314,13 @@ export default function LockboxWorkbench() {
                                         </div>
                                         <div className="irr-right">
                                             <div className="irr-amt mono">{fmt(inv.total_amount)}</div>
-                                            <button
+                                            <Button variant="default"
                                                 className="btn-apply-match"
                                                 disabled={manualMatchMutation.isPending}
                                                 onClick={() => manualMatchMutation.mutate({ itemId: matchingItem.id, invoiceId: inv.id })}
                                             >
                                                 {manualMatchMutation.isPending ? 'Applying...' : 'Apply'}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 ))}

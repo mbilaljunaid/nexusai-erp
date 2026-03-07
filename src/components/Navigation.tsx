@@ -61,14 +61,14 @@ export function Header() {
               onMouseEnter={() => setModulesOpen(true)}
               onMouseLeave={() => setModulesOpen(false)}
             >
-              <button
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
+              <Button variant="default"
+                className="text-sm text-slate-300 hover:text-white transition-colors flex items-center gap-1"
                 onClick={() => setModulesOpen(!modulesOpen)}
                 data-testid="button-modules-menu"
               >
                 Modules
                 <ChevronDown className={cn(`w-4 h-4 transition-transform ${modulesOpen ?'rotate-180' :''}`)} />
-              </button>
+              </Button>
 
               {modulesOpen && (
                 <div className="absolute left-0 top-full pt-1 w-[600px] -ml-20">
@@ -279,14 +279,14 @@ export function Header() {
               onMouseEnter={() => setMarketplaceOpen(true)}
               onMouseLeave={() => setMarketplaceOpen(false)}
             >
-              <button
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
+              <Button variant="default"
+                className="text-sm text-slate-300 hover:text-white transition-colors flex items-center gap-1"
                 onClick={() => setMarketplaceOpen(!marketplaceOpen)}
                 data-testid="button-marketplace-menu"
               >
                 Marketplace
                 <ChevronDown className={cn(`w-4 h-4 transition-transform ${marketplaceOpen ?'rotate-180' :''}`)} />
-              </button>
+              </Button>
 
               {marketplaceOpen && (
                 <div className="absolute left-0 top-full pt-1 w-64">
@@ -353,14 +353,14 @@ export function Header() {
               onMouseEnter={() => setDocsOpen(true)}
               onMouseLeave={() => setDocsOpen(false)}
             >
-              <button
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1 py-2"
+              <Button variant="default"
+                className="text-sm text-slate-300 hover:text-white transition-colors flex items-center gap-1"
                 onClick={() => setDocsOpen(!docsOpen)}
                 data-testid="button-documentation-menu"
               >
                 Documentation
                 <ChevronDown className={cn(`w-4 h-4 transition-transform ${docsOpen ?'rotate-180' :''}`)} />
-              </button>
+              </Button>
 
               {docsOpen && (
                 <div
@@ -478,14 +478,14 @@ export function Header() {
             </Link>
 
             {/* Mobile Menu Button */}
-            <button
+            <Button variant="default"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 hover:bg-slate-800 rounded text-white border border-slate-600"
+              className="md:hidden hover: rounded text-white border"
               data-testid="button-mobile-menu"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -497,7 +497,7 @@ export function Header() {
                 key={item.path}
                 to={item.path}
               >
-                <button
+                <Button variant="default"
                   onClick={() => setMenuOpen(false)}
                   className={cn(`block w-full text-left px-4 py-2 rounded text-sm ${isActive(item.path)
                     ?"bg-blue-600 text-white"
@@ -506,7 +506,7 @@ export function Header() {
                   data-testid={`link-mobile-nav-${item.label.toLowerCase().replace(/\s+/g,'-')}`}
                 >
                   {item.label}
-                </button>
+                </Button>
               </Link>
             ))}
 
@@ -515,49 +515,49 @@ export function Header() {
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
               <p className="px-4 text-xs text-slate-500 uppercase">Modules</p>
               <Link to="/modules/general-ledger">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Finance
-                </button>
+                </Button>
               </Link>
               <Link to="/modules/manufacturing">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Manufacturing
-                </button>
+                </Button>
               </Link>
               <Link to="/modules/core-hr">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   HR & Payroll
-                </button>
+                </Button>
               </Link>
             </div>
 
             {/* Mobile Contribution Link - Highlighted */}
             <Link to="/contribution">
-              <button
+              <Button variant="default"
                 onClick={() => setMenuOpen(false)}
-                className="block w-full text-left px-4 py-2 rounded text-sm bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium"
+                className="block w-full text-left rounded text-sm from-purple-600 to-pink-600 text-white"
                 data-testid="link-mobile-contribution"
               >
                 Contribute
-              </button>
+              </Button>
             </Link>
             {/* Mobile Marketplace */}
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
               <p className="px-4 text-xs text-slate-500 uppercase">Marketplace</p>
               <Link to="/marketplace/services">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-marketplace-services">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:" data-testid="link-mobile-marketplace-services">
                   Service Marketplace
-                </button>
+                </Button>
               </Link>
               <Link to="/marketplace/apps">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800" data-testid="link-mobile-marketplace-apps">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:" data-testid="link-mobile-marketplace-apps">
                   App Marketplace
-                </button>
+                </Button>
               </Link>
             </div>
             {/* Mobile Community */}
             <Link to="/community">
-              <button
+              <Button variant="default"
                 onClick={() => setMenuOpen(false)}
                 className={cn(`block w-full text-left px-4 py-2 rounded text-sm ${isActive("/community")
                   ?"bg-blue-600 text-white"
@@ -566,51 +566,51 @@ export function Header() {
                 data-testid="link-mobile-community"
               >
                 Community
-              </button>
+              </Button>
             </Link>
             {/* Mobile Documentation */}
             <div className="border-t border-slate-700 pt-2 mt-2 space-y-2">
               <p className="px-4 text-xs text-slate-500 uppercase">Documentation</p>
               <Link to="/docs/process-flows">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Process Flows
-                </button>
+                </Button>
               </Link>
               <Link to="/docs/training-guides">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Training Guides
-                </button>
+                </Button>
               </Link>
               <Link to="/docs/technical">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Technical Docs
-                </button>
+                </Button>
               </Link>
               <Link to="/docs/implementation">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Implementation
-                </button>
+                </Button>
               </Link>
               <p className="px-4 pt-2 text-xs text-slate-500 uppercase">Community Content</p>
               <Link to="/training/videos">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Training Videos
-                </button>
+                </Button>
               </Link>
               <Link to="/training/apis">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   APIs & Integrations
-                </button>
+                </Button>
               </Link>
               <Link to="/training/guides">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   User Guides
-                </button>
+                </Button>
               </Link>
               <Link to="/training/materials">
-                <button onClick={() => setMenuOpen(false)} className="block w-full text-left px-4 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">
+                <Button variant="default" onClick={() => setMenuOpen(false)} className="block w-full text-left rounded text-sm text-slate-300 hover:">
                   Training Materials
-                </button>
+                </Button>
               </Link>
             </div>
             <Link to="/login">

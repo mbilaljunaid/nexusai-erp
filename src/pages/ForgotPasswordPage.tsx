@@ -252,13 +252,13 @@ export default function ForgotPasswordPage() {
                               className="pl-4 h-11 bg-white/5 border-white/10 focus:border-indigo-500/50 transition-all"
                               {...field}
                             />
-                            <button
+                            <Button variant="default"
                               type="button"
                               onClick={() => setShowPassword(!showPassword)}
                               className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
                             >
                               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                            </button>
+                            </Button>
                           </div>
                         </FormControl>
                         <FormMessage />

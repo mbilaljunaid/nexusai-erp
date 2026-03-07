@@ -92,27 +92,27 @@ export default function Planning() {
       className="space-y-6"
     >
       <div className="flex gap-4 border-b">
-        <button
+        <Button variant="default"
           onClick={() => setActiveTab("revenue")}
           className={cn(`px-4 py-2 font-medium ${activeTab === "revenue" ? "border-b-2 border-primary" : ""}`)}
           data-testid="tab-revenue"
         >
           Revenue Planning
-        </button>
-        <button
+        </Button>
+        <Button variant="default"
           onClick={() => setActiveTab("budget")}
           className={cn(`px-4 py-2 font-medium ${activeTab === "budget" ? "border-b-2 border-primary" : ""}`)}
           data-testid="tab-budget"
         >
           Budget Allocation
-        </button>
-        <button
+        </Button>
+        <Button variant="default"
           onClick={() => setActiveTab("scenarios")}
           className={cn(`px-4 py-2 font-medium ${activeTab === "scenarios" ? "border-b-2 border-primary" : ""}`)}
           data-testid="tab-scenarios"
         >
           What-If Scenarios
-        </button>
+        </Button>
       </div>
 
       {activeTab === "revenue" && (

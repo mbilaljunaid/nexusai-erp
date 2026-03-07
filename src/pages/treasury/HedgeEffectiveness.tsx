@@ -147,9 +147,9 @@ export default function HedgeEffectiveness() {
             {/* Tabs */}
             <div className="he-tabs">
                 {(['hedges', 'covenants', 'debt'] as const).map(t => (
-                    <button key={t} className={cn(`he-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
+                    <Button variant="default" key={t} className={cn(`he-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
                         {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -272,14 +272,14 @@ export default function HedgeEffectiveness() {
                                 <Label className="tl">Hedged Item G/L</Label>
                                 <Input className="ti" type="number" value={testForm.hedgedItemGainLoss} onChange={e => setTestForm(p => ({ ...p, hedgedItemGainLoss: e.target.value }))} placeholder="e.g. -120000" aria-label="Hedged item gain or loss" />
                             </div>
-                            <button
+                            <Button variant="default"
                                 className="run-test-btn"
                                 disabled={!testForm.hedgeRelId || testMutation.isPending}
                                 onClick={() => testMutation.mutate({ ...testForm, hedgingGainLoss: parseFloat(testForm.hedgingGainLoss), hedgedItemGainLoss: parseFloat(testForm.hedgedItemGainLoss) })}
                                 aria-label="Run effectiveness test"
                             >
                                 {testMutation.isPending ? 'Testing…' : 'Run Test'}
-                            </button>
+                            </Button>
 
                             {testResult && (
                                 <div className={cn(`test-result ${testResult.isHighlyEffective ? 'pass' : 'fail'}`)}>

@@ -918,14 +918,14 @@ export default function Marketplace() {
               {selectedForCompare.map(app => (
                 <Badge key={app.id} variant="secondary" className="gap-1">
                   {app.name}
-                  <button
+                  <Button variant="destructive"
                     onClick={() => toggleCompareApp(app)}
                     className="ml-1 hover:text-destructive"
                     data-testid={`button-remove-compare-${app.id}`}
                     aria-label={`Remove ${app.name} from comparison`}
                   >
                     <X className="w-3 h-3" />
-                  </button>
+                  </Button>
                 </Badge>
               ))}
             </div>

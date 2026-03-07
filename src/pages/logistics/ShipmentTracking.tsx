@@ -8,6 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface Shipment {
     id: string;
@@ -131,12 +132,12 @@ export default function ShipmentTracking() {
 
             <div className="tab-bar">
                 {(['shipments', 'performance', 'mode'] as const).map(t => (
-                    <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)} data-active={activeTab === t}>
+                    <Button variant="default" key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)} data-active={activeTab === t}>
                         {t === 'shipments' && <Package className="h-3 w-3"  />}
                         {t === 'performance' && <TrendingUp className="h-3 w-3"  />}
                         {t === 'mode' && <Zap className="h-3 w-3"  />}
                         {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -164,10 +165,10 @@ export default function ShipmentTracking() {
                                 <Input placeholder="City" value={eventForm.eventCity} onChange={e => setEventForm(p => ({ ...p, eventCity: e.target.value }))} className="h-8 text-[11px]" aria-label="Event city" />
                                 <Input placeholder="State" value={eventForm.eventState} onChange={e => setEventForm(p => ({ ...p, eventState: e.target.value }))} className="h-8 text-[11px]" aria-label="Event state" />
                             </div>
-                            <button className="ef-btn" disabled={!eventForm.proNumber || eventMutation.isPending}
+                            <Button variant="default" className="ef-btn" disabled={!eventForm.proNumber || eventMutation.isPending}
                                 onClick={() => eventMutation.mutate({ ...eventForm, shipmentId: selected?.id })} aria-label="Submit EDI event">
                                 {eventMutation.isPending ? 'Submitting…' : 'Submit EDI 214'}
-                            </button>
+                            </Button>
                         </div>
 
                         {/* Shipment list */}
@@ -244,10 +245,10 @@ export default function ShipmentTracking() {
                                 <Input type={t as string} value={(modeForm as any)[k as string]} onChange={e => setModeForm(p => ({ ...p, [k as string]: t === 'number' ? parseInt(e.target.value) || 0 : e.target.value }))} className="h-9 text-[12px]" aria-label={label as string} />
                             </div>
                         ))}
-                        <button className="opt-btn" disabled={modeMutation.isPending || !modeForm.originZip || !modeForm.destZip}
+                        <Button variant="default" className="opt-btn" disabled={modeMutation.isPending || !modeForm.originZip || !modeForm.destZip}
                             onClick={() => modeMutation.mutate(modeForm)} aria-label="Optimize mode">
                             <Zap className="h-[13px] w-[13px]"  /> {modeMutation.isPending ? 'Optimizing…' : 'Optimize'}
-                        </button>
+                        </Button>
                     </div>
                     {modeResult && (
                         <div className="mode-results">

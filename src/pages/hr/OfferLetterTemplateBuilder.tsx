@@ -163,14 +163,14 @@ The NexusAI Talent Team`);
                                         <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{category}</h4>
                                         <div className="space-y-1.5">
                                             {AVAILABLE_TOKENS.filter(t => t.category === category).map(token => (
-                                                <button
+                                                <Button variant="default" size="sm"
                                                     key={token.id}
                                                     onClick={() => insertToken(token.id)}
-                                                    className="w-full text-left px-3 py-2 rounded-md text-sm border hover:bg-emerald-500/10 hover:border-emerald-200 dark:hover:bg-emerald-900/20 dark:hover:border-emerald-800 transition-colors flex justify-between items-center group"
+                                                    className="w-full text-left text-sm border hover:/10 hover: dark:hover:/20 dark:hover: transition-colors flex justify-between items-center group"
                                                 >
                                                     <span className="font-medium text-foreground group-hover:text-emerald-700 dark:group-hover:text-emerald-400">{token.label}</span>
                                                     <span className="text-[10px] font-mono text-muted-foreground opacity-50 group-hover:opacity-100">[[{token.id}]]</span>
-                                                </button>
+                                                </Button>
                                             ))}
                                         </div>
                                     </div>

@@ -11,6 +11,7 @@ import { Loader2, Calculator, FileText, AlertCircle, CheckCircle2, RefreshCw } f
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { formatNumber } from '@/lib/formatters';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface InvoiceLineItem {
     id: string;
@@ -256,23 +257,23 @@ export function TaxCalculationPreview() {
                         </CardHeader>
                         <CardContent>
                             <div className="border rounded-lg overflow-hidden">
-                                <table className="w-full">
-                                    <thead className="bg-muted/50">
-                                        <tr className="border-b">
-                                            <th className="p-3 text-left font-medium">#</th>
-                                            <th className="p-3 text-left font-medium">Description</th>
-                                            <th className="p-3 text-right font-medium">Qty</th>
-                                            <th className="p-3 text-right font-medium">Unit Price</th>
-                                            <th className="p-3 text-right font-medium">Amount</th>
-                                            <th className="p-3 text-left font-medium">Tax Code</th>
-                                            <th className="p-3 text-right font-medium">Tax</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                <Table >
+                                    <TableHeader className="bg-muted/50">
+                                        <TableRow className="border-b">
+                                            <TableHead className="p-3 text-left font-medium">#</TableHead>
+                                            <TableHead className="p-3 text-left font-medium">Description</TableHead>
+                                            <TableHead className="p-3 text-right font-medium">Qty</TableHead>
+                                            <TableHead className="p-3 text-right font-medium">Unit Price</TableHead>
+                                            <TableHead className="p-3 text-right font-medium">Amount</TableHead>
+                                            <TableHead className="p-3 text-left font-medium">Tax Code</TableHead>
+                                            <TableHead className="p-3 text-right font-medium">Tax</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
                                         {calculationResult.lineItems.map(line => (
-                                            <tr key={line.id} className="border-b hover:bg-muted/20">
-                                                <td className="p-3">{line.lineNumber}</td>
-                                                <td className="p-3">
+                                            <TableRow key={line.id} className="border-b hover:bg-muted/20">
+                                                <TableCell className="p-3">{line.lineNumber}</TableCell>
+                                                <TableCell className="p-3">
                                                     <div className="font-medium">{line.description}</div>
                                                     {line.exemptionApplied && (
                                                         <div className="text-xs text-blue-600 flex items-center gap-1 mt-1">
@@ -280,44 +281,44 @@ export function TaxCalculationPreview() {
                                                             Exempt: {line.exemptionReason}
                                                         </div>
                                                     )}
-                                                </td>
-                                                <td className="p-3 text-right">{line.quantity}</td>
-                                                <td className="p-3 text-right">
+                                                </TableCell>
+                                                <TableCell className="p-3 text-right">{line.quantity}</TableCell>
+                                                <TableCell className="p-3 text-right">
                                                     ${line.unitPrice.toFixed(2)}
-                                                </td>
-                                                <td className="p-3 text-right font-medium">
+                                                </TableCell>
+                                                <TableCell className="p-3 text-right font-medium">
                                                     ${line.lineAmount.toFixed(2)}
-                                                </td>
-                                                <td className="p-3">
+                                                </TableCell>
+                                                <TableCell className="p-3">
                                                     <Badge variant="outline">{line.taxCode}</Badge>
-                                                </td>
-                                                <td className="p-3 text-right font-medium">
+                                                </TableCell>
+                                                <TableCell className="p-3 text-right font-medium">
                                                     {line.exemptionApplied ? (
                                                         <span className="text-blue-600">Exempt</span>
                                                     ) : (
                                                         `$${line.taxAmount.toFixed(2)}`
                                                     )}
-                                                </td>
-                                            </tr>
+                                                </TableCell>
+                                            </TableRow>
                                         ))}
-                                        <tr className="bg-muted/30 font-bold">
-                                            <td colSpan={4} className="p-3 text-right">Subtotal:</td>
-                                            <td className="p-3 text-right">
+                                        <TableRow className="bg-muted/30 font-bold">
+                                            <TableCell colSpan={4} className="p-3 text-right">Subtotal:</TableCell>
+                                            <TableCell className="p-3 text-right">
                                                 ${calculationResult.lineItems.reduce((sum, line) => sum + line.lineAmount, 0).toFixed(2)}
-                                            </td>
-                                            <td className="p-3"></td>
-                                            <td className="p-3 text-right">
+                                            </TableCell>
+                                            <TableCell className="p-3"></TableCell>
+                                            <TableCell className="p-3 text-right">
                                                 ${calculationResult.totalTax.toFixed(2)}
-                                            </td>
-                                        </tr>
-                                        <tr className="bg-primary/10 font-bold text-lg">
-                                            <td colSpan={6} className="p-3 text-right">Invoice Total:</td>
-                                            <td className="p-3 text-right">
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow className="bg-primary/10 font-bold text-lg">
+                                            <TableCell colSpan={6} className="p-3 text-right">Invoice Total:</TableCell>
+                                            <TableCell className="p-3 text-right">
                                                 ${calculationResult.totalAmount.toFixed(2)}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
                             </div>
                         </CardContent>
                     </Card>

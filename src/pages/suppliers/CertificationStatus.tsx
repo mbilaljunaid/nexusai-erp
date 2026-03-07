@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface Cert { id: string; supplier_id: string; cert_type: string; cert_number: string; issuing_body: string; issue_date: string; expiry_date: string; status: string; verified_by: string; days_remaining?: number; }
 interface Portfolio { cert_type: string; suppliers_with_cert: number; active: number; expired: number; earliest_expiry: string; }
@@ -67,7 +68,7 @@ export default function CertificationStatus() {
 
                     <p className="text-[13px] text-gray-500 mt-1">ISO · SOC2 · GDPR · Custom — verification & expiry alerts</p>
                 </div>
-                <button onClick={() => setShowNew(true)} className="px-4 py-2 bg-blue-700 text-white border-0 rounded-lg font-semibold cursor-pointer">+ Add Certificate</button>
+                <Button variant="default" onClick={() => setShowNew(true)} className="text-white">+ Add Certificate</Button>
             </div>
 
             {/* Expiry alert */}
@@ -75,16 +76,16 @@ export default function CertificationStatus() {
                 <div className="bg-amber-500/10 border border-amber-300 rounded-lg py-2.5 px-3.5 mb-3.5 flex items-center gap-2">
                     <AlertCircle className="h-3.5 w-3.5"  color="#d97706" />
                     <span className="text-[12px] text-amber-900 dark:text-amber-200 font-semibold">{expiring.length} cert{expiring.length !== 1 ? 's' : ''} expiring within 60 days</span>
-                    <button onClick={() => setTab('expiring')} className="px-2.5 py-0.5 bg-amber-600 text-white border-0 rounded text-[11px] cursor-pointer">View all</button>
+                    <Button variant="default" size="sm" onClick={() => setTab('expiring')} className="text-white rounded text-[11px]">View all</Button>
                 </div>
             )}
 
             {/* Tabs */}
             <div className="flex gap-1 mb-3.5">
                 {(['certs', 'portfolio', 'expiring'] as const).map(t => (
-                    <button key={t} onClick={() => setTab(t)} className={cn(`px-4 py-1.5 border border-gray-200 rounded-lg text-[12px] font-semibold cursor-pointer ${tab === t ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
+                    <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`px-4 py-1.5 border border-gray-200 rounded-lg text-[12px] font-semibold cursor-pointer ${tab === t ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
                         {t === 'certs' ? 'All Certificates' : t === 'portfolio' ? 'Portfolio View' : `Expiring (${expiring.length})`}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -108,8 +109,8 @@ export default function CertificationStatus() {
                         ))}
                     </div>
                     <div className="flex justify-end gap-1.5 mt-2.5">
-                        <button onClick={() => setShowNew(false)} className="px-3 py-1.5 bg-gray-100 border-0 rounded-md text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={addMut.isPending || !form.supplierId} onClick={() => addMut.mutate(form)} className="px-3 py-1.5 bg-blue-700 text-white border-0 rounded-md text-[11px] font-semibold cursor-pointer">Add</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={addMut.isPending || !form.supplierId} onClick={() => addMut.mutate(form)} className="text-white text-[11px]">Add</Button>
                     </div>
                 </Card>
             )}
@@ -119,9 +120,9 @@ export default function CertificationStatus() {
                     <div className="flex gap-2 mb-2.5">
                         <Input placeholder="Filter by supplier ID" value={supplierId} onChange={e => setSupplierId(e.target.value)} className="px-2.5 py-1.5 border border-gray-300 rounded-lg text-[12px] min-w-48" aria-label="Supplier filter" />
                         {['', 'Active', 'Expired', 'Pending', 'Revoked'].map(s => (
-                            <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-3 py-1.5 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${statusFilter === s ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
+                            <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-3 py-1.5 border border-gray-200 rounded-md text-[11px] font-semibold cursor-pointer ${statusFilter === s ? "bg-gray-900 text-white" : "bg-white text-gray-500"}`)}>
                                 {s || 'All'}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5">
@@ -147,8 +148,8 @@ export default function CertificationStatus() {
                                     {c.verified_by && <div className="text-[10px] text-emerald-600 mt-1">✓ Verified by {c.verified_by}</div>}
                                     {sel && (
                                         <div className="mt-2 flex gap-1.5">
-                                            {c.status === 'Pending' && <button onClick={e => { e.stopPropagation(); verifyMut.mutate(c.id); }} className="px-2.5 py-1 bg-emerald-600 text-white border-0 rounded-md text-[11px] font-semibold cursor-pointer">Verify</button>}
-                                            {c.status === 'Active' && <button onClick={e => { e.stopPropagation(); revokeMut.mutate(c.id); }} className="px-2.5 py-1 bg-red-600 text-white border-0 rounded-md text-[11px] cursor-pointer">Revoke</button>}
+                                            {c.status === 'Pending' && <Button variant="default" size="sm" onClick={e => { e.stopPropagation(); verifyMut.mutate(c.id); }} className="text-white text-[11px]">Verify</Button>}
+                                            {c.status === 'Active' && <Button variant="destructive" size="sm" onClick={e => { e.stopPropagation(); revokeMut.mutate(c.id); }} className="text-white text-[11px]">Revoke</Button>}
                                         </div>
                                     )}
                                 </Card>

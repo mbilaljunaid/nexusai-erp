@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { formatDateTime } from "@/lib/dateUtils";
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 interface LogEntryProps {
     log: {
@@ -43,13 +44,13 @@ export default function LogEntry({ log }: LogEntryProps) {
             >
                 {/* Expand Icon */}
                 {hasMetadata && (
-                    <button className="flex-shrink-0 mt-1">
+                    <Button variant="default" className="flex-shrink-0 mt-1">
                         {expanded ? (
                             <ChevronDown className="w-4 h-4 text-gray-400" />
                         ) : (
                             <ChevronRight className="w-4 h-4 text-gray-400" />
                         )}
-                    </button>
+                    </Button>
                 )}
 
                 {/* Level Badge */}

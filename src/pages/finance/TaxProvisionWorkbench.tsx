@@ -7,6 +7,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface TaxProvision {
     id: string;
@@ -127,14 +128,14 @@ export default function TaxProvisionWorkbench() {
                     </Select>
                     <div className="standard-toggle">
                         {(['ASC740', 'IAS12'] as const).map(s => (
-                            <button
+                            <Button variant="default"
                                 key={s}
                                 className={cn(`std-btn ${standard === s ? 'active' : ''}`)}
                                 onClick={() => setStandard(s)}
                                 aria-pressed={standard === s}
                             >
                                 {s}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>
@@ -155,7 +156,7 @@ export default function TaxProvisionWorkbench() {
                     {inputField('Deferred Tax Asset (DTA)', 'dta', '0')}
                     {inputField('Deferred Tax Liability (DTL)', 'dtl', '0')}
 
-                    <button
+                    <Button variant="default"
                         className="compute-btn"
                         onClick={handleCompute}
                         disabled={computeMutation.isPending}
@@ -163,7 +164,7 @@ export default function TaxProvisionWorkbench() {
                     >
                         <Calculator className="h-4 w-4"  />
                         {computeMutation.isPending ? 'Computing…' : 'Compute Provision'}
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Result Panel */}

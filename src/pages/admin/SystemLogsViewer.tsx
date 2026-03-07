@@ -9,6 +9,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface Log {
     id: string;
@@ -98,12 +99,12 @@ export default function SystemLogsViewer() {
                         data={exportData}
                         filename={`system-logs-${new Date().toISOString()}`}
                     />
-                    <button
+                    <Button variant="default"
                         onClick={() => fetchLogs()}
-                        className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
+                        className="text-white text-sm hover:"
                     >
                         Refresh
-                    </button>
+                    </Button>
                 </div>
             }
         >
@@ -113,13 +114,13 @@ export default function SystemLogsViewer() {
                     <Filter className="w-5 h-5 text-gray-400" />
                     <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Filters</h3>
                     {hasActiveFilters && (
-                        <button
+                        <Button variant="default"
                             onClick={clearFilters}
                             className="ml-auto text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
                         >
                             <X className="w-4 h-4" />
                             Clear all
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -195,7 +196,7 @@ export default function SystemLogsViewer() {
                     </Label>
                     <div className="flex items-center gap-2">
                         {[50, 100, 200, 500].map((value) => (
-                            <button
+                            <Button variant="secondary" size="sm"
                                 key={value}
                                 onClick={() => setCount(value)}
                                 className={cn(`px-3 py-1 text-sm rounded-md ${count === value
@@ -204,7 +205,7 @@ export default function SystemLogsViewer() {
                                     }`)}
                             >
                                 {value}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>

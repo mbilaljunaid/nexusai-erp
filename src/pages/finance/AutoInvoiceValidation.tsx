@@ -9,6 +9,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface AutoInvRun {
     id: string;
@@ -110,10 +111,10 @@ export default function AutoInvoiceValidation() {
                             <Textarea className="rb font-mono text-xs" value={linesJson} onChange={e => setLinesJson(e.target.value)} rows={10} aria-label="Lines JSON" />
                             {jsonError && <div className="json-err">{jsonError}</div>}
                         </div>
-                        <button className="validate-btn" disabled={!!jsonError || !parsedLines.length || validateMutation.isPending}
+                        <Button variant="default" className="validate-btn" disabled={!!jsonError || !parsedLines.length || validateMutation.isPending}
                             onClick={runValidation} aria-label="Run validation">
                             <Play className="h-[13px] w-[13px]"  /> {validateMutation.isPending ? 'Validating…' : 'Run Validation'}
-                        </button>
+                        </Button>
                         {validateMutation.isSuccess && (
                             <div className={cn(`val-banner ${validateMutation.data?.canImport ? 'pass' : 'fail'}`)}>
                                 {validateMutation.data?.canImport
@@ -166,10 +167,10 @@ export default function AutoInvoiceValidation() {
                                     <div className="rd-meta">{activeRun.total_lines} total · {activeRun.valid_lines} valid · <span className={activeRun.error_lines > 0 ? 'text-red-600' : 'text-emerald-600'}>{activeRun.error_lines} errors</span></div>
                                 </div>
                                 {activeRun.status === 'Validated' && activeRun.error_lines === 0 && (
-                                    <button className="import-btn" disabled={importMutation.isPending}
+                                    <Button variant="default" className="import-btn" disabled={importMutation.isPending}
                                         onClick={() => importMutation.mutate({ runId: activeRun.id, lines: parsedLines })} aria-label="Import to AR">
                                         <Download className="h-[13px] w-[13px]"  /> {importMutation.isPending ? 'Importing…' : 'Import to AR'}
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
 

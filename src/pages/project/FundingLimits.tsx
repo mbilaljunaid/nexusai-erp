@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 interface FundingLimit { id: string; project_id: string; funding_source: string; limit_amount: number; utilized_amount: number; available: number; utilization_pct: number; status: string; alert_threshold_pct: number; restrict_charges: boolean; }
 interface Commitment { id: string; project_id: string; commitment_type: string; reference_number: string; vendor_id: string; description: string; committed_amount: number; invoiced_amount: number; remaining_amount: number; status: string; commitment_date: string; }
@@ -58,7 +59,7 @@ export default function FundingLimits() {
                 return <span className={cn(`py-0.5 px-1.5 rounded-sm text-[10px] font-bold ${s.bg} ${s.text}`)}>{c.status}</span>;
             }
         },
-        { id: "actions", header: "", width: "100px", cell: (c) => c.status !== 'Closed' && c.status !== 'Cancelled' ? <button onClick={() => closeCommitMut.mutate(c.id)} className="py-1 px-2 bg-gray-100 border-none rounded-md text-[10px] cursor-pointer">Close</button> : null }
+        { id: "actions", header: "", width: "100px", cell: (c) => c.status !== 'Closed' && c.status !== 'Cancelled' ? <Button variant="secondary" size="sm" onClick={() => closeCommitMut.mutate(c.id)} className="text-[10px]">Close</Button> : null }
     ];
 
     return (
@@ -71,7 +72,7 @@ export default function FundingLimits() {
             {/* Project selector */}
             <div className="flex gap-2 mb-3.5">
                 <Input placeholder="Enter Project ID" value={projectId} onChange={e => setProjectId(e.target.value)} className="h-7 rounded-lg text-xs min-w-56" aria-label="Project ID" />
-                <button disabled={!projectId} onClick={() => setActiveProject(projectId)} className="py-1.5 px-4 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50">Load</button>
+                <Button variant="default" size="sm" disabled={!projectId} onClick={() => setActiveProject(projectId)} className="text-white text-xs disabled:opacity-50">Load</Button>
             </div>
 
             {activeProject && (
@@ -81,10 +82,10 @@ export default function FundingLimits() {
                         <div className="flex gap-1">
                             {/* eslint-disable-next-line react/forbid-dom-props */}
                             {(['funding', 'commitments'] as const).map(t => (
-                                <button key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer capitalize ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</button>
+                                <Button variant="secondary" size="sm" key={t} onClick={() => setTab(t)} className={cn(`py-1.5 px-4 border border-gray-200 rounded-lg text-xs font-semibold cursor-pointer capitalize ${tab === t ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{t === 'funding' ? `Funding Limits (${fundingLimits.length})` : `Commitments (${commitments.length})`}</Button>
                             ))}
                         </div>
-                        <button onClick={() => tab === 'funding' ? setShowNewFL(true) : setShowNewCommit(true)} className="ml-auto py-1.5 px-3.5 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ Add</button>
+                        <Button variant="default" size="sm" onClick={() => tab === 'funding' ? setShowNewFL(true) : setShowNewCommit(true)} className="ml-auto text-white text-xs">+ Add</Button>
                     </div>
 
                     {/* Funding Limits */}
@@ -118,8 +119,8 @@ export default function FundingLimits() {
                                         </div>
                                     </div>
                                     <div className="flex gap-1.5 justify-end mt-2">
-                                        <button onClick={() => setShowNewFL(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                                        <button disabled={!flForm.limitAmount} onClick={() => addFLMut.mutate({ ...flForm, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Add</button>
+                                        <Button variant="secondary" size="sm" onClick={() => setShowNewFL(false)} className="text-[11px]">Cancel</Button>
+                                        <Button variant="default" size="sm" disabled={!flForm.limitAmount} onClick={() => addFLMut.mutate({ ...flForm, projectId: activeProject })} className="text-white text-[11px] disabled:opacity-50">Add</Button>
                                     </div>
                                 </Card>
                             )}
@@ -197,8 +198,8 @@ export default function FundingLimits() {
                                         ))}
                                     </div>
                                     <div className="flex gap-1.5 justify-end mt-2">
-                                        <button onClick={() => setShowNewCommit(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                                        <button disabled={!commitForm.committedAmount} onClick={() => addCommitMut.mutate({ ...commitForm, projectId: activeProject })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer disabled:opacity-50">Add</button>
+                                        <Button variant="secondary" size="sm" onClick={() => setShowNewCommit(false)} className="text-[11px]">Cancel</Button>
+                                        <Button variant="default" size="sm" disabled={!commitForm.committedAmount} onClick={() => addCommitMut.mutate({ ...commitForm, projectId: activeProject })} className="text-white text-[11px] disabled:opacity-50">Add</Button>
                                     </div>
                                 </Card>
                             )}

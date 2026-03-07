@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface POLine {
   id: number;
@@ -155,37 +156,37 @@ export function PurchaseOrderForm() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 px-2">Item</th>
-                    <th className="text-left py-2 px-2">Description</th>
-                    <th className="text-right py-2 px-2">Qty</th>
-                    <th className="text-left py-2 px-2">Unit</th>
-                    <th className="text-right py-2 px-2">Unit Price</th>
-                    <th className="text-right py-2 px-2">Total</th>
-                    <th className="w-8"></th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="text-sm">
+                <TableHeader>
+                  <TableRow className="border-b">
+                    <TableHead className="text-left py-2 px-2">Item</TableHead>
+                    <TableHead className="text-left py-2 px-2">Description</TableHead>
+                    <TableHead className="text-right py-2 px-2">Qty</TableHead>
+                    <TableHead className="text-left py-2 px-2">Unit</TableHead>
+                    <TableHead className="text-right py-2 px-2">Unit Price</TableHead>
+                    <TableHead className="text-right py-2 px-2">Total</TableHead>
+                    <TableHead className="w-8"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {lines.map(line => (
-                    <tr key={line.id} className="border-b">
-                      <td className="py-2 px-2"><Input placeholder="Item" value={line.item} onChange={(e) => updateLine(line.id, "item", e.target.value)} className="text-xs" /></td>
-                      <td className="py-2 px-2"><Input placeholder="Desc" value={line.description} onChange={(e) => updateLine(line.id, "description", e.target.value)} className="text-xs" /></td>
-                      <td className="py-2 px-2"><Input type="number" placeholder="0" value={line.quantity} onChange={(e) => updateLine(line.id, "quantity", e.target.value)} className="text-xs text-right" /></td>
-                      <td className="py-2 px-2">
+                    <TableRow key={line.id} className="border-b">
+                      <TableCell className="py-2 px-2"><Input placeholder="Item" value={line.item} onChange={(e) => updateLine(line.id, "item", e.target.value)} className="text-xs" /></TableCell>
+                      <TableCell className="py-2 px-2"><Input placeholder="Desc" value={line.description} onChange={(e) => updateLine(line.id, "description", e.target.value)} className="text-xs" /></TableCell>
+                      <TableCell className="py-2 px-2"><Input type="number" placeholder="0" value={line.quantity} onChange={(e) => updateLine(line.id, "quantity", e.target.value)} className="text-xs text-right" /></TableCell>
+                      <TableCell className="py-2 px-2">
                         <Select value={line.unit} onValueChange={(v) => updateLine(line.id, "unit", v)}>
                           <SelectTrigger className="text-xs"><SelectValue /></SelectTrigger>
                           <SelectContent><SelectItem value="EA">EA</SelectItem><SelectItem value="BOX">BOX</SelectItem></SelectContent>
                         </Select>
-                      </td>
-                      <td className="py-2 px-2"><Input type="number" placeholder="0" value={line.unitPrice} onChange={(e) => updateLine(line.id, "unitPrice", e.target.value)} className="text-xs text-right" /></td>
-                      <td className="py-2 px-2 text-right">${line.total.toFixed(2)}</td>
-                      <td className="py-2 px-2"><Button variant="ghost" size="sm" onClick={() => removeLine(line.id)}><Trash2 className="w-4 h-4" /></Button></td>
-                    </tr>
+                      </TableCell>
+                      <TableCell className="py-2 px-2"><Input type="number" placeholder="0" value={line.unitPrice} onChange={(e) => updateLine(line.id, "unitPrice", e.target.value)} className="text-xs text-right" /></TableCell>
+                      <TableCell className="py-2 px-2 text-right">${line.total.toFixed(2)}</TableCell>
+                      <TableCell className="py-2 px-2"><Button variant="ghost" size="sm" onClick={() => removeLine(line.id)}><Trash2 className="w-4 h-4" /></Button></TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
 

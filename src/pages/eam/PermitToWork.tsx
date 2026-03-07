@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface Permit { id: string; permit_number: string; permit_type: string; asset_id: string; location: string; description: string; status: string; requested_by: string; approved_by: string; contractor: string; start_datetime: string; end_datetime: string; events: PEvent[]; }
 interface PEvent { at: string; by: string; action: string; note: string; }
@@ -51,7 +52,7 @@ export default function PermitToWork() {
                 <div>
                     <p className="text-sm text-muted-foreground mt-1">Hazardous work permits · Safety lifecycle · CBM alerts</p>
                 </div>
-                <button onClick={() => setShowNew(true)} className="px-3.5 py-1.5 bg-red-600 text-white border-none rounded-lg text-[11px] font-bold cursor-pointer">+ New Permit</button>
+                <Button variant="destructive" size="sm" onClick={() => setShowNew(true)} className="text-white text-[11px]">+ New Permit</Button>
             </div>
 
             {/* KPI row */}
@@ -107,15 +108,15 @@ export default function PermitToWork() {
                         </div>
                     </div>
                     <div className="flex gap-1.5 justify-end">
-                        <button onClick={() => setShowNew(false)} className="px-3 py-1 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={!form.requestedBy} onClick={() => createMut.mutate(form)} className="px-3 py-1 bg-red-600 text-white border-none rounded-md text-[11px] font-bold cursor-pointer disabled:opacity-50">Create</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="destructive" size="sm" disabled={!form.requestedBy} onClick={() => createMut.mutate(form)} className="text-white text-[11px] disabled:opacity-50">Create</Button>
                     </div>
                 </Card>
             )}
 
             <div className="flex gap-1.5 mb-2.5">
                 {['', 'Pending_Approval', 'Approved', 'Active', 'Suspended', 'Closed', 'Cancelled'].map(s => (
-                    <button key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
                 ))}
             </div>
 
@@ -140,7 +141,7 @@ export default function PermitToWork() {
                                 <div className="text-[9px] text-gray-400">By: {p.requested_by} {p.contractor ? `· Contractor: ${p.contractor}` : ''} {hrs !== null && p.status === 'Active' ? `· ${hrs}h remaining` : ''}</div>
                                 {(ACTIONS[p.status] ?? []).length > 0 && (
                                     <div className="flex gap-1 mt-1.5">
-                                        {(ACTIONS[p.status] ?? []).map(a => <button key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={cn(`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-500/10 text-blue-700' : 'bg-red-500/10 text-red-600'}`)}>{a}</button>)}
+                                        {(ACTIONS[p.status] ?? []).map(a => <Button variant="destructive" key={a} onClick={ev => { ev.stopPropagation(); transitionMut.mutate({ id: p.id, action: a }); }} className={cn(`px-1.5 py-px border-none rounded text-[9px] cursor-pointer font-bold ${a === 'APPROVE' || a === 'RESUME' || a === 'ISSUE' ? 'bg-blue-500/10 text-blue-700' : 'bg-red-500/10 text-red-600'}`)}>{a}</Button>)}
                                     </div>
                                 )}
                             </Card>

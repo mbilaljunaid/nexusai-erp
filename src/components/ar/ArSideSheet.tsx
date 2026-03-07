@@ -43,6 +43,7 @@ import { Button } from "@/components/ui/button"; // Import Button
 import { CreateCreditMemoDialog } from "./CreateCreditMemoDialog";
 import { ArAgingAnalysis } from "./ArAgingAnalysis";
 import { formatNumber } from '@/lib/formatters';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface ArSideSheetProps {
     isOpen: boolean;
@@ -372,33 +373,33 @@ function ArAccountingView({ entityId, type }: { entityId: string, type: "invoice
                         </span>
                     </div>
                     <CardContent className="p-0">
-                        <table className="w-full text-xs">
-                            <thead className="bg-muted/50 border-b">
-                                <tr>
-                                    <th className="p-3 text-left font-black uppercase tracking-widest text-[10px] text-muted-foreground">Account Class</th>
-                                    <th className="p-3 text-right font-black uppercase tracking-widest text-[10px] text-muted-foreground">Debit</th>
-                                    <th className="p-3 text-right font-black uppercase tracking-widest text-[10px] text-muted-foreground">Credit</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-muted-foreground/5">
+                        <Table className="text-xs">
+                            <TableHeader className="bg-muted/50 border-b">
+                                <TableRow>
+                                    <TableHead className="p-3 text-left font-black uppercase tracking-widest text-[10px] text-muted-foreground">Account Class</TableHead>
+                                    <TableHead className="p-3 text-right font-black uppercase tracking-widest text-[10px] text-muted-foreground">Debit</TableHead>
+                                    <TableHead className="p-3 text-right font-black uppercase tracking-widest text-[10px] text-muted-foreground">Credit</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody className="divide-y divide-muted-foreground/5">
                                 {journal.lines?.map((line: any) => (
-                                    <tr key={line.id} className="hover:bg-muted/20 transition-colors">
-                                        <td className="p-3">
+                                    <TableRow key={line.id} className="hover:bg-muted/20 transition-colors">
+                                        <TableCell className="p-3">
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-xs">{line.accountingClass}</span>
                                                 <span className="text-[9px] text-muted-foreground font-mono">{line.codeCombinationId.substring(0, 8)}...</span>
                                             </div>
-                                        </td>
-                                        <td className="p-3 text-right font-bold text-emerald-600">
+                                        </TableCell>
+                                        <TableCell className="p-3 text-right font-bold text-emerald-600">
                                             {line.enteredDr && Number(line.enteredDr) > 0 ? `$${formatNumber(Number(line.enteredDr))}` : ""}
-                                        </td>
-                                        <td className="p-3 text-right font-bold text-rose-600">
+                                        </TableCell>
+                                        <TableCell className="p-3 text-right font-bold text-rose-600">
                                             {line.enteredCr && Number(line.enteredCr) > 0 ? `$${formatNumber(Number(line.enteredCr))}` : ""}
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 ))}
-                            </tbody>
-                        </table>
+                            </TableBody>
+                        </Table>
                     </CardContent>
                 </Card>
             ))}

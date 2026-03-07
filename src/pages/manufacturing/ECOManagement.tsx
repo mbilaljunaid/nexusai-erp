@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface ECO {
     id: string; eco_number: string; title: string; change_type: string;
@@ -73,7 +74,7 @@ export default function ECOManagement() {
             id: "actions", header: "Actions", width: "150px", cell: (e) => (
                 <div className="flex gap-1">
                     {(ACTIONS[e.status] ?? []).map(a => (
-                        <button key={a.action} onClick={(ev) => { ev.stopPropagation(); actionMut.mutate({ id: e.id, action: a.action }); }} className={cn(`py-1 px-2 text-white border-none rounded-md text-[10px] cursor-pointer ${a.color}`)}>{a.label}</button>
+                        <Button variant="default" size="sm" key={a.action} onClick={(ev) => { ev.stopPropagation(); actionMut.mutate({ id: e.id, action: a.action }); }} className={cn(`py-1 px-2 text-white border-none rounded-md text-[10px] cursor-pointer ${a.color}`)}>{a.label}</Button>
                     ))}
                 </div>
             )
@@ -87,7 +88,7 @@ export default function ECOManagement() {
 
                     <p className="text-[13px] text-gray-500 mt-1 mb-0">Change lifecycle · Approval workflow · BOM impact tracking</p>
                 </div>
-                <button onClick={() => setShowNew(true)} className="py-2 px-3.5 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ New ECO</button>
+                <Button variant="default" size="sm" onClick={() => setShowNew(true)} className="text-white text-xs">+ New ECO</Button>
             </div>
 
             {/* Status strip */}
@@ -133,8 +134,8 @@ export default function ECOManagement() {
                         <Textarea rows={2} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="text-xs resize-y" aria-label="Description" />
                     </div>
                     <div className="flex gap-1.5 justify-end">
-                        <button onClick={() => setShowNew(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={!form.title} onClick={() => createMut.mutate(form)} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-bold cursor-pointer disabled:opacity-50">Create</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={!form.title} onClick={() => createMut.mutate(form)} className="text-white text-[11px] disabled:opacity-50">Create</Button>
                     </div>
                 </Card>
             )}
@@ -156,7 +157,7 @@ export default function ECOManagement() {
                     <Card className="w-72 shrink-0 p-3.5 shadow-sm">
                         <div className="flex justify-between mb-2">
                             <div className="font-bold text-xs">{selected.eco_number}</div>
-                            <button onClick={() => setSelected(null)} className="bg-transparent border-none cursor-pointer">✕</button>
+                            <Button variant="outline" onClick={() => setSelected(null)} >✕</Button>
                         </div>
                         <div className="text-[11px] text-gray-700 mb-2.5">{selected.title}</div>
                         <div className="text-[10px] text-gray-500 mb-2.5">

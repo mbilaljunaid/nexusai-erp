@@ -239,13 +239,13 @@ export default function LoginPage() {
                                   className="pl-10 h-11 bg-white/5 border-white/10 focus:border-primary/50 transition-all"
                                   {...field}
                                 />
-                                <button
+                                <Button variant="default"
                                   type="button"
                                   onClick={() => setShowPassword(!showPassword)}
                                   className="absolute right-3 top-3 text-muted-foreground hover:text-white transition-colors"
                                 >
                                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                </button>
+                                </Button>
                               </div>
                             </FormControl>
                             <FormMessage />

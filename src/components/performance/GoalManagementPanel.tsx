@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface Goal {
     id: string;
@@ -197,53 +198,53 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
             </div>
 
             <div className="border rounded-lg overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-muted/50">
-                        <tr>
-                            <th className="p-3 text-left text-sm font-semibold">Title</th>
-                            <th className="p-3 text-left text-sm font-semibold">Category</th>
-                            <th className="p-3 text-left text-sm font-semibold">Weight</th>
-                            <th className="p-3 text-left text-sm font-semibold">Progress</th>
-                            <th className="p-3 text-left text-sm font-semibold">Status</th>
-                            <th className="p-3 text-left text-sm font-semibold">Due Date</th>
-                            <th className="p-3 text-right text-sm font-semibold">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <Table >
+                    <TableHeader className="bg-muted/50">
+                        <TableRow>
+                            <TableHead className="p-3 text-left text-sm font-semibold">Title</TableHead>
+                            <TableHead className="p-3 text-left text-sm font-semibold">Category</TableHead>
+                            <TableHead className="p-3 text-left text-sm font-semibold">Weight</TableHead>
+                            <TableHead className="p-3 text-left text-sm font-semibold">Progress</TableHead>
+                            <TableHead className="p-3 text-left text-sm font-semibold">Status</TableHead>
+                            <TableHead className="p-3 text-left text-sm font-semibold">Due Date</TableHead>
+                            <TableHead className="p-3 text-right text-sm font-semibold">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
                         {isLoading ? (
-                            <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">Loading...</td></tr>
+                            <TableRow><TableCell colSpan={7} className="p-8 text-center text-muted-foreground">Loading...</TableCell></TableRow>
                         ) : filteredGoals.length === 0 ? (
-                            <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No goals found</td></tr>
+                            <TableRow><TableCell colSpan={7} className="p-8 text-center text-muted-foreground">No goals found</TableCell></TableRow>
                         ) : (
                             filteredGoals.map(goal => (
-                                <tr key={goal.id} className="border-t hover:bg-muted/20">
-                                    <td className="p-3">
+                                <TableRow key={goal.id} className="border-t hover:bg-muted/20">
+                                    <TableCell className="p-3">
                                         <div>
                                             <p className="font-medium">{goal.title}</p>
                                             {goal.description && (
                                                 <p className="text-xs text-muted-foreground mt-1">{goal.description}</p>
                                             )}
                                         </div>
-                                    </td>
-                                    <td className="p-3">
+                                    </TableCell>
+                                    <TableCell className="p-3">
                                         <Badge variant="outline" className={getCategoryColor(goal.category)}>
                                             {goal.category}
                                         </Badge>
-                                    </td>
-                                    <td className="p-3"><span className="font-semibold">{goal.weight}%</span></td>
-                                    <td className="p-3">
+                                    </TableCell>
+                                    <TableCell className="p-3"><span className="font-semibold">{goal.weight}%</span></TableCell>
+                                    <TableCell className="p-3">
                                         <div className="space-y-1">
                                             <div className="flex items-center justify-between text-xs">
                                                 <span>{goal.progress}%</span>
                                             </div>
                                             <Progress value={goal.progress} className="w-32" />
                                         </div>
-                                    </td>
-                                    <td className="p-3">{getStatusBadge(goal.status)}</td>
-                                    <td className="p-3 text-sm">
+                                    </TableCell>
+                                    <TableCell className="p-3">{getStatusBadge(goal.status)}</TableCell>
+                                    <TableCell className="p-3 text-sm">
                                         {formatDate(goal.targetDate)}
-                                    </td>
-                                    <td className="p-3">
+                                    </TableCell>
+                                    <TableCell className="p-3">
                                         <div className="flex justify-end gap-2">
                                             <Button size="icon" variant="ghost" onClick={() => setModalState({ isOpen: true, mode: 'edit', goal })} aria-label="Edit">
                                                 <Edit2 className="h-4 w-4" />
@@ -260,12 +261,12 @@ export default function GoalManagementPanel({ personId }: { personId?: string })
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             ))
                         )}
-                    </tbody>
-                </table>
+                    </TableBody>
+                </Table>
             </div>
 
             <GoalModal

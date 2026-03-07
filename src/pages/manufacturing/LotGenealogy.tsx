@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
 
 
 interface Lot { id: string; lot_number: string; item_number: string; item_description: string; lot_type: string; quantity: number; unit_of_measure: string; status: string; expiry_date: string; supplier_lot: string; work_order_id: string; parent_lots: any[]; trace_events: any[]; created_at: string; }
@@ -52,7 +53,7 @@ export default function LotGenealogy() {
                 return <span className={cn(`py-0.5 px-2 rounded font-bold text-[10px] ${cfg}`)}>{l.status}</span>;
             }
         },
-        { id: "actions", header: "", width: "80px", cell: (l) => l.status === 'Active' ? <button onClick={ev => { ev.stopPropagation(); statusMut.mutate({ lot: l.lot_number, status: 'Quarantine' }); }} className="py-0.5 px-2 bg-red-100 border-none rounded text-[9px] cursor-pointer text-red-600">Hold</button> : null }
+        { id: "actions", header: "", width: "80px", cell: (l) => l.status === 'Active' ? <Button variant="destructive" size="sm" onClick={ev => { ev.stopPropagation(); statusMut.mutate({ lot: l.lot_number, status: 'Quarantine' }); }} className="rounded text-[9px] text-red-600">Hold</Button> : null }
     ];
 
     return (
@@ -62,7 +63,7 @@ export default function LotGenealogy() {
 
                     <p className="text-[13px] text-gray-500 mt-1">Forward/backward traceability · JSONB trace events · Expiry management</p>
                 </div>
-                <button onClick={() => setShowNew(!showNew)} className="py-2 px-3.5 bg-blue-700 text-white border-none rounded-lg text-xs font-semibold cursor-pointer">+ New Lot</button>
+                <Button variant="default" size="sm" onClick={() => setShowNew(!showNew)} className="text-white text-xs">+ New Lot</Button>
             </div>
 
             {expiring.length > 0 && (
@@ -94,15 +95,15 @@ export default function LotGenealogy() {
                         </div>
                     </div>
                     <div className="flex gap-1.5 justify-end">
-                        <button onClick={() => setShowNew(false)} className="py-1 px-3 bg-gray-200 border-none rounded-md text-[11px] cursor-pointer">Cancel</button>
-                        <button disabled={!form.lotNumber || !form.itemNumber} onClick={() => createMut.mutate({ ...form, quantity: Number(form.quantity) })} className="py-1 px-3 bg-blue-700 text-white border-none rounded-md text-[11px] font-bold cursor-pointer disabled:opacity-50">Create Lot</button>
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={!form.lotNumber || !form.itemNumber} onClick={() => createMut.mutate({ ...form, quantity: Number(form.quantity) })} className="text-white text-[11px] disabled:opacity-50">Create Lot</Button>
                     </div>
                 </div>
             )}
 
             <div className="flex gap-1.5 mb-3 flex-wrap">
                 {['', 'Active', 'Quarantine', 'Consumed', 'Scrapped', 'Expired'].map(s => (
-                    <button key={s} onClick={() => setStatusFilter(s)} className={cn(`py-1 px-2 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</button>
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`py-1 px-2 border border-gray-200 rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-white text-gray-500'}`)}>{s || 'All'}</Button>
                 ))}
                 <Input value={itemFilter} onChange={e => setItemFilter(e.target.value)} placeholder="Filter by item…" className="py-1 px-2 border border-gray-300 rounded-md text-[11px] w-36" aria-label="Filter by item" />
             </div>
@@ -123,7 +124,7 @@ export default function LotGenealogy() {
                     <div className="w-72 shrink-0 bg-white border border-gray-200 rounded-xl p-3.5">
                         <div className="flex justify-between mb-2">
                             <div className="font-bold">{selected.lot_number}</div>
-                            <button onClick={() => setSelected(null)} className="bg-transparent border-none cursor-pointer">✕</button>
+                            <Button variant="outline" onClick={() => setSelected(null)} >✕</Button>
                         </div>
                         <div className="text-[10px] text-gray-500 mb-2.5">
                             <div>Item: <strong className="font-bold">{selected.item_number}</strong></div>
@@ -132,12 +133,12 @@ export default function LotGenealogy() {
                             {selected.supplier_lot && <div>Supplier Lot: {selected.supplier_lot}</div>}
                         </div>
                         <div className="flex gap-1.5 mb-2.5">
-                            <button onClick={() => setTraceMode(traceMode === 'up' ? null : 'up')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'up' ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`)}>
+                            <Button variant="secondary" size="sm" onClick={() => setTraceMode(traceMode === 'up' ? null : 'up')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'up' ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`)}>
                                 <GitMerge className="h-2.5 w-2.5"  /> Parents
-                            </button>
-                            <button onClick={() => setTraceMode(traceMode === 'down' ? null : 'down')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'down' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'}`)}>
+                            </Button>
+                            <Button variant="secondary" size="sm" onClick={() => setTraceMode(traceMode === 'down' ? null : 'down')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'down' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'}`)}>
                                 <ChevronRight className="h-2.5 w-2.5"  /> Children
-                            </button>
+                            </Button>
                         </div>
                         {traceMode && (
                             <div className="mb-2.5">

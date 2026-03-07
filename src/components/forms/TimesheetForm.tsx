@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface TimesheetEntry {
   id: number;
@@ -118,24 +119,24 @@ export function TimesheetForm() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 px-2">Date</th>
-                    <th className="text-left py-2 px-2">Project</th>
-                    <th className="text-left py-2 px-2">Task</th>
-                    <th className="text-right py-2 px-2">Hours</th>
-                    <th className="text-left py-2 px-2">Notes</th>
-                    <th className="text-center py-2 px-2">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="text-sm">
+                <TableHeader>
+                  <TableRow className="border-b">
+                    <TableHead className="text-left py-2 px-2">Date</TableHead>
+                    <TableHead className="text-left py-2 px-2">Project</TableHead>
+                    <TableHead className="text-left py-2 px-2">Task</TableHead>
+                    <TableHead className="text-right py-2 px-2">Hours</TableHead>
+                    <TableHead className="text-left py-2 px-2">Notes</TableHead>
+                    <TableHead className="text-center py-2 px-2">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {entries.map(entry => (
-                    <tr key={entry.id} className="border-b">
-                      <td className="py-2 px-2">
+                    <TableRow key={entry.id} className="border-b">
+                      <TableCell className="py-2 px-2">
                         <DatePicker className="text-xs" value={entry.date} onChange={(v) => updateEntry(entry.id, "date", v)} />
-                      </td>
-                      <td className="py-2 px-2">
+                      </TableCell>
+                      <TableCell className="py-2 px-2">
                         <Select value={entry.project} onValueChange={(v) => updateEntry(entry.id, "project", v)}>
                           <SelectTrigger className="text-xs">
                             <SelectValue placeholder="Project" />
@@ -145,16 +146,16 @@ export function TimesheetForm() {
                             <SelectItem value="proj2">Project Beta</SelectItem>
                           </SelectContent>
                         </Select>
-                      </td>
-                      <td className="py-2 px-2">
+                      </TableCell>
+                      <TableCell className="py-2 px-2">
                         <Input
                           placeholder="Task"
                           value={entry.task}
                           onChange={(e) => updateEntry(entry.id, "task", e.target.value)}
                           className="text-xs"
                         />
-                      </td>
-                      <td className="py-2 px-2">
+                      </TableCell>
+                      <TableCell className="py-2 px-2">
                         <Input
                           type="number"
                           step="0.5"
@@ -163,16 +164,16 @@ export function TimesheetForm() {
                           onChange={(e) => updateEntry(entry.id, "hours", e.target.value)}
                           className="text-xs text-right"
                         />
-                      </td>
-                      <td className="py-2 px-2">
+                      </TableCell>
+                      <TableCell className="py-2 px-2">
                         <Input
                           placeholder="Notes"
                           value={entry.notes}
                           onChange={(e) => updateEntry(entry.id, "notes", e.target.value)}
                           className="text-xs"
                         />
-                      </td>
-                      <td className="py-2 px-2 text-center">
+                      </TableCell>
+                      <TableCell className="py-2 px-2 text-center">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -181,18 +182,18 @@ export function TimesheetForm() {
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
+                </TableBody>
                 <tfoot>
-                  <tr className="font-semibold bg-muted">
-                    <td colSpan={3} className="py-2 px-2">Total Hours</td>
-                    <td className="py-2 px-2 text-right">{totalHours.toFixed(1)}</td>
-                    <td colSpan={2}></td>
-                  </tr>
+                  <TableRow className="font-semibold bg-muted">
+                    <TableCell colSpan={3} className="py-2 px-2">Total Hours</TableCell>
+                    <TableCell className="py-2 px-2 text-right">{totalHours.toFixed(1)}</TableCell>
+                    <TableCell colSpan={2}></TableCell>
+                  </TableRow>
                 </tfoot>
-              </table>
+              </Table>
             </div>
           </div>
 

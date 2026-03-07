@@ -10,6 +10,7 @@ import ImportStatementDialog from '@/components/cm/ImportStatementDialog';
 import { CashForecastWidget } from '@/components/cash/CashForecastWidget';
 import { useEnterpriseStore } from '@/lib/enterpriseStore';
 import { StandardPage } from '@/components/layout/StandardPage';
+import { Button } from "@/components/ui/button";
 
 export default function CashManagementDashboard() {
     const { legalEntityId } = useEnterpriseStore();
@@ -83,24 +84,24 @@ export default function CashManagementDashboard() {
                 />
                 {/* Action Buttons */}
                 <div className="flex gap-4 mt-4">
-                    <button
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    <Button variant="default"
+                        className="text-white rounded hover:"
                         onClick={() => setBankAccountOpen(true)}
                     >
                         View Bank Account
-                    </button>
-                    <button
-                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    </Button>
+                    <Button variant="default"
+                        className="text-white rounded hover:"
                         onClick={() => setStatementOpen(true)}
                     >
                         View Statement Line
-                    </button>
-                    <button
-                        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+                    </Button>
+                    <Button variant="default"
+                        className="text-white rounded hover:"
                         onClick={() => setReconciliationOpen(true)}
                     >
                         View Reconciliation Detail
-                    </button>
+                    </Button>
                 </div>
                 {/* Side Sheets */}
                 <BankAccountSideSheet open={bankAccountOpen} account={sampleAccount} onClose={() => setBankAccountOpen(false)} />

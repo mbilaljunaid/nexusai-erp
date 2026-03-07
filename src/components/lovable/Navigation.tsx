@@ -58,13 +58,13 @@ function MegaMenu({ title, items}: MegaMenuProps) {
             onMouseEnter={() => setIsOpen(true)}
             onMouseLeave={() => setIsOpen(false)}
         >
-            <button className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
+            <Button variant="default" className="text-sm hover:text-primary transition-colors flex items-center gap-1">
                 {title}
                 <ChevronDown className={cn(
                    "w-4 h-4 transition-transform",
                     isOpen &&"rotate-180"
                 )} />
-            </button>
+            </Button>
 
             {isOpen && (
                 <motion.div
@@ -184,12 +184,12 @@ export function PremiumNav() {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button
+                    <Button variant="default"
                         className="lg:hidden"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Mobile Menu */}

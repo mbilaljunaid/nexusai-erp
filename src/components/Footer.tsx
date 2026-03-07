@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Link } from 'wouter';
+import { Button } from "@/components/ui/button";
 
 const processes = [
   { name: 'Procure-to-Pay', href: '/public/processes/procure-to-pay' },
@@ -72,9 +73,9 @@ export function Footer() {
 
         {/* Process Flows - Collapsible */}
         <div className="border-t border-slate-800 pt-2">
-          <button
+          <Button variant="default"
             onClick={() => setIsProcessesOpen(!isProcessesOpen)}
-            className="flex items-center gap-2 mb-4 text-white font-semibold hover:text-blue-400 transition-colors"
+            className="flex items-center gap-2 mb-4 text-white hover:text-blue-400 transition-colors"
             data-testid="button-processes-toggle"
           >
             <span>Process Flows (18 Processes)</span>
@@ -82,7 +83,7 @@ export function Footer() {
               className={cn(`w-5 h-5 transition-transform ${isProcessesOpen ? 'rotate-180' : ''}`)}
               data-testid="icon-chevron-processes"
             />
-          </button>
+          </Button>
 
           {isProcessesOpen && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
