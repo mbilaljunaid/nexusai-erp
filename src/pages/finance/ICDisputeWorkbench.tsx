@@ -175,7 +175,7 @@ export default function ICDisputeWorkbench() {
                         <div className="ic-det-evts">
                             {(selected.events ?? []).map((ev, i) => (
                                 <div key={i} className="ic-evt-row">
-                                    <MessageSquare size={10} className="ic-evt-icon" />
+                                    <MessageSquare  className="ic-evt-icon h-2.5 w-2.5" />
                                     <div>
                                         <div className="ic-evt-hdr">{ev.action} · {ev.by} · {formatDateTime(ev.at)}</div>
                                         <div className="ic-evt-note">{ev.note}</div>
@@ -194,7 +194,7 @@ export default function ICDisputeWorkbench() {
                                     <div className="ic-acts-title">Resolve</div>
                                     <Input value={resolveText} onChange={e => setResolveText(e.target.value)} placeholder="Resolution notes…" className="ic-evt-in" aria-label="Resolution" />
                                     <button disabled={!resolveText} onClick={() => resolveMut.mutate({ id: selected.id, resolution: resolveText })} className="ic-res-btn">
-                                        <CheckCircle2 size={10} /> Resolve Dispute
+                                        <CheckCircle2 className="h-2.5 w-2.5"  /> Resolve Dispute
                                     </button>
                                 </div>
                             </div>

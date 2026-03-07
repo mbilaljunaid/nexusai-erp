@@ -91,7 +91,7 @@ export default function OfferLetterSign() {
                         return (
                             <div key={d.id} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                                    <FileText size={14} color="#9ca3af" />
+                                    <FileText className="h-3.5 w-3.5"  color="#9ca3af" />
                                     <div>
                                         <div style={{ fontSize: 13, fontWeight: 700 }}>{d.document_type.replace(/_/g, ' ')} — {d.candidate_name ?? d.applicant_id}</div>
                                         <div style={{ fontSize: 11, color: '#6b7280' }}>{d.candidate_email ?? '—'} · Created {fmtDate(d.created_at)} · Expires {fmtDate(d.expires_at)}</div>
@@ -102,7 +102,7 @@ export default function OfferLetterSign() {
                                     {d.status === 'Pending' && <button onClick={() => sendMut.mutate(d.id)} style={{ padding: '4px 10px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer' }}>Send</button>}
                                     {(d.status === 'Sent' || d.status === 'Opened') && <button onClick={() => { setSignDocId(d.id); setTab('sign'); setSigned(false); }} style={{ padding: '4px 10px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer' }}>Sign</button>}
                                     {d.status !== 'Signed' && d.status !== 'Declined' && <button onClick={() => declineMut.mutate(d.id)} style={{ padding: '4px 10px', background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer' }}>Decline</button>}
-                                    <button onClick={() => setAuditDoc(auditDoc?.id === d.id ? null : d)} style={{ padding: '4px 8px', background: '#f3f4f6', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}><Eye size={10} />Trail</button>
+                                    <button onClick={() => setAuditDoc(auditDoc?.id === d.id ? null : d)} style={{ padding: '4px 8px', background: '#f3f4f6', border: 'none', borderRadius: 6, fontSize: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}><Eye className="h-2.5 w-2.5"  />Trail</button>
                                 </div>
                             </div>
                         );
@@ -163,7 +163,7 @@ export default function OfferLetterSign() {
                 <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20, maxWidth: 540 }}>
                     {signed ? (
                         <div style={{ textAlign: 'center', padding: 32 }}>
-                            <CheckCircle2 size={40} color="#059669" style={{ marginBottom: 10 }} />
+                            <CheckCircle2 className="h-10 w-10"  color="#059669" style={{ marginBottom: 10 }} />
                             <div style={{ fontSize: 16, fontWeight: 700, color: '#059669' }}>Document Signed Successfully</div>
                             <button onClick={() => setTab('docs')} style={{ marginTop: 14, padding: '8px 18px', background: '#111827', color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>Back to Documents</button>
                         </div>
@@ -175,7 +175,7 @@ export default function OfferLetterSign() {
                                 <Input value={signDocId} onChange={e => setSignDocId(e.target.value)} placeholder="Paste document ID or use Send → Sign from list" className="h-9 text-xs" aria-label="Document ID" />
                             </div>
                             <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 6, color: '#374151', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <PenLine size={12} /> Draw your signature below
+                                <PenLine className="h-3 w-3"  /> Draw your signature below
                             </div>
                             <canvas ref={canvasRef} width={500} height={120} onMouseDown={startDraw} onMouseMove={draw} onMouseUp={endDraw} onMouseLeave={endDraw}
                                 style={{ border: '2px dashed #e5e7eb', borderRadius: 8, cursor: 'crosshair', touchAction: 'none', width: '100%', display: 'block', background: '#fafafa' }} />

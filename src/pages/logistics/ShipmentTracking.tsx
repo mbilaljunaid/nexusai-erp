@@ -132,9 +132,9 @@ export default function ShipmentTracking() {
             <div className="tab-bar">
                 {(['shipments', 'performance', 'mode'] as const).map(t => (
                     <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)} data-active={activeTab === t}>
-                        {t === 'shipments' && <Package size={12} />}
-                        {t === 'performance' && <TrendingUp size={12} />}
-                        {t === 'mode' && <Zap size={12} />}
+                        {t === 'shipments' && <Package className="h-3 w-3"  />}
+                        {t === 'performance' && <TrendingUp className="h-3 w-3"  />}
+                        {t === 'mode' && <Zap className="h-3 w-3"  />}
                         {t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                 ))}
@@ -179,9 +179,9 @@ export default function ShipmentTracking() {
                                         <span className="sc-pro">{s.pro_number || s.tracking_number || s.id.slice(0, 8)}</span>
                                         <span className={cn(`sc-status ${cfg}`)}>{s.current_status}</span>
                                     </div>
-                                    <div className="sc-route"><MapPin size={10} /> {s.origin_city ?? '?'} → {s.dest_city ?? '?'}</div>
+                                    <div className="sc-route"><MapPin className="h-2.5 w-2.5"  /> {s.origin_city ?? '?'} → {s.dest_city ?? '?'}</div>
                                     <div className="sc-meta">{s.carrier_scac} · {s.edi_214_count} updates</div>
-                                    {s.current_status === 'Exception' && <div className="sc-exc"><AlertTriangle size={10} /> Exception</div>}
+                                    {s.current_status === 'Exception' && <div className="sc-exc"><AlertTriangle className="h-2.5 w-2.5"  /> Exception</div>}
                                 </div>
                             );
                         })}
@@ -197,7 +197,7 @@ export default function ShipmentTracking() {
                                 </div>
                                 {selectedDetail.shipment.current_city && (
                                     <div className="location-badge">
-                                        <MapPin size={12} /> Currently in {selectedDetail.shipment.current_city}, {selectedDetail.shipment.current_state}
+                                        <MapPin className="h-3 w-3"  /> Currently in {selectedDetail.shipment.current_city}, {selectedDetail.shipment.current_state}
                                     </div>
                                 )}
                                 <div className="timeline">
@@ -246,7 +246,7 @@ export default function ShipmentTracking() {
                         ))}
                         <button className="opt-btn" disabled={modeMutation.isPending || !modeForm.originZip || !modeForm.destZip}
                             onClick={() => modeMutation.mutate(modeForm)} aria-label="Optimize mode">
-                            <Zap size={13} /> {modeMutation.isPending ? 'Optimizing…' : 'Optimize'}
+                            <Zap className="h-[13px] w-[13px]"  /> {modeMutation.isPending ? 'Optimizing…' : 'Optimize'}
                         </button>
                     </div>
                     {modeResult && (

@@ -83,7 +83,7 @@ export default function AccountCertPortal() {
     const certColumns: SpreadsheetColumn<Certification>[] = [
         { id: "account_id", header: "Account", width: "120px", cell: (row) => <div className="account-code">{row.account_id}</div> },
         { id: "status", header: "Status", width: "150px", cell: (row) => { const cfg = STATUS_CONFIG[row.status]; const Icon = cfg.icon; return <span className={cn(`status-badge ${cfg.className}`)}><Icon size={12} /> {row.status}</span>; } },
-        { id: "variance", header: <div className="sortable-col" role="button" tabIndex={0} onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}</div>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{formatNumber(row.variance, 2)}</div> },
+        { id: "variance", header: <div className="sortable-col" role="button" tabIndex={0} onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown className="h-3.5 w-3.5"  /> : <ChevronUp className="h-3.5 w-3.5"  />)}</div>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{formatNumber(row.variance, 2)}</div> },
         { id: "gl_balance", header: "GL Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_gl, 2) },
         { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_sub, 2) },
         { id: "preparer", header: "Preparer", width: "150px", cell: (row) => <div className="email-cell">{row.preparer_email}</div> },
@@ -94,7 +94,7 @@ export default function AccountCertPortal() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <span className="escalation-tooltip">
-                                <AlertTriangle size={14} color="#dc2626" />
+                                <AlertTriangle className="h-3.5 w-3.5"  color="#dc2626" />
                             </span>
                         </TooltipTrigger>
                         <TooltipContent>

@@ -183,7 +183,7 @@ export default function StatutoryForms() {
                 row.attachmentUrl ? (
                     <div className="flex items-center h-full px-2 gap-2">
                         <Button variant="ghost" size="sm" asChild className="h-8">
-                            <a href={row.attachmentUrl} target="_blank" rel="noreferrer">
+                            <a href={row.attachmentUrl} target="_blank" rel="noreferrer noopener">
                                 <Download className="w-4 h-4 mr-1" /> Download
                             </a>
                         </Button>

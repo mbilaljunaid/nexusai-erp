@@ -138,7 +138,7 @@ export default function FSGReportBuilder() {
         { id: "formula", header: "Formula (e.g. R1+R2)", width: "150px", cell: (row) => <Input className="h-7 px-2 py-1 font-mono" aria-label="Formula" value={row.formula ?? ''} placeholder="e.g. R1 - R2" onChange={e => updateRow(row.rowNum, 'formula', e.target.value)} /> },
         { id: "isBold", header: "Bold", width: "60px", cell: (row) => <div className="text-center w-full flex justify-center"><Checkbox aria-label="Bold" checked={!!row.isBold} onCheckedChange={c => updateRow(row.rowNum, 'isBold', !!c)} /></div> },
         { id: "isTotal", header: "Total", width: "60px", cell: (row) => <div className="text-center w-full flex justify-center"><Checkbox aria-label="Total" checked={!!row.isTotal} onCheckedChange={c => updateRow(row.rowNum, 'isTotal', !!c)} /></div> },
-        { id: "delete", header: "Del", width: "60px", cell: (row) => <button className="p-1 text-red-600 hover:bg-red-500/15 rounded w-full flex justify-center" aria-label="Delete" onClick={() => removeRow(row.rowNum)}><Trash2 size={14} /></button> }
+        { id: "delete", header: "Del", width: "60px", cell: (row) => <button className="p-1 text-red-600 hover:bg-red-500/15 rounded w-full flex justify-center" aria-label="Delete" onClick={() => removeRow(row.rowNum)}><Trash2 className="h-3.5 w-3.5"  /></button> }
     ];
 
     return (
@@ -154,7 +154,7 @@ export default function FSGReportBuilder() {
                             onClick={() => setActiveTab(tab)}
                             aria-selected={activeTab === tab}
                         >
-                            {tab === 'library' ? <Table2 size={14} /> : <BarChart3 size={14} />}
+                            {tab === 'library' ? <Table2 className="h-3.5 w-3.5"  /> : <BarChart3 className="h-3.5 w-3.5"  />}
                             {tab.charAt(0).toUpperCase() + tab.slice(1)}
                         </button>
                     ))}
@@ -195,7 +195,7 @@ export default function FSGReportBuilder() {
                                 disabled={runMutation.isPending || !selectedReport}
                                 aria-label="Run report"
                             >
-                                <Play size={14} />
+                                <Play className="h-3.5 w-3.5"  />
                                 {runMutation.isPending ? 'Running…' : 'Run'}
                             </button>
                         </div>
@@ -222,7 +222,7 @@ export default function FSGReportBuilder() {
                             <div key={r.id} className="report-card" role="button" tabIndex={0} onClick={() => { setSelectedReport(r.id); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
                                 <div className="report-card-name">{r.name}</div>
                                 <div className="report-card-type">{r.report_type}</div>
-                                <ChevronRight size={16} color="#9ca3af" />
+                                <ChevronRight className="h-4 w-4"  color="#9ca3af" />
                             </div>
                         ))}
                         {reports.length === 0 && (
@@ -262,7 +262,7 @@ export default function FSGReportBuilder() {
                         <div className="editor-header">
                             <h2 className="panel-title">Rows</h2>
                             <button className="add-row-btn" onClick={addRow} aria-label="Add row">
-                                <Plus size={14} /> Add Row
+                                <Plus className="h-3.5 w-3.5"  /> Add Row
                             </button>
                         </div>
                         <div className="border rounded-lg overflow-hidden h-[400px]">

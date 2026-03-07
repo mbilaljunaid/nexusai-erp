@@ -67,7 +67,7 @@ export default function PermitToWork() {
             {/* Expiring alert banner */}
             {expiring.length > 0 && (
                 <div className="bg-amber-500/10 border border-amber-300 rounded-lg px-3 py-2 mb-2.5 flex items-center gap-2 text-[11px]">
-                    <Clock size={12} color="#d97706" />
+                    <Clock className="h-3 w-3"  color="#d97706" />
                     <strong>{expiring.length} permit(s) expiring within 24 hours:</strong> {expiring.map(p => p.permit_number).join(', ')}
                 </div>
             )}
@@ -75,7 +75,7 @@ export default function PermitToWork() {
             {/* CBM alerts */}
             {cbmAlerts.length > 0 && (
                 <div className="bg-red-500/10 border border-red-300 rounded-lg px-3 py-2 mb-2.5 flex gap-3 flex-wrap text-[10px]">
-                    <AlertTriangle size={12} color="#dc2626" className="shrink-0" />
+                    <AlertTriangle  color="#dc2626" className="shrink-0 h-3 w-3" />
                     {cbmAlerts.map((a, i) => <span key={i} className="bg-red-100 text-red-600 px-1.5 py-0.5 rounded">{a.asset_id} · {a.parameter_name}: {Number(a.reading_value).toFixed(2)}</span>)}
                 </div>
             )}
@@ -130,7 +130,7 @@ export default function PermitToWork() {
                                 <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: tclr }}></div>
                                 <div className="flex justify-between mb-0.5">
                                     <div className="flex gap-1.5 items-center">
-                                        <HardHat size={12} color={tclr} />
+                                        <HardHat className="h-3 w-3"  color={tclr} />
                                         <span className="font-bold text-[13px]">{p.permit_number}</span>
                                         <span className="text-[9px] px-1 py-px rounded font-bold" style={{ background: tclr + '18', color: tclr }}>{p.permit_type.replace(/_/g, ' ')}</span>
                                     </div>

@@ -325,9 +325,9 @@ export default function ScenarioComparison() {
                                         return (
                                             <TableRow key={account}>
                                                 <TableCell className="font-medium">{account}</TableCell>
-                                                {formatNumber(selectedScenarios.map(scenarioId => (
+                                                {selectedScenarios.map(scenarioId => (
                                                     <TableCell key={scenarioId} className="text-right font-mono">
-                                                        ${(amounts[scenarioId] || 0))}
+                                                        ${formatNumber(amounts[scenarioId] || 0)}
                                                     </TableCell>
                                                 ))}
                                                 {selectedScenarios.length === 2 && (

@@ -111,7 +111,7 @@ export default function CarrierManifest() {
                                     <span className={cn(`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfgClass}`)}>{m.status}</span>
                                 </div>
                                 <div className="text-[10px] text-gray-700 mb-0.5">{m.carrier_scac} · {m.ship_date}</div>
-                                <div className="text-[10px] text-gray-500 flex items-center gap-1"><Package size={10} /> {m.total_packages} pkgs · {Number(m.total_weight_kg || 0).toFixed(1)} kg</div>
+                                <div className="text-[10px] text-gray-500 flex items-center gap-1"><Package className="h-2.5 w-2.5"  /> {m.total_packages} pkgs · {Number(m.total_weight_kg || 0).toFixed(1)} kg</div>
                             </div>
                         );
                     })}
@@ -128,9 +128,9 @@ export default function CarrierManifest() {
                                     <div className="text-xs text-gray-500">{selected.carrier_scac} · {selected.ship_date} · {selected.total_packages} packages</div>
                                 </div>
                                 <div className="flex gap-1.5">
-                                    <button onClick={() => setShowNewPkg(true)} className="px-3 py-1.5 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Package size={11} /> Add Package</button>
-                                    {selected.status === 'Open' && <button onClick={() => closeMut.mutate(selected.id)} className="px-3 py-1.5 bg-amber-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Archive size={11} /> Close</button>}
-                                    {selected.status === 'Closed' && <button onClick={() => tenderMut.mutate(selected.id)} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Send size={11} /> Tender</button>}
+                                    <button onClick={() => setShowNewPkg(true)} className="px-3 py-1.5 bg-blue-700 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Package className="h-[11px] w-[11px]"  /> Add Package</button>
+                                    {selected.status === 'Open' && <button onClick={() => closeMut.mutate(selected.id)} className="px-3 py-1.5 bg-amber-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Archive className="h-[11px] w-[11px]"  /> Close</button>}
+                                    {selected.status === 'Closed' && <button onClick={() => tenderMut.mutate(selected.id)} className="px-3 py-1.5 bg-emerald-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><Send className="h-[11px] w-[11px]"  /> Tender</button>}
                                 </div>
                             </div>
 
@@ -181,7 +181,7 @@ export default function CarrierManifest() {
                                             <TableCell className="py-2 px-2.5"><span className={cn(`font-semibold text-[10px] ${p.label_printed ? 'text-emerald-600' : 'text-gray-400'}`)}>{p.label_printed ? '✓ Printed' : 'Pending'}</span></TableCell>
                                             <TableCell className="py-2 px-2.5">
                                                 <button onClick={() => printMut.mutate(p.id)} className="flex items-center gap-1 px-2 py-1 bg-gray-900 text-white border-none rounded-md text-[10px] cursor-pointer">
-                                                    <Printer size={10} /> Print ZPL
+                                                    <Printer className="h-2.5 w-2.5"  /> Print ZPL
                                                 </button>
                                             </TableCell>
                                         </TableRow>
@@ -197,7 +197,7 @@ export default function CarrierManifest() {
                             {/* ZPL Preview */}
                             {zplPreview && (
                                 <div className="mt-3.5 bg-gray-900 rounded-lg p-3">
-                                    <div className="text-[11px] font-bold text-gray-400 mb-1.5 flex items-center gap-1.5"><Printer size={11} /> ZPL II Label Payload</div>
+                                    <div className="text-[11px] font-bold text-gray-400 mb-1.5 flex items-center gap-1.5"><Printer className="h-[11px] w-[11px]"  /> ZPL II Label Payload</div>
                                     <pre className="text-[10px] font-mono text-emerald-100 m-0 whitespace-pre-wrap max-h-72 overflow-y-auto">{zplPreview}</pre>
                                 </div>
                             )}

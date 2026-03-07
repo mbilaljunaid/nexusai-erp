@@ -57,7 +57,7 @@ export function BankAccountList() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold tracking-tight">
-                            ${formatNumber(position?.totalBalance?, 2) ?? "0.00"}
+                            ${formatNumber(position?.totalBalance, 2) ?? "0.00"}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1 text-green-600 flex items-center">
                             <ArrowUpRight className="h-3 w-3 mr-1" />

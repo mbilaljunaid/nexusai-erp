@@ -52,7 +52,7 @@ export default function RevenueRecognition() {
         { id: "costsToComplete", header: "Costs to Complete", width: "130px", cell: (e) => <span className="font-mono">{fmt(e.costs_to_complete)}</span> },
         { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span className="font-mono font-bold text-emerald-600">{fmt(e.revenue_recognized)}</span> },
         { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span className="font-mono text-gray-500">{fmt(e.cumulative_revenue)}</span> },
-        { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold"><CheckCircle2 size={11} /> Posted</span> : <span className="text-[10px] text-amber-600 font-semibold">Pending</span> },
+        { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold"><CheckCircle2 className="h-[11px] w-[11px]"  /> Posted</span> : <span className="text-[10px] text-amber-600 font-semibold">Pending</span> },
         { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <button onClick={() => postGLMut.mutate({ id: e.id })} className="py-1 px-2 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Post GL</button> : null }
     ];
 
@@ -178,7 +178,7 @@ export default function RevenueRecognition() {
 
             {!activeProject && (
                 <div className="text-center p-14 text-gray-400">
-                    <BarChart2 size={32} className="mb-2 opacity-40 mx-auto" />
+                    <BarChart2  className="mb-2 opacity-40 mx-auto h-8 w-8" />
                     <p className="text-[13px]">Enter a project ID to load revenue recognition schedule</p>
                 </div>
             )}

@@ -138,10 +138,10 @@ export default function HedgeEffectiveness() {
 
             {/* KPIs */}
             <div className="he-kpis">
-                <HeKpi label="Total Hedges" value={String(hedges.length)} icon={<Shield size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
-                <HeKpi label="Effective" value={String(effectiveCount)} icon={<CheckCircle2 size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
-                <HeKpi label="Total Notional" value={fmt(totalNotional)} icon={<TrendingUp size={18} />} colorClass="text-purple-600" borderClass="border-l-purple-600" />
-                <HeKpi label="Covenant Breaches (90d)" value={String(breachCount)} icon={<AlertTriangle size={18} />} colorClass={breachCount > 0 ? 'text-red-600' : 'text-emerald-600'} borderClass={breachCount > 0 ? 'border-l-red-600' : 'border-l-emerald-600'} />
+                <HeKpi label="Total Hedges" value={String(hedges.length)} icon={<Shield className="h-[18px] w-[18px]"  />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <HeKpi label="Effective" value={String(effectiveCount)} icon={<CheckCircle2 className="h-[18px] w-[18px]"  />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <HeKpi label="Total Notional" value={fmt(totalNotional)} icon={<TrendingUp className="h-[18px] w-[18px]"  />} colorClass="text-purple-600" borderClass="border-l-purple-600" />
+                <HeKpi label="Covenant Breaches (90d)" value={String(breachCount)} icon={<AlertTriangle className="h-[18px] w-[18px]"  />} colorClass={breachCount > 0 ? 'text-red-600' : 'text-emerald-600'} borderClass={breachCount > 0 ? 'border-l-red-600' : 'border-l-emerald-600'} />
             </div>
 
             {/* Tabs */}
@@ -239,9 +239,9 @@ export default function HedgeEffectiveness() {
                                                     {row.last_effectiveness === null ? (
                                                         <span className="grey-chip">Not Tested</span>
                                                     ) : row.last_effectiveness ? (
-                                                        <span className="eff-pass"><CheckCircle2 size={12} /> Effective</span>
+                                                        <span className="eff-pass"><CheckCircle2 className="h-3 w-3"  /> Effective</span>
                                                     ) : (
-                                                        <span className="eff-fail"><TrendingDown size={12} /> Ineffective</span>
+                                                        <span className="eff-fail"><TrendingDown className="h-3 w-3"  /> Ineffective</span>
                                                     )}
                                                 </div>
                                             )
@@ -284,7 +284,7 @@ export default function HedgeEffectiveness() {
                             {testResult && (
                                 <div className={cn(`test-result ${testResult.isHighlyEffective ? 'pass' : 'fail'}`)}>
                                     <div className="tr-header">
-                                        {testResult.isHighlyEffective ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
+                                        {testResult.isHighlyEffective ? <CheckCircle2 className="h-4 w-4"  /> : <AlertTriangle className="h-4 w-4"  />}
                                         {testResult.isHighlyEffective ? 'Highly Effective' : 'Ineffective — Hedge Discontinued'}
                                     </div>
                                     <div className="tr-rows">
@@ -327,7 +327,7 @@ export default function HedgeEffectiveness() {
                                 <div key={f.id} className={cn(`debt-card ${hasBreaches ? 'breach' : ''}`)}>
                                     <div className="dc-top">
                                         <div className="dc-name">{f.facility_name}</div>
-                                        {hasBreaches && <span className="breach-badge"><AlertTriangle size={10} /> Breach</span>}
+                                        {hasBreaches && <span className="breach-badge"><AlertTriangle className="h-2.5 w-2.5"  /> Breach</span>}
                                     </div>
                                     <div className="dc-lender">{f.lender} · {f.facility_type}</div>
                                     <div className="dc-util">

@@ -81,7 +81,7 @@ export default function RegulatoryCalendar() {
             description="Filing deadlines · FCPA training compliance · Audit schedules"
             actions={
                 <div className="regulatory-calendar-actions">
-                    <button onClick={() => sweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
+                    <button onClick={() => sweepMut.mutate()} className="btn-sweep"><RefreshCw className="h-[11px] w-[11px]"  /> Sweep Overdue</button>
                     <button onClick={() => setTab('new')} className="btn-add">+ Add Event</button>
                 </div>
             }
@@ -103,13 +103,13 @@ export default function RegulatoryCalendar() {
             {/* Alert banner */}
             {overdueCount > 0 && (
                 <div className="alert-overdue">
-                    <AlertCircle size={14} color="#dc2626" />
+                    <AlertCircle className="h-3.5 w-3.5"  color="#dc2626" />
                     <span className="alert-overdue-text">{overdueCount} overdue regulatory event{overdueCount > 1 ? 's' : ''} require immediate attention</span>
                 </div>
             )}
             {upcomingCount > 0 && (
                 <div className="alert-upcoming">
-                    <Calendar size={12} color="#1d4ed8" />
+                    <Calendar className="h-3 w-3"  color="#1d4ed8" />
                     <span className="alert-upcoming-text">{upcomingCount} event{upcomingCount > 1 ? 's' : ''} due within 60 days</span>
                 </div>
             )}
@@ -153,7 +153,7 @@ export default function RegulatoryCalendar() {
                                     {e.status !== 'Completed' && e.status !== 'Waived' && (
                                         <>
                                             {e.status === 'Upcoming' && <button onClick={() => statusMut.mutate({ id: e.id, status: 'In_Progress' })} className="btn-action-start">Start</button>}
-                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Completed' })} className="btn-action-complete"><CheckCircle2 size={9} />Complete</button>
+                                            <button onClick={() => statusMut.mutate({ id: e.id, status: 'Completed' })} className="btn-action-complete"><CheckCircle2 className="h-[9px] w-[9px]"  />Complete</button>
                                             <button onClick={() => statusMut.mutate({ id: e.id, status: 'Waived' })} className="btn-action-waive">Waive</button>
                                         </>
                                     )}
@@ -169,7 +169,7 @@ export default function RegulatoryCalendar() {
             {tab === 'fcpa' && (
                 <div className="fcpa-container">
                     <div className="fcpa-header">
-                        <button onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw size={11} /> Sweep Overdue</button>
+                        <button onClick={() => fcpaSweepMut.mutate()} className="btn-sweep"><RefreshCw className="h-[11px] w-[11px]"  /> Sweep Overdue</button>
                     </div>
                     <div className="min-h-72 h-full border border-gray-200 rounded-lg">
                         <InteractiveSpreadsheet

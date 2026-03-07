@@ -70,7 +70,7 @@ export default function CommitmentDashboard() {
                     <p className="text-[13px] text-gray-500 mt-1 mb-0">Cost overrun alerts · Resource plan vs actuals · Threshold detection</p>
                 </div>
                 <button onClick={() => detectMut.mutate()} disabled={detectMut.isPending} className="py-2 px-3.5 bg-purple-600 text-white border-none rounded-lg text-xs font-semibold cursor-pointer flex items-center gap-1 disabled:opacity-50">
-                    <TrendingDown size={13} /> Run Exception Detection
+                    <TrendingDown className="h-[13px] w-[13px]"  /> Run Exception Detection
                 </button>
             </div>
 
@@ -138,7 +138,7 @@ export default function CommitmentDashboard() {
                                             <span className="text-[10px] text-gray-400">{fmtDate(a.created_at)}</span>
                                             {!a.is_acknowledged && (
                                                 <button onClick={() => ackMut.mutate(a.id)} className="py-1 px-2.5 bg-emerald-600 text-white border-none rounded-md text-[10px] font-semibold cursor-pointer flex items-center gap-1">
-                                                    <CheckCheck size={10} /> Acknowledge
+                                                    <CheckCheck className="h-2.5 w-2.5"  /> Acknowledge
                                                 </button>
                                             )}
                                         </div>

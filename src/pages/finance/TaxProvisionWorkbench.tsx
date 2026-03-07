@@ -161,7 +161,7 @@ export default function TaxProvisionWorkbench() {
                         disabled={computeMutation.isPending}
                         aria-label="Compute tax provision"
                     >
-                        <Calculator size={16} />
+                        <Calculator className="h-4 w-4"  />
                         {computeMutation.isPending ? 'Computing…' : 'Compute Provision'}
                     </button>
                 </div>
@@ -172,11 +172,11 @@ export default function TaxProvisionWorkbench() {
                         <>
                             <h2 className="card-title">Provision Result</h2>
                             <div className="result-kpis">
-                                <MetricCard label="Taxable Income" value={fmtCurrency(result.taxableIncome)} icon={<Calculator size={20} />} color="#1d4ed8" />
-                                <MetricCard label="Current Tax Expense" value={fmtCurrency(result.currentTaxExpense)} icon={<TrendingUp size={20} />} color="#dc2626" />
-                                <MetricCard label="Net Deferred Tax" value={fmtCurrency(result.netDeferredTax)} icon={result.netDeferredTax >= 0 ? <TrendingDown size={20} /> : <TrendingUp size={20} />} color={result.netDeferredTax >= 0 ? '#059669' : '#dc2626'} />
-                                <MetricCard label="Total Tax Expense" value={fmtCurrency(result.totalTaxExpense)} icon={<FileCheck size={20} />} color="#7c3aed" />
-                                <MetricCard label="Effective Tax Rate" value={result.effectiveTaxRate} icon={<TrendingUp size={20} />} color="#d97706" />
+                                <MetricCard label="Taxable Income" value={fmtCurrency(result.taxableIncome)} icon={<Calculator className="h-5 w-5"  />} color="#1d4ed8" />
+                                <MetricCard label="Current Tax Expense" value={fmtCurrency(result.currentTaxExpense)} icon={<TrendingUp className="h-5 w-5"  />} color="#dc2626" />
+                                <MetricCard label="Net Deferred Tax" value={fmtCurrency(result.netDeferredTax)} icon={result.netDeferredTax >= 0 ? <TrendingDown className="h-5 w-5"  /> : <TrendingUp className="h-5 w-5"  />} color={result.netDeferredTax >= 0 ? '#059669' : '#dc2626'} />
+                                <MetricCard label="Total Tax Expense" value={fmtCurrency(result.totalTaxExpense)} icon={<FileCheck className="h-5 w-5"  />} color="#7c3aed" />
+                                <MetricCard label="Effective Tax Rate" value={result.effectiveTaxRate} icon={<TrendingUp className="h-5 w-5"  />} color="#d97706" />
                             </div>
                             <div className="result-waterfall">
                                 <div className="waterfall-row">
@@ -211,7 +211,7 @@ export default function TaxProvisionWorkbench() {
                         </>
                     ) : (
                         <div className="empty-result">
-                            <Calculator size={48} color="#d1d5db" />
+                            <Calculator className="h-12 w-12"  color="#d1d5db" />
                             <p>Enter inputs and click <strong>Compute Provision</strong> to see results</p>
                         </div>
                     )}

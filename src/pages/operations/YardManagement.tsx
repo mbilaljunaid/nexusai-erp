@@ -101,8 +101,8 @@ export default function YardManagement() {
                             <div style={{ fontSize: 10, fontWeight: 700, color: d.is_occupied ? '#dc2626' : '#059669', marginBottom: 5 }}>
                                 {d.is_occupied ? '● OCCUPIED' : '○ AVAILABLE'}
                             </div>
-                            {d.is_occupied && <div style={{ fontSize: 10, color: '#374151', display: 'flex', alignItems: 'center', gap: 4 }}><Truck size={10} /> {d.current_carrier}</div>}
-                            <div style={{ fontSize: 10, color: '#9ca3af', display: 'flex', alignItems: 'center', gap: 3, marginTop: 4 }}><Clock size={10} /> {d.today_appts ?? 0} today</div>
+                            {d.is_occupied && <div style={{ fontSize: 10, color: '#374151', display: 'flex', alignItems: 'center', gap: 4 }}><Truck className="h-2.5 w-2.5"  /> {d.current_carrier}</div>}
+                            <div style={{ fontSize: 10, color: '#9ca3af', display: 'flex', alignItems: 'center', gap: 3, marginTop: 4 }}><Clock className="h-2.5 w-2.5"  /> {d.today_appts ?? 0} today</div>
                         </div>
                     ))}
                     {docks.length === 0 && <div style={{ gridColumn: '1/-1', textAlign: 'center', color: '#9ca3af', padding: 24 }}>No docks configured</div>}
@@ -161,8 +161,8 @@ export default function YardManagement() {
                                         <span style={{ fontSize: 12, fontWeight: 700, fontFamily: 'monospace' }}>Dock {a.dock_number}</span>
                                         <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700, background: cfg.bg, color: cfg.color }}>{a.status}</span>
                                     </div>
-                                    <div style={{ fontSize: 11, color: '#374151', display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}><Truck size={10} /> {a.carrier_scac} · {a.direction}</div>
-                                    <div style={{ fontSize: 10, color: '#6b7280' }}><Clock size={10} style={{ display: 'inline' }} /> {fmtTime(a.scheduled_start)} – {fmtTime(a.scheduled_end)}</div>
+                                    <div style={{ fontSize: 11, color: '#374151', display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}><Truck className="h-2.5 w-2.5"  /> {a.carrier_scac} · {a.direction}</div>
+                                    <div style={{ fontSize: 10, color: '#6b7280' }}><Clock className="h-2.5 w-2.5"  style={{ display: 'inline' }} /> {fmtTime(a.scheduled_start)} – {fmtTime(a.scheduled_end)}</div>
 
                                     {selected?.id === a.id && (
                                         <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
@@ -176,7 +176,7 @@ export default function YardManagement() {
                                             </>}
                                             {(a.status === 'Loading' || a.status === 'Unloading') && (
                                                 <button onClick={e => { e.stopPropagation(); actMut.mutate({ id: a.id, action: 'depart' }); }} style={{ padding: '5px 10px', background: '#059669', color: '#fff', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                                    <CheckCircle2 size={11} /> Depart
+                                                    <CheckCircle2 className="h-[11px] w-[11px]"  /> Depart
                                                 </button>
                                             )}
                                         </div>

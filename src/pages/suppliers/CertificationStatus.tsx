@@ -73,7 +73,7 @@ export default function CertificationStatus() {
             {/* Expiry alert */}
             {expiring.length > 0 && (
                 <div className="bg-amber-500/10 border border-amber-300 rounded-lg py-2.5 px-3.5 mb-3.5 flex items-center gap-2">
-                    <AlertCircle size={14} color="#d97706" />
+                    <AlertCircle className="h-3.5 w-3.5"  color="#d97706" />
                     <span className="text-[12px] text-amber-900 dark:text-amber-200 font-semibold">{expiring.length} cert{expiring.length !== 1 ? 's' : ''} expiring within 60 days</span>
                     <button onClick={() => setTab('expiring')} className="px-2.5 py-0.5 bg-amber-600 text-white border-0 rounded text-[11px] cursor-pointer">View all</button>
                 </div>

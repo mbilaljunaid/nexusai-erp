@@ -112,13 +112,13 @@ export default function AutoInvoiceValidation() {
                         </div>
                         <button className="validate-btn" disabled={!!jsonError || !parsedLines.length || validateMutation.isPending}
                             onClick={runValidation} aria-label="Run validation">
-                            <Play size={13} /> {validateMutation.isPending ? 'Validating…' : 'Run Validation'}
+                            <Play className="h-[13px] w-[13px]"  /> {validateMutation.isPending ? 'Validating…' : 'Run Validation'}
                         </button>
                         {validateMutation.isSuccess && (
                             <div className={cn(`val-banner ${validateMutation.data?.canImport ? 'pass' : 'fail'}`)}>
                                 {validateMutation.data?.canImport
-                                    ? <><CheckCircle2 size={14} /> {validateMutation.data.validCount} lines valid — ready to import</>
-                                    : <><AlertTriangle size={14} /> {validateMutation.data?.errorCount} errors — fix before import</>}
+                                    ? <><CheckCircle2 className="h-3.5 w-3.5"  /> {validateMutation.data.validCount} lines valid — ready to import</>
+                                    : <><AlertTriangle className="h-3.5 w-3.5"  /> {validateMutation.data?.errorCount} errors — fix before import</>}
                             </div>
                         )}
                     </div>
@@ -146,7 +146,7 @@ export default function AutoInvoiceValidation() {
                 <div className="aiv-right">
                     {/* Validation Rules */}
                     <div className="rules-box">
-                        <div className="rb-title"><FileText size={14} /> Validation Rules ({rules.length})</div>
+                        <div className="rb-title"><FileText className="h-3.5 w-3.5"  /> Validation Rules ({rules.length})</div>
                         <div className="rules-grid">
                             {rules.map(rule => (
                                 <div key={rule.id} className="rule-chip">
@@ -168,7 +168,7 @@ export default function AutoInvoiceValidation() {
                                 {activeRun.status === 'Validated' && activeRun.error_lines === 0 && (
                                     <button className="import-btn" disabled={importMutation.isPending}
                                         onClick={() => importMutation.mutate({ runId: activeRun.id, lines: parsedLines })} aria-label="Import to AR">
-                                        <Download size={13} /> {importMutation.isPending ? 'Importing…' : 'Import to AR'}
+                                        <Download className="h-[13px] w-[13px]"  /> {importMutation.isPending ? 'Importing…' : 'Import to AR'}
                                     </button>
                                 )}
                             </div>
@@ -184,14 +184,14 @@ export default function AutoInvoiceValidation() {
                                 </div>
                             ) : (
                                 <div className="all-pass">
-                                    <CheckCircle2 size={20} className="text-emerald-600" />
+                                    <CheckCircle2  className="text-emerald-600 h-5 w-5" />
                                     <span>All {activeRun.total_lines} lines passed validation</span>
                                 </div>
                             )}
 
                             {importMutation.isSuccess && (
                                 <div className="import-success">
-                                    <CheckCircle2 size={14} /> {importMutation.data?.invoicesCreated} invoice(s) created in AR
+                                    <CheckCircle2 className="h-3.5 w-3.5"  /> {importMutation.data?.invoicesCreated} invoice(s) created in AR
                                 </div>
                             )}
                         </div>

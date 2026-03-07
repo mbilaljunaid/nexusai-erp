@@ -91,7 +91,7 @@ export default function ContractObligations() {
             {/* Upcoming alert banner */}
             {upcoming.length > 0 && (
                 <div className="bg-amber-500/10 border border-amber-300 rounded-xl px-3.5 py-2.5 mb-3.5 flex items-center gap-2">
-                    <AlertTriangle size={14} color="#d97706" />
+                    <AlertTriangle className="h-3.5 w-3.5"  color="#d97706" />
                     <span className="text-xs text-amber-800 font-semibold">{upcoming.length} obligation{upcoming.length !== 1 ? 's' : ''} due within 30 days</span>
                     <div className="flex gap-1.5 ml-2">
                         {upcoming.slice(0, 3).map(u => <span key={u.id} className="text-[11px] bg-amber-100 px-2 py-0.5 rounded text-amber-700">{u.title} — {fmt(u.due_date)}</span>)}
@@ -156,7 +156,7 @@ export default function ContractObligations() {
                                 <span className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ background: cfg.bg, color: cfg.color }}>{ob.status}</span>
                             </div>
                             <div className="flex gap-4 text-[11px] text-gray-500">
-                                <span><Clock size={10} className="inline" /> Due: {fmt(ob.due_date)}</span>
+                                <span><Clock  className="inline h-2.5 w-2.5" /> Due: {fmt(ob.due_date)}</span>
                                 <span>Supplier: {ob.supplier_id}</span>
                                 <span>Contract: {ob.contract_id}</span>
                                 {ob.escalation_level > 0 && <span className="text-red-600 font-bold">{ESC_LABELS[ob.escalation_level]}</span>}
@@ -174,11 +174,11 @@ export default function ContractObligations() {
                                     )}
                                     <div className="flex gap-1.5">
                                         {ob.status === 'InReview' && <>
-                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} className="px-2.5 py-1 bg-green-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><CheckCircle2 size={11} /> Mark Met</button>
+                                            <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Met' }); }} className="px-2.5 py-1 bg-green-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><CheckCircle2 className="h-[11px] w-[11px]"  /> Mark Met</button>
                                             <button onClick={e => { e.stopPropagation(); reviewMut.mutate({ id: ob.id, decision: 'Waived' }); }} className="px-2.5 py-1 bg-gray-500 text-white border-none rounded-md text-[11px] cursor-pointer">Waive</button>
                                         </>}
                                         {ob.status === 'Overdue' && (
-                                            <button onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} className="px-2.5 py-1 bg-red-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><ArrowUp size={11} /> Escalate</button>
+                                            <button onClick={e => { e.stopPropagation(); escMut.mutate(ob.id); }} className="px-2.5 py-1 bg-red-600 text-white border-none rounded-md text-[11px] font-semibold cursor-pointer flex items-center gap-1"><ArrowUp className="h-[11px] w-[11px]"  /> Escalate</button>
                                         )}
                                     </div>
                                 </div>

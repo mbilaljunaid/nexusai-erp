@@ -67,7 +67,7 @@ export default function LotGenealogy() {
 
             {expiring.length > 0 && (
                 <div className="bg-amber-100 border border-amber-200 rounded-lg py-2 px-3.5 mb-3 flex items-center gap-2">
-                    <AlertTriangle size={12} color="#d97706" />
+                    <AlertTriangle className="h-3 w-3"  color="#d97706" />
                     <span className="text-xs text-amber-600 font-bold">{expiring.length} lot{expiring.length > 1 ? 's' : ''} expiring within 30 days</span>
                     <span className="text-[11px] text-amber-900 dark:text-amber-200">{expiring.slice(0, 3).map(l => `${l.lot_number} (${l.item_number})`).join(', ')}</span>
                 </div>
@@ -133,10 +133,10 @@ export default function LotGenealogy() {
                         </div>
                         <div className="flex gap-1.5 mb-2.5">
                             <button onClick={() => setTraceMode(traceMode === 'up' ? null : 'up')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'up' ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-700'}`)}>
-                                <GitMerge size={10} /> Parents
+                                <GitMerge className="h-2.5 w-2.5"  /> Parents
                             </button>
                             <button onClick={() => setTraceMode(traceMode === 'down' ? null : 'down')} className={cn(`flex-1 py-1 rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1 border-none ${traceMode === 'down' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'}`)}>
-                                <ChevronRight size={10} /> Children
+                                <ChevronRight className="h-2.5 w-2.5"  /> Children
                             </button>
                         </div>
                         {traceMode && (

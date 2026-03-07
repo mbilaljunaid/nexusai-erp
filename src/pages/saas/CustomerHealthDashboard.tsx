@@ -190,7 +190,8 @@ export default function CustomerHealthDashboard({ customerId }: CustomerHealthDa
                     <div
                         className={cn(`absolute left-0 top-0 h-2.5 rounded-full ${row.renewal_probability > 70 ? 'bg-green-600' :
                             row.renewal_probability > 50 ? 'bg-yellow-600' : 'bg-red-600'
-                            } ${getWidthClass(row.renewal_probability)}`)}
+                            }`)}
+                        style={{ width: `${row.renewal_probability}%` }}
                     />
                     <span className="text-xs absolute -right-8 -top-1">{row.renewal_probability}%</span>
                 </div>

@@ -49,7 +49,7 @@ export default function NettingCenter() {
         { id: "payable", header: "Payable", width: "120px", cell: (row) => <div className="font-mono text-red-600">${formatNumber(Number(row.payable), 2)}</div> },
         { id: "receivable", header: "Receivable", width: "120px", cell: (row) => <div className="font-mono text-emerald-600">${formatNumber(Number(row.receivable), 2)}</div> },
         { id: "net", header: "Net Position", width: "150px", cell: (row) => <div className={cn(`font-mono font-bold ${Number(row.net) >= 0 ? 'text-emerald-600' : 'text-red-600'}`)}>{Number(row.net) >= 0 ? '+' : ''}{formatNumber(Number(row.net), 2)}</div> },
-        { id: "flow", header: "Flow", width: "100px", cell: (row) => <div>{Number(row.net) > 0 ? <span className="text-emerald-600"><TrendingUp size={12} /></span> : Number(row.net) < 0 ? <span className="text-red-600"><TrendingDown size={12} /></span> : '—'}</div> }
+        { id: "flow", header: "Flow", width: "100px", cell: (row) => <div>{Number(row.net) > 0 ? <span className="text-emerald-600"><TrendingUp className="h-3 w-3"  /></span> : Number(row.net) < 0 ? <span className="text-red-600"><TrendingDown className="h-3 w-3"  /></span> : '—'}</div> }
     ];
 
     const analysesColumns: SpreadsheetColumn<TPAnalysis>[] = [
@@ -113,7 +113,7 @@ export default function NettingCenter() {
                                             </div>
                                             <div className="text-[10px] text-gray-400">{s.period} · {s.currency} · {(s.entities_in_scope ?? []).length} entities</div>
                                             {s.status === 'Draft' && <button onClick={ev => { ev.stopPropagation(); runMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-blue-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-blue-700 hover:bg-blue-500/15">▶ Run Netting</button>}
-                                            {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-emerald-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-emerald-600 font-bold hover:bg-emerald-500/15 flex items-center gap-1"><CheckCircle2 size={9} /> Settle</button>}
+                                            {s.status === 'Completed' && <button onClick={ev => { ev.stopPropagation(); settleMut.mutate(s.id); }} className="mt-1.5 px-2 py-0.5 bg-emerald-500/10 border-none rounded-[4px] text-[9px] cursor-pointer text-emerald-600 font-bold hover:bg-emerald-500/15 flex items-center gap-1"><CheckCircle2 className="h-[9px] w-[9px]"  /> Settle</button>}
                                         </Card>
                                     );
                                 })}
@@ -182,7 +182,7 @@ export default function NettingCenter() {
                                     <div className="flex gap-1.5 items-center">
                                         <Input placeholder="Period YYYY-MM" value={analysisForm.period} onChange={e => setAnalysisForm(p => ({ ...p, period: e.target.value }))} className="px-2 py-1 border border-gray-300 rounded-[6px] text-[11px] w-28" aria-label="Analysis period" />
                                         <Input type="number" placeholder="Actual margin %" value={analysisForm.actualMarginPct} onChange={e => setAnalysisForm(p => ({ ...p, actualMarginPct: e.target.value }))} className="px-2 py-1 border border-gray-300 rounded-[6px] text-[11px] w-28" aria-label="Actual margin pct" />
-                                        <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} className="px-3 py-1 bg-violet-600 text-white border-none rounded-[6px] text-[11px] cursor-pointer flex items-center hover:bg-violet-700 disabled:opacity-50"><BarChart3 size={10} className="mr-0.5" />Run Analysis</button>
+                                        <button disabled={!analysisForm.policyId || !analysisForm.actualMarginPct} onClick={() => runAnalysisMut.mutate({ policyId: analysisForm.policyId, period: analysisForm.period, actualMarginPct: parseFloat(analysisForm.actualMarginPct), transactionsReviewed: parseInt(analysisForm.transactionsReviewed) || 0 })} className="px-3 py-1 bg-violet-600 text-white border-none rounded-[6px] text-[11px] cursor-pointer flex items-center hover:bg-violet-700 disabled:opacity-50"><BarChart3  className="mr-0.5 h-2.5 w-2.5" />Run Analysis</button>
                                     </div>
                                 </div>
                                 <Card className="overflow-hidden h-[400px] shadow-sm">

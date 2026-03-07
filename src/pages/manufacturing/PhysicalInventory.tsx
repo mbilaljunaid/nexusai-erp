@@ -142,7 +142,7 @@ export default function PhysicalInventory() {
                                         </div>
                                         {c.status === 'Counting' && (
                                             <button onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 px-2.5 py-1 bg-violet-700 text-white border-none rounded text-[10px] cursor-pointer flex items-center gap-1">
-                                                <CheckCircle2 size={9} /> Approve
+                                                <CheckCircle2 className="h-[9px] w-[9px]"  /> Approve
                                             </button>
                                         )}
                                     </div>

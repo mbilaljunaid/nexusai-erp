@@ -154,7 +154,7 @@ export default function LockboxWorkbench() {
         { id: "payer_name", header: "Payer", width: "1fr", cell: (row) => row.payer_name ?? '—' },
         { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{fmt(row.amount)}</div> },
         { id: "method", header: "Method", width: "100px", cell: (row) => <div>{row.match_method ? <span className="method-tag">{row.match_method}</span> : <span className="grey">—</span>}</div> },
-        { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.match_status === 'Matched' ? <span className="status-green"><CheckCircle2 size={11} /> Matched</span> : <span className="status-orange"><AlertCircle size={11} /> {row.match_status}</span>}</div> },
+        { id: "status", header: "Status", width: "120px", cell: (row) => <div>{row.match_status === 'Matched' ? <span className="status-green"><CheckCircle2 className="h-[11px] w-[11px]"  /> Matched</span> : <span className="status-orange"><AlertCircle className="h-[11px] w-[11px]"  /> {row.match_status}</span>}</div> },
         { id: "unapplied", header: "Unapplied", width: "120px", cell: (row) => <div className={cn(`mono ${row.unapplied_amount > 0 ? 'red' : 'grey'}`)}>{row.unapplied_amount > 0 ? fmt(row.unapplied_amount) : '—'}</div> },
         { id: "action", header: "Action", width: "80px", cell: (row) => <div>{row.match_status !== 'Matched' && row.unapplied_amount > 0 && <button className="btn-match-action" onClick={() => setMatchingItem(row)}>Match</button>}</div> }
     ];
@@ -180,7 +180,7 @@ export default function LockboxWorkbench() {
                         <div className="ib-title">Import Lockbox File</div>
                         <input ref={fileRef} type="file" accept=".csv,.txt" onChange={handleFile} hidden />
                         <div className="drop-zone" role="button" tabIndex={0} onClick={() => fileRef.current?.click()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                            <UploadCloud size={24} color="#9ca3af" />
+                            <UploadCloud className="h-6 w-6"  color="#9ca3af" />
                             <div className="dz-text">Upload CSV or paste below</div>
                             <div className="dz-sub">check#, remit_ref, payer, account, amount, date</div>
                         </div>
@@ -209,7 +209,7 @@ export default function LockboxWorkbench() {
                         </button>
                         {importMutation.isSuccess && (
                             <div className="success-row">
-                                <CheckCircle2 size={14} />
+                                <CheckCircle2 className="h-3.5 w-3.5"  />
                                 {importMutation.data?.summary?.matched} matched / {importMutation.data?.summary?.unmatched} unmatched
                             </div>
                         )}
@@ -240,8 +240,8 @@ export default function LockboxWorkbench() {
                             <div className="item-header">
                                 <div className="ih-title">Batch: {formatDate(selectedBatch.batch_date)} — {selectedBatch.item_count} items</div>
                                 <div className="ih-stats">
-                                    <span className="green"><CheckCircle2 size={12} /> {matched} matched</span>
-                                    <span className="orange"><AlertCircle size={12} /> {unmatched} unmatched</span>
+                                    <span className="green"><CheckCircle2 className="h-3 w-3"  /> {matched} matched</span>
+                                    <span className="orange"><AlertCircle className="h-3 w-3"  /> {unmatched} unmatched</span>
                                 </div>
                             </div>
                             <div className="filter-row-container">
@@ -269,7 +269,7 @@ export default function LockboxWorkbench() {
                         </>
                     ) : (
                         <div className="no-select">
-                            <Link2 size={40} style={{ color: '#d1d5db', marginBottom: 12 }} />
+                            <Link2 className="h-10 w-10"  style={{ color: '#d1d5db', marginBottom: 12 }} />
                             <div>Select a batch to view items</div>
                         </div>
                     )}
@@ -282,7 +282,7 @@ export default function LockboxWorkbench() {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h2>Manual Match</h2>
-                            <button className="close-btn" aria-label="Close modal" onClick={() => { setMatchingItem(null); setManualInvoiceSearch(''); }}><X size={20} /></button>
+                            <button className="close-btn" aria-label="Close modal" onClick={() => { setMatchingItem(null); setManualInvoiceSearch(''); }}><X className="h-5 w-5"  /></button>
                         </div>
                         <div className="modal-body">
                             <div className="match-context">

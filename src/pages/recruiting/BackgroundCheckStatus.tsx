@@ -205,7 +205,7 @@ export default function BackgroundCheckStatus() {
                             <div className="bg-red-500/10 border border-red-200 rounded-lg p-2.5 mb-2.5">
                                 <div className="text-[10px] font-bold text-red-600 mb-1">Adverse Adjudication</div>
                                 <button onClick={() => adverseMut.mutate(selectedOrder.id)} className="w-full p-1.5 bg-red-600 text-white border-none rounded-md text-[10px] cursor-pointer flex items-center justify-center gap-1">
-                                    <ShieldAlert size={10} /> Initiate Adverse Action
+                                    <ShieldAlert className="h-2.5 w-2.5"  /> Initiate Adverse Action
                                 </button>
                             </div>
                         )}

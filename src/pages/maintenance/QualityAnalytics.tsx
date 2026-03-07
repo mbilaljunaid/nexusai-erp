@@ -253,7 +253,7 @@ export function QualityAnalytics() {
                                         </div>
                                         <div className="text-sm font-bold">{defect.count} defects</div>
                                     </div>
-                                    <Progress value={percentage} className="h-2 bg-white/50" indicatorClassName="bg-current opacity-60" />
+                                    <Progress value={Number(percentage)} className="h-2 bg-white/50" indicatorClassName="bg-current opacity-60" />
                                     <div className="text-xs text-right mt-1 opacity-75">{percentage}% of total defects</div>
                                 </div>
                             );

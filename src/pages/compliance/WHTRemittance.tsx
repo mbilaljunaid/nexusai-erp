@@ -143,7 +143,7 @@ export default function WHTRemittance() {
                     disabled={fileBatchMutation.isPending}
                     aria-label={`File remittance batch for ${b.period_name}`}
                 >
-                    <FileCheck size={13} /> File
+                    <FileCheck className="h-[13px] w-[13px]"  /> File
                 </button>
             ) : null
         }
@@ -180,10 +180,10 @@ export default function WHTRemittance() {
 
             {/* KPIs */}
             <div className="wht-kpis">
-                <WKpi label="Total Gross Payments" value={fmtCcy(totalGross)} color="#1d4ed8" icon={<DollarSign size={18} />} />
-                <WKpi label="WHT Withheld" value={fmtCcy(totalWHT)} color="#dc2626" icon={<Globe size={18} />} />
-                <WKpi label="Effective Rate" value={totalGross > 0 ? fmtPct(totalWHT / totalGross) : '0.00%'} color="#d97706" icon={<FileCheck size={18} />} />
-                <WKpi label="Remitted" value={`${remitted} / ${transactions.length}`} color="#059669" icon={<FileCheck size={18} />} />
+                <WKpi label="Total Gross Payments" value={fmtCcy(totalGross)} color="#1d4ed8" icon={<DollarSign className="h-[18px] w-[18px]"  />} />
+                <WKpi label="WHT Withheld" value={fmtCcy(totalWHT)} color="#dc2626" icon={<Globe className="h-[18px] w-[18px]"  />} />
+                <WKpi label="Effective Rate" value={totalGross > 0 ? fmtPct(totalWHT / totalGross) : '0.00%'} color="#d97706" icon={<FileCheck className="h-[18px] w-[18px]"  />} />
+                <WKpi label="Remitted" value={`${remitted} / ${transactions.length}`} color="#059669" icon={<FileCheck className="h-[18px] w-[18px]"  />} />
             </div>
 
             {/* Tabs */}
@@ -224,7 +224,7 @@ export default function WHTRemittance() {
                     <div className="card-header-row">
                         <h2 className="card-title">WHT Rules</h2>
                         <button className="add-rule-btn" onClick={() => setShowRuleForm(v => !v)} aria-label="Add WHT rule">
-                            <PlusCircle size={14} /> Add Rule
+                            <PlusCircle className="h-3.5 w-3.5"  /> Add Rule
                         </button>
                     </div>
                     {showRuleForm && (

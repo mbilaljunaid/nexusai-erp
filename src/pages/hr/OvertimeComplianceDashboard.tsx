@@ -77,7 +77,7 @@ export default function OvertimeComplianceDashboard() {
     const otColumns: SpreadsheetColumn<any>[] = [
         { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div className={cn(`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{row.employee_id.slice(0, 8)}…</div> },
         { id: "regular_hours", header: "Regular", width: "120px", cell: (row) => <div className={cn(`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{formatNumber(row.regular_hours, 1)}h</div> },
-        { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={cn(`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{Number(row.ot_hours) > 0 ? <><AlertTriangle size={11} /> {formatNumber(row.ot_hours, 1)}h</> : '—'}</div> },
+        { id: "ot_hours", header: "OT (1.5×)", width: "120px", cell: (row) => <div className={cn(`mono ot-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{Number(row.ot_hours) > 0 ? <><AlertTriangle className="h-[11px] w-[11px]"  /> {formatNumber(row.ot_hours, 1)}h</> : '—'}</div> },
         { id: "double_hours", header: "Double (2×)", width: "120px", cell: (row) => <div className={cn(`mono dbl-cell w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{Number(row.double_hours) > 0 ? `${formatNumber(row.double_hours, 1)}h` : '—'}</div> },
         { id: "gross_pay", header: "Gross Pay", width: "150px", cell: (row) => <div className={cn(`mono w-full ${Number(row.ot_hours) > 10 ? 'text-amber-900 dark:text-amber-100' : ''}`)}>{formatCurrency(row.gross_pay)}</div> },
         {
@@ -115,7 +115,7 @@ export default function OvertimeComplianceDashboard() {
                             <Label className="pl">Week Starting</Label>
                             <DatePicker className="pi" value={weekDate} onChange={v => setWeekDate(v)} aria-label="Week start date" />
                         </div>
-                        <button className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw size={14} /></button>
+                        <button className="refresh-btn" onClick={() => refetch()} aria-label="Refresh report"><RefreshCw className="h-3.5 w-3.5"  /></button>
                     </div>
                     {reportLoading ? (
                         <div className="loading">Loading…</div>
@@ -154,7 +154,7 @@ export default function OvertimeComplianceDashboard() {
                     </div>
                     <button className="calc-btn" disabled={!tc.employeeId || tcMutation.isPending}
                         onClick={() => tcMutation.mutate(tc)} aria-label="Calculate overtime">
-                        <Clock size={13} /> {tcMutation.isPending ? 'Calculating…' : 'Calculate OT'}
+                        <Clock className="h-[13px] w-[13px]"  /> {tcMutation.isPending ? 'Calculating…' : 'Calculate OT'}
                     </button>
                     {tcMutation.isSuccess && (
                         <div className="tc-result">

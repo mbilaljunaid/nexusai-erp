@@ -202,11 +202,11 @@ export default function Account360() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {formatNumber(opportunities.map(opp => (
+                                        {opportunities.map(opp => (
                                             <TableRow key={opp.id}>
                                                 <TableCell className="font-medium">{opp.name}</TableCell>
                                                 <TableCell><Badge variant="outline">{opp.stage}</Badge></TableCell>
-                                                <TableCell>${Number(opp.amount))}</TableCell>
+                                                <TableCell>${formatNumber(Number(opp.amount))}</TableCell>
                                                 <TableCell>{formatDate(opp.closeDate!)}</TableCell>
                                             </TableRow>
                                         ))}

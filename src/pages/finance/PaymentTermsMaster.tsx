@@ -78,7 +78,7 @@ export default function PaymentTermsMaster() {
             description="Configure Net, EOM, Instalment-Split, and Immediate terms"
             actions={
                 <button className="add-btn" onClick={() => setShowNew(true)} aria-label="Add payment term">
-                    <Plus size={14} /> Add Term
+                    <Plus className="h-3.5 w-3.5"  /> Add Term
                 </button>
             }
         >
@@ -96,11 +96,11 @@ export default function PaymentTermsMaster() {
                                     </div>
                                     <div className="tc-name">{t.term_name}</div>
                                     <div className="tc-meta">
-                                        <span><Clock size={10} /> {t.net_days}d</span>
-                                        {t.discount_pct > 0 && <span><Percent size={10} /> {t.discount_pct}% in {t.discount_days}d</span>}
+                                        <span><Clock className="h-2.5 w-2.5"  /> {t.net_days}d</span>
+                                        {t.discount_pct > 0 && <span><Percent className="h-2.5 w-2.5"  /> {t.discount_pct}% in {t.discount_days}d</span>}
                                         {t.is_split && <span>Split</span>}
                                     </div>
-                                    <ChevronRight size={14} className="tc-arrow" />
+                                    <ChevronRight  className="tc-arrow h-3.5 w-3.5" />
                                 </div>
                             );
                         })
@@ -166,7 +166,7 @@ export default function PaymentTermsMaster() {
                         </div>
                         <button className="calc-btn" disabled={!schedTest.termCode || schedMutation.isPending}
                             onClick={() => schedMutation.mutate({ ...schedTest, sourceType: 'Invoice', sourceId: crypto.randomUUID() })} aria-label="Calculate schedule">
-                            <Calendar size={13} /> {schedMutation.isPending ? 'Calculating…' : 'Calculate Schedule'}
+                            <Calendar className="h-[13px] w-[13px]"  /> {schedMutation.isPending ? 'Calculating…' : 'Calculate Schedule'}
                         </button>
 
                         {schedule.length > 0 && (

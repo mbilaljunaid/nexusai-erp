@@ -65,7 +65,7 @@ export default function AttritionPrediction() {
     const totalHeadcount = distribution.reduce((s, d) => s + Number(d.count), 0);
 
     const riskColumns: SpreadsheetColumn<any>[] = [
-        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div className="font-semibold flex items-center gap-1.5 w-full"><User size={12} className="text-gray-400" />{row.employee_id}</div> },
+        { id: "employee_id", header: "Employee", width: "150px", cell: (row) => <div className="font-semibold flex items-center gap-1.5 w-full"><User  className="text-gray-400 h-3 w-3" />{row.employee_id}</div> },
         { id: "risk_score", header: "Risk Score", width: "150px", cell: (row) => <div className="w-full pr-4"><ScoreBar score={Number(row.risk_score)} /></div> },
         {
             id: "risk_band", header: "Band", width: "100px", cell: (row) => {

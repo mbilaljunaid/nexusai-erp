@@ -88,8 +88,8 @@ export default function BankStatementImport() {
         {
             id: "status", header: "Status", width: "150px", cell: (row) => (
                 row.match_status === 'Matched'
-                    ? <span className="matched"><CheckCircle2 size={12} /> Matched</span>
-                    : <span className="unmatched"><AlertCircle size={12} /> {row.match_status}</span>
+                    ? <span className="matched"><CheckCircle2 className="h-3 w-3"  /> Matched</span>
+                    : <span className="unmatched"><AlertCircle className="h-3 w-3"  /> {row.match_status}</span>
             )
         }
     ];
@@ -113,7 +113,7 @@ export default function BankStatementImport() {
                     </div>
                     <input ref={fileRef} type="file" accept=".txt,.xml,.camt,.mt940,.bai2" onChange={handleFile} hidden />
                     <div className="drop-zone" onClick={() => fileRef.current?.click()} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
-                        <Upload size={32} className="text-gray-400 mb-2" />
+                        <Upload  className="text-gray-400 mb-2 h-8 w-8" />
                         <div className="dz-primary">Click to upload or paste below</div>
                         <div className="dz-sub">{format} format</div>
                     </div>
@@ -128,7 +128,7 @@ export default function BankStatementImport() {
                     </button>
                     {importMutation.isSuccess && (
                         <div className="success-msg">
-                            <CheckCircle2 size={14} /> Imported {importMutation.data?.transactionCount ?? 0} transactions
+                            <CheckCircle2 className="h-3.5 w-3.5"  /> Imported {importMutation.data?.transactionCount ?? 0} transactions
                         </div>
                     )}
 
@@ -192,7 +192,7 @@ export default function BankStatementImport() {
                         </>
                     ) : (
                         <div className="no-select">
-                            <FileText size={48} style={{ color: '#d1d5db', marginBottom: 12 }} />
+                            <FileText className="h-12 w-12"  style={{ color: '#d1d5db', marginBottom: 12 }} />
                             <div>Select an import to view transactions</div>
                         </div>
                     )}

@@ -68,7 +68,7 @@ export default function ESGPlanning() {
         {
             id: "status", header: "Status", width: "80px", cell: (v: any) => {
                 const pct = Number(v.utilization_pct ?? 0);
-                return pct >= 100 ? <AlertTriangle size={12} color="#dc2626" /> : pct >= 90 ? <AlertTriangle size={12} color="#f59e0b" /> : <CheckCircle2 size={12} color="#059669" />;
+                return pct >= 100 ? <AlertTriangle className="h-3 w-3"  color="#dc2626" /> : pct >= 90 ? <AlertTriangle className="h-3 w-3"  color="#f59e0b" /> : <CheckCircle2 className="h-3 w-3"  color="#059669" />;
             }
         }
     ];

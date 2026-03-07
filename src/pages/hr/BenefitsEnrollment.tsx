@@ -42,13 +42,13 @@ interface SummaryRow {
 }
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
-    Medical: <Heart size={18} />,
-    Dental: <Shield size={18} />,
-    Vision: <Eye size={18} />,
-    Life: <Star size={18} />,
-    '401k': <BarChart3 size={18} />,
-    FSA: <DollarSign size={18} />,
-    HSA: <DollarSign size={18} />,
+    Medical: <Heart className="h-[18px] w-[18px]"  />,
+    Dental: <Shield className="h-[18px] w-[18px]"  />,
+    Vision: <Eye className="h-[18px] w-[18px]"  />,
+    Life: <Star className="h-[18px] w-[18px]"  />,
+    '401k': <BarChart3 className="h-[18px] w-[18px]"  />,
+    FSA: <DollarSign className="h-[18px] w-[18px]"  />,
+    HSA: <DollarSign className="h-[18px] w-[18px]"  />,
 };
 
 const TYPE_CLASSES: Record<string, { bg: string; text: string; lightBg: string }> = {
@@ -177,7 +177,7 @@ export default function BenefitsEnrollment() {
                 <div className="plan-grid">
                     {plans.map(plan => {
                         const cls = TYPE_CLASSES[plan.benefit_type] ?? { bg: 'bg-gray-500' };
-                        const icon = TYPE_ICONS[plan.benefit_type] ?? <Star size={18} />;
+                        const icon = TYPE_ICONS[plan.benefit_type] ?? <Star className="h-[18px] w-[18px]"  />;
                         return (
                             <div key={plan.id} className="plan-card">
                                 <div className={cn(`plan-type-header ${cls.bg}`)}>
@@ -192,7 +192,7 @@ export default function BenefitsEnrollment() {
                                         <span>Employer: <strong>{fmt(plan.employer_cost, plan.currency_code)}/period</strong></span>
                                     </div>
                                     {enrolledPlanIds.has(plan.id) ? (
-                                        <span className="enrolled-badge"><CheckCircle2 size={13} /> Enrolled</span>
+                                        <span className="enrolled-badge"><CheckCircle2 className="h-[13px] w-[13px]"  /> Enrolled</span>
                                     ) : (
                                         <button className="enroll-btn" onClick={() => setEnrollingPlan(plan)} aria-label={`Enroll in ${plan.name}`}>
                                             Enroll
@@ -256,7 +256,7 @@ export default function BenefitsEnrollment() {
                     <div className="modal-box">
                         <div className="modal-head">
                             <h2 className="modal-title">Enroll: {enrollingPlan.name}</h2>
-                            <button className="modal-close" onClick={() => setEnrollingPlan(null)} aria-label="Close"><X size={20} /></button>
+                            <button className="modal-close" onClick={() => setEnrollingPlan(null)} aria-label="Close"><X className="h-5 w-5"  /></button>
                         </div>
                         <div className="enroll-costs">
                             Employee: <strong>{fmt(enrollingPlan.employee_cost, enrollingPlan.currency_code)}/period</strong>
@@ -282,7 +282,7 @@ export default function BenefitsEnrollment() {
                                             {['Spouse', 'Child', 'Parent', 'Domestic Partner'].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                                         </SelectContent>
                                     </Select>
-                                    <button className="dep-remove" onClick={() => setDependents(d => d.filter((_, j) => j !== i))} aria-label="Remove dependent"><X size={14} /></button>
+                                    <button className="dep-remove" onClick={() => setDependents(d => d.filter((_, j) => j !== i))} aria-label="Remove dependent"><X className="h-3.5 w-3.5"  /></button>
                                 </div>
                             ))}
                         </div>

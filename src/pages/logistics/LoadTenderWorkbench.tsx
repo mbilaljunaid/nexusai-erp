@@ -81,7 +81,7 @@ export default function LoadTenderWorkbench() {
 
                     <p className="ltw-sub">EDI 204 Load Tender / EDI 990 Response management</p>
                 </div>
-                <button className="add-btn" onClick={() => setShowNew(true)} aria-label="New tender"><Plus size={13} /> New Tender</button>
+                <button className="add-btn" onClick={() => setShowNew(true)} aria-label="New tender"><Plus className="h-[13px] w-[13px]"  /> New Tender</button>
             </div>
 
             <div className="kpis">
@@ -137,7 +137,7 @@ export default function LoadTenderWorkbench() {
                                     <span className="tc-num">{t.tender_number}</span>
                                     <span className="tc-status" style={{ background: cfg.bg, color: cfg.color }}>{t.status}</span>
                                 </div>
-                                <div className="tc-route"><Truck size={10} /> {t.origin_city}, {t.origin_state} → {t.dest_city}, {t.dest_state}</div>
+                                <div className="tc-route"><Truck className="h-2.5 w-2.5"  /> {t.origin_city}, {t.origin_state} → {t.dest_city}, {t.dest_state}</div>
                                 <div className="tc-meta">{t.carrier_scac} · {t.equipment_type} · {fmt(t.freight_charge)}</div>
                                 <div className="tc-edi">
                                     <span className={t.edi_204_sent ? 'green' : 'grey'}>204 {t.edi_204_sent ? '✓' : '✗'}</span>
@@ -155,18 +155,18 @@ export default function LoadTenderWorkbench() {
                             <div className="det-header">
                                 <div>
                                     <div className="det-num">{selected.tender_number}</div>
-                                    <div className="det-route"><Truck size={12} /> {selected.origin_city}, {selected.origin_state} → {selected.dest_city}, {selected.dest_state}</div>
+                                    <div className="det-route"><Truck className="h-3 w-3"  /> {selected.origin_city}, {selected.origin_state} → {selected.dest_city}, {selected.dest_state}</div>
                                 </div>
                                 <div className="det-actions">
                                     {selected.status === 'Draft' && (
                                         <button className="send-btn" disabled={sendMutation.isPending} onClick={() => sendMutation.mutate(selected.id)} aria-label="Send EDI 204">
-                                            <Send size={12} /> {sendMutation.isPending ? 'Sending…' : 'Send EDI 204'}
+                                            <Send className="h-3 w-3"  /> {sendMutation.isPending ? 'Sending…' : 'Send EDI 204'}
                                         </button>
                                     )}
                                     {selected.status === 'Sent' && (
                                         <div className="resp-btns">
-                                            <button className="acc-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Accept' })} aria-label="Accept tender"><CheckCircle2 size={12} /> Accept</button>
-                                            <button className="dec-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Decline' })} aria-label="Decline tender"><XCircle size={12} /> Decline</button>
+                                            <button className="acc-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Accept' })} aria-label="Accept tender"><CheckCircle2 className="h-3 w-3"  /> Accept</button>
+                                            <button className="dec-btn" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate({ id: selected.id, response: 'Decline' })} aria-label="Decline tender"><XCircle className="h-3 w-3"  /> Decline</button>
                                         </div>
                                     )}
                                 </div>
@@ -181,7 +181,7 @@ export default function LoadTenderWorkbench() {
                             </div>
                             {edi204 && (
                                 <div className="edi-box">
-                                    <div className="eb-title"><FileCode size={12} /> EDI 204 Payload</div>
+                                    <div className="eb-title"><FileCode className="h-3 w-3"  /> EDI 204 Payload</div>
                                     <pre className="edi-pre">{edi204}</pre>
                                 </div>
                             )}

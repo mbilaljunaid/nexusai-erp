@@ -127,7 +127,7 @@ export default function DebtCovenantMonitor() {
         {
             id: "action", header: "", width: "100px", cell: (row) => (
                 (row.match_status === 'PotentialMatch' || row.match_status === 'Confirmed') && !row.reviewed_by ? (
-                    <button className="review-btn" onClick={() => setSelectedResult(row)} aria-label={`Review ${row.entity_name}`}><Eye size={12} /> Review</button>
+                    <button className="review-btn" onClick={() => setSelectedResult(row)} aria-label={`Review ${row.entity_name}`}><Eye className="h-3 w-3"  /> Review</button>
                 ) : null
             )
         }
@@ -159,7 +159,7 @@ export default function DebtCovenantMonitor() {
                     {row.status === 'Reviewed' && (
                         <button className="tiny-btn green" disabled={approveSignoffMutation.isPending} onClick={() => approveSignoffMutation.mutate(row.id)} aria-label={`Approve recon for ${row.period_name}`}>Approve</button>
                     )}
-                    {row.status === 'Approved' && <CheckCircle2 size={14} style={{ color: '#059669' }} />}
+                    {row.status === 'Approved' && <CheckCircle2 className="h-3.5 w-3.5"  style={{ color: '#059669' }} />}
                 </div>
             )
         }
@@ -217,11 +217,11 @@ export default function DebtCovenantMonitor() {
                             </div>
                             <button className="screen-btn" disabled={!screenForm.entityName || screenMutation.isPending}
                                 onClick={() => screenMutation.mutate(screenForm)} aria-label="Screen entity">
-                                <Search size={14} /> {screenMutation.isPending ? 'Screening…' : 'Screen Entity'}
+                                <Search className="h-3.5 w-3.5"  /> {screenMutation.isPending ? 'Screening…' : 'Screen Entity'}
                             </button>
                             <button className="batch-btn" disabled={batchScreenMutation.isPending}
                                 onClick={() => batchScreenMutation.mutate({ entityType: 'Supplier' })} aria-label="Batch screen all suppliers">
-                                <RefreshCw size={14} /> {batchScreenMutation.isPending ? 'Screening…' : 'Batch Screen Suppliers'}
+                                <RefreshCw className="h-3.5 w-3.5"  /> {batchScreenMutation.isPending ? 'Screening…' : 'Batch Screen Suppliers'}
                             </button>
                             {screenMutation.isSuccess && screenMutation.data && (
                                 <div className={cn(`screen-result ${(screenMutation.data as ScreeningResult).match_status.toLowerCase()}`)}>

@@ -319,6 +319,3 @@ export default function OnboardingTracker() {
     );
 }
 
-function Label({ htmlFor, children, className }: { htmlFor?: string; children: React.ReactNode; className?: string }) {
-    return <Label htmlFor={htmlFor} className={cn(`text-sm font-medium ${className}`)}>{children}</Label>;
-}

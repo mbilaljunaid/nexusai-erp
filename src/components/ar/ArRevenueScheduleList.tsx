@@ -63,7 +63,7 @@ export function ArRevenueScheduleList({ invoiceId }: ArRevenueScheduleListProps)
                     ruleId: "1",
                     amount: "1500.00",
                     scheduleDate: scheduleDate.toISOString(),
-                    periodName: `${formatNumber(scheduleDate)}-${scheduleDate.getFullYear() % 100}`,
+                    periodName: `${format(scheduleDate, 'MMM')}-${scheduleDate.getFullYear() % 100}`,
                     status: "Pending",
                     recognizedAmount: "0.00"
                 });

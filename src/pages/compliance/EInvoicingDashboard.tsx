@@ -137,15 +137,15 @@ export default function EInvoicingDashboard() {
                     <p className="einv-subtitle">ZATCA · SDI · CFDI · GST IRN · PEPPOL — multi-standard submission portal</p>
                 </div>
                 <button className="submit-btn" onClick={() => setShowSubmitModal(true)} aria-label="Submit new e-invoice">
-                    <Send size={15} /> Submit Invoice
+                    <Send className="h-[15px] w-[15px]"  /> Submit Invoice
                 </button>
             </div>
 
             {/* KPI Strip */}
             <div className="einv-kpis">
-                <KPICard label="Accepted" value={totalAccepted} icon={<CheckCircle2 size={18} />} colorCls="kpi-accepted-icon" bgCls="kpi-accepted-bg" borderCls="kpi-accepted-border" textCls="kpi-accepted-text" />
-                <KPICard label="Rejected" value={totalRejected} icon={<XCircle size={18} />} colorCls="kpi-rejected-icon" bgCls="kpi-rejected-bg" borderCls="kpi-rejected-border" textCls="kpi-rejected-text" />
-                <KPICard label="Pending" value={totalPending} icon={<Clock size={18} />} colorCls="kpi-pending-icon" bgCls="kpi-pending-bg" borderCls="kpi-pending-border" textCls="kpi-pending-text" />
+                <KPICard label="Accepted" value={totalAccepted} icon={<CheckCircle2 className="h-[18px] w-[18px]"  />} colorCls="kpi-accepted-icon" bgCls="kpi-accepted-bg" borderCls="kpi-accepted-border" textCls="kpi-accepted-text" />
+                <KPICard label="Rejected" value={totalRejected} icon={<XCircle className="h-[18px] w-[18px]"  />} colorCls="kpi-rejected-icon" bgCls="kpi-rejected-bg" borderCls="kpi-rejected-border" textCls="kpi-rejected-text" />
+                <KPICard label="Pending" value={totalPending} icon={<Clock className="h-[18px] w-[18px]"  />} colorCls="kpi-pending-icon" bgCls="kpi-pending-bg" borderCls="kpi-pending-border" textCls="kpi-pending-text" />
             </div>
 
             {/* Standard Matrix */}

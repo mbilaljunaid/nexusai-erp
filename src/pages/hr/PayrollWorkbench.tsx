@@ -112,12 +112,12 @@ export default function PayrollWorkbench() {
                 <div className="action-cell">
                     {row.status === 'Draft' && (
                         <button className="act-btn blue" onClick={() => processMutation.mutate(row.id)} aria-label="Process run">
-                            <PlayCircle size={13} /> Process
+                            <PlayCircle className="h-[13px] w-[13px]"  /> Process
                         </button>
                     )}
                     {row.status === 'Review' && (
                         <button className="act-btn green" onClick={() => approveMutation.mutate(row.id)} aria-label="Approve run">
-                            <CheckCircle2 size={13} /> Approve
+                            <CheckCircle2 className="h-[13px] w-[13px]"  /> Approve
                         </button>
                     )}
                     {row.status === 'Approved' && (
@@ -136,8 +136,8 @@ export default function PayrollWorkbench() {
                             </Select>
                         </>
                     )}
-                    <a href={`/api/hr/payroll/runs/${row.id}/payslips`} target="_blank" rel="noreferrer" className="act-link">
-                        <FileText size={13} /> Payslips
+                    <a href={`/api/hr/payroll/runs/${row.id}/payslips`} target="_blank" rel="noreferrer noopener" className="act-link">
+                        <FileText className="h-[13px] w-[13px]"  /> Payslips
                     </a>
                 </div>
             )
@@ -157,10 +157,10 @@ export default function PayrollWorkbench() {
 
             {/* KPI Strip */}
             <div className="pw-kpis">
-                <PWKpi label="Employees" value={formatNumber(totalEmp)} icon={<Users size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
-                <PWKpi label="Gross Payroll" value={fmt(totalGross)} icon={<DollarSign size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
-                <PWKpi label="Net Pay" value={fmt(totalNet)} icon={<DollarSign size={18} />} colorClass="text-violet-600" borderClass="border-l-violet-600" />
-                <PWKpi label="Active Runs" value={String(runs.filter(r => ['Draft', 'Processing', 'Review'].includes(r.status)).length)} icon={<RefreshCw size={18} />} colorClass="text-amber-600" borderClass="border-l-amber-600" />
+                <PWKpi label="Employees" value={formatNumber(totalEmp)} icon={<Users className="h-[18px] w-[18px]"  />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <PWKpi label="Gross Payroll" value={fmt(totalGross)} icon={<DollarSign className="h-[18px] w-[18px]"  />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <PWKpi label="Net Pay" value={fmt(totalNet)} icon={<DollarSign className="h-[18px] w-[18px]"  />} colorClass="text-violet-600" borderClass="border-l-violet-600" />
+                <PWKpi label="Active Runs" value={String(runs.filter(r => ['Draft', 'Processing', 'Review'].includes(r.status)).length)} icon={<RefreshCw className="h-[18px] w-[18px]"  />} colorClass="text-amber-600" borderClass="border-l-amber-600" />
             </div>
 
             {/* Country filter */}

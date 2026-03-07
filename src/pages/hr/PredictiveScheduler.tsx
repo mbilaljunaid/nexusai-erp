@@ -109,7 +109,7 @@ export default function PredictiveScheduler() {
                     </div>
                     <button className="pub-btn" disabled={publishMutation.isPending || shifts.length === 0}
                         onClick={() => publishMutation.mutate()} aria-label="Publish schedule">
-                        <Send size={13} /> {publishMutation.isPending ? 'Publishing…' : 'Publish'}
+                        <Send className="h-[13px] w-[13px]"  /> {publishMutation.isPending ? 'Publishing…' : 'Publish'}
                     </button>
                 </div>
             }
@@ -119,9 +119,9 @@ export default function PredictiveScheduler() {
                 {(['schedule', 'forecast', 'generate'] as const).map(t => (
                     <button key={t} className={cn(`tab-btn ${activeTab === t ? 'active' : ''}`)}
                         onClick={() => setActiveTab(t)} aria-pressed={activeTab === t}>
-                        {t === 'schedule' && <Calendar size={12} />}
-                        {t === 'forecast' && <BarChart2 size={12} />}
-                        {t === 'generate' && <Zap size={12} />}
+                        {t === 'schedule' && <Calendar className="h-3 w-3"  />}
+                        {t === 'forecast' && <BarChart2 className="h-3 w-3"  />}
+                        {t === 'generate' && <Zap className="h-3 w-3"  />}
                         {t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                 ))}
@@ -143,7 +143,7 @@ export default function PredictiveScheduler() {
                                             // eslint-disable-next-line
                                             <div key={s.id} className="shift-chip" style={{ background: cfg.bg, borderLeft: `3px solid ${cfg.color}` }}>
                                                 <div className="sc-time">{s.start_time}–{s.end_time}</div>
-                                                <div className="sc-emp"><Users size={10} /> {s.employee_id?.slice(0, 6)}…</div>
+                                                <div className="sc-emp"><Users className="h-2.5 w-2.5"  /> {s.employee_id?.slice(0, 6)}…</div>
                                                 {/* eslint-disable-next-line */}
                                                 <span className="sc-stat" style={{ color: cfg.color }}>{s.status}</span>
                                             </div>
@@ -224,7 +224,7 @@ export default function PredictiveScheduler() {
                             shiftHours: genParams.shiftHours,
                             employeePool: genParams.employeeIds.split(',').map(id => ({ employeeId: id.trim(), maxHours: genParams.maxHoursPerEmployee })),
                         })} aria-label="Generate schedule">
-                        <Zap size={13} /> {generateMutation.isPending ? 'Generating…' : 'Generate Schedule'}
+                        <Zap className="h-[13px] w-[13px]"  /> {generateMutation.isPending ? 'Generating…' : 'Generate Schedule'}
                     </button>
                     {generateMutation.isSuccess && (
                         <div className="gen-result">
