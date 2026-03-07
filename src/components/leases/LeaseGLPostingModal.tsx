@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { formatCurrency } from "@/lib/formatters";
 
 interface GLPostingModalProps {
     leaseId: string;
@@ -112,10 +113,7 @@ export function LeaseGLPostingModal({ leaseId, period, isOpen, onClose, onSucces
 
     const formatCurrency = (amount: number | undefined) => {
         if (amount === undefined) return "-";
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD"
-        }).format(amount);
+        return formatCurrency(amount);
     };
 
     return (

@@ -27,6 +27,7 @@ import {
 import { Download, Filter, RefreshCcw, TrendingUp, TrendingDown, DollarSign, LineChart as LineChartIcon, Settings, Calendar, Briefcase, ChevronRight, Activity, Loader2 } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatCurrency } from "@/lib/formatters";
 
 interface ForecastData {
     date: string;
@@ -60,12 +61,7 @@ export default function CashForecastingView() {
     const currentScenario = forecastData?.find(s => s.id === selectedScenario);
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            notation: "compact",
-            maximumFractionDigits: 1
-        }).format(amount);
+        return formatCurrency(amount);
     };
 
     const formatShortDate = (dateString: string | number | Date) => {

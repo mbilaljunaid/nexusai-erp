@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatNumber } from "@/lib/formatters";
+import { Loader2 } from "lucide-react";
 
 const payrollSchema = z.object({
   employeeId: z.string().min(1, "Employee ID required"),
@@ -44,7 +46,7 @@ export default function PayrollForm({ onSubmit }: { onSubmit?: (data: PayrollFor
 
     toast({
       title: "Success",
-      description: `Payroll processed: Net Salary = $${netSalary.toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+      description: `Payroll processed: Net Salary = ${formatCurrency(netSalary)}`,
     });
     onSubmit?.(data);
   };
@@ -160,7 +162,7 @@ export default function PayrollForm({ onSubmit }: { onSubmit?: (data: PayrollFor
           <CardHeader><CardTitle className="text-base">Net Salary</CardTitle></CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-900 dark:text-green-100" data-testid="text-net-salary">
-              ${netSalary.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+              {formatCurrency(netSalary)}
             </div>
             <p className="text-sm text-green-700 dark:text-green-300 mt-1">
               {baseSalary > 0 ? "Ready to process" : "Complete salary fields"}
@@ -187,7 +189,10 @@ export default function PayrollForm({ onSubmit }: { onSubmit?: (data: PayrollFor
           </FormItem>
         )} />
 
-        <Button type="submit" className="w-full" data-testid="button-submit-payroll">Process Payroll</Button>
+        <Button type="submit" className="w-full" data-testid="button-submit-payroll" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Process Payroll
+            </Button>
       </form>
     </Form>
   );

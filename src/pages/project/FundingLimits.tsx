@@ -8,12 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatNumber } from "@/lib/formatters";
 
 interface FundingLimit { id: string; project_id: string; funding_source: string; limit_amount: number; utilized_amount: number; available: number; utilization_pct: number; status: string; alert_threshold_pct: number; restrict_charges: boolean; }
 interface Commitment { id: string; project_id: string; commitment_type: string; reference_number: string; vendor_id: string; description: string; committed_amount: number; invoiced_amount: number; remaining_amount: number; status: string; commitment_date: string; }
 interface CommitSummary { commitment_type: string; count: number; total_committed: number; total_invoiced: number; total_remaining: number; }
 
-function fmt(n: any) { return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+function fmt(n: any) { return Number(n || 0)); }
 const STATUS_STYLES: Record<string, { bg: string, text: string, borderLeft: string }> = {
     Active: { bg: 'bg-emerald-100', text: 'text-emerald-600', borderLeft: 'border-l-emerald-600' },
     Exhausted: { bg: 'bg-red-100', text: 'text-red-600', borderLeft: 'border-l-red-600' },
@@ -47,9 +48,9 @@ export default function FundingLimits() {
         { id: "type", header: "Type", width: "120px", cell: (c) => <span className="font-bold text-[10px] font-mono">{c.commitment_type}</span> },
         { id: "reference", header: "Reference", width: "150px", cell: (c) => <span className="text-gray-500">{c.reference_number ?? '—'}</span> },
         { id: "vendor", header: "Vendor", width: "150px", cell: (c) => <span>{c.vendor_id ?? '—'}</span> },
-        { id: "committed", header: "Committed", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.committed_amount)}</span> },
-        { id: "invoiced", header: "Invoiced", width: "120px", cell: (c) => <span className="font-mono">{fmt(c.invoiced_amount)}</span> },
-        { id: "remaining", header: "Remaining", width: "120px", cell: (c) => <span className="font-mono text-emerald-600 font-bold">{fmt(c.remaining_amount)}</span> },
+        { id: "committed", header: "Committed", width: "120px", cell: (c) => <span className="font-mono">{formatNumber(fmt(c.committed_amount)}</span> },
+        { id: "invoiced", header: "Invoiced", width: "120px", cell: (c) => <span className="font-mono">{formatNumber(fmt(c.invoiced_amount)}</span> },
+        { id: "remaining", header: "Remaining", width: "120px", cell: (c) => <span className="font-mono text-emerald-600 font-bold">{formatNumber(fmt(c.remaining_amount)}</span> },
         {
             id: "status", header: "Status", width: "120px", cell: (c) => {
                 const s = STATUS_STYLES[c.status] || DEFAULT_STYLE;
@@ -128,12 +129,12 @@ export default function FundingLimits() {
                                     return (
                                         <Card key={fl.id} className={cn(`p-3 px-4 border border-x border-y border-l-[4px] shadow-sm ${fl.status === 'Exhausted' ? 'border-red-300' : 'border-gray-200'} ${s.borderLeft}`)}>
                                             <div className="flex justify-between mb-1.5">
-                                                <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-gray-500 text-xs font-normal">(Limit: {fmt(fl.limit_amount)})</span></div>
+                                                <div className="font-bold text-[13px]">{fl.funding_source} <span className="font-mono text-gray-500 text-xs font-normal">(Limit: {formatNumber(fmt(fl.limit_amount)})</span></div>
                                                 <span className={cn(`text-[10px] py-0.5 px-1.5 rounded-sm font-bold ${s.bg} ${s.text}`)}>{fl.status}</span>
                                             </div>
                                             <div className="flex gap-4 text-[11px] text-gray-500 mb-1.5">
-                                                <span>Utilized: <strong>{fmt(fl.utilized_amount)}</strong></span>
-                                                <span>Available: <strong className="text-emerald-600">{fmt(fl.available)}</strong></span>
+                                                <span>Utilized: <strong>{formatNumber(fmt(fl.utilized_amount)}</strong></span>
+                                                <span>Available: <strong className="text-emerald-600">{formatNumber(fmt(fl.available)}</strong></span>
                                                 <span>Alert at: {fl.alert_threshold_pct}%</span>
                                                 {fl.restrict_charges && <span className="text-amber-600 font-semibold">⚑ Charges blocked at 100%</span>}
                                             </div>
@@ -143,7 +144,7 @@ export default function FundingLimits() {
                                                 `}</style>
                                                 <div className={cn(`h-full rounded-full transition-all duration-300 fl-progress-${fl.id} ${pct >= 100 ? 'bg-red-600' : pct >= fl.alert_threshold_pct ? 'bg-amber-600' : 'bg-emerald-600'}`)} />
                                             </div>
-                                            <div className="text-[10px] text-gray-500 mt-0.5">{pct.toFixed(1)}% utilized</div>
+                                            <div className="text-[10px] text-gray-500 mt-0.5">{formatNumber(pct.toFixed(1)}% utilized</div>
                                         </Card>
                                     );
                                 })}
@@ -161,8 +162,8 @@ export default function FundingLimits() {
                                     {commitSummary.map(s => (
                                         <Card key={s.commitment_type} className="py-2.5 px-4 flex-1 shadow-sm">
                                             <div className="text-[11px] text-gray-500 mb-0.5">{s.commitment_type}</div>
-                                            <div className="text-[15px] font-extrabold font-mono">{fmt(s.total_committed)}</div>
-                                            <div className="text-[10px] text-emerald-600">Remaining: {fmt(s.total_remaining)}</div>
+                                            <div className="text-[15px] font-extrabold font-mono">{formatNumber(fmt(s.total_committed)}</div>
+                                            <div className="text-[10px] text-emerald-600">Remaining: {formatNumber(fmt(s.total_remaining)}</div>
                                         </Card>
                                     ))}
                                 </div>

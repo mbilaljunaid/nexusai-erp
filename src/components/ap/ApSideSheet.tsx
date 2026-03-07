@@ -34,6 +34,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { formatCurrency } from "@/lib/formatters";
 import ApPrepayApplication from "./ApPrepayApplication";
 
 interface ApSideSheetProps {
@@ -204,7 +206,7 @@ export function ApSideSheet({
                                     <div className="space-y-1">
                                         <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Total Amount</span>
                                         <div className="text-2xl font-bold text-primary">
-                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.invoiceAmount))}
+                                            {formatCurrency(Number(invoice.invoiceAmount) || 0, invoice.invoiceCurrencyCode)}
                                         </div>
                                     </div>
                                     <Badge variant="outline" className={getStatusColor(invoice.paymentStatus || "UNPAID")}>
@@ -240,14 +242,14 @@ export function ApSideSheet({
                                     <div className="space-y-1">
                                         <label className="text-xs text-muted-foreground uppercase">Tax Amount</label>
                                         <p className="text-sm font-medium">
-                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.taxAmount || 0))}
+                                            {formatCurrency(Number(invoice.taxAmount || 0), invoice.invoiceCurrencyCode)}
                                         </p>
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs text-muted-foreground uppercase text-amber-600">Withholding Tax</label>
                                         <p className="text-sm font-bold text-amber-600">
                                             {invoice.withholdingTaxAmount && Number(invoice.withholdingTaxAmount) > 0
-                                                ? new Intl.NumberFormat("en-US", { style: "currency", currency: invoice.invoiceCurrencyCode || "USD" }).format(Number(invoice.withholdingTaxAmount))
+                                                ? formatCurrency(Number(invoice.withholdingTaxAmount, invoice.invoiceCurrencyCode))
                                                 : "No WHT"}
                                         </p>
                                     </div>
@@ -422,7 +424,7 @@ function InvoicePrepaymentsView({ invoiceId }: { invoiceId: number }) {
                             </div>
                             <div className="text-right flex items-center gap-4">
                                 <div className="space-y-1">
-                                    <span className="text-sm font-bold text-green-600">-${parseFloat(app.amountApplied).toLocaleString()}</span>
+                                    <span className="text-sm font-bold text-green-600">-${formatCurrency(parseFloat(app.amountApplied))}</span>
                                     <Badge variant="outline" className="block text-[8px] h-4 mt-1">{app.status}</Badge>
                                 </div>
                                 {app.status === "APPLIED" && (
@@ -572,24 +574,24 @@ function InvoiceAccountingView({ invoiceId }: { invoiceId: number }) {
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <table className="w-full text-[10px]">
-                                <thead className="bg-muted/10 border-b">
-                                    <tr>
-                                        <th className="p-2 text-left">Account Class</th>
-                                        <th className="p-2 text-right">Debit</th>
-                                        <th className="p-2 text-right">Credit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <Table className="w-full text-[10px]">
+                                <TableHeader className="bg-muted/10 border-b">
+                                    <TableRow>
+                                        <TableHead className="p-2 text-left">Account Class</TableHead>
+                                        <TableHead className="p-2 text-right">Debit</TableHead>
+                                        <TableHead className="p-2 text-right">Credit</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                     {journal.lines?.map((line: any) => (
-                                        <tr key={line.id} className="border-b last:border-0 hover:bg-muted/5">
-                                            <td className="p-2 font-medium">{line.accountingClass}</td>
-                                            <td className="p-2 text-right">{line.enteredDr ? Number(line.enteredDr).toFixed(2) : ""}</td>
-                                            <td className="p-2 text-right">{line.enteredCr ? Number(line.enteredCr).toFixed(2) : ""}</td>
-                                        </tr>
+                                        <TableRow key={line.id} className="border-b last:border-0 hover:bg-muted/5">
+                                            <TableCell className="p-2 font-medium">{line.accountingClass}</TableCell>
+                                            <TableCell className="p-2 text-right">{line.enteredDr ? Number(line.enteredDr).toFixed(2) : ""}</TableCell>
+                                            <TableCell className="p-2 text-right">{line.enteredCr ? Number(line.enteredCr).toFixed(2) : ""}</TableCell>
+                                        </TableRow>
                                     ))}
-                                </tbody>
-                            </table>
+                                </TableBody>
+                            </Table>
                         </CardContent>
                     </Card>
                 ))

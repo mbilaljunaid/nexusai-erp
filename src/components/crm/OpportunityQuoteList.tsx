@@ -10,6 +10,7 @@ import { Plus, FileText, ExternalLink } from "lucide-react";
 import { QuoteForm } from "@/components/forms/QuoteForm";
 import { Badge } from "@/components/ui/badge";
 import type { Quote } from "@/types/erp-types";
+import { formatCurrency } from "@/lib/formatters";
 import { useLocation } from "wouter";
 
 interface OpportunityQuoteListProps {
@@ -26,7 +27,7 @@ export function OpportunityQuoteList({ opportunityId }: OpportunityQuoteListProp
 
     const formatCurrency = (val: number | string | null | undefined) => {
         if (!val) return "$0";
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(val));
+        return formatCurrency(Number(val));
     };
 
     return (

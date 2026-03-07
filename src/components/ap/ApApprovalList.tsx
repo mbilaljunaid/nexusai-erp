@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { formatCurrency } from "@/lib/formatters";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 
 export function ApApprovalList() {
@@ -39,7 +40,7 @@ export function ApApprovalList() {
             header: "Amount",
             cell: (item) => (
                 <span className="font-bold">
-                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: item.currency }).format(Number(item.amount))}
+                    {formatCurrency(Number(item.amount, item.currency))}
                 </span>
             )
         },

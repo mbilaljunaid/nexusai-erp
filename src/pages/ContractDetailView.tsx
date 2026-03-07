@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PromptDialog } from "@/components/shared/PromptDialog";
+import { formatCurrency } from "@/lib/formatters";
 
 export default function ContractDetailView() {
     const [match, params] = useRoute("/contracts/:id");
@@ -128,7 +129,7 @@ export default function ContractDetailView() {
                                     <label className="text-sm font-medium text-muted-foreground">Total Amount</label>
                                     <p className="text-lg font-bold">
                                         {contract.totalAmount ?
-                                            new Intl.NumberFormat('en-US', { style: 'currency', currency: contract.currency || 'USD' }).format(Number(contract.totalAmount))
+                                            formatCurrency(Number(contract.totalAmount, contract.currency))
                                             : '-'}
                                     </p>
                                 </div>
@@ -180,8 +181,8 @@ export default function ContractDetailView() {
                                                 <TableCell>{line.lineNumber}</TableCell>
                                                 <TableCell>{line.itemDescription}</TableCell>
                                                 <TableCell>{line.quantity}</TableCell>
-                                                <TableCell>${Number(line.unitPrice).toFixed(2)}</TableCell>
-                                                <TableCell>${Number(line.lineAmount).toFixed(2)}</TableCell>
+                                                <TableCell>${formatCurrency(Number(line.unitPrice))}</TableCell>
+                                                <TableCell>${formatCurrency(Number(line.lineAmount))}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>

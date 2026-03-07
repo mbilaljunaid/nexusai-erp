@@ -39,6 +39,7 @@ import { format } from "date-fns";
 import { Link } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RevenueContractTimeline } from "@/components/revenue/RevenueContractTimeline";
+import { formatCurrency } from "@/lib/formatters";
 
 export default function RevenueContractDetail() {
     const { id } = useParams<{ id: string }>();
@@ -75,7 +76,7 @@ export default function RevenueContractDetail() {
         onSuccess: (data: any) => {
             toast({
                 title: "Modification Successful",
-                description: `Catch-up amount: ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.catchupAmount)}`,
+                description: `Catch-up amount: ${formatCurrency(data.catchupAmount)}`,
             });
             setIsDialogOpen(false);
             queryClient.invalidateQueries({ queryKey: ["revenueContract", id] });
@@ -99,7 +100,7 @@ export default function RevenueContractDetail() {
             id: "allocatedPrice",
             header: "Allocated Price",
             width: "150px",
-            cell: (info: any) => <div className="px-2 h-full flex items-center">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(info.allocatedPrice || "0"))}</div>
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{formatCurrency(parseFloat(info.allocatedPrice || "0"))}</div>
         },
         {
             id: "dates",
@@ -119,7 +120,7 @@ export default function RevenueContractDetail() {
             id: "amount",
             header: "Amount",
             width: "150px",
-            cell: (info: any) => <div className="px-2 h-full flex items-center">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(info.amount || "0"))}</div>
+            cell: (info: any) => <div className="px-2 h-full flex items-center">{formatCurrency(parseFloat(info.amount || "0"))}</div>
         },
         {
             id: "status",
@@ -208,7 +209,7 @@ export default function RevenueContractDetail() {
                 <Card>
                     <CardHeader className="pb-2">
                         <CardDescription className="flex items-center gap-1 font-medium"><DollarSign className="h-4 w-4" /> Total Transaction Price</CardDescription>
-                        <CardTitle className="text-2xl">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(contract.totalAllocatedPrice || "0"))}</CardTitle>
+                        <CardTitle className="text-2xl">{formatCurrency(parseFloat(contract.totalAllocatedPrice || "0"))}</CardTitle>
                     </CardHeader>
                 </Card>
                 <Card>

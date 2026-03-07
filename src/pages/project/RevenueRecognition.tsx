@@ -7,11 +7,12 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
+import { formatNumber } from "@/lib/formatters";
 
 interface RevEvent { id: string; period_start: string; period_end: string; pct_complete: number; costs_incurred: number; costs_to_complete: number; revenue_recognized: number; cumulative_revenue: number; gl_posted: boolean; gl_reference: string; method: string; contract_value: number; }
 interface RevSummary { method: string; contract_value: number; total_recognized: number; cumulative: number; remaining: number; pct_recognized: number; period_count: number; gl_posted_count: number; }
 
-function fmt(n: number | string) { return Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+function fmt(n: number | string) { return Number(n || 0)); }
 function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
 
 const METHODS = ['POC', 'MILESTONE', 'TIME_MATERIALS', 'COMPLETED_CONTRACT'] as const;
@@ -44,12 +45,12 @@ export default function RevenueRecognition() {
     const pctNum = summary ? Math.min(100, Math.round(Number(summary.pct_recognized))) : 0;
 
     const revColumns: SpreadsheetColumn<RevEvent>[] = [
-        { id: "period", header: "Period", width: "160px", cell: (e) => <span className="whitespace-nowrap">{fmtDate(e.period_start)} – {fmtDate(e.period_end)}</span> },
+        { id: "period", header: "Period", width: "160px", cell: (e) => <span className="whitespace-nowrap">{formatNumber(fmtDate(e.period_start)} – {formatNumber(fmtDate(e.period_end)}</span> },
         { id: "pctComplete", header: "% Complete", width: "100px", cell: (e) => <span>{(Number(e.pct_complete) * 100).toFixed(1)}%</span> },
-        { id: "costsIncurred", header: "Costs Incurred", width: "120px", cell: (e) => <span className="font-mono">{fmt(e.costs_incurred)}</span> },
-        { id: "costsToComplete", header: "Costs to Complete", width: "130px", cell: (e) => <span className="font-mono">{fmt(e.costs_to_complete)}</span> },
-        { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span className="font-mono font-bold text-emerald-600">{fmt(e.revenue_recognized)}</span> },
-        { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span className="font-mono text-gray-500">{fmt(e.cumulative_revenue)}</span> },
+        { id: "costsIncurred", header: "Costs Incurred", width: "120px", cell: (e) => <span className="font-mono">{formatNumber(fmt(e.costs_incurred)}</span> },
+        { id: "costsToComplete", header: "Costs to Complete", width: "130px", cell: (e) => <span className="font-mono">{formatNumber(fmt(e.costs_to_complete)}</span> },
+        { id: "recognized", header: "Recognized", width: "110px", cell: (e) => <span className="font-mono font-bold text-emerald-600">{formatNumber(fmt(e.revenue_recognized)}</span> },
+        { id: "cumulative", header: "Cumulative", width: "110px", cell: (e) => <span className="font-mono text-gray-500">{formatNumber(fmt(e.cumulative_revenue)}</span> },
         { id: "gl", header: "GL", width: "100px", cell: (e) => e.gl_posted ? <span className="flex items-center gap-1 text-emerald-600 text-[10px] font-bold"><CheckCircle2 size={11} /> Posted</span> : <span className="text-[10px] text-amber-600 font-semibold">Pending</span> },
         { id: "actions", header: "", width: "100px", cell: (e) => !e.gl_posted ? <button onClick={() => postGLMut.mutate({ id: e.id })} className="py-1 px-2 bg-blue-700 text-white border-none rounded-md text-[10px] cursor-pointer">Post GL</button> : null }
     ];

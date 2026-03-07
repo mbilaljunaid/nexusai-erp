@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, XCircle, Search, Clock } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { formatNumber } from "@/lib/formatters";
 
 export default function JournalApprovalHub() {
     const { toast } = useToast();
@@ -128,10 +129,10 @@ export default function JournalApprovalHub() {
                                     </TableCell>
                                     <TableCell>{item.description}</TableCell>
                                     <TableCell className="text-right font-mono">
-                                        {Number(item.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                                        {formatNumber(Number(item.amount))}
                                     </TableCell>
                                     <TableCell>{item.requester || "Unknown"}</TableCell>
-                                    <TableCell>{formatDate(item.submittedDate)}</TableCell>
+                                    <TableCell>{formatNumber(formatDate(item.submittedDate)}</TableCell>
                                     <TableCell className="text-right space-x-2">
                                         <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 hover:bg-red-500/10"
                                             onClick={() => openAction('reject', item.journalId)}>

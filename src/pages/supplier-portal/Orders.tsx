@@ -18,6 +18,7 @@ import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { ExportButton } from "@/components/ExportButton";
+import { formatCurrency } from "@/lib/formatters";
 
 import {
     Table,
@@ -89,7 +90,7 @@ export default function SupplierOrders() {
     const createInvoiceMutation = useMutation({
         mutationFn: async (po: any) => {
             const payload = {
-                invoiceNumber: `INV-${po.poNumber}-${Date.now()}`,
+                invoiceNumber: `INV-${po.poNumber}-${formatNumber(Date.now()}`,
                 items: po.items && po.items.length > 0
                     ? po.items.map((item: any) => ({ poLineId: item.id, quantity: item.quantity, unitPrice: item.unitPrice }))
                     : [{ poLineId: `${po.id}-line-1`, quantity: 1, unitPrice: Number(po.totalAmount) }]
@@ -377,7 +378,7 @@ export default function SupplierOrders() {
                                     <TableRow key={po.id} className={selectedOrders.has(po.id) ? 'bg-blue-500/10' : ''}>
                                         <TableCell>
                                             <Checkbox
-                                                checked={selectedOrders.has(po.id)}
+                                                checked={formatNumber(selectedOrders.has(po.id)}
                                                 onCheckedChange={() => toggleOrderSelection(po.id)}
                                                 aria-label={`Select order ${po.poNumber}`}
                                             />
@@ -386,7 +387,7 @@ export default function SupplierOrders() {
                                         <TableCell>{po.orderDate ? format(new Date(po.orderDate), 'MMM d, yyyy') : '-'}</TableCell>
                                         <TableCell><StatusBadge status={po.status} /></TableCell>
                                         <TableCell className="text-right">
-                                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: po.currency || 'USD' }).format(Number(po.totalAmount))}
+                                            {formatCurrency(Number(po.totalAmount, po.currency))}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex justify-end gap-2">

@@ -59,6 +59,7 @@ interface ReportGrid {
 }
 
 import { VarianceAnalysisWidget } from "@/components/gl/VarianceAnalysisWidget";
+import { formatNumber } from "@/lib/formatters";
 
 export default function FinancialReports() {
     const { toast } = useToast();
@@ -133,7 +134,7 @@ export default function FinancialReports() {
     const handleExport = (format: 'pdf' | 'excel') => {
         toast({
             title: "Export Started",
-            description: `Exporting to ${format.toUpperCase()}... (Simulated)`,
+            description: `Exporting to ${formatNumber(format.toUpperCase()}... (Simulated)`,
         });
     };
 
@@ -293,7 +294,7 @@ export default function FinancialReports() {
                                             <span>Currency: USD</span>
                                         </CardDescription>
                                     </div>
-                                    <Badge variant="outline" className="font-mono">Generated: {formatTime(new Date())}</Badge>
+                                    <Badge variant="outline" className="font-mono">Generated: {formatNumber(formatTime(new Date())}</Badge>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-0 overflow-x-auto">
@@ -329,7 +330,7 @@ export default function FinancialReports() {
                                                         className="text-right font-mono cursor-pointer hover:text-blue-600 hover:underline"
                                                         onClick={() => handleCellClick(row.description, reportData.columns[cIdx].header, cell)}
                                                     >
-                                                        {cell === 0 ? "-" : cell.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                        {cell === 0 ? "-" : formatNumber(cell, 2)}
                                                     </TableCell>
                                                 ))}
                                             </TableRow>
@@ -375,7 +376,7 @@ export default function FinancialReports() {
                                     <div className="col-span-2 pt-2 border-t border-blue-200 dark:border-blue-800">
                                         <p className="text-muted-foreground text-xs">Balance Amount</p>
                                         <p className="text-2xl font-bold font-mono text-blue-700 dark:text-blue-400">
-                                            {drillCell.value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                                            {formatNumber(drillCell.value)}
                                         </p>
                                     </div>
                                 </div>
@@ -395,7 +396,7 @@ export default function FinancialReports() {
                                         </div>
                                         <p className="text-muted-foreground line-clamp-1">Monthly allocation for {drillCell.row} - Batch #{100 + i}</p>
                                         <div className="mt-2 text-right font-mono text-xs">
-                                            {(drillCell.value / 3).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                            {(drillCell.value / 3), 2)}
                                         </div>
                                     </div>
                                 ))}

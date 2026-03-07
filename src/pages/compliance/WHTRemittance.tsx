@@ -7,6 +7,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { formatCurrency } from "@/lib/formatters";
 
 
 interface WHTRule {
@@ -46,7 +47,7 @@ interface RemittanceBatch {
 
 const INCOME_TYPES = ['Dividend', 'Interest', 'Royalty', 'Services', 'Other'];
 const fmtCcy = (n: number, ccy = 'USD') =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: ccy, maximumFractionDigits: 2 }).format(n);
+    formatCurrency(n, ccy);
 const fmtPct = (n: number) => `${(Number(n) * 100).toFixed(2)}%`;
 
 async function fetchRules(country?: string): Promise<WHTRule[]> {

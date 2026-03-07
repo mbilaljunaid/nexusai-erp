@@ -19,6 +19,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Book, FileText } from "lucide-react";
 import type { RevenueSspBook, RevenueSspLine } from "@/types/erp-types";
 import { useToast } from "@/hooks/use-toast";
+import { formatCurrency } from "@/lib/formatters";
 
 interface SSPBook extends RevenueSspBook { }
 
@@ -93,7 +94,7 @@ export default function SSPManager() {
             id: "currency", header: "Currency", width: "120px", cell: (item) => <div className="p-2"><Badge variant="outline">{item.currency}</Badge></div>
         },
         {
-            id: "effectiveFrom", header: "Effective From", width: "150px", cell: (item) => <div className="p-2">{formatDate(item.effectiveFrom)}</div>
+            id: "effectiveFrom", header: "Effective From", width: "150px", cell: (item) => <div className="p-2">{formatNumber(formatDate(item.effectiveFrom)}</div>
         },
         {
             id: "status", header: "Status", width: "120px", cell: (item) => <div className="p-2"><Badge>{item.status}</Badge></div>
@@ -114,7 +115,7 @@ export default function SSPManager() {
             id: "itemName", header: "Item Name", width: "300px", cell: (item) => <div className="p-2">{item.itemName || <span className="text-muted-foreground font-mono">{item.itemId}</span>}</div>
         },
         {
-            id: "sspValue", header: "SSP Value", width: "150px", cell: (item) => <div className="p-2">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(item.sspValue))}</div>
+            id: "sspValue", header: "SSP Value", width: "150px", cell: (item) => <div className="p-2">{formatCurrency(Number(item.sspValue))}</div>
         },
         {
             id: "minQuantity", header: "Min Quantity", width: "150px", cell: (item) => <div className="p-2">{item.minQuantity}</div>

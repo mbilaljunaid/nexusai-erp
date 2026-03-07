@@ -10,6 +10,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { StandardPage } from "@/components/layout/StandardPage";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatCurrency } from "@/lib/formatters";
 
 interface Facility {
     id: string;
@@ -52,13 +53,13 @@ interface CovenantDue {
     lender: string;
 }
 
-const fmt = (n: number, c = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency: c, maximumFractionDigits: 0 }).format(n);
+const fmt = (n: number, c = 'USD') => formatCurrency(n, c);
 const pct = (drawn: number, total: number) => total > 0 ? Math.round((drawn / total) * 100) : 0;
 
 export default function HedgeEffectiveness() {
     const { toast } = useToast();
     const [activeTab, setActiveTab] = useState<'hedges' | 'covenants' | 'debt'>('hedges');
-    const [testForm, setTestForm] = useState({ hedgeRelId: '', testDate: new Date().toISOString().slice(0, 10), hedgingGainLoss: '', hedgedItemGainLoss: '' });
+    const [testForm, setTestForm] = useState({ hedgeRelId: '', testDate: formatNumber(new Date().toISOString().slice(0, 10), hedgingGainLoss: '', hedgedItemGainLoss: '' });
     const [testResult, setTestResult] = useState<any>(null);
     const [localHedges, setLocalHedges] = useState<any[]>([]);
     const qc = useQueryClient();
@@ -137,17 +138,17 @@ export default function HedgeEffectiveness() {
 
             {/* KPIs */}
             <div className="he-kpis">
-                <HeKpi label="Total Hedges" value={String(hedges.length)} icon={<Shield size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
-                <HeKpi label="Effective" value={String(effectiveCount)} icon={<CheckCircle2 size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
-                <HeKpi label="Total Notional" value={fmt(totalNotional)} icon={<TrendingUp size={18} />} colorClass="text-purple-600" borderClass="border-l-purple-600" />
-                <HeKpi label="Covenant Breaches (90d)" value={String(breachCount)} icon={<AlertTriangle size={18} />} colorClass={breachCount > 0 ? 'text-red-600' : 'text-emerald-600'} borderClass={breachCount > 0 ? 'border-l-red-600' : 'border-l-emerald-600'} />
+                <HeKpi label="Total Hedges" value={formatNumber(String(hedges.length)} icon={<Shield size={18} />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <HeKpi label="Effective" value={formatNumber(String(effectiveCount)} icon={<CheckCircle2 size={18} />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <HeKpi label="Total Notional" value={formatNumber(fmt(totalNotional)} icon={<TrendingUp size={18} />} colorClass="text-purple-600" borderClass="border-l-purple-600" />
+                <HeKpi label="Covenant Breaches (90d)" value={formatNumber(String(breachCount)} icon={<AlertTriangle size={18} />} colorClass={breachCount > 0 ? 'text-red-600' : 'text-emerald-600'} borderClass={breachCount > 0 ? 'border-l-red-600' : 'border-l-emerald-600'} />
             </div>
 
             {/* Tabs */}
             <div className="he-tabs">
                 {(['hedges', 'covenants', 'debt'] as const).map(t => (
                     <button key={t} className={cn(`he-tab ${activeTab === t ? 'active' : ''}`)} onClick={() => setActiveTab(t)}>
-                        {t.charAt(0).toUpperCase() + t.slice(1)}
+                        {formatNumber(t.charAt(0).toUpperCase() + t.slice(1)}
                     </button>
                 ))}
             </div>
@@ -160,7 +161,7 @@ export default function HedgeEffectiveness() {
                             <div className="flex justify-between items-center">
                                 <h3 className="card-title m-0">Hedge Relationships</h3>
                                 <div className="flex gap-2">
-                                    <Button variant="outline" size="sm" onClick={() => setLocalHedges([...localHedges, { id: `temp-${Date.now()}`, hedge_id: '', hedge_type: 'Cash Flow', accounting_std: 'IFRS 9', notional_amount: 0, currency_code: 'USD', status: 'Draft', last_effectiveness: null }])}>
+                                    <Button variant="outline" size="sm" onClick={() => setLocalHedges([...localHedges, { id: `temp-${formatNumber(Date.now()}`, hedge_id: '', hedge_type: 'Cash Flow', accounting_std: 'IFRS 9', notional_amount: 0, currency_code: 'USD', status: 'Draft', last_effectiveness: null }])}>
                                         <Plus className="w-4 h-4 mr-2" /> Add Hedge
                                     </Button>
                                     <Button size="sm" onClick={() => saveMutation.mutate(localHedges)} disabled={saveMutation.isPending}>
@@ -288,8 +289,8 @@ export default function HedgeEffectiveness() {
                                     </div>
                                     <div className="tr-rows">
                                         <div className="tr-row"><span>Ratio</span><strong>{(testResult.effectivenessRatio * 100).toFixed(1)}%</strong></div>
-                                        <div className="tr-row"><span>OCI Amount</span><strong>{fmt(testResult.ociAmount)}</strong></div>
-                                        <div className="tr-row"><span>P&L Reclassified</span><strong>{fmt(testResult.plReclassified)}</strong></div>
+                                        <div className="tr-row"><span>OCI Amount</span><strong>{formatNumber(fmt(testResult.ociAmount)}</strong></div>
+                                        <div className="tr-row"><span>P&L Reclassified</span><strong>{formatNumber(fmt(testResult.plReclassified)}</strong></div>
                                     </div>
                                 </div>
                             )}

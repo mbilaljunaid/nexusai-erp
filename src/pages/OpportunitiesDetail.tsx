@@ -44,6 +44,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Progress } from "@/components/ui/progress";
 import { CompetitorList } from "@/components/crm/CompetitorList";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { formatCurrency } from "@/lib/formatters";
 
 // AI Insights Component
 function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
@@ -88,7 +89,7 @@ function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
 
 const formatCurrency = (val: string | number) => {
   const num = Number(val);
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+  return formatCurrency(num);
 };
 
 export default function OpportunitiesDetail() {
@@ -319,7 +320,7 @@ export default function OpportunitiesDetail() {
                 cell: (opp: any) => (
                   <div className="p-2">
                     <div className="font-semibold">{opp.name}</div>
-                    <div className="text-xs text-muted-foreground">{getAccountName(opp.accountId)}</div>
+                    <div className="text-xs text-muted-foreground">{formatNumber(getAccountName(opp.accountId)}</div>
                   </div>
                 )
               },
@@ -404,7 +405,7 @@ export default function OpportunitiesDetail() {
                               <p className="font-bold leading-tight group-hover:text-primary transition-colors text-[15px]">{opp.name}</p>
                               <p className="text-xs text-muted-foreground mt-1.5 font-medium flex items-center gap-1.5 italic">
                                 <span className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-                                {getAccountName(opp.accountId)}
+                                {formatNumber(getAccountName(opp.accountId)}
                               </p>
                             </div>
                             <div className="flex justify-between items-center bg-muted/30 p-2.5 rounded-lg border border-transparent group-hover:border-primary/10 transition-colors">

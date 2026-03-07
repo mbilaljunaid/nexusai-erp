@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Download, Filter, RefreshCcw, Activity, ArrowRightLeft, Building2, Landmark, Settings2, Plus, ArrowUpRight, ArrowDownRight, ShieldCheck, AlertTriangle, PlayCircle, Settings, TrendingDown, History } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatCurrency } from "@/lib/formatters";
 
 interface ZBAPool {
     id: string;
@@ -80,10 +81,7 @@ export default function ZBAManagement() {
     });
 
     const formatCurrency = (amount: number, currency: string = "USD") => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: currency
-        }).format(amount);
+        return formatCurrency(amount, currency);
     };
 
     const formatShortDate = (dateString: string) => {

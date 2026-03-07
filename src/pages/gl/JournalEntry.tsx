@@ -43,6 +43,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { AuditSidebar, AuditEvent } from "@/components/audit/AuditSidebar";
 import { LedgerContextBadge } from "@/components/gl/LedgerContextBadge";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatNumber } from "@/lib/formatters";
 
 interface JournalLine {
     id: string; // temp id for UI
@@ -303,7 +304,7 @@ export default function JournalEntry() {
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl/journals" },
                 { label: "Journals", href: "/gl/journals" },
-                { label: journalId ? `Journal: ${journalId.substring(0, 8)}...` : "New Entry" },
+                { label: journalId ? `Journal: ${formatNumber(journalId.substring(0, 8)}...` : "New Entry" },
             ]}
             description={<LedgerContextBadge />}
             actions={
@@ -344,7 +345,7 @@ export default function JournalEntry() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Total Debits</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{totals.debit.toLocaleString('en-US', { style: 'currency', currency: header.currencyCode })}</div>
+                        <div className="text-2xl font-bold">{formatNumber(totals.debit)}</div>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-l-4 border-l-blue-500">
@@ -352,7 +353,7 @@ export default function JournalEntry() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Total Credits</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{totals.credit.toLocaleString('en-US', { style: 'currency', currency: header.currencyCode })}</div>
+                        <div className="text-2xl font-bold">{formatNumber(totals.credit)}</div>
                     </CardContent>
                 </Card>
                 <Card className={cn("shadow-sm border-l-4", totals.isBalanced ? "border-l-green-500 bg-green-50/50" : "border-l-red-500 bg-red-50/50")}>
@@ -361,7 +362,7 @@ export default function JournalEntry() {
                     </CardHeader>
                     <CardContent>
                         <div className={cn("text-2xl font-bold flex items-center gap-2", totals.isBalanced ? "text-green-700" : "text-red-700")}>
-                            {totals.variance.toLocaleString('en-US', { style: 'currency', currency: header.currencyCode })}
+                            {formatNumber(totals.variance)}
                             {totals.isBalanced ? <CheckCircle2 className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
                         </div>
                     </CardContent>

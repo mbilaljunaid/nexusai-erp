@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowRight, ArrowLeft, TrendingDown, DollarSign, Zap } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { formatCurrency } from "@/lib/formatters";
 
 interface NettingProposalProps {
     proposal: {
@@ -44,10 +45,7 @@ export function NettingProposalCard({ proposal }: NettingProposalProps) {
     const { entityA, entityB, netSettlement, currency, transactions = [], optimization } = proposal;
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: currency || "USD"
-        }).format(amount);
+        return formatCurrency(amount, currency);
     };
 
     const grossTotal = entityA.owes + entityB.owes;

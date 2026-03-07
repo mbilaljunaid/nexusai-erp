@@ -11,6 +11,7 @@ import type { ApInvoice } from "@/types/erp-types";
 import { ApSideSheet } from "./ApSideSheet";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { formatCurrency } from "@/lib/formatters";
 
 // Extend the base type to include relations that might be returned by API
 interface ApInvoiceWithRelations extends ApInvoice {
@@ -74,7 +75,7 @@ export function ApInvoiceList(props: { statusFilter?: string }) {
             header: "Amount",
             cell: (item) => (
                 <span className="font-mono">
-                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: item.invoiceCurrencyCode || 'USD' }).format(Number(item.invoiceAmount))}
+                    {formatCurrency(Number(item.invoiceAmount, item.invoiceCurrencyCode))}
                 </span>
             )
         },

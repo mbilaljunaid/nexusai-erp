@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PlayCircle, RefreshCw, CheckCircle2 } from "lucide-react";
 import { formatDate } from "@/lib/dateUtils"; // Added this import
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatCurrency } from "@/lib/formatters";
 
 interface RevaluationRun {
     id: string;
@@ -66,10 +67,7 @@ export default function CurrencyRevaluationView() {
     });
 
     const formatCurrency = (amount: number, currency: string = "USD") => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: currency
-        }).format(amount);
+        return formatCurrency(amount, currency);
     };
 
     // Removed the old formatDate function definition

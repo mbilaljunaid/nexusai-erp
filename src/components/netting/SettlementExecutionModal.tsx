@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatCurrency } from "@/lib/formatters";
 
 interface SettlementExecutionModalProps {
     batchId: string;
@@ -101,10 +102,7 @@ export function SettlementExecutionModal({
     };
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: batch.currencyCode || "USD"
-        }).format(amount);
+        return formatCurrency(amount, batch.currencyCode);
     };
 
     return (

@@ -6,6 +6,7 @@ import { CheckCircle, Clock, AlertTriangle, XCircle, FileText, ChevronUp, Chevro
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatNumber } from "@/lib/formatters";
 
 interface Certification {
     id: string;
@@ -82,9 +83,9 @@ export default function AccountCertPortal() {
     const certColumns: SpreadsheetColumn<Certification>[] = [
         { id: "account_id", header: "Account", width: "120px", cell: (row) => <div className="account-code">{row.account_id}</div> },
         { id: "status", header: "Status", width: "150px", cell: (row) => { const cfg = STATUS_CONFIG[row.status]; const Icon = cfg.icon; return <span className={cn(`status-badge ${cfg.className}`)}><Icon size={12} /> {row.status}</span>; } },
-        { id: "variance", header: <div className="sortable-col" role="button" tabIndex={0} onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}</div>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{row.variance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div> },
-        { id: "gl_balance", header: "GL Balance", width: "120px", cell: (row) => row.balance_per_gl.toLocaleString('en-US', { minimumFractionDigits: 2 }) },
-        { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => row.balance_per_sub.toLocaleString('en-US', { minimumFractionDigits: 2 }) },
+        { id: "variance", header: <div className="sortable-col" role="button" tabIndex={0} onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown size={14} /> : <ChevronUp size={14} />)}</div>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{formatNumber(row.variance, 2)}</div> },
+        { id: "gl_balance", header: "GL Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_gl, 2) },
+        { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_sub, 2) },
         { id: "preparer", header: "Preparer", width: "150px", cell: (row) => <div className="email-cell">{row.preparer_email}</div> },
         { id: "reviewer", header: "Reviewer", width: "150px", cell: (row) => <div className="email-cell">{row.reviewer_email}</div> },
         {
@@ -142,7 +143,7 @@ export default function AccountCertPortal() {
                     </div>
                     <div className="kpi-card">
                         <div className="kpi-value kpi-red">
-                            ${totalVariance.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                            ${formatNumber(totalVariance)}
                         </div>
                         <div className="kpi-label">Total Variance</div>
                     </div>

@@ -8,6 +8,7 @@ import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatCurrency } from "@/lib/formatters";
 
 
 interface LockboxBatch {
@@ -48,7 +49,7 @@ const BATCH_STATUS_CFG: Record<string, { bg: string; color: string }> = {
     Exception: { bg: 'bg-red-100', color: 'text-red-700' },
 };
 
-const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n ?? 0);
+const fmt = (n: number) => formatCurrency(n ?? 0);
 
 export default function LockboxWorkbench() {
     const [selectedBatch, setSelectedBatch] = useState<LockboxBatch | null>(null);
@@ -237,7 +238,7 @@ export default function LockboxWorkbench() {
                     {selectedBatch ? (
                         <>
                             <div className="item-header">
-                                <div className="ih-title">Batch: {formatDate(selectedBatch.batch_date)} — {selectedBatch.item_count} items</div>
+                                <div className="ih-title">Batch: {formatNumber(formatDate(selectedBatch.batch_date)} — {selectedBatch.item_count} items</div>
                                 <div className="ih-stats">
                                     <span className="green"><CheckCircle2 size={12} /> {matched} matched</span>
                                     <span className="orange"><AlertCircle size={12} /> {unmatched} unmatched</span>
@@ -288,7 +289,7 @@ export default function LockboxWorkbench() {
                                 <div className="mc-row"><span className="lbl">Check #:</span> <span className="val mono">{matchingItem.check_number || 'N/A'}</span></div>
                                 <div className="mc-row"><span className="lbl">Payer Name:</span> <span className="val">{matchingItem.payer_name || 'N/A'}</span></div>
                                 <div className="mc-row"><span className="lbl">Read Remit Ref:</span> <span className="val mono">{matchingItem.remittance_ref || 'N/A'}</span></div>
-                                <div className="mc-row"><span className="lbl">Amount to Apply:</span> <span className="val mono orange">{fmt(matchingItem.unapplied_amount)}</span></div>
+                                <div className="mc-row"><span className="lbl">Amount to Apply:</span> <span className="val mono orange">{formatNumber(fmt(matchingItem.unapplied_amount)}</span></div>
                             </div>
 
                             <h3 className="section-title mt-24">Search Target Invoice</h3>
@@ -311,7 +312,7 @@ export default function LockboxWorkbench() {
                                             <div className="irr-cust">Cust: {inv.customer_id.split('-')[0]}...</div>
                                         </div>
                                         <div className="irr-right">
-                                            <div className="irr-amt mono">{fmt(inv.total_amount)}</div>
+                                            <div className="irr-amt mono">{formatNumber(fmt(inv.total_amount)}</div>
                                             <button
                                                 className="btn-apply-match"
                                                 disabled={manualMatchMutation.isPending}

@@ -7,6 +7,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatCurrency } from "@/lib/formatters";
 
 
 interface PaymentTerm {
@@ -38,13 +39,13 @@ const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
     ImmediateDue: { bg: '#fee2e2', color: '#dc2626' },
 };
 
-const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n);
+const fmt = (n: number) => formatCurrency(n);
 
 export default function PaymentTermsMaster() {
     const [selected, setSelected] = useState<PaymentTerm | null>(null);
     const [showNew, setShowNew] = useState(false);
     const [newTerm, setNewTerm] = useState({ termCode: '', termName: '', netDays: 30, discountPct: 0, discountDays: 0, termType: 'Net' });
-    const [schedTest, setSchedTest] = useState({ termCode: '', invoiceDate: new Date().toISOString().slice(0, 10), totalAmount: 10000 });
+    const [schedTest, setSchedTest] = useState({ termCode: '', invoiceDate: formatNumber(new Date().toISOString().slice(0, 10), totalAmount: 10000 });
     const [schedule, setSchedule] = useState<ScheduleLine[]>([]);
     const qc = useQueryClient();
 
@@ -66,7 +67,7 @@ export default function PaymentTermsMaster() {
     const scheduleColumns: SpreadsheetColumn<ScheduleLine>[] = [
         { id: "installment_num", header: "#", width: "50px", cell: (row) => row.installment_num },
         { id: "due_date", header: "Due Date", width: "120px", cell: (row) => <div className="mono due-date">{row.due_date}</div> },
-        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{fmt(row.amount)}</div> },
+        { id: "amount", header: "Amount", width: "120px", cell: (row) => <div className="mono">{formatNumber(fmt(row.amount)}</div> },
         { id: "discount", header: "Discount", width: "120px", cell: (row) => <div className="mono green">{row.discount_amount > 0 ? fmt(row.discount_amount) : '—'}</div> },
         { id: "discountDeadline", header: "Discount Deadline", width: "150px", cell: (row) => <div className="mono small">{row.discount_due_date ?? '—'}</div> }
     ];

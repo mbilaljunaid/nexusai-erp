@@ -1,3 +1,4 @@
+import { formatNumber } from "@/lib/formatters";
 import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
 import { format } from "date-fns";
 
@@ -190,19 +191,19 @@ export function PayAppPDFDocument({ data }: { data: PayAppData }) {
                     <View style={styles.row}>
                         <Text style={{ flex: 1 }}>Original Contract Sum</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            ${data.originalContractSum.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            {formatCurrency(data.originalContractSum)}
                         </Text>
                     </View>
                     <View style={styles.row}>
                         <Text style={{ flex: 1 }}>Net Change by Change Orders</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            ${data.changeOrders.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            {formatNumber(data.changeOrders, 2)}
                         </Text>
                     </View>
                     <View style={[styles.row, { borderBottom: "1pt solid #000", fontWeight: "bold" }]}>
                         <Text style={{ flex: 1 }}>Current Contract Sum</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            ${data.currentContractSum.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            {formatCurrency(data.currentContractSum)}
                         </Text>
                     </View>
                 </View>
@@ -225,16 +226,16 @@ export function PayAppPDFDocument({ data }: { data: PayAppData }) {
                             <Text style={styles.col1}>{item.itemNumber}</Text>
                             <Text style={styles.col2}>{item.description}</Text>
                             <Text style={styles.col3}>
-                                ${item.scheduledValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                                {formatCurrency(item.scheduledValue)}
                             </Text>
                             <Text style={styles.col4}>
-                                ${item.workCompleted.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                                {formatNumber(item.workCompleted, 2)}
                             </Text>
                             <Text style={styles.col5}>
-                                ${item.materialsStored.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                                {formatNumber(item.materialsStored, 2)}
                             </Text>
                             <Text style={styles.col6}>
-                                ${item.totalCompleted.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                                {formatCurrency(item.totalCompleted)}
                             </Text>
                         </View>
                     ))}
@@ -245,19 +246,19 @@ export function PayAppPDFDocument({ data }: { data: PayAppData }) {
                     <View style={styles.totalRow}>
                         <Text style={{ flex: 1, fontWeight: "bold" }}>Total Work Completed and Stored to Date</Text>
                         <Text style={{ width: "20%", textAlign: "right", fontWeight: "bold" }}>
-                            ${totalCompleted.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            {formatCurrency(totalCompleted)}
                         </Text>
                     </View>
                     <View style={styles.row}>
                         <Text style={{ flex: 1 }}>Less Retainage ({data.retainageRate}%)</Text>
                         <Text style={{ width: "20%", textAlign: "right" }}>
-                            ${retainageAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            {formatCurrency(retainageAmount)}
                         </Text>
                     </View>
                     <View style={[styles.totalRow, { backgroundColor: "#f0f0f0" }]}>
                         <Text style={{ flex: 1, fontWeight: "bold", fontSize: 11 }}>AMOUNT DUE THIS APPLICATION</Text>
                         <Text style={{ width: "20%", textAlign: "right", fontWeight: "bold", fontSize: 11 }}>
-                            ${amountDue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                            {formatCurrency(amountDue)}
                         </Text>
                     </View>
                 </View>

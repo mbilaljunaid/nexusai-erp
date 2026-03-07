@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, LucideIcon } from "lucide-react";
@@ -54,7 +55,7 @@ interface MetricCardProps {
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
-export function MetricCard({
+export const MetricCard = memo(function MetricCard({
   title,
   value,
   description,
@@ -147,4 +148,4 @@ export function MetricCard({
       )}
     </Card>
   );
-}
+})

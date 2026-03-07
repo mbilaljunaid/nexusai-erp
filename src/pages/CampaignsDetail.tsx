@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/formatters";
 import { Loader2 } from "lucide-react";
 import { useState} from"react";
 import { useQuery} from"@tanstack/react-query";
@@ -17,7 +18,7 @@ import { format} from"date-fns";
 const formatCurrency = (val: number | string | null | undefined) => {
   if (val === null || val === undefined) return"$0";
   const num = Number(val);
-  return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits: 0}).format(num);
+  return formatCurrency(num);
 };
 
 export default function CampaignsDetail() {

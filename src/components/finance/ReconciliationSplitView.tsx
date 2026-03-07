@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/formatters";
 import { useState} from"react";
 import { useQuery, useMutation} from"@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle} from"@/components/ui/card";
@@ -76,7 +77,7 @@ export function ReconciliationSplitView({ bankAccountId}: ReconciliationSplitVie
             accessorKey:"amount" as any,
             cell: (row: CashStatementLine) => (
                 <span className={Number(row.amount) < 0 ?"text-red-500" :"text-green-600"}>
-                    {new Intl.NumberFormat('en-US', { style:'currency', currency:'USD'}).format(Number(row.amount))}
+                    {formatCurrency(Number(row.amount))}
                 </span>
             )
        },
@@ -103,7 +104,7 @@ export function ReconciliationSplitView({ bankAccountId}: ReconciliationSplitVie
             accessorKey:"amount" as any,
             cell: (row: CashTransaction) => (
                 <span className={Number(row.amount) < 0 ?"text-red-500" :"text-green-600"}>
-                    {new Intl.NumberFormat('en-US', { style:'currency', currency:'USD'}).format(Number(row.amount))}
+                    {formatCurrency(Number(row.amount))}
                 </span>
             )
        },
@@ -128,19 +129,19 @@ export function ReconciliationSplitView({ bankAccountId}: ReconciliationSplitVie
                 <div className="flex gap-8">
                     <div>
                         <p className="text-xs uppercase text-muted-foreground font-semibold">Statement Selection</p>
-                        <p className="text-lg font-bold">{new Intl.NumberFormat('en-US', { style:'currency', currency:'USD'}).format(linesTotal)}</p>
+                        <p className="text-lg font-bold">{formatCurrency(linesTotal)}</p>
                     </div>
                     <div className="flex items-center">
                         <Link2 className="text-muted-foreground h-6 w-6" />
                     </div>
                     <div>
                         <p className="text-xs uppercase text-muted-foreground font-semibold">Internal Selection</p>
-                        <p className="text-lg font-bold">{new Intl.NumberFormat('en-US', { style:'currency', currency:'USD'}).format(txnsTotal)}</p>
+                        <p className="text-lg font-bold">{formatCurrency(txnsTotal)}</p>
                     </div>
                     <div className="border-l pl-8">
                         <p className="text-xs uppercase text-muted-foreground font-semibold">Difference</p>
                         <p className={cn(`text-lg font-bold ${Math.abs(difference) < 0.01 ?"text-green-600" :"text-red-600"}`)}>
-                            {new Intl.NumberFormat('en-US', { style:'currency', currency:'USD'}).format(difference)}
+                            {formatCurrency(difference)}
                         </p>
                     </div>
                 </div>

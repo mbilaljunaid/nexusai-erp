@@ -6,6 +6,7 @@ import { Calculator, TrendingUp, TrendingDown, FileCheck, RefreshCw } from 'luci
 import { StandardPage } from '@/components/layout/StandardPage';
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Input } from "@/components/ui/input";
+import { formatCurrency } from "@/lib/formatters";
 
 interface TaxProvision {
     id: string;
@@ -22,7 +23,7 @@ interface TaxProvision {
 }
 
 const fmtCurrency = (n: number) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+    formatCurrency(n);
 const fmtPct = (n: number) => `${(n * 100).toFixed(2)}%`;
 
 async function computeProvision(params: any): Promise<any> {
@@ -71,13 +72,13 @@ export default function TaxProvisionWorkbench() {
     });
 
     const provisionColumns: SpreadsheetColumn<TaxProvision>[] = [
-        { id: "entity_id", header: "Entity", width: "120px", cell: (row) => row.entity_id.slice(0, 8) },
+        { id: "entity_id", header: "Entity", width: "120px", cell: (row) => formatNumber(row.entity_id.slice(0, 8) },
         { id: "period_name", header: "Period", width: "120px", cell: (row) => row.period_name },
         { id: "pretax_income", header: "Pre-Tax Income", width: "150px", cell: (row) => fmtCurrency(row.pretax_income) },
         { id: "current_tax_expense", header: "Tax Expense", width: "150px", cell: (row) => fmtCurrency(row.current_tax_expense) },
         { id: "effective_tax_rate", header: "ETR", width: "100px", cell: (row) => fmtPct(row.effective_tax_rate) },
         { id: "standard", header: "Standard", width: "100px", cell: (row) => <span className="standard-tag">{row.standard}</span> },
-        { id: "status", header: "Status", width: "120px", cell: (row) => <span className={cn(`prov-status ${row.status.toLowerCase()}`)}>{row.status}</span> }
+        { id: "status", header: "Status", width: "120px", cell: (row) => <span className={cn(`prov-status ${formatNumber(row.status.toLowerCase()}`)}>{row.status}</span> }
     ];
 
     const handleCompute = useCallback(() => {
@@ -116,12 +117,12 @@ export default function TaxProvisionWorkbench() {
             description="ASC 740 / IAS 12 current & deferred tax computation"
             actions={
                 <div className="tax-controls">
-                    <Select value={String(year)} onValueChange={val => setYear(Number(val))}>
+                    <Select value={formatNumber(String(year)} onValueChange={val => setYear(Number(val))}>
                         <SelectTrigger className="tax-select" aria-label="Fiscal year">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            {[2024, 2025, 2026, 2027].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+                            {[2024, 2025, 2026, 2027].map(y => <SelectItem key={y} value={formatNumber(String(y)}>{y}</SelectItem>)}
                         </SelectContent>
                     </Select>
                     <div className="standard-toggle">
@@ -171,10 +172,10 @@ export default function TaxProvisionWorkbench() {
                         <>
                             <h2 className="card-title">Provision Result</h2>
                             <div className="result-kpis">
-                                <MetricCard label="Taxable Income" value={fmtCurrency(result.taxableIncome)} icon={<Calculator size={20} />} color="#1d4ed8" />
-                                <MetricCard label="Current Tax Expense" value={fmtCurrency(result.currentTaxExpense)} icon={<TrendingUp size={20} />} color="#dc2626" />
-                                <MetricCard label="Net Deferred Tax" value={fmtCurrency(result.netDeferredTax)} icon={result.netDeferredTax >= 0 ? <TrendingDown size={20} /> : <TrendingUp size={20} />} color={result.netDeferredTax >= 0 ? '#059669' : '#dc2626'} />
-                                <MetricCard label="Total Tax Expense" value={fmtCurrency(result.totalTaxExpense)} icon={<FileCheck size={20} />} color="#7c3aed" />
+                                <MetricCard label="Taxable Income" value={formatNumber(fmtCurrency(result.taxableIncome)} icon={<Calculator size={20} />} color="#1d4ed8" />
+                                <MetricCard label="Current Tax Expense" value={formatNumber(fmtCurrency(result.currentTaxExpense)} icon={<TrendingUp size={20} />} color="#dc2626" />
+                                <MetricCard label="Net Deferred Tax" value={formatNumber(fmtCurrency(result.netDeferredTax)} icon={result.netDeferredTax >= 0 ? <TrendingDown size={20} /> : <TrendingUp size={20} />} color={result.netDeferredTax >= 0 ? '#059669' : '#dc2626'} />
+                                <MetricCard label="Total Tax Expense" value={formatNumber(fmtCurrency(result.totalTaxExpense)} icon={<FileCheck size={20} />} color="#7c3aed" />
                                 <MetricCard label="Effective Tax Rate" value={result.effectiveTaxRate} icon={<TrendingUp size={20} />} color="#d97706" />
                             </div>
                             <div className="result-waterfall">
@@ -192,19 +193,19 @@ export default function TaxProvisionWorkbench() {
                                 </div>
                                 <div className="waterfall-row total">
                                     <span>= Taxable Income</span>
-                                    <span>{fmtCurrency(result.taxableIncome)}</span>
+                                    <span>{formatNumber(fmtCurrency(result.taxableIncome)}</span>
                                 </div>
                                 <div className="waterfall-row adj">
-                                    <span>× Tax Rate ({fmtPct(parseFloat(form.taxRate))})</span>
-                                    <span>{fmtCurrency(result.currentTaxExpense)}</span>
+                                    <span>× Tax Rate ({formatNumber(fmtPct(parseFloat(form.taxRate))})</span>
+                                    <span>{formatNumber(fmtCurrency(result.currentTaxExpense)}</span>
                                 </div>
                                 <div className="waterfall-row adj">
                                     <span>± Net Deferred Tax (DTA - DTL)</span>
-                                    <span>{fmtCurrency(result.netDeferredTax)}</span>
+                                    <span>{formatNumber(fmtCurrency(result.netDeferredTax)}</span>
                                 </div>
                                 <div className="waterfall-row grand-total">
                                     <span>= Total Tax Expense (ASC 740)</span>
-                                    <span>{fmtCurrency(result.totalTaxExpense)}</span>
+                                    <span>{formatNumber(fmtCurrency(result.totalTaxExpense)}</span>
                                 </div>
                             </div>
                         </>

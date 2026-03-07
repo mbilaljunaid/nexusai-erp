@@ -25,6 +25,7 @@ import { ESignatureModal } from "@/components/contracts/ESignatureModal";
 import { apiRequest } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { downloadFile } from "@/lib/utils";
+import { formatCurrency } from "@/lib/formatters";
 
 export default function ContractDetail() {
     const [, params] = useRoute("/contracts/:id");
@@ -190,10 +191,7 @@ export default function ContractDetail() {
                                     <span className="text-muted-foreground">Total Value:</span>
                                     <span className="font-medium">
                                         {contract.totalAmount ?
-                                            new Intl.NumberFormat('en-US', {
-                                                style: 'currency',
-                                                currency: contract.currency || 'USD'
-                                            }).format(Number(contract.totalAmount))
+                                            formatCurrency(Number(contract.totalAmount, contract.currency))
                                             : '-'
                                         }
                                     </span>

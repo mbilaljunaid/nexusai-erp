@@ -8,6 +8,7 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { formatCurrency } from "@/lib/formatters";
 
 
 interface ScreeningResult {
@@ -50,7 +51,7 @@ const RECON_CFG: Record<string, string> = {
     Approved: 'bg-emerald-100 text-emerald-600',
 };
 
-const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+const fmt = (n: number) => formatCurrency(n);
 
 export default function DebtCovenantMonitor() {
     const [activeTab, setActiveTab] = useState<'sanctions' | 'recon'>('sanctions');
@@ -122,7 +123,7 @@ export default function DebtCovenantMonitor() {
         { id: "score", header: "Score", width: "100px", cell: (row) => <span className="mono">{row.match_score?.toFixed(0) ?? '—'}%</span> },
         { id: "lists", header: "Lists", width: "150px", cell: (row) => <div className="lists">{(row.list_sources ?? []).map((l: string) => <span key={l} className="list-tag">{l}</span>)}</div> },
         { id: "programs", header: "Programs", width: "150px", cell: (row) => <div className="lists">{(row.program_tags ?? []).map((p: string) => <span key={p} className="prog-tag">{p}</span>)}</div> },
-        { id: "date", header: "Date", width: "100px", cell: (row) => <span className="mono small">{formatDate(row.screened_at)}</span> },
+        { id: "date", header: "Date", width: "100px", cell: (row) => <span className="mono small">{formatNumber(formatDate(row.screened_at)}</span> },
         {
             id: "action", header: "", width: "100px", cell: (row) => (
                 (row.match_status === 'PotentialMatch' || row.match_status === 'Confirmed') && !row.reviewed_by ? (
@@ -134,13 +135,13 @@ export default function DebtCovenantMonitor() {
 
     const reconColumns: SpreadsheetColumn<any>[] = [
         { id: "period", header: "Period", width: "150px", cell: (row) => <span className="mono fw">{row.period_name}</span> },
-        { id: "stmt_bal", header: "Statement Balance", width: "150px", cell: (row) => <span className="mono">{fmt(row.statement_balance)}</span> },
-        { id: "gl_bal", header: "GL Balance", width: "150px", cell: (row) => <span className="mono">{fmt(row.gl_balance)}</span> },
-        { id: "recon_bal", header: "Recon Balance", width: "150px", cell: (row) => <span className="mono">{fmt(row.reconciled_balance)}</span> },
+        { id: "stmt_bal", header: "Statement Balance", width: "150px", cell: (row) => <span className="mono">{formatNumber(fmt(row.statement_balance)}</span> },
+        { id: "gl_bal", header: "GL Balance", width: "150px", cell: (row) => <span className="mono">{formatNumber(fmt(row.gl_balance)}</span> },
+        { id: "recon_bal", header: "Recon Balance", width: "150px", cell: (row) => <span className="mono">{formatNumber(fmt(row.reconciled_balance)}</span> },
         {
             id: "variance", header: "Variance", width: "150px", cell: (row) => {
                 const variance = Number(row.reconciled_balance) - Number(row.gl_balance);
-                return <span className={cn(`mono ${Math.abs(variance) < 0.01 ? 'green' : 'red'}`)}>{fmt(variance)}</span>;
+                return <span className={cn(`mono ${Math.abs(variance) < 0.01 ? 'green' : 'red'}`)}>{formatNumber(fmt(variance)}</span>;
             }
         },
         {

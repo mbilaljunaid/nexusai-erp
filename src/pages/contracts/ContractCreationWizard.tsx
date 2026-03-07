@@ -13,6 +13,7 @@ import { FileText, ArrowRight, ArrowLeft, CheckCircle, Loader2 } from "lucide-re
 import { toast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { DatePicker } from '@/components/ui/DatePicker';
+import { formatCurrency } from "@/lib/formatters";
 
 
 export default function ContractCreationWizard() {
@@ -232,10 +233,7 @@ export default function ContractCreationWizard() {
                                         <span className="text-muted-foreground">Value:</span>
                                         <p className="font-medium mt-1">
                                             {formData.totalAmount ?
-                                                new Intl.NumberFormat('en-US', {
-                                                    style: 'currency',
-                                                    currency: formData.currency
-                                                }).format(Number(formData.totalAmount))
+                                                formatCurrency(Number(formData.totalAmount, formData.currency))
                                                 : '-'
                                             }
                                         </p>

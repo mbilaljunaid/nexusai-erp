@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/formatters";
 import { Loader2 } from "lucide-react";
 import { formatDate} from"@/lib/dateUtils";
 
@@ -34,7 +35,7 @@ export default function QuotesDetail() {
     // Helper to format currency
     const formatCurrency = (val: number | string | null | undefined) => {
         if (!val) return"$0";
-        return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits: 0}).format(Number(val));
+        return formatCurrency(Number(val));
    };
 
     const acceptedQuotes = quotes.filter(q => q.status ==='Accepted');

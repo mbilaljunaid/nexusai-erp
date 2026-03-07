@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from '@/components/layout/StandardPage';
+import { formatNumber } from "@/lib/formatters";
 
 interface LeaseWorkflowItem {
     id: string;
@@ -65,7 +66,7 @@ export default function LeaseApprovalsWorkbench() {
     });
 
     const formatCurrency = (amount: number, currency: string = "USD") => {
-        return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
+        return formatNumber(amount);
     };
 
     return (
@@ -104,7 +105,7 @@ export default function LeaseApprovalsWorkbench() {
                                                 <div>
                                                     <p className="font-semibold text-lg">{lease.leaseName}</p>
                                                     <p className="text-sm text-muted-foreground">
-                                                        Submitted by {lease.submittedBy} • {formatDate(lease.submittedAt)}
+                                                        Submitted by {lease.submittedBy} • {formatNumber(formatDate(lease.submittedAt)}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
