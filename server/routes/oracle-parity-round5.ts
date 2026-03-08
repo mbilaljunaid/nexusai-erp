@@ -388,3 +388,310 @@ oracleParityRouter.get("/ce/cash-pools", async (req, res) => {
         res.status(500).json({ error: e.message });
     }
 });
+
+oracleParityRouter.post("/ce/cash-pools", async (req, res) => {
+    try {
+        const { poolName, poolType, headerAccount, currencyCode, bankName, concentrationAccount, members } = req.body;
+        const poolResult = await db.execute(sql.raw(`
+      INSERT INTO ce_cash_pools (pool_name, pool_type, header_account, currency_code, bank_name, concentration_account)
+      VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+            [poolName, poolType || "Notional", headerAccount, currencyCode || "USD", bankName, concentrationAccount]));
+        const pool = (poolResult.rows ?? poolResult)[0];
+        if (members?.length) {
+            for (const m of members) {
+                await db.execute(sql.raw(`
+          INSERT INTO ce_cash_pool_members (pool_id, entity_name, account_number, bank_code, currency_code, contribution_pct)
+          VALUES ($1,$2,$3,$4,$5,$6)`,
+                    [pool.id, m.entityName, m.accountNumber, m.bankCode, m.currencyCode, m.contributionPct]));
+            }
+        }
+        res.status(201).json(pool);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ─────────────────────────────────────────────────────────────
+// FA: Prorate Conventions
+// ─────────────────────────────────────────────────────────────
+oracleParityRouter.get("/fa/prorate-conventions", async (req, res) => {
+    try {
+        const result = await db.execute(sql.raw(`SELECT * FROM fa_prorate_conventions ORDER BY convention_code`));
+        res.json(result.rows ?? result);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.post("/fa/prorate-conventions", async (req, res) => {
+    try {
+        const { conventionCode, conventionName, description, firstYearRule, lastYearRule } = req.body;
+        if (!conventionCode || !conventionName) {
+            return res.status(400).json({ error: "conventionCode and conventionName are required" });
+        }
+        const result = await db.execute(sql.raw(`
+      INSERT INTO fa_prorate_conventions (convention_code, convention_name, description, first_year_rule, last_year_rule)
+      VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+            [conventionCode, conventionName, description, firstYearRule, lastYearRule]));
+        res.status(201).json((result.rows ?? result)[0]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.put("/fa/prorate-conventions/:id", async (req, res) => {
+    try {
+        const { conventionName, description, firstYearRule, lastYearRule, isActive } = req.body;
+        const result = await db.execute(sql.raw(`
+      UPDATE fa_prorate_conventions SET convention_name=$1, description=$2, first_year_rule=$3,
+        last_year_rule=$4, is_active=$5 WHERE id=$6 RETURNING *`,
+            [conventionName, description, firstYearRule, lastYearRule, isActive !== false, req.params.id]));
+        res.json((result.rows ?? result)[0]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.delete("/fa/prorate-conventions/:id", async (req, res) => {
+    try {
+        await db.execute(sql.raw(`UPDATE fa_prorate_conventions SET is_active=FALSE WHERE id=$1`, [req.params.id]));
+        res.json({ success: true });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ─────────────────────────────────────────────────────────────
+// FA: Asset Reclassifications
+// ─────────────────────────────────────────────────────────────
+oracleParityRouter.get("/fa/reclassifications", async (req, res) => {
+    try {
+        const { status, assetId } = req.query;
+        let query = `SELECT r.*, fc.category_name as from_category, tc.category_name as to_category
+      FROM fa_reclassifications r
+      LEFT JOIN fa_categories fc ON fc.id = r.from_category_id
+      LEFT JOIN fa_categories tc ON tc.id = r.to_category_id WHERE 1=1`;
+        const params: any[] = [];
+        if (status) { query += ` AND r.status = $${params.length + 1}`; params.push(status); }
+        if (assetId) { query += ` AND r.asset_id = $${params.length + 1}`; params.push(assetId); }
+        query += ` ORDER BY r.created_at DESC`;
+        const result = await db.execute(sql.raw(query));
+        res.json(result.rows ?? result);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.post("/fa/reclassifications", async (req, res) => {
+    try {
+        const { assetId, fromCategoryId, toCategoryId, effectiveDate, oldDeprnMethod,
+            newDeprnMethod, oldLifeMonths, newLifeMonths, notes, requestedBy } = req.body;
+        if (!assetId || !toCategoryId || !effectiveDate) {
+            return res.status(400).json({ error: "assetId, toCategoryId, and effectiveDate are required" });
+        }
+        const result = await db.execute(sql.raw(`
+      INSERT INTO fa_reclassifications
+        (asset_id, from_category_id, to_category_id, effective_date,
+         old_deprn_method, new_deprn_method, old_life_months, new_life_months, notes, requested_by, status)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'Pending') RETURNING *`,
+            [assetId, fromCategoryId, toCategoryId, effectiveDate,
+                oldDeprnMethod, newDeprnMethod, oldLifeMonths, newLifeMonths, notes, requestedBy]));
+        res.status(201).json((result.rows ?? result)[0]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.post("/fa/reclassifications/:id/post", async (req, res) => {
+    try {
+        const { glJournalRef, approvedBy } = req.body;
+        const journalRef = glJournalRef || `RECLASSIFY-${Date.now().toString().slice(-6)}`;
+        const result = await db.execute(sql.raw(`
+      UPDATE fa_reclassifications
+        SET status='Posted', gl_journal_ref=$1, approved_by=$2, updated_at=NOW()
+      WHERE id=$3 AND status='Pending'
+      RETURNING *`,
+            [journalRef, approvedBy, req.params.id]));
+        const rows = result.rows ?? (result as any);
+        if (!rows.length) return res.status(404).json({ error: "Reclassification not found or already posted" });
+        res.json({ ...rows[0], message: `GL Journal ${journalRef} created` });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.post("/fa/reclassifications/:id/reverse", async (req, res) => {
+    try {
+        const result = await db.execute(sql.raw(`
+      UPDATE fa_reclassifications SET status='Reversed', updated_at=NOW()
+      WHERE id=$1 AND status='Posted' RETURNING *`,
+            [req.params.id]));
+        const rows = result.rows ?? (result as any);
+        if (!rows.length) return res.status(404).json({ error: "Reclassification not found or not in Posted status" });
+        res.json(rows[0]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ─────────────────────────────────────────────────────────────
+// Tax: eBTax — Rates and Jurisdictions CRUD
+// ─────────────────────────────────────────────────────────────
+oracleParityRouter.get("/tax/rates", async (req, res) => {
+    try {
+        const { taxId } = req.query;
+        let query = `SELECT r.*, t.tax_code, t.tax_name FROM zx_rates r
+      LEFT JOIN zx_taxes t ON t.id = r.tax_id WHERE 1=1`;
+        const params: any[] = [];
+        if (taxId) { query += ` AND r.tax_id = $${params.length + 1}`; params.push(taxId); }
+        query += ` ORDER BY t.tax_code, r.effective_from DESC`;
+        const result = await db.execute(sql.raw(query));
+        res.json(result.rows ?? result);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.post("/tax/rates", async (req, res) => {
+    try {
+        const { taxId, rateCode, rateName, percentageRate, effectiveFrom, effectiveTo, isDefault } = req.body;
+        if (!taxId || !rateCode || percentageRate == null) {
+            return res.status(400).json({ error: "taxId, rateCode, and percentageRate are required" });
+        }
+        // If setting as default, clear existing default
+        if (isDefault) {
+            await db.execute(sql.raw(
+                `UPDATE zx_rates SET is_default=FALSE WHERE tax_id=$1`, [taxId]));
+        }
+        const result = await db.execute(sql.raw(`
+      INSERT INTO zx_rates (tax_id, rate_code, rate_name, percentage_rate, effective_from, effective_to, is_default)
+      VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+            [taxId, rateCode, rateName, percentageRate, effectiveFrom, effectiveTo, !!isDefault]));
+        res.status(201).json((result.rows ?? result)[0]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.get("/tax/jurisdictions", async (req, res) => {
+    try {
+        const { taxId } = req.query;
+        const params: any[] = [];
+        let query = `SELECT * FROM zx_jurisdictions WHERE 1=1`;
+        if (taxId) { query += ` AND tax_id = $${params.length + 1}`; params.push(taxId); }
+        query += ` ORDER BY country_code, jurisdiction_name`;
+        const result = await db.execute(sql.raw(query));
+        res.json(result.rows ?? result);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.post("/tax/jurisdictions", async (req, res) => {
+    try {
+        const { taxId, jurisdictionCode, jurisdictionName, countryCode, regionCode, city, effectiveFrom } = req.body;
+        const result = await db.execute(sql.raw(`
+      INSERT INTO zx_jurisdictions (tax_id, jurisdiction_code, jurisdiction_name, country_code, region_code, city, effective_from)
+      VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+            [taxId, jurisdictionCode, jurisdictionName, countryCode, regionCode, city, effectiveFrom]));
+        res.status(201).json((result.rows ?? result)[0]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+oracleParityRouter.post("/tax/taxes", async (req, res) => {
+    try {
+        const { regimeId, taxCode, taxName, countryCode, recoveryRate } = req.body;
+        if (!regimeId || !taxCode || !taxName) {
+            return res.status(400).json({ error: "regimeId, taxCode, and taxName are required" });
+        }
+        const result = await db.execute(sql.raw(`
+      INSERT INTO zx_taxes (regime_id, tax_code, tax_name, country_code, recovery_rate)
+      VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+            [regimeId, taxCode, taxName, countryCode, recoveryRate ?? 100]));
+        res.status(201).json((result.rows ?? result)[0]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Enhanced TRN validation — regex + country-specific rule sets + full logging
+oracleParityRouter.post("/tax/trn-validate", async (req, res) => {
+    try {
+        const { trn, countryCode, supplierId, supplierName } = req.body;
+
+        // Comprehensive format patterns
+        const patterns: Record<string, { regex: RegExp; label: string; example: string }> = {
+            "GB": { regex: /^GB(\d{9}|\d{12}|GD\d{3}|HA\d{3})$/, label: "UK VAT", example: "GB123456789" },
+            "DE": { regex: /^DE\d{9}$/, label: "German USt-IdNr", example: "DE123456789" },
+            "FR": { regex: /^FR[A-HJ-NP-Z0-9]{2}\d{9}$/, label: "French TVA", example: "FRXX123456789" },
+            "IT": { regex: /^IT\d{11}$/, label: "Italian P.IVA", example: "IT12345678901" },
+            "ES": { regex: /^ES[A-Z0-9]\d{7}[A-Z0-9]$/, label: "Spanish NIF", example: "ESA12345678" },
+            "NL": { regex: /^NL\d{9}B\d{2}$/, label: "Dutch BTW", example: "NL123456789B01" },
+            "AE": { regex: /^1\d{14}$/, label: "UAE TRN (FTA)", example: "100123456700003" },
+            "SA": { regex: /^3\d{14}$/, label: "Saudi VAT (ZATCA)", example: "312345678900003" },
+            "AU": { regex: /^\d{11}$/, label: "Australian ABN", example: "12345678901" },
+            "US": { regex: /^\d{2}-\d{7}$/, label: "US EIN", example: "12-3456789" },
+            "IN": { regex: /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/, label: "India GSTIN", example: "22AAAAA0000A1Z5" },
+            "CA": { regex: /^\d{9}(RT\d{4})?$/, label: "Canada BN/GST", example: "123456789RT0001" },
+            "SG": { regex: /^(T|S|R)\d{2}[A-Z]{2}\d{4}[A-Z]$/, label: "Singapore GST Reg", example: "M12345678X" },
+        };
+
+        const cc = countryCode?.toUpperCase();
+        const normalised = trn?.replace(/[\s\-\.]/g, "").toUpperCase();
+        const ruleSet = patterns[cc];
+        let result: string;
+        let validationType: string;
+        let hint: string | undefined;
+
+        if (ruleSet) {
+            const passed = ruleSet.regex.test(normalised);
+            result = passed ? "Valid" : "Invalid";
+            validationType = "FORMAT_REGEX";
+            if (!passed) hint = `Expected format: ${ruleSet.label} — e.g. ${ruleSet.example}`;
+        } else {
+            result = "Unverified";
+            validationType = "NO_RULE";
+            hint = `No validation rule defined for country ${cc}. Manual verification recommended.`;
+        }
+
+        // Log every validation attempt
+        await db.execute(sql.raw(`
+      INSERT INTO zx_trn_validation_log
+        (supplier_id, supplier_name, trn_number, country_code, validation_type, result)
+      VALUES ($1,$2,$3,$4,$5,$6)`,
+            [supplierId || null, supplierName || null, trn, cc, validationType, result]));
+
+        res.json({
+            trn,
+            normalised,
+            countryCode: cc,
+            result,
+            validationType,
+            ruleLabel: ruleSet?.label,
+            example: ruleSet?.example,
+            hint
+        });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Lookup recent TRN validation history for a supplier
+oracleParityRouter.get("/tax/trn-validate/history", async (req, res) => {
+    try {
+        const { supplierId, trn, limit } = req.query;
+        const params: any[] = [];
+        let query = `SELECT * FROM zx_trn_validation_log WHERE 1=1`;
+        if (supplierId) { query += ` AND supplier_id = $${params.length + 1}`; params.push(supplierId); }
+        if (trn) { query += ` AND trn_number ILIKE $${params.length + 1}`; params.push(`%${trn}%`); }
+        query += ` ORDER BY validated_at DESC LIMIT $${params.length + 1}`;
+        params.push(Math.min(Number(limit) || 50, 200));
+        const result = await db.execute(sql.raw(query));
+        res.json(result.rows ?? result);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+

@@ -175,6 +175,35 @@ import DistributionSetTemplates from "@/pages/finance/ap/config/DistributionSetT
 import FourWayMatchConfig from "@/pages/finance/ap/config/FourWayMatchConfig";
 import PerDiemRateTable from "@/pages/expenses/PerDiemRateTable";
 
+// Oracle Parity — Round 6 P1 (Critical Missing Pages)
+import ExpenseReportEntry from "@/pages/expenses/ExpenseReportEntry";
+import ExpenseApprovalWorkbench from "@/pages/expenses/ExpenseApprovalWorkbench";
+import FaMassChange from "@/pages/fixed-assets/FaMassChange";
+import FaWhatIfAnalysis from "@/pages/fixed-assets/FaWhatIfAnalysis";
+import VatReturnWizard from "@/pages/tax/VatReturnWizard";
+
+// Oracle Parity — Round 6 P2 (Important Missing Pages)
+import BankAccountSetup from "@/pages/finance/cash/BankAccountSetup";
+import BankStatementMatchRules from "@/pages/finance/cash/BankStatementMatchRules";
+import FaAssetAdditionWizard from "@/pages/fixed-assets/FaAssetAdditionWizard";
+import FaDepreciationProjection from "@/pages/fixed-assets/FaDepreciationProjection";
+import ArStatementPrint from "@/pages/finance/ar/ArStatementPrint";
+import ArLockboxSetup from "@/pages/finance/ar/ArLockboxSetup";
+import GlEncumbranceSetup from "@/pages/gl/GlEncumbranceSetup";
+import GlSecondaryLedgerSetup from "@/pages/gl/GlSecondaryLedgerSetup";
+import TaxSubscriptionSetup from "@/pages/tax/TaxSubscriptionSetup";
+import SubleaseManagement from "@/pages/leases/SubleaseManagement";
+
+// Oracle Parity — Round 6 P3 (Final 2% Remaining Gaps)
+import APPositivePayConfig from "@/pages/finance/ap/APPositivePayConfig";
+import FaMassAdditions from "@/pages/fixed-assets/FaMassAdditions";
+import FaGroupAssets from "@/pages/fixed-assets/FaGroupAssets";
+import FaImpairmentTesting from "@/pages/fixed-assets/FaImpairmentTesting";
+import ArRemittanceBatch from "@/pages/finance/ar/ArRemittanceBatch";
+import ArCustomerHierarchy from "@/pages/finance/ar/ArCustomerHierarchy";
+import CamtImport from "@/pages/finance/cash/CamtImport";
+import LeaseInitialDirectCosts from "@/pages/leases/LeaseInitialDirectCosts";
+
 // Lease & Contracts
 import LeasePortfolioWorkbench from "@/pages/leases/LeasePortfolioWorkbench";
 import LeaseSystemSetup from "@/pages/leases/LeaseSystemSetup";
@@ -398,8 +427,32 @@ export default function FinanceRoutes() {
                 <Route path="/expenses/audit-rules" component={ExpenseAuditRuleSets} />
                 <Route path="/expenses/payroll-reimbursement" component={ExpensePayrollReimbursement} />
                 <Route path="/expenses/per-diem-rates" component={PerDiemRateTable} />
+                <Route path="/expenses/new-report" component={ExpenseReportEntry} />
+                <Route path="/expenses/approvals" component={ExpenseApprovalWorkbench} />
                 <Route path="/finance/ap/config/distribution-sets" component={DistributionSetTemplates} />
                 <Route path="/finance/ap/config/match-tolerances" component={FourWayMatchConfig} />
+                <Route path="/fixed-assets/mass-change" component={FaMassChange} />
+                <Route path="/fixed-assets/what-if" component={FaWhatIfAnalysis} />
+                <Route path="/fixed-assets/add-asset" component={FaAssetAdditionWizard} />
+                <Route path="/fixed-assets/depreciation-projection" component={FaDepreciationProjection} />
+                <Route path="/finance/tax/vat-return" component={VatReturnWizard} />
+                <Route path="/finance/tax/subscriptions" component={TaxSubscriptionSetup} />
+                <Route path="/finance/cash/bank-accounts" component={BankAccountSetup} />
+                <Route path="/finance/cash/match-rules" component={BankStatementMatchRules} />
+                <Route path="/finance/ar/statements" component={ArStatementPrint} />
+                <Route path="/finance/ar/lockbox-setup" component={ArLockboxSetup} />
+                <Route path="/gl/encumbrance-types" component={GlEncumbranceSetup} />
+                <Route path="/gl/secondary-ledgers" component={GlSecondaryLedgerSetup} />
+                <Route path="/leases/subleases" component={SubleaseManagement} />
+                <Route path="/finance/ap/positive-pay" component={APPositivePayConfig} />
+                <Route path="/fixed-assets/mass-additions" component={FaMassAdditions} />
+                <Route path="/fixed-assets/group-assets" component={FaGroupAssets} />
+                <Route path="/fixed-assets/impairment" component={FaImpairmentTesting} />
+                <Route path="/finance/ar/remittance-batches" component={ArRemittanceBatch} />
+                <Route path="/finance/ar/customer-hierarchy" component={ArCustomerHierarchy} />
+                <Route path="/finance/cash/camt-import" component={CamtImport} />
+                <Route path="/leases/initial-direct-costs" component={LeaseInitialDirectCosts} />
+
 
                 <Route path="/finance/ap/settings">
                     <ProtectedRoute>
