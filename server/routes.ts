@@ -103,6 +103,7 @@ import { registerSupplierRoutes } from "./modules/supplier/routes";
 import featureFlagRoutes from "./modules/admin/feature-flag.routes";
 import pdfRoutes from "./routes/pdf.routes";
 import { oracleParityRouter } from "./routes/oracle-parity-round5";
+import { scmParityV8Router } from "./routes/scm-parity-v8";
 
 
 export async function registerRoutes(
@@ -346,6 +347,9 @@ export async function registerRoutes(
 
   // Oracle Parity Round 5 — AR Memos, AP Match Tolerances, FA Tax Books, Expense, Tax eBTax, Lease Approval Chains
   app.use("/api", oracleParityRouter);
+
+  // SCM/MFG Parity v8 — ASN Acknowledgements, Consignment, RMA, Production Adherence, Transfer Pricing, Multi-Modal, Scorecard KPIs
+  app.use("/api", scmParityV8Router);
 
   // Order Management
   app.use("/api/order-management", orderRouter);

@@ -41,6 +41,10 @@ import OSPWorkbench from "@/pages/manufacturing/OSPWorkbench";
 import SCMEventMonitor from "@/pages/manufacturing/SCMEventMonitor";
 import WorkInstructionLibrary from "@/pages/manufacturing/WorkInstructionLibrary";
 import MRPExplosionViewer from "@/pages/manufacturing/MRPExplosionViewer";
+import BOMEffectivityEditor from "@/pages/manufacturing/BOMEffectivityEditor";
+import ProductionAdherenceReport from "@/pages/manufacturing/ProductionAdherenceReport";
+
+
 
 
 
@@ -60,6 +64,10 @@ import ContractPurchaseAgreement from "@/pages/procurement/ContractPurchaseAgree
 import FundsCheckDashboard from "@/pages/procurement/FundsCheckDashboard";
 import PunchoutCatalogSetup from "@/pages/procurement/PunchoutCatalogSetup";
 import SupplierNegotiationWorkbench from "@/pages/procurement/SupplierNegotiationWorkbench";
+import SupplierScorecardKPI from "@/pages/procurement/SupplierScorecardKPI";
+import SupplierASNPortal from "@/pages/procurement/SupplierASNPortal";
+
+
 
 
 
@@ -82,6 +90,8 @@ import CarrierRateWorkbench from "@/pages/transportation/CarrierRateWorkbench";
 import ShipmentTrackingDashboard from "@/pages/transportation/ShipmentTrackingDashboard";
 import DangerousGoodsCompliance from "@/pages/transportation/DangerousGoodsCompliance";
 import EDI214EventLog from "@/pages/transportation/EDI214EventLog";
+import MultiModalShipmentOptimizer from "@/pages/transportation/MultiModalShipmentOptimizer";
+
 
 
 import CostComponents from "@/pages/lcm/CostComponents";
@@ -96,6 +106,8 @@ import CostVarianceReport from "@/pages/cost-management/CostVarianceReport";
 
 import ReceiptAccountingViewer from "@/pages/cost-management/ReceiptAccountingViewer";
 import CostMethodSetup from "@/pages/cost-management/CostMethodSetup";
+import TransferPricingSetup from "@/pages/cost-management/TransferPricingSetup";
+
 
 import SlaDashboard from "@/pages/sla/SlaDashboard";
 import MappingSetWorkbench from "@/pages/sla/MappingSetWorkbench";
@@ -122,7 +134,16 @@ import PackStation from "@/pages/scm/wms/PackStation";
 import CrossDockingWorkbench from "@/pages/scm/wms/CrossDockingWorkbench";
 import TaskInterleavingEngine from "@/pages/scm/wms/TaskInterleavingEngine";
 import LPNTransactionWorkbench from "@/pages/scm/wms/LPNTransactionWorkbench";
+import BOLGenerator from "@/pages/scm/wms/BOLGenerator";
+import RMAWorkbench from "@/pages/scm/wms/RMAWorkbench";
+
+
 import UOMConversionMatrix from "@/pages/inventory/UOMConversionMatrix";
+import ItemCategoryHierarchy from "@/pages/inventory/ItemCategoryHierarchy";
+import ItemMasterOrgTabs from "@/pages/inventory/ItemMasterOrgTabs";
+import ConsignmentStockManager from "@/pages/inventory/ConsignmentStockManager";
+
+
 
 
 
@@ -167,6 +188,10 @@ export default function ScmRoutes() {
             <Route path="/manufacturing/scm-events" component={SCMEventMonitor} />
             <Route path="/manufacturing/work-instructions" component={WorkInstructionLibrary} />
             <Route path="/manufacturing/mrp-explosion" component={MRPExplosionViewer} />
+            <Route path="/manufacturing/bom-effectivity" component={BOMEffectivityEditor} />
+            <Route path="/manufacturing/production-adherence" component={ProductionAdherenceReport} />
+
+
 
 
 
@@ -187,6 +212,10 @@ export default function ScmRoutes() {
             <Route path="/procurement/funds-check" component={FundsCheckDashboard} />
             <Route path="/procurement/punchout" component={PunchoutCatalogSetup} />
             <Route path="/procurement/negotiations" component={SupplierNegotiationWorkbench} />
+            <Route path="/procurement/supplier-scorecard" component={SupplierScorecardKPI} />
+            <Route path="/procurement/asn-portal" component={SupplierASNPortal} />
+
+
 
 
 
@@ -205,6 +234,11 @@ export default function ScmRoutes() {
             <Route path="/inventory/min-max" component={MinMaxPlanningSetup} />
             <Route path="/inventory/material-status" component={MaterialStatusControls} />
             <Route path="/inventory/uom-conversions" component={UOMConversionMatrix} />
+            <Route path="/inventory/categories" component={ItemCategoryHierarchy} />
+            <Route path="/inventory/item-master-orgs" component={ItemMasterOrgTabs} />
+            <Route path="/inventory/consignment" component={ConsignmentStockManager} />
+
+
 
 
             <Route path="/inventory/work-orders" component={WorkOrdersDashboard} />
@@ -226,6 +260,10 @@ export default function ScmRoutes() {
             <Route path="/scm/wms/cross-docking" component={CrossDockingWorkbench} />
             <Route path="/scm/wms/task-interleaving" component={TaskInterleavingEngine} />
             <Route path="/scm/wms/lpn" component={LPNTransactionWorkbench} />
+            <Route path="/scm/wms/bol" component={BOLGenerator} />
+            <Route path="/scm/wms/rma" component={RMAWorkbench} />
+
+
 
 
 
@@ -243,6 +281,8 @@ export default function ScmRoutes() {
 
             <Route path="/scm/costing/receipt-accounting" component={ReceiptAccountingViewer} />
             <Route path="/scm/costing/method-setup" component={CostMethodSetup} />
+            <Route path="/scm/costing/transfer-pricing" component={TransferPricingSetup} />
+
 
             <Route path="/scm/lcm/operations" component={LcmWorkbench} />
             <Route path="/scm/lcm/components" component={CostComponents} />
@@ -262,9 +302,7 @@ export default function ScmRoutes() {
             <Route path="/transportation/carrier-scorecard" component={CarrierScorecardDashboard} />
             <Route path="/transportation/carrier-rates" component={CarrierRateWorkbench} />
             <Route path="/transportation/tracking" component={ShipmentTrackingDashboard} />
-            <Route path="/transportation/carrier-scorecard" component={CarrierScorecardDashboard} />
-            <Route path="/transportation/carrier-rates" component={CarrierRateWorkbench} />
-            <Route path="/transportation/tracking" component={ShipmentTrackingDashboard} />
+            <Route path="/transportation/multimodal" component={MultiModalShipmentOptimizer} />
             <Route path="/transportation/dangerous-goods" component={DangerousGoodsCompliance} />
             <Route path="/transportation/edi-events" component={EDI214EventLog} />
 

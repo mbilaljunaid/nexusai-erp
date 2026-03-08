@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { TrendingDown, TrendingUp, Minus, Download, RefreshCw } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, Download } from "lucide-react";
 import { formatNumber } from "@/lib/formatters";
+import { Progress } from "@/components/ui/progress";
+
 
 const COST_ELEMENTS = ["Material", "Labor", "Machine", "Fixed Overhead", "Variable Overhead"];
 const PERIODS = ["Mar 2026 (Current)", "Feb 2026", "Jan 2026", "Q4 2025"];
@@ -77,10 +79,9 @@ export default function CostVarianceReport() {
                 const pct = Math.abs(r.var) / max * 100;
                 return (
                     <div className="flex items-center gap-2">
-                        <div className="flex-1 h-4 rounded-full bg-muted overflow-hidden">
-                            {r.var !== 0 && <div className={`h-full rounded-full ${r.var > 0 ? "bg-red-500" : "bg-green-500"}`} style={{ width: `${pct}%` }} />}
-                        </div>
+                        <Progress value={pct} className={`flex-1 h-4 ${r.var > 0 ? "[&>div]:bg-red-500" : "[&>div]:bg-green-500"}`} />
                     </div>
+
                 );
             }
         },

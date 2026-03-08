@@ -66,7 +66,8 @@ export default function ContractPurchaseAgreement() {
                 return (
                     <div>
                         <div className="flex justify-between text-xs mb-1"><span>${formatNumber(r.usedAmount)}</span><span className={pct >= 90 ? "text-red-600 font-bold" : pct >= 70 ? "text-amber-600" : "text-green-700"}>{pct}%</span></div>
-                        <div className="h-1.5 bg-muted rounded-full"><div className={`h-1.5 rounded-full ${pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-amber-500" : "bg-green-600"}`} style={{ width: `${Math.min(pct, 100)}%` }} /></div>
+                        <div className="h-1.5 bg-muted rounded-full"><div className={`h-1.5 rounded-full ${pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-amber-500" : "bg-green-600"}`} data-pct={Math.min(pct, 100)} /></div>
+
                     </div>
                 );
             }

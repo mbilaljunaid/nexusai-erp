@@ -909,3 +909,100 @@ export const cycleCountEntriesRelations = relations(cycleCountEntries, ({ one })
         references: [cycleCountHeaders.id],
     }),
 }));
+
+// ========== CONSIGNMENT STOCK (Oracle INV Consigned Inventory) ==========
+export const scmConsignmentLines = pgTable("scm_consignment_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entInventoryOrgId: varchar("ent_inventory_org_id"),
+    supplierId: varchar("supplier_id").notNull(),
+    itemId: varchar("item_id").notNull(),
+    subinventoryId: varchar("subinventory_id"),
+    locatorId: varchar("locator_id"),
+    lotNumber: varchar("lot_number"),
+    quantityConsumed: numeric("quantity_consumed", { precision: 18, scale: 4 }).notNull(),
+    uom: varchar("uom"),
+    consumptionDate: timestamp("consumption_date").notNull(),
+    unitCost: numeric("unit_cost", { precision: 18, scale: 4 }),
+    billingAmount: numeric("billing_amount", { precision: 18, scale: 2 }),
+    currencyCode: varchar("currency_code").default("USD"),
+    billingStatus: varchar("billing_status").default("PENDING"), // PENDING, BILLED, CANCELLED
+    apInvoiceId: varchar("ap_invoice_id"), // filled after AP invoice created
+    billedAt: timestamp("billed_at"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertScmConsignmentLineSchema = createInsertSchema(scmConsignmentLines);
+export type ScmConsignmentLine = typeof scmConsignmentLines.$inferSelect;
+export type InsertScmConsignmentLine = z.infer<typeof insertScmConsignmentLineSchema>;
+
+// ========== RMA — RETURN MERCHANDISE AUTHORIZATION (Oracle WMS / OM) ==========
+export const scmRmaHeaders = pgTable("scm_rma_headers", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    rmaNumber: varchar("rma_number").notNull().unique(),
+    originalOrderId: varchar("original_order_id"), // Link to sales order or PO
+    customerId: varchar("customer_id"),
+    supplierId: varchar("supplier_id"),
+    requestedBy: varchar("requested_by"),
+    authorizationDate: timestamp("authorization_date"),
+    returnReason: varchar("return_reason"), // DEFECTIVE, WRONG_ITEM, OVERSHIPPED, DAMAGED
+    status: varchar("status").default("AUTHORIZED"), // AUTHORIZED, RECEIVED, INSPECTED, CLOSED, CANCELLED
+    totalCreditValue: numeric("total_credit_value", { precision: 18, scale: 2 }),
+    currencyCode: varchar("currency_code").default("USD"),
+    creditMemoId: varchar("credit_memo_id"), // AR credit memo created on disposition
+    notes: text("notes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const scmRmaLines = pgTable("scm_rma_lines", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    rmaId: varchar("rma_id").notNull(),
+    lineNumber: integer("line_number").notNull(),
+    itemId: varchar("item_id").notNull(),
+    itemDescription: text("item_description"),
+    qtyAuthorized: numeric("qty_authorized", { precision: 18, scale: 4 }).notNull(),
+    qtyReceived: numeric("qty_received", { precision: 18, scale: 4 }).default("0"),
+    qtyInspected: numeric("qty_inspected", { precision: 18, scale: 4 }).default("0"),
+    uom: varchar("uom"),
+    unitCost: numeric("unit_cost", { precision: 18, scale: 4 }),
+    disposition: varchar("disposition"), // RESTOCK, SCRAP, SUPPLIER_RETURN, REPAIR
+    qcStatus: varchar("qc_status").default("PENDING"), // PENDING, PASS, FAIL
+    qcNotes: text("qc_notes"),
+    creditValue: numeric("credit_value", { precision: 18, scale: 2 }),
+    receivedAt: timestamp("received_at"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertScmRmaHeaderSchema = createInsertSchema(scmRmaHeaders);
+export const insertScmRmaLineSchema = createInsertSchema(scmRmaLines);
+export type ScmRmaHeader = typeof scmRmaHeaders.$inferSelect;
+export type ScmRmaLine = typeof scmRmaLines.$inferSelect;
+export type InsertScmRmaHeader = z.infer<typeof insertScmRmaHeaderSchema>;
+export type InsertScmRmaLine = z.infer<typeof insertScmRmaLineSchema>;
+
+export const scmRmaRelations = relations(scmRmaHeaders, ({ many }) => ({
+    lines: many(scmRmaLines),
+}));
+
+// ========== ASN ACKNOWLEDGEMENTS (Oracle Supplier Portal PO Acknowledgement) ==========
+export const scmAsnAcknowledgements = pgTable("scm_asn_acknowledgements", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    poId: varchar("po_id").notNull(),
+    supplierId: varchar("supplier_id").notNull(),
+    asnId: varchar("asn_id"), // FK to asn_headers if submitted
+    ackStatus: varchar("ack_status").default("PENDING"), // PENDING, CONFIRMED, RESCHEDULED, REJECTED
+    originalDeliveryDate: timestamp("original_delivery_date"),
+    confirmedDeliveryDate: timestamp("confirmed_delivery_date"),
+    rescheduleReason: text("reschedule_reason"),
+    acknowledgedBy: varchar("acknowledged_by"),
+    acknowledgedAt: timestamp("acknowledged_at"),
+    dockPreAdvised: boolean("dock_pre_advised").default(false), // true if WMS dock scheduled
+    notes: text("notes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertScmAsnAcknowledgementSchema = createInsertSchema(scmAsnAcknowledgements);
+export type ScmAsnAcknowledgement = typeof scmAsnAcknowledgements.$inferSelect;
+export type InsertScmAsnAcknowledgement = z.infer<typeof insertScmAsnAcknowledgementSchema>;
+

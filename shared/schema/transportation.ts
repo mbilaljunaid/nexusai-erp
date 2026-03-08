@@ -268,3 +268,35 @@ export type InsertTlContractRate = z.infer<typeof insertTlContractRateSchema>;
 export type InsertTlShipmentTracking = z.infer<typeof insertTlShipmentTrackingSchema>;
 export type InsertTlTrackingMilestone = z.infer<typeof insertTlTrackingMilestoneSchema>;
 export type InsertTlTrackingAlert = z.infer<typeof insertTlTrackingAlertSchema>;
+
+// ========== MULTI-MODAL SHIPMENT QUOTES (Oracle OTM Multi-Modal Planning) ==========
+export const tlMultimodalQuotes = pgTable("tl_multimodal_quotes", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    shipmentId: varchar("shipment_id"),
+    quoteReference: varchar("quote_reference").notNull().unique(),
+    originLocationId: varchar("origin_location_id"),
+    destinationLocationId: varchar("destination_location_id"),
+    totalWeightKg: numeric("total_weight_kg", { precision: 18, scale: 4 }),
+    totalVolumeCbm: numeric("total_volume_cbm", { precision: 18, scale: 4 }),
+    mode: varchar("mode").notNull(), // SEA_LCL, SEA_FCL, AIR, RAIL, MULTIMODAL
+    carrierId: varchar("carrier_id"),
+    carrierName: varchar("carrier_name"),
+    freightCost: numeric("freight_cost", { precision: 18, scale: 2 }),
+    customsDuty: numeric("customs_duty", { precision: 18, scale: 2 }).default("0"),
+    insuranceCost: numeric("insurance_cost", { precision: 18, scale: 2 }).default("0"),
+    totalLandedCost: numeric("total_landed_cost", { precision: 18, scale: 2 }),
+    currency: varchar("currency").default("USD"),
+    transitDays: integer("transit_days"),
+    co2KgEmissions: numeric("co2_kg_emissions", { precision: 18, scale: 2 }),
+    status: varchar("status").default("QUOTED"), // QUOTED, AWARDED, REJECTED, EXPIRED
+    awardedAt: timestamp("awarded_at"),
+    awardedBy: varchar("awarded_by"),
+    validUntil: timestamp("valid_until"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertTlMultimodalQuoteSchema = createInsertSchema(tlMultimodalQuotes);
+export type TlMultimodalQuote = typeof tlMultimodalQuotes.$inferSelect;
+export type InsertTlMultimodalQuote = z.infer<typeof insertTlMultimodalQuoteSchema>;
+

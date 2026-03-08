@@ -2,6 +2,7 @@
 import { pgTable, text, timestamp, decimal, varchar, integer, boolean } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 
 
 // Cost Item Cost (CST_ITEM_COSTS)
@@ -190,4 +191,50 @@ export const insertCmrReceiptDistributionSchema = createInsertSchema(cmrReceiptD
 export type CstItemCost = typeof cstItemCosts.$inferSelect;
 export type CstCostDistribution = typeof cstCostDistributions.$inferSelect;
 export type CmrReceiptDistribution = typeof cmrReceiptDistributions.$inferSelect;
+
+// ========== TRANSFER PRICING (Oracle CST Intercompany Transfer Pricing) ==========
+export const cstTransferPricingPolicies = pgTable("cst_transfer_pricing_policies", {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    policyCode: text("policyCode").notNull().unique(),
+    description: text("description"),
+    entityFrom: text("entityFrom").notNull(),
+    entityTo: text("entityTo").notNull(),
+    method: text("method").notNull(), // COST_PLUS, CUP, RESALE_PRICE, PROFIT_SPLIT
+    markupPercent: decimal("markupPercent", { precision: 8, scale: 4 }).default("0"),
+    baseCostType: text("baseCostType").default("Standard"),
+    currencyCode: text("currencyCode").default("USD"),
+    effectiveFrom: timestamp("effectiveFrom").notNull(),
+    effectiveTo: timestamp("effectiveTo"),
+    status: text("status").default("Active"),
+    glAccount: text("glAccount"),
+    taxImpactTracked: boolean("taxImpactTracked").default(true),
+    notes: text("notes"),
+    createdAt: timestamp("createdAt").defaultNow(),
+    updatedAt: timestamp("updatedAt").defaultNow(),
+});
+
+export const cstTransferPricingAdjustments = pgTable("cst_transfer_pricing_adjustments", {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    policyId: text("policyId").notNull(),
+    period: text("period").notNull(),
+    baseAmount: decimal("baseAmount", { precision: 18, scale: 2 }).notNull(),
+    markupAmount: decimal("markupAmount", { precision: 18, scale: 2 }).notNull(),
+    transferPrice: decimal("transferPrice", { precision: 18, scale: 2 }).notNull(),
+    taxImpactAmount: decimal("taxImpactAmount", { precision: 18, scale: 2 }),
+    currencyCode: text("currencyCode").default("USD"),
+    glPosted: boolean("glPosted").default(false),
+    glJournalRef: text("glJournalRef"),
+    postedAt: timestamp("postedAt"),
+    status: text("status").default("Draft"),
+    notes: text("notes"),
+    createdAt: timestamp("createdAt").defaultNow(),
+});
+
+export const insertCstTransferPricingPolicySchema = createInsertSchema(cstTransferPricingPolicies);
+export const insertCstTransferPricingAdjustmentSchema = createInsertSchema(cstTransferPricingAdjustments);
+export type CstTransferPricingPolicy = typeof cstTransferPricingPolicies.$inferSelect;
+export type CstTransferPricingAdjustment = typeof cstTransferPricingAdjustments.$inferSelect;
+export type InsertCstTransferPricingPolicy = z.infer<typeof insertCstTransferPricingPolicySchema>;
+export type InsertCstTransferPricingAdjustment = z.infer<typeof insertCstTransferPricingAdjustmentSchema>;
+
 

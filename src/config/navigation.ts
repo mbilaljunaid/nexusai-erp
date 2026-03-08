@@ -134,9 +134,37 @@ export const navigationConfig: SidebarNode[] = [
                 id: "scm", title: "Supply Chain & Procurement", type: "group", icon: Package, path: "/scm",
                 children: [
                     { id: "procurement", title: "Procurement", type: "link", path: "/scm/procurement" },
+                    { id: "procurement-orders", title: "Purchase Orders", type: "link", path: "/procurement/orders/new" },
+                    { id: "procurement-bpa", title: "Blanket Agreements", type: "link", path: "/procurement/blanket-agreements" },
+                    { id: "procurement-cpa", title: "Contract Agreements", type: "link", path: "/procurement/cpas" },
+                    { id: "procurement-buyer", title: "Buyer Work Area", type: "link", path: "/procurement/buyer-workarea" },
+                    { id: "procurement-negotiations", title: "Supplier Negotiations", type: "link", path: "/procurement/negotiations" },
+                    { id: "procurement-scorecard", title: "Supplier Scorecards", type: "link", path: "/procurement/supplier-scorecard" },
+                    { id: "procurement-asn", title: "Supplier ASN Portal", type: "link", path: "/procurement/asn-portal" },
+
+
+                    { id: "procurement-punchout", title: "Punchout Catalogs", type: "link", path: "/procurement/punchout" },
+                    { id: "procurement-funds", title: "Funds Check", type: "link", path: "/procurement/funds-check" },
+                    { id: "procurement-distributions", title: "PO Distributions", type: "link", path: "/procurement/distributions" },
+                    { id: "procurement-change", title: "Change Orders", type: "link", path: "/procurement/change-orders" },
                     { id: "portal-supplier", title: "Supplier Portal", type: "link", path: "/portal/supplier" },
                     { id: "inventory", title: "Inventory", type: "link", path: "/inventory" },
+                    { id: "inventory-uom", title: "UOM Conversions", type: "link", path: "/inventory/uom-conversions" },
+                    { id: "inventory-categories", title: "Item Categories", type: "link", path: "/inventory/categories" },
+                    { id: "inventory-org-tabs", title: "Item Master (Org Tabs)", type: "link", path: "/inventory/item-master-orgs" },
+                    { id: "inventory-consignment", title: "Consignment Stock", type: "link", path: "/inventory/consignment" },
+
+
+                    { id: "inventory-lots", title: "Lot & Serial Control", type: "link", path: "/inventory/lot-serial" },
+                    { id: "inventory-min-max", title: "Min-Max Planning", type: "link", path: "/inventory/min-max" },
+                    { id: "inventory-status", title: "Material Status", type: "link", path: "/inventory/material-status" },
                     { id: "costing", title: "Cost Management", type: "link", path: "/scm/costing" },
+                    { id: "costing-rollup", title: "Cost Rollup", type: "link", path: "/scm/costing/rollup" },
+                    { id: "costing-processor", title: "Cost Processor", type: "link", path: "/scm/costing/processor" },
+                    { id: "costing-variance", title: "Variance Report", type: "link", path: "/scm/costing/variance" },
+                    { id: "costing-receipt", title: "Receipt Accounting", type: "link", path: "/scm/costing/receipt-accounting" },
+                    { id: "costing-transfer-pricing", title: "Transfer Pricing", type: "link", path: "/scm/costing/transfer-pricing" },
+
                     { id: "gtm", title: "Global Trade (GTM)", type: "link", path: "/scm/gtm" },
                 ]
             },
@@ -144,14 +172,46 @@ export const navigationConfig: SidebarNode[] = [
                 id: "mfg", title: "Manufacturing & Operations", type: "group", icon: Hammer, path: "/manufacturing",
                 children: [
                     { id: "manufacturing", title: "Manufacturing", type: "link", path: "/manufacturing/dashboard" },
+                    { id: "mfg-bom", title: "BOM Designer", type: "link", path: "/manufacturing/bom" },
+                    { id: "mfg-work-orders", title: "Work Orders", type: "link", path: "/manufacturing/work-orders" },
+                    { id: "mfg-mrp", title: "MRP Workbench", type: "link", path: "/manufacturing/mrp" },
+                    { id: "mfg-mrp-explosion", title: "MRP BOM Explosion", type: "link", path: "/manufacturing/mrp-explosion" },
+                    { id: "mfg-bom-effectivity", title: "BOM Effectivity Editor", type: "link", path: "/manufacturing/bom-effectivity" },
+                    { id: "mfg-production-adherence", title: "Production Adherence", type: "link", path: "/manufacturing/production-adherence" },
+
+
+                    { id: "mfg-scm-events", title: "SC Event Monitor", type: "link", path: "/manufacturing/scm-events" },
+                    { id: "mfg-work-instructions", title: "Work Instructions", type: "link", path: "/manufacturing/work-instructions" },
                     { id: "wms", title: "Warehouse (WMS)", type: "link", path: "/scm/wms/dashboard" },
+                    { id: "wms-waves", title: "Wave Planning", type: "link", path: "/scm/wms/waves" },
+                    { id: "wms-lpn", title: "LPN Workbench", type: "link", path: "/scm/wms/lpn" },
+                    { id: "wms-bol", title: "BOL & Rate Shopping", type: "link", path: "/scm/wms/bol" },
+                    { id: "wms-rma", title: "RMA / Returns", type: "link", path: "/scm/wms/rma" },
+
+
+                    { id: "wms-interleaving", title: "Task Interleaving", type: "link", path: "/scm/wms/task-interleaving" },
+                    { id: "wms-pack", title: "Pack Station", type: "link", path: "/scm/wms/pack-station" },
+                    { id: "wms-cross-dock", title: "Cross-Docking", type: "link", path: "/scm/wms/cross-docking" },
                     { id: "tms", title: "Transportation (TMS)", type: "link", path: "/transportation" },
+                    { id: "tms-edi", title: "EDI 214 Events", type: "link", path: "/transportation/edi-events" },
+                    { id: "tms-carriers", title: "Carrier Management", type: "link", path: "/transportation/carriers" },
+                    { id: "tms-rates", title: "Carrier Rates", type: "link", path: "/transportation/carrier-rates" },
+                    { id: "tms-dangerous", title: "Dangerous Goods", type: "link", path: "/transportation/dangerous-goods" },
+                    { id: "tms-multimodal", title: "Multi-Modal Optimizer", type: "link", path: "/transportation/multimodal" },
+
                     { id: "lcm", title: "Landed Cost (LCM)", type: "link", path: "/scm/lcm/operations" },
                     { id: "logistics", title: "Logistics", type: "link", path: "/logistics" },
                     { id: "quality", title: "Quality Management", type: "link", path: "/manufacturing/quality" },
                     { id: "maintenance", title: "Maintenance (EAM)", type: "link", path: "/maintenance" },
+                    { id: "maintenance-pm", title: "PM Scheduler", type: "link", path: "/maintenance/pm/scheduler" },
+                    { id: "maintenance-pm-routes", title: "PM Routes", type: "link", path: "/maintenance/pm-routes" },
+                    { id: "maintenance-warranty", title: "Asset Warranty", type: "link", path: "/maintenance/warranty" },
+                    { id: "maintenance-fmea", title: "FMEA Workbench", type: "link", path: "/maintenance/fmea" },
+                    { id: "maintenance-inspections", title: "Inspections", type: "link", path: "/maintenance/inspections" },
+                    { id: "maintenance-permits", title: "Permits", type: "link", path: "/maintenance/permits" },
                 ]
             },
+
             {
                 id: "crm", title: "CRM & Sales", type: "group", icon: Target, path: "/crm",
                 children: [
