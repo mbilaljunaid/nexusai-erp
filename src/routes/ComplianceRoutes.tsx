@@ -14,6 +14,9 @@ const ComplianceExceptions = lazyWithRetry(() => import("@/pages/ComplianceExcep
 const ComplianceGovernance = lazyWithRetry(() => import("@/pages/ComplianceGovernance"));
 const AuditTrails = lazyWithRetry(() => import("@/pages/AuditTrails"));
 const SecurityProfiles = lazyWithRetry(() => import("@/pages/SecurityProfiles"));
+const ControlAssessmentWorkbench = lazyWithRetry(() => import("@/pages/compliance/ControlAssessmentWorkbench"));
+const RiskRegisterPage = lazyWithRetry(() => import("@/pages/compliance/RiskRegisterPage"));
+const AuditFindingWorkbench = lazyWithRetry(() => import("@/pages/compliance/AuditFindingWorkbench"));
 
 export default function ComplianceRoutes() {
     return (
@@ -27,6 +30,9 @@ export default function ComplianceRoutes() {
             <Route path="/compliance/governance" component={ComplianceGovernance} />
             <Route path="/compliance/audit" component={AuditTrails} />
             <Route path="/compliance/security" component={SecurityProfiles} />
+            <Route path="/compliance/controls/assessments" component={ControlAssessmentWorkbench} />
+            <Route path="/compliance/risk-register" component={RiskRegisterPage} />
+            <Route path="/compliance/findings" component={AuditFindingWorkbench} />
             <Route component={GenericModuleDashboard} />
         </Switch>
     );

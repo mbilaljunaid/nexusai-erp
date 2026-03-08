@@ -22,6 +22,11 @@ const FailureCodeConfig = lazyWithRetry(() => import("@/pages/maintenance/Failur
 const ServiceRequestQueue = lazyWithRetry(() => import("@/pages/ServiceRequestQueue"));
 const TechnicianTaskView = lazyWithRetry(() => import("@/pages/maintenance/TechnicianTaskView"));
 const Asset360View = lazyWithRetry(() => import("@/pages/maintenance/Asset360View"));
+const PMRouteManager = lazyWithRetry(() => import("@/pages/maintenance/PMRouteManager"));
+const AssetWarrantyManager = lazyWithRetry(() => import("@/pages/maintenance/AssetWarrantyManager"));
+const FMEAWorkbench = lazyWithRetry(() => import("@/pages/maintenance/FMEAWorkbench"));
+
+
 
 export default function MaintenanceRoutes() {
     return (
@@ -53,6 +58,11 @@ export default function MaintenanceRoutes() {
             </Route>
             <Route path="/maintenance/technician" component={TechnicianTaskView} />
             <Route path="/maintenance/asset-360" component={Asset360View} />
+            <Route path="/maintenance/pm-routes" component={PMRouteManager} />
+            <Route path="/maintenance/warranty" component={AssetWarrantyManager} />
+            <Route path="/maintenance/fmea" component={FMEAWorkbench} />
+
+
             <Route component={GenericModuleDashboard} />
         </Switch>
     );

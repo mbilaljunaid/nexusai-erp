@@ -198,6 +198,7 @@ import ArLockboxSetup from "@/pages/finance/ar/ArLockboxSetup";
 import GlEncumbranceSetup from "@/pages/gl/GlEncumbranceSetup";
 import GlSecondaryLedgerSetup from "@/pages/gl/GlSecondaryLedgerSetup";
 import TaxSubscriptionSetup from "@/pages/tax/TaxSubscriptionSetup";
+import TaxExemptionSetup from "@/pages/tax/TaxExemptionSetup";
 import SubleaseManagement from "@/pages/leases/SubleaseManagement";
 
 // Oracle Parity — Round 6 P3 (Final 2% Remaining Gaps)
@@ -457,6 +458,7 @@ export default function FinanceRoutes() {
                 <Route path="/fixed-assets/depreciation-projection" component={FaDepreciationProjection} />
                 <Route path="/finance/tax/vat-return" component={VatReturnWizard} />
                 <Route path="/finance/tax/subscriptions" component={TaxSubscriptionSetup} />
+                <Route path="/finance/tax/exemptions" component={TaxExemptionSetup} />
                 <Route path="/finance/cash/bank-accounts" component={BankAccountSetup} />
                 <Route path="/finance/cash/match-rules" component={BankStatementMatchRules} />
                 <Route path="/finance/ar/statements" component={ArStatementPrint} />

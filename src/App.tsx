@@ -71,6 +71,8 @@ const RecruitingAnalytics = lazyWithRetry(() => import("@/pages/recruitment/Recr
 const RecruitmentConfiguration = lazyWithRetry(() => import("@/pages/RecruitmentConfiguration"));
 const PerformanceConfiguration = lazyWithRetry(() => import("@/pages/PerformanceConfiguration"));
 const TemplateManagement = lazyWithRetry(() => import("@/pages/TemplateManagement"));
+const CandidateProfile = lazyWithRetry(() => import("@/pages/recruitment/CandidateProfile"));
+const OfferApprovalWorkbench = lazyWithRetry(() => import("@/pages/recruitment/OfferApprovalWorkbench"));
 
 
 // WFM
@@ -217,6 +219,8 @@ function Router() {
         <Route path="/hr/recruitment/onboarding" component={OnboardingWorkbench} />
         <Route path="/hr/recruitment/analytics" component={RecruitingAnalytics} />
         <Route path="/hr/recruitment/configuration" component={RecruitmentConfiguration} />
+        <Route path="/hr/recruitment/candidates/:id" component={CandidateProfile} />
+        <Route path="/hr/recruitment/offer-approvals" component={OfferApprovalWorkbench} />
         <Route path="/hr/recruitment" component={RecruitmentManagement} />
         <Route path="/hr/performance" component={PerformanceManagement} />
         <Route path="/hr/setup/performance" component={PerformanceConfiguration} />

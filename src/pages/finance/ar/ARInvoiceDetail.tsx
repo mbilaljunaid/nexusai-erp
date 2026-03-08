@@ -219,10 +219,39 @@ export default function ARInvoiceDetail() {
                     <Tabs defaultValue="lines" className="w-full">
                         <div className="border-b px-4 py-2">
                             <TabsList>
+                                <TabsTrigger value="header">Header Fields</TabsTrigger>
                                 <TabsTrigger value="lines">Invoice Lines</TabsTrigger>
                                 <TabsTrigger value="credits">Sales Credits</TabsTrigger>
                             </TabsList>
                         </div>
+                        <TabsContent value="header" className="p-4 m-0">
+                            <div className="grid md:grid-cols-2 gap-4 max-w-2xl">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Salesperson ID</label>
+                                    <p className="text-sm text-muted-foreground font-mono">{invoice.salespersonId || <span className="italic">Not assigned</span>}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Territory Code</label>
+                                    <p className="text-sm text-muted-foreground font-mono">{invoice.territoryCode || <span className="italic">Not assigned</span>}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Customer</label>
+                                    <p className="text-sm font-mono">{invoice.customerId || invoice.customerName || '—'}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Invoice Date</label>
+                                    <p className="text-sm font-mono">{invoice.invoiceDate ? new Date(invoice.invoiceDate).toLocaleDateString() : '—'}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Payment Terms</label>
+                                    <p className="text-sm font-mono">{invoice.paymentTerms || 'Net 30'}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Currency</label>
+                                    <p className="text-sm font-mono">{invoice.currencyCode || 'USD'}</p>
+                                </div>
+                            </div>
+                        </TabsContent>
                         <TabsContent value="lines" className="p-4 m-0">
                             {lines && lines.length > 0 ? (
                                 <div className="space-y-4">
@@ -252,16 +281,16 @@ export default function ARInvoiceDetail() {
                                         <div className="space-y-2">
                                             {lines.map((l: any) => (
                                                 <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => {
-                                                                                                        setSelectedLineId(l.id);
-                                                                                                        form.setValue("amount", l.amount);
-                                                                                                    }}>
-                                                <div
-                                                                                                    key={l.id}
-                                                                                                    className={cn(`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-500/10'}`)}
-                                                                                                >
-                                                                                                    <div className="font-medium truncate">{l.description}</div>
-                                                                                                    <div className="text-muted-foreground">${l.amount}</div>
-                                                                                                </div>
+                                                    setSelectedLineId(l.id);
+                                                    form.setValue("amount", l.amount);
+                                                }}>
+                                                    <div
+                                                        key={l.id}
+                                                        className={cn(`p-2 border rounded cursor-pointer text-sm ${selectedLineId === l.id ? 'bg-primary/10 border-primary' : 'hover:bg-slate-500/10'}`)}
+                                                    >
+                                                        <div className="font-medium truncate">{l.description}</div>
+                                                        <div className="text-muted-foreground">${l.amount}</div>
+                                                    </div>
                                                 </Button>
                                             ))}
                                         </div>

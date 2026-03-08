@@ -76,6 +76,12 @@ export default function APInvoiceEntry() {
         uom: string;
         taxClassificationCode: string;
         trackAsAssetFlag: boolean;
+        /** Oracle Projects integration: PA project reference */
+        projectId: string;
+        /** Oracle Projects integration: PA task reference within project */
+        taskId: string;
+        /** Oracle Projects integration: expenditure type for cost classification */
+        expenditureType: string;
     }
 
     const [lines, setLines] = useState<InvoiceLine[]>([{
@@ -90,7 +96,10 @@ export default function APInvoiceEntry() {
         unitPrice: "",
         uom: "EA",
         taxClassificationCode: "EXEMPT",
-        trackAsAssetFlag: false
+        trackAsAssetFlag: false,
+        projectId: "",
+        taskId: "",
+        expenditureType: ""
     }]);
 
     const handlePOSelection = async (poId: string) => {
@@ -117,7 +126,10 @@ export default function APInvoiceEntry() {
                             poLineId: l.id || "",
                             itemId: l.itemId || "",
                             taxClassificationCode: "EXEMPT",
-                            trackAsAssetFlag: false
+                            trackAsAssetFlag: false,
+                            projectId: l.projectId || "",
+                            taskId: l.taskId || "",
+                            expenditureType: l.expenditureType || ""
                         })));
                     }
                 }
@@ -177,7 +189,10 @@ export default function APInvoiceEntry() {
             poLineId: "",
             itemId: "",
             taxClassificationCode: "EXEMPT",
-            trackAsAssetFlag: false
+            trackAsAssetFlag: false,
+            projectId: "",
+            taskId: "",
+            expenditureType: ""
         }]);
     };
 
@@ -198,7 +213,10 @@ export default function APInvoiceEntry() {
                 poLineId: "",
                 itemId: "",
                 taxClassificationCode: "STANDARD_20",
-                trackAsAssetFlag: false
+                trackAsAssetFlag: false,
+                projectId: "",
+                taskId: "",
+                expenditureType: ""
             }]);
             toast({ title: "Tax Calculated", description: "Added 5% standard tax line." });
         } else {
@@ -349,6 +367,38 @@ export default function APInvoiceEntry() {
                             Track as Asset
                         </Label>
                     )}
+                </div>
+            )
+        },
+        {
+            id: "projectCoding",
+            header: "Project / Task",
+            width: "w-72",
+            cell: (line, index, updateRow) => (
+                <div className="flex gap-1">
+                    <Input
+                        className="h-9 flex-1"
+                        value={line.projectId}
+                        onChange={e => updateRow("projectId", e.target.value)}
+                        placeholder="Project ID"
+                    />
+                    <Input
+                        className="h-9 w-24"
+                        value={line.taskId}
+                        onChange={e => updateRow("taskId", e.target.value)}
+                        placeholder="Task"
+                    />
+                    <Select value={line.expenditureType || undefined} onValueChange={v => updateRow("expenditureType", v)}>
+                        <SelectTrigger className="h-9 w-36"><SelectValue placeholder="Expend. Type" /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="LABOR">Labor</SelectItem>
+                            <SelectItem value="MATERIALS">Materials</SelectItem>
+                            <SelectItem value="EQUIPMENT">Equipment</SelectItem>
+                            <SelectItem value="OVERHEAD">Overhead</SelectItem>
+                            <SelectItem value="SUBCONTRACT">Subcontract</SelectItem>
+                            <SelectItem value="TRAVEL">Travel &amp; Expenses</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             )
         },

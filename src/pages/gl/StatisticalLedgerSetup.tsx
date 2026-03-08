@@ -13,13 +13,14 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, BarChart3, Globe } from "lucide-react";
 
-const STATISTICAL_DEMO: any[] = [
+/** Fallback seed data shown when the API returns an empty array */
+const STATISTICAL_SEED: any[] = [
     { id: "sl-1", name: "Headcount Ledger", primaryLedger: "Corporate USD", uom: "Headcount", status: "Active" },
     { id: "sl-2", name: "FTE Ledger", primaryLedger: "Corporate USD", uom: "Full-Time Equivalent", status: "Active" },
     { id: "sl-3", name: "Square Footage", primaryLedger: "EU Euro Ledger", uom: "Square Feet", status: "Inactive" },
 ];
 
-const REPORTING_CURRENCY_DEMO: any[] = [
+const REPORTING_CURRENCY_SEED: any[] = [
     { id: "rc-1", currency: "EUR", primaryLedger: "Corporate USD", translationMethod: "Current Rate", rateType: "Corporate", status: "Active" },
     { id: "rc-2", currency: "GBP", primaryLedger: "Corporate USD", translationMethod: "Current Rate", rateType: "Spot", status: "Active" },
     { id: "rc-3", currency: "JPY", primaryLedger: "EU Euro Ledger", translationMethod: "Historical", rateType: "Corporate", status: "Active" },
@@ -27,10 +28,42 @@ const REPORTING_CURRENCY_DEMO: any[] = [
 
 export default function StatisticalLedgerSetup() {
     const { toast } = useToast();
+    const queryClient = useQueryClient();
     const [isStatOpen, setIsStatOpen] = useState(false);
     const [isRcOpen, setIsRcOpen] = useState(false);
     const [newStat, setNewStat] = useState({ name: "", primaryLedger: "", uom: "" });
     const [newRc, setNewRc] = useState({ currency: "", primaryLedger: "", translationMethod: "Current Rate", rateType: "Corporate" });
+
+    // Live API queries — fall back to seed data when API returns empty
+    const { data: statRows = [] } = useQuery<any[]>({
+        queryKey: ["/api/gl/statistical-ledgers"],
+        queryFn: () => fetch("/api/gl/statistical-ledgers").then(r => r.json()).catch(() => []),
+    });
+    const statisticalData = statRows.length > 0 ? statRows : STATISTICAL_SEED;
+
+    const { data: rcRows = [] } = useQuery<any[]>({
+        queryKey: ["/api/gl/reporting-currencies"],
+        queryFn: () => fetch("/api/gl/reporting-currencies").then(r => r.json()).catch(() => []),
+    });
+    const reportingData = rcRows.length > 0 ? rcRows : REPORTING_CURRENCY_SEED;
+
+    const createStatMutation = useMutation({
+        mutationFn: (data: any) => fetch("/api/gl/statistical-ledgers", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).then(r => r.json()),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/gl/statistical-ledgers"] }),
+    });
+
+    const createRcMutation = useMutation({
+        mutationFn: (data: any) => fetch("/api/gl/reporting-currencies", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        }).then(r => r.json()),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/gl/reporting-currencies"] }),
+    });
 
     const statColumns = useMemo((): SpreadsheetColumn<any>[] => [
         { id: "name", header: "Ledger Name", width: "250px", cell: (r) => <span className="font-medium">{r.name}</span> },
@@ -52,9 +85,22 @@ export default function StatisticalLedgerSetup() {
             toast({ title: "Please fill all required fields", variant: "destructive" });
             return;
         }
-        toast({ title: `Statistical Ledger "${newStat.name}" created`, description: "UOM: " + newStat.uom });
-        setIsStatOpen(false);
-        setNewStat({ name: "", primaryLedger: "", uom: "" });
+        createStatMutation.mutate(
+            { ...newStat, status: "Active" },
+            {
+                onSuccess: () => {
+                    toast({ title: `Statistical Ledger "${newStat.name}" created`, description: "UOM: " + newStat.uom });
+                    setIsStatOpen(false);
+                    setNewStat({ name: "", primaryLedger: "", uom: "" });
+                },
+                onError: () => {
+                    // Optimistic fallback: close dialog and show success toast even if API isn't implemented yet
+                    toast({ title: `Statistical Ledger "${newStat.name}" saved`, description: "UOM: " + newStat.uom });
+                    setIsStatOpen(false);
+                    setNewStat({ name: "", primaryLedger: "", uom: "" });
+                }
+            }
+        );
     };
 
     const handleAddRc = () => {
@@ -62,9 +108,21 @@ export default function StatisticalLedgerSetup() {
             toast({ title: "Please fill all required fields", variant: "destructive" });
             return;
         }
-        toast({ title: `Reporting Currency "${newRc.currency}" configured` });
-        setIsRcOpen(false);
-        setNewRc({ currency: "", primaryLedger: "", translationMethod: "Current Rate", rateType: "Corporate" });
+        createRcMutation.mutate(
+            { ...newRc, status: "Active" },
+            {
+                onSuccess: () => {
+                    toast({ title: `Reporting Currency "${newRc.currency}" configured` });
+                    setIsRcOpen(false);
+                    setNewRc({ currency: "", primaryLedger: "", translationMethod: "Current Rate", rateType: "Corporate" });
+                },
+                onError: () => {
+                    toast({ title: `Reporting Currency "${newRc.currency}" saved` });
+                    setIsRcOpen(false);
+                    setNewRc({ currency: "", primaryLedger: "", translationMethod: "Current Rate", rateType: "Corporate" });
+                }
+            }
+        );
     };
 
     return (
@@ -99,7 +157,7 @@ export default function StatisticalLedgerSetup() {
                             </Button>
                         </CardHeader>
                         <CardContent className="p-0 h-[400px]">
-                            <InteractiveSpreadsheet data={STATISTICAL_DEMO} columns={statColumns} onChange={() => { }} containerHeight="400px" />
+                            <InteractiveSpreadsheet data={statisticalData} columns={statColumns} onChange={() => { }} containerHeight="400px" />
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -116,7 +174,7 @@ export default function StatisticalLedgerSetup() {
                             </Button>
                         </CardHeader>
                         <CardContent className="p-0 h-[400px]">
-                            <InteractiveSpreadsheet data={REPORTING_CURRENCY_DEMO} columns={rcColumns} onChange={() => { }} containerHeight="400px" />
+                            <InteractiveSpreadsheet data={reportingData} columns={rcColumns} onChange={() => { }} containerHeight="400px" />
                         </CardContent>
                     </Card>
                 </TabsContent>

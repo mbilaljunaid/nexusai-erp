@@ -32,6 +32,18 @@ export default function APSupplierDetail() {
         contactEmail: ""
     });
 
+    /** ISO 13616 IBAN: 2 alpha country code, 2 check digits, up to 30 alphanumeric chars */
+    const IBAN_REGEX = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/;
+    /** ISO 9362 BIC/SWIFT: 8 or 11 chars */
+    const SWIFT_REGEX = /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/;
+
+    const ibanError = newSite.iban && !IBAN_REGEX.test(newSite.iban.replace(/\s/g, "").toUpperCase())
+        ? "Invalid IBAN format (e.g. GB29NWBK60161331926819)"
+        : "";
+    const swiftError = newSite.swiftCode && !SWIFT_REGEX.test(newSite.swiftCode.toUpperCase())
+        ? "Invalid SWIFT/BIC (e.g. CHASUS33 or CHASUS33XXX)"
+        : "";
+
     const { data: supplier, isLoading } = useQuery<any>({
         queryKey: [`/api/ap/suppliers/${supplierId}`],
         enabled: !!supplierId,
@@ -188,7 +200,7 @@ export default function APSupplierDetail() {
                                 data={sites || []}
                                 columns={siteColumns}
                                 isLoading={sitesLoading}
-                             onChange={() => {}} containerHeight="600px" />
+                                onChange={() => { }} containerHeight="600px" />
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -287,15 +299,21 @@ export default function APSupplierDetail() {
                                     id="iban"
                                     value={newSite.iban}
                                     onChange={(e) => setNewSite({ ...newSite, iban: e.target.value })}
+                                    placeholder="e.g. GB29NWBK60161331926819"
+                                    className={ibanError ? "border-destructive" : ""}
                                 />
+                                {ibanError && <p className="text-xs text-destructive">{ibanError}</p>}
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="swiftCode">SWIFT Code</Label>
+                                <Label htmlFor="swiftCode">SWIFT / BIC Code</Label>
                                 <Input
                                     id="swiftCode"
                                     value={newSite.swiftCode}
                                     onChange={(e) => setNewSite({ ...newSite, swiftCode: e.target.value })}
+                                    placeholder="e.g. CHASUS33"
+                                    className={swiftError ? "border-destructive" : ""}
                                 />
+                                {swiftError && <p className="text-xs text-destructive">{swiftError}</p>}
                             </div>
                             <h4 className="font-medium text-sm border-b pb-2 mt-4">Primary Contact</h4>
                             <div className="space-y-2">
@@ -310,7 +328,10 @@ export default function APSupplierDetail() {
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsSiteDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={() => createSiteMutation.mutate(newSite)}>Create Site</Button>
+                        <Button
+                            onClick={() => createSiteMutation.mutate(newSite)}
+                            disabled={!!ibanError || !!swiftError}
+                        >Create Site</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

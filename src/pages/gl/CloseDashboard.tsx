@@ -1,6 +1,14 @@
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+
+/** Returns the period name for a given date offset (0 = current month, 1 = next month). */
+function computePeriodName(offset = 0): string {
+    const d = new Date();
+    d.setMonth(d.getMonth() + offset);
+    const month = d.toLocaleString("en-US", { month: "short" });
+    return `${month}-${d.getFullYear()}`;
+}
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -22,7 +30,8 @@ import { DatePicker } from '@/components/ui/DatePicker';
 export default function CloseDashboard() {
     const { toast } = useToast();
     const { currentLedgerId: selectedLedger, activeLedger } = useLedger();
-    const [selectedPeriod, setSelectedPeriod] = useState("Jan-2026"); // TODO: Dynamic
+    const defaultPeriod = useMemo(() => computePeriodName(0), []);
+    const [selectedPeriod, setSelectedPeriod] = useState(defaultPeriod);
     const [newTask, setNewTask] = useState({ taskName: "", description: "", dueDate: "" });
 
     // 1. Fetch Dependency Statuses
@@ -69,7 +78,7 @@ export default function CloseDashboard() {
         mutationFn: () => fetch("/api/finance/gl/periods/sweep", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ledgerId: selectedLedger, fromPeriodName: selectedPeriod, toPeriodName: "Feb-2026" }) // TODO: Next period logic
+            body: JSON.stringify({ ledgerId: selectedLedger, fromPeriodName: selectedPeriod, toPeriodName: computePeriodName(1) })
         }).then(r => r.json()),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["/api/gl/predict-close"] }); // Refresh prediction/counts
@@ -172,8 +181,9 @@ export default function CloseDashboard() {
                             <SelectValue placeholder="Select Period" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Jan-2026">Jan-2026</SelectItem>
-                            <SelectItem value="Feb-2026">Feb-2026</SelectItem>
+                            {Array.from({ length: 6 }, (_, i) => computePeriodName(i - 2)).map((p) => (
+                                <SelectItem key={p} value={p}>{p}</SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                     <Button variant="outline" onClick={() => queryClient.invalidateQueries()}>

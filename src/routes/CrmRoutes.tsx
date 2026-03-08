@@ -53,6 +53,9 @@ import KnowledgeBase from "@/pages/crm/KnowledgeBase";
 import PartnerManagement from "@/pages/crm/PartnerManagement";
 import DealRegistration from "@/pages/crm/DealRegistration";
 
+// Contract Lines
+import ContractLinesWorkbench from "@/pages/crm/ContractLinesWorkbench";
+
 // CRM Landing
 import CrmDashboard from "@/pages/crm/CrmDashboard";
 
@@ -80,6 +83,7 @@ export default function CrmRoutes() {
                 <Route path="/crm/cases/:id" component={CaseDetail} />
                 <Route path="/crm/knowledge" component={KnowledgeBaseDashboard} />
                 <Route path="/crm/contracts" component={ContractDashboard} />
+                <Route path="/crm/contracts/:id/lines" component={ContractLinesWorkbench} />
                 <Route path="/crm/contracts/:id" component={ContractDetail} />
                 <Route path="/crm/partner" component={PartnerDashboard} />
                 <Route path="/crm/quotas" component={CrmQuotaManagement} />

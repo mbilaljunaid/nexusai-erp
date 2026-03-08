@@ -34,6 +34,11 @@ const BurdenRuleBuilder = lazyWithRetry(() => import("@/pages/projects/BurdenRul
 const ErpIntegrationDashboard = lazyWithRetry(() => import("@/pages/projects/ErpIntegrationDashboard"));
 const CipConsolidationDashboard = lazyWithRetry(() => import("@/pages/projects/CipConsolidationDashboard"));
 const RevenueRecognitionDashboard = lazyWithRetry(() => import("@/pages/projects/RevenueRecognitionDashboard"));
+const ProjectBillingWorkbench = lazyWithRetry(() => import("@/pages/project/ProjectBillingWorkbench"));
+const NonLaborExpenseBatch = lazyWithRetry(() => import("@/pages/project/NonLaborExpenseBatch"));
+const TimesheetIntegrationMonitor = lazyWithRetry(() => import("@/pages/project/TimesheetIntegrationMonitor"));
+
+
 
 export default function ProjectRoutes() {
     return (
@@ -64,6 +69,11 @@ export default function ProjectRoutes() {
             <Route path="/projects/erp-integration" component={ErpIntegrationDashboard} />
             <Route path="/projects/cip-consolidation" component={CipConsolidationDashboard} />
             <Route path="/projects/revenue-recognition" component={RevenueRecognitionDashboard} />
+            <Route path="/projects/billing-workbench" component={ProjectBillingWorkbench} />
+            <Route path="/projects/non-labor-expenses" component={NonLaborExpenseBatch} />
+            <Route path="/projects/timesheet-integration" component={TimesheetIntegrationMonitor} />
+
+
 
             {/* PPM Alias */}
             <Route path="/ppm" component={Projects} />
