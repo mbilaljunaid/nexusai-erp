@@ -35,7 +35,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { Play, ArrowRightLeft, RefreshCw, Loader2 } from "lucide-react";
+import { Play, ArrowRightLeft, RefreshCw, Loader2, TrendingDown } from "lucide-react";
 
 interface FaAssetWithFinancials extends Omit<FaAsset, 'originalCost' | 'datePlacedInService'> {
     datePlacedInService: string | Date;
@@ -65,6 +65,15 @@ export default function AssetWorkbench() {
     const [reclassAsset, setReclassAsset] = useState("");
     const [newCategory, setNewCategory] = useState("");
     const [confirmReclass, setConfirmReclass] = useState(false);
+
+    // Retirement state
+    const [retirementAsset, setRetirementAsset] = useState("");
+    const [retirementDate, setRetirementDate] = useState(new Date().toISOString().split("T")[0]);
+    const [retirementUnits, setRetirementUnits] = useState("");
+    const [proceedsOfSale, setProceedsOfSale] = useState("");
+    const [gainLossBook, setGainLossBook] = useState("Corporate");
+    const [proceedsAccount, setProceedsAccount] = useState("");
+    const [confirmRetirement, setConfirmRetirement] = useState(false);
 
     const handleRunDepreciation = async () => {
         if (!deprPeriod) { toast({ title: "Select a period", variant: "destructive" }); return; }
@@ -169,6 +178,7 @@ export default function AssetWorkbench() {
                             <TabsTrigger value="mass-additions">Mass Additions</TabsTrigger>
                             <TabsTrigger value="depreciation" className="flex items-center gap-1"><Play className="h-3.5 w-3.5" />Run Depreciation</TabsTrigger>
                             <TabsTrigger value="transfers" className="flex items-center gap-1"><ArrowRightLeft className="h-3.5 w-3.5" />Transfers</TabsTrigger>
+                            <TabsTrigger value="retirements" className="flex items-center gap-1 text-red-600"><TrendingDown className="h-3.5 w-3.5" />Retirements</TabsTrigger>
                             <TabsTrigger value="reports">Reports</TabsTrigger>
                         </TabsList>
 
@@ -357,6 +367,89 @@ export default function AssetWorkbench() {
                                 </Card>
                             </div>
                         </TabsContent>
+
+                        {/* Oracle Parity: Asset Retirements */}
+                        <TabsContent value="retirements">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <TrendingDown className="h-5 w-5 text-red-500" />
+                                        Asset Retirements
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Record the full or partial retirement of a fixed asset. Calculates gain/loss vs. net book value and generates GL entries.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="grid md:grid-cols-3 gap-6">
+                                        <div className="space-y-2">
+                                            <Label>Asset Number *</Label>
+                                            <Input value={retirementAsset} onChange={e => setRetirementAsset(e.target.value)} placeholder="e.g. A-0001" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Retirement Date *</Label>
+                                            <Input type="date" value={retirementDate} onChange={e => setRetirementDate(e.target.value)} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Units Retired</Label>
+                                            <Input type="number" min="1" value={retirementUnits} onChange={e => setRetirementUnits(e.target.value)} placeholder="Leave blank for full retirement" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Proceeds of Sale</Label>
+                                            <Input type="number" step="0.01" value={proceedsOfSale} onChange={e => setProceedsOfSale(e.target.value)} placeholder="0.00" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Gain/Loss Book</Label>
+                                            <Select value={gainLossBook} onValueChange={setGainLossBook}>
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Corporate">Corporate Book</SelectItem>
+                                                    <SelectItem value="Tax-MACRS">Tax Book – MACRS</SelectItem>
+                                                    <SelectItem value="Tax-Bonus">Tax Book – Bonus Depreciation</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Proceeds Account (GL)</Label>
+                                            <Input value={proceedsAccount} onChange={e => setProceedsAccount(e.target.value)} placeholder="e.g. 01-000-4900-000-000" className="font-mono text-sm" />
+                                        </div>
+                                    </div>
+
+                                    {proceedsOfSale && (
+                                        <div className="grid md:grid-cols-3 gap-4">
+                                            <Card className="border-l-4 border-l-muted">
+                                                <CardContent className="p-4">
+                                                    <p className="text-xs text-muted-foreground">Proceeds of Sale</p>
+                                                    <p className="text-xl font-bold font-mono">{formatNumber(parseFloat(proceedsOfSale) || 0)}</p>
+                                                </CardContent>
+                                            </Card>
+                                            <Card className="border-l-4 border-l-blue-500">
+                                                <CardContent className="p-4">
+                                                    <p className="text-xs text-muted-foreground">Est. Net Book Value</p>
+                                                    <p className="text-xl font-bold font-mono text-muted-foreground">Fetched on submit</p>
+                                                </CardContent>
+                                            </Card>
+                                            <Card className={`border-l-4 ${parseFloat(proceedsOfSale) > 0 ? "border-l-green-500" : "border-l-red-500"}`}>
+                                                <CardContent className="p-4">
+                                                    <p className="text-xs text-muted-foreground">{parseFloat(proceedsOfSale) > 0 ? "Gain" : "Loss"} on Retirement</p>
+                                                    <p className={`text-xl font-bold font-mono ${parseFloat(proceedsOfSale) > 0 ? "text-green-700" : "text-red-700"}`}>
+                                                        Calculated at posting
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    )}
+
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => { if (!retirementAsset) { toast({ title: "Enter asset number", variant: "destructive" }); return; } setConfirmRetirement(true); }}
+                                    >
+                                        <TrendingDown className="mr-2 h-4 w-4" /> Submit Retirement
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
                     </Tabs>
                 </div>
             </StandardPage>

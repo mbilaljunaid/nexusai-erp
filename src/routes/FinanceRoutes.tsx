@@ -138,6 +138,17 @@ import CustomerProfileClasses from "@/pages/finance/ar/CustomerProfileClasses";
 import TaxRegimeSetup from "@/pages/tax/TaxRegimeSetup";
 import TaxDeterminingFactors from "@/pages/tax/TaxDeterminingFactors";
 
+// Oracle Parity — Batch 2-5 Pages
+import FAAssetWorkbench from "@/pages/fixed-assets/AssetWorkbench";
+import ProrateConventionSetup from "@/pages/fixed-assets/ProrateConventionSetup";
+import PhysicalInventoryReconciliation from "@/pages/fixed-assets/PhysicalInventoryReconciliation";
+import CapitalProjectsInterface from "@/pages/fixed-assets/CapitalProjectsInterface";
+import ArAdjustmentApprovals from "@/pages/finance/ar/ArAdjustmentApprovals";
+import VatReturnOutput from "@/pages/finance/tax/VatReturnOutput";
+import IcAutoInvoice from "@/pages/finance/intercompany/IcAutoInvoice";
+import SupplierMerge from "@/pages/finance/ap/SupplierMerge";
+import NotionalCashPooling from "@/pages/finance/cash/NotionalCashPooling";
+
 // Lease & Contracts
 import LeasePortfolioWorkbench from "@/pages/leases/LeasePortfolioWorkbench";
 import LeaseSystemSetup from "@/pages/leases/LeaseSystemSetup";
@@ -202,9 +213,14 @@ export default function FinanceRoutes() {
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
                 <Route path="/finance/treasury/bank-accounts" component={TreasuryBankAccounts} />
                 <Route path="/finance/cash/accounts/:id/reconcile" component={ReconciliationPage} />
-                <Route path="/finance/fixed-assets" component={FixedAssetWorkbench} />
-                <Route path="/finance/fixed-assets/workbench" component={FixedAssetWorkbench} />
+                <Route path="/finance/fixed-assets" component={FAAssetWorkbench} />
+                <Route path="/finance/fixed-assets/workbench" component={FAAssetWorkbench} />
                 <Route path="/finance/fixed-assets/inquiry" component={FixedAssets} />
+                <Route path="/finance/fixed-assets/prorate-conventions" component={ProrateConventionSetup} />
+                <Route path="/finance/fixed-assets/physical-inventory" component={PhysicalInventoryReconciliation} />
+                <Route path="/finance/fixed-assets/capital-projects" component={CapitalProjectsInterface} />
+                <Route path="/finance/cash/notional-pooling" component={NotionalCashPooling} />
+                <Route path="/finance/ap/supplier-merge" component={SupplierMerge} />
                 <Route path="/finance/ap/supplier-portal" component={SupplierPortal} />
                 <Route path="/finance/ap/suppliers/:id" component={APSupplierDetail} />
                 <Route path="/finance/ap/suppliers" component={APSuppliers} />
@@ -250,6 +266,9 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/receipts/:id" component={ARReceiptDetail} />
                 <Route path="/finance/ar/receipts" component={ARReceipts} />
                 <Route path="/finance/ar/customers" component={ARCustomers} />
+                <Route path="/finance/ar/adjustment-approvals" component={ArAdjustmentApprovals} />
+                <Route path="/finance/tax/vat-return" component={VatReturnOutput} />
+                <Route path="/intercompany/auto-invoice" component={IcAutoInvoice} />
                 <Route path="/finance/ar/analytics" component={ArAnalytics} />
                 <Route path="/finance/ar/reports" component={ArReports} />
                 <Route path="/finance/ar/customers/:id" component={CustomerDetails} />

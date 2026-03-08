@@ -49,6 +49,7 @@ export default function APInvoiceEntry() {
         paymentCurrencyCode: "USD",
         exchangeRate: "1.0",
         payGroupId: "",
+        whtGroupId: "",
         paymentPriority: "50",
         isRecurring: false,
         recurringFrequency: "Monthly",
@@ -144,6 +145,11 @@ export default function APInvoiceEntry() {
     const { data: payGroups } = useQuery<any>({
         queryKey: ["/api/finance/ap/pay-groups"],
         queryFn: () => fetch("/api/finance/ap/pay-groups").then(r => r.json()),
+    });
+
+    const { data: whtGroups } = useQuery<any[]>({
+        queryKey: ["/api/ap/wht-groups"],
+        queryFn: () => fetch("/api/ap/wht-groups").then(r => r.json()),
     });
 
     const createMutation = useMutation({
@@ -679,6 +685,18 @@ export default function APInvoiceEntry() {
                                     </div>
                                 )}
                             </div>
+                        </div>
+                        {/* Oracle Parity: Withholding Tax Group */}
+                        <div className="space-y-2">
+                            <Label>Withholding Tax Group</Label>
+                            <Select value={header.whtGroupId || undefined} onValueChange={v => setHeader({ ...header, whtGroupId: v })}>
+                                <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
+                                <SelectContent>
+                                    {Array.isArray(whtGroups) ? whtGroups.map((g: any) => (
+                                        <SelectItem key={g.id} value={g.id.toString()}>{g.name}</SelectItem>
+                                    )) : <SelectItem value="none" disabled>No WHT groups configured</SelectItem>}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="space-y-2">
                             <Label>Control Amount</Label>

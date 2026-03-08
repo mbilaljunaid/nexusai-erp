@@ -36,7 +36,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Trash2, Save, Send, MoreHorizontal, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Plus, Trash2, Save, Send, MoreHorizontal, AlertCircle, CheckCircle2, Paperclip, X } from "lucide-react";
 import { CodeCombinationPicker } from "@/components/gl/CodeCombinationPicker";
 import { cn } from "@/lib/utils";
 import { StandardPage } from "@/components/layout/StandardPage";
@@ -49,6 +49,7 @@ interface JournalLine {
     accountId: string; // CCID or Account
     debit: string;
     credit: string;
+    statisticalAmount?: string; // Oracle GL: Statistical Ledger amount (non-financial)
     description: string;
     reference?: string;
     attribute1?: string;
@@ -94,9 +95,11 @@ export default function JournalEntry() {
     }, [activeLedger]);
 
     const [lines, setLines] = useState<JournalLine[]>([
-        { id: "1", accountId: "", debit: "0", credit: "0", description: "", reference: "" },
-        { id: "2", accountId: "", debit: "0", credit: "0", description: "", reference: "" }
+        { id: "1", accountId: "", debit: "0", credit: "0", statisticalAmount: "", description: "", reference: "" },
+        { id: "2", accountId: "", debit: "0", credit: "0", statisticalAmount: "", description: "", reference: "" }
     ]);
+    // Attachments state
+    const [attachments, setAttachments] = useState<File[]>([]);
 
     const [activeLineId, setActiveLineId] = useState<string | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -204,7 +207,7 @@ export default function JournalEntry() {
     }, [lines]);
 
     const addLine = () => {
-        const newLine = { id: Math.random().toString(), accountId: "", debit: "0", credit: "0", description: "", reference: "" };
+        const newLine = { id: Math.random().toString(), accountId: "", debit: "0", credit: "0", statisticalAmount: "", description: "", reference: "" };
         setLines([...lines, newLine]);
         // Open sheet for the new line to encourage detail entry
         setActiveLineId(newLine.id);
@@ -242,6 +245,7 @@ export default function JournalEntry() {
                     accountId: l.accountId,
                     enteredDebit: l.debit,
                     enteredCredit: l.credit,
+                    statisticalAmount: l.statisticalAmount || null,
                     description: l.description,
                     reference: l.reference,
                     currencyCode: header.currencyCode,
@@ -472,6 +476,47 @@ export default function JournalEntry() {
                             </SelectContent>
                         </Select>
                     </div>
+                    {/* Oracle Parity: Journal Attachments */}
+                    <div className="space-y-2 md:col-span-4">
+                        <Label className="flex items-center gap-2">
+                            <Paperclip className="h-4 w-4 text-muted-foreground" />
+                            Attachments <span className="text-xs text-muted-foreground font-normal">(supporting documents)</span>
+                        </Label>
+                        <div className="flex items-center gap-3">
+                            <label
+                                htmlFor="journal-attachments"
+                                className="flex items-center gap-2 px-3 py-2 rounded-md border border-dashed border-muted-foreground/40 text-sm text-muted-foreground cursor-pointer hover:border-primary hover:text-primary transition-colors"
+                            >
+                                <Paperclip className="h-4 w-4" /> Choose files...
+                                <input
+                                    id="journal-attachments"
+                                    type="file"
+                                    multiple
+                                    className="sr-only"
+                                    onChange={(e) => {
+                                        if (e.target.files) setAttachments(prev => [...prev, ...Array.from(e.target.files!)]);
+                                    }}
+                                />
+                            </label>
+                            {attachments.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {attachments.map((f, i) => (
+                                        <span key={i} className="flex items-center gap-1 text-xs bg-muted rounded-full px-3 py-1">
+                                            {f.name}
+                                            <button
+                                                type="button"
+                                                onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
+                                                aria-label={`Remove ${f.name}`}
+                                                className="ml-1 text-muted-foreground hover:text-destructive"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
 
@@ -530,6 +575,7 @@ export default function JournalEntry() {
                                 <TableHead className="min-w-48">Description</TableHead>
                                 <TableHead className="w-44 text-right">Debit</TableHead>
                                 <TableHead className="w-44 text-right">Credit</TableHead>
+                                <TableHead className="w-32 text-right text-muted-foreground/70" title="Statistical Amount (Statistical Ledger entries — does not affect financial balances)">Statistical</TableHead>
                                 <TableHead className="w-20"></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -566,6 +612,17 @@ export default function JournalEntry() {
                                             value={line.credit}
                                             onChange={(e) => updateLine(line.id, 'credit', e.target.value)}
                                             className="text-right border-none shadow-none focus-visible:ring-0 bg-transparent px-0 font-mono"
+                                            onFocus={(e) => e.target.select()}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Input
+                                            type="number"
+                                            value={line.statisticalAmount || ""}
+                                            onChange={(e) => updateLine(line.id, 'statisticalAmount', e.target.value)}
+                                            className="text-right border-none shadow-none focus-visible:ring-0 bg-transparent px-0 font-mono text-muted-foreground"
+                                            placeholder="—"
+                                            title="Statistical Amount — for Statistical Ledger entries only"
                                             onFocus={(e) => e.target.select()}
                                         />
                                     </TableCell>
@@ -640,6 +697,21 @@ export default function JournalEntry() {
                                         onChange={(e) => updateLine(activeLine.id, 'credit', e.target.value)}
                                         className="font-mono text-right"
                                     />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="flex items-center gap-1">
+                                        Statistical Amount
+                                        <span className="text-xs font-normal text-muted-foreground">(non-financial)</span>
+                                    </Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={activeLine.statisticalAmount || ""}
+                                        onChange={(e) => updateLine(activeLine.id, 'statisticalAmount', e.target.value)}
+                                        className="font-mono text-right"
+                                        placeholder="e.g. headcount, FTEs, sq ft"
+                                    />
+                                    <p className="text-xs text-muted-foreground">Used for statistical ledger entries only — does not affect financial balances.</p>
                                 </div>
                             </div>
 

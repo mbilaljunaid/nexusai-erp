@@ -11,6 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -30,6 +33,16 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
         period: null
     });
     const [showRouAssetModal, setShowRouAssetModal] = useState(false);
+
+    // Oracle IFRS 16/ASC 842 Abstraction Fields
+    const [abstraction, setAbstraction] = useState({
+        purchaseOptionAmount: "",
+        purchaseOptionDate: "",
+        residualValueGuarantee: "",
+        residualValueCounterparty: "",
+        hasEmbeddedDerivative: false,
+        rouFaBook: "",
+    });
 
     const { data: lease, isLoading } = useQuery<any>({
         queryKey: ["lease", leaseId],
@@ -135,6 +148,90 @@ export function LeaseDetailView({ leaseId }: LeaseDetailProps) {
                             </CardContent>
                         </Card>
                     </div>
+
+                    {/* Oracle IFRS 16 / ASC 842 — Lease Abstraction Fields */}
+                    <Card className="border-l-4 border-l-primary">
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                Lease Abstraction
+                                <Badge variant="outline" className="text-xs font-normal">IFRS 16 / ASC 842</Badge>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-2 gap-x-8 gap-y-4">
+                            {/* Purchase Option */}
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold">Purchase Option Amount</Label>
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    className="font-mono"
+                                    value={abstraction.purchaseOptionAmount}
+                                    onChange={e => setAbstraction(a => ({ ...a, purchaseOptionAmount: e.target.value }))}
+                                    placeholder="0.00 (blank if none)"
+                                />
+                                <p className="text-xs text-muted-foreground">Purchase option price — include in ROU asset cost if reasonably certain to exercise.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold">Purchase Option Exercise Date</Label>
+                                <Input
+                                    type="date"
+                                    value={abstraction.purchaseOptionDate}
+                                    onChange={e => setAbstraction(a => ({ ...a, purchaseOptionDate: e.target.value }))}
+                                />
+                            </div>
+                            {/* Residual Value Guarantee */}
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold">Residual Value Guarantee (RVG)</Label>
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    className="font-mono"
+                                    value={abstraction.residualValueGuarantee}
+                                    onChange={e => setAbstraction(a => ({ ...a, residualValueGuarantee: e.target.value }))}
+                                    placeholder="0.00 (blank if none)"
+                                />
+                                <p className="text-xs text-muted-foreground">Amount guaranteed by lessee at lease end — included in lease liability calculation.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm font-semibold">RVG Counterparty</Label>
+                                <Input
+                                    value={abstraction.residualValueCounterparty}
+                                    onChange={e => setAbstraction(a => ({ ...a, residualValueCounterparty: e.target.value }))}
+                                    placeholder="Entity providing the guarantee"
+                                />
+                            </div>
+                            {/* Embedded Derivative */}
+                            <div className="col-span-2 flex items-center justify-between rounded-lg border p-4 bg-muted/20">
+                                <div className="space-y-0.5">
+                                    <Label className="text-sm font-semibold cursor-pointer">Embedded Derivative</Label>
+                                    <p className="text-xs text-muted-foreground">Flag if this lease contains a variable payment indexed to a financial rate (e.g. CPI, LIBOR). Requires separate derivative accounting under IFRS 9.</p>
+                                </div>
+                                <Switch
+                                    checked={abstraction.hasEmbeddedDerivative}
+                                    onCheckedChange={v => setAbstraction(a => ({ ...a, hasEmbeddedDerivative: v }))}
+                                    aria-label="Toggle Embedded Derivative flag"
+                                />
+                            </div>
+                            {/* ROU → FA Book Link */}
+                            <div className="col-span-2 space-y-2">
+                                <Label className="text-sm font-semibold">ROU Asset → Fixed Asset Book Auto-Link</Label>
+                                <div className="flex items-center gap-3">
+                                    <select
+                                        className="flex h-10 w-56 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                        value={abstraction.rouFaBook}
+                                        onChange={e => setAbstraction(a => ({ ...a, rouFaBook: e.target.value }))}
+                                        aria-label="Select FA Book for ROU Asset"
+                                    >
+                                        <option value="">Select FA Book...</option>
+                                        <option value="Corporate">Corporate Book</option>
+                                        <option value="IFRS16">IFRS 16 Book</option>
+                                        <option value="Tax-MACRS">Tax Book — MACRS</option>
+                                    </select>
+                                    <p className="text-xs text-muted-foreground">When set, capitalizing ROU will automatically create a Fixed Asset record in the selected book.</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Approval Workflow Actions */}
                     <Card>

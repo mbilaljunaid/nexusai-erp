@@ -59,6 +59,7 @@ export default function ARCustomers() {
     statementCycle: z.string().optional(),
     autoCashRuleSet: z.string().optional(),
     collector: z.string().optional(),
+    lockboxNumber: z.string().optional(),
     creditHoldAuto: z.boolean().default(false),
   });
 
@@ -100,6 +101,7 @@ export default function ARCustomers() {
       statementCycle: "",
       autoCashRuleSet: "",
       collector: "",
+      lockboxNumber: "",
       creditHoldAuto: false,
     }
   });
@@ -315,6 +317,14 @@ export default function ARCustomers() {
                               </SelectContent>
                             </Select>
                             <FormDescription className="text-xs">AR collector responsible for following up on overdue balances.</FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                        <FormField control={customerForm.control} name="lockboxNumber" render={({ field }) => (
+                          <FormItem className="col-span-2">
+                            <FormLabel>Lockbox Number</FormLabel>
+                            <FormControl><Input {...field} placeholder="e.g. LB-00412" /></FormControl>
+                            <FormDescription className="text-xs">Bank lockbox identifier — used to auto-match incoming remittances to this customer in the Lockbox Workbench.</FormDescription>
                             <FormMessage />
                           </FormItem>
                         )} />
