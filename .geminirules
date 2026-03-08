@@ -75,3 +75,101 @@ frontend_ui_standardization_policy:
     - "`console.log` statements are STRICTLY FORBIDDEN in any committed code across `src/pages` or `src/components`. Code must be rigorously clean."
     - "Data components submitting requests (`<Button type=\"submit\">`) MUST bind to `disabled={form.formState.isSubmitting}`. Never allow multi-click accidental submits."
     - "Hard-coded locales (e.g. `en-US` or `USD`) are FORBIDDEN. Use `useTenantLocale()` and pass values correctly into `formatters.ts`."
+
+# 🗺️ NAVIGATION ARCHITECTURE — THREE-LEVEL RULE
+navigation_architecture:
+  enforcement_level: HARD_FAIL
+  description: "Every authenticated page must be reachable via the three-level sidebar navigation chain. Orphan pages accessible only by direct URL are FORBIDDEN."
+
+  three_level_hierarchy:
+    level_1_area: "Defined as a `type: group` entry in `src/config/navigation.ts` (e.g., Finance & Accounting, HR & Talent, CRM & Sales)."
+    level_2_module: "Defined as a `type: link` child of its Area group. The path MUST point to the module dashboard route (e.g., /finance/ap, not /finance/ap/invoices)."
+    level_3_page: "Sub-pages listed in the module's sidebar section. Every sub-page MUST be linked from the module dashboard via a navigation card."
+
+  rules:
+    - "Every new module MUST be added to `src/config/navigation.ts` under the correct Area group before its routes are considered complete."
+    - "Clicking an Area group item MUST navigate to a module dashboard — never directly to a data list or form."
+    - "Every module dashboard MUST contain clickable cards that route to every major sub-page of that module."
+    - "A user MUST be able to reach any page purely through sidebar clicks — never requiring a manually typed URL."
+
+# 🔌 SIDEBAR WIRING RULES
+sidebar_wiring:
+  enforcement_level: HARD_FAIL
+  description: "Sidebar components MUST be actively wired into their corresponding route files. Commented-out sidebars are treated as build failures."
+
+  primary_sidebar:
+    file: "src/config/navigation.ts + src/components/AppSidebar.tsx"
+    rule: "Every Area group and Module link MUST exist here. Additions to any route file without a corresponding navigation.ts entry are FORBIDDEN."
+
+  module_sidebar:
+    pattern: |
+      // MANDATORY pattern — sidebar MUST be passed to ModuleLayout
+      export default function FinanceRoutes() {
+          return (
+              <ModuleLayout sidebar={<FinanceSidebar />}>
+                  <Switch>...</Switch>
+              </ModuleLayout>
+          );
+      }
+    rules:
+      - "If a sidebar component exists in `src/components/nav/`, it MUST be imported and passed as `sidebar={<XxxSidebar />}` to `<ModuleLayout>`."
+      - "Commenting out a sidebar import or prop is FORBIDDEN. Remove it entirely or keep it wired."
+      - "Each sidebar group corresponds to one Module. The first item in each group MUST link to the module dashboard."
+      - "When creating a new Area, create `src/components/nav/<Area>Sidebar.tsx` and wire it immediately."
+
+  known_unwired_sidebars_to_fix_first:
+    - "FinanceSidebar → must be wired into FinanceRoutes.tsx"
+    - "CrmSidebar → must be wired into CrmRoutes.tsx"
+
+# 🛣️ URL ROUTING CONVENTIONS
+routing_conventions:
+  enforcement_level: HARD_FAIL
+  description: "All routes must follow consistent URL prefixes. Orphan routes outside their Area prefix are FORBIDDEN."
+
+  url_prefix_ownership:
+    Finance: "/finance/<module>/<page> (e.g., /finance/ap/invoices, /finance/ar/receipts, /finance/gl/journals)"
+    SCM_Procurement: "/scm/<module>/<page>"
+    Manufacturing: "/manufacturing/<page>"
+    HCM: "/hr/<module>/<page> (e.g., /hr/payroll/, /hr/wfm/, /hr/recruitment/)"
+    CRM: "/crm/<module>/<page> (e.g., /crm/cases, /crm/field-service)"
+    EPM: "/epm/<module>/ or /finance/epm/<module>/"
+    Projects: "/projects/<page>"
+    MDM: "/mdm/<page>"
+
+  forbidden_patterns:
+    - "Orphan `/fixed-assets/...` routes — must be under `/finance/fixed-assets/`"
+    - "Orphan `/expenses/...` routes — must be under `/finance/expenses/`"
+    - "Orphan `/gl/...` routes — must be under `/finance/gl/`"
+    - "Orphan `/intercompany/...` routes — must be under `/finance/intercompany/`"
+    - "Duplicate routes defined in multiple route files (e.g., SLA in both FinanceRoutes and ScmRoutes)"
+    - "WFM routes at `/wfm/...` in App.tsx — must be consolidated under `/hr/wfm/` in HrRoutes.tsx"
+
+  route_file_ownership:
+    FinanceRoutes.tsx: "GL, AP, AR, Cash, Fixed Assets, Tax, Expenses, Leases, Intercompany, Revenue, SLA"
+    ScmRoutes.tsx: "Procurement, Inventory, WMS, Manufacturing, TMS, LCM, Cost Management"
+    HrRoutes.tsx: "Core HR, Payroll, WFM, Recruitment, Learning, Self-Service, Rewards"
+    CrmRoutes.tsx: "CRM Sales/SFA, Marketing (CRM), CPQ, Service Cloud, Field Service, Incentive Comp, Partners"
+    ProjectRoutes.tsx: "PPM, Project Contracts"
+    MaintenanceRoutes.tsx: "EAM / Maintenance"
+    MdmRoutes.tsx: "MDM, Data Quality"
+    AnalyticsRoutes.tsx: "Analytics, BI"
+    ComplianceRoutes.tsx: "Risk, Compliance, Audit"
+    AdminRoutes.tsx: "Admin, Settings, Integrations, Tenant Admin"
+
+  module_dashboard_rules:
+    - "Every module root route renders a proper dashboard component — NOT a generic list view or placeholder."
+    - "Dashboard components MUST display KPI metric cards AND navigation cards linking to all sub-pages."
+    - "Detail routes use path params: `/finance/ap/invoices/:id`."
+    - "Config/setup sub-pages use a `/config/` or `/setup/` infix: `/finance/ap/config/hold-types`."
+    - "Do NOT define the same route in more than one route file."
+
+# 📋 NEW MODULE CHECKLIST
+new_module_checklist:
+  description: "All steps are MANDATORY when adding a new module. Incomplete modules must not be merged."
+  steps:
+    - "[ ] Create all page components under `src/pages/<area>/<module>/`"
+    - "[ ] Register all routes in the correct `src/routes/<Area>Routes.tsx`"
+    - "[ ] Add module entries to the Area sidebar component in `src/components/nav/`"
+    - "[ ] Confirm sidebar is wired into ModuleLayout in the Route file"
+    - "[ ] Add the module as a child link in `src/config/navigation.ts` under the correct Area group"
+    - "[ ] Create a proper module dashboard component with KPI cards and navigation cards to sub-pages"

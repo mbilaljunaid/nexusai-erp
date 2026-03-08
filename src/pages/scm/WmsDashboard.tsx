@@ -8,8 +8,10 @@ import {
 } from "recharts";
 import {
     Activity, Package, Truck, Clock, AlertTriangle,
-    CheckCircle2, TrendingUp, Layers, MousePointer2
+    CheckCircle2, TrendingUp, Layers, MousePointer2, ChevronRight,
+    Waves, ClipboardList, Ship, Users, Database, MapPin, Settings
 } from "lucide-react";
+import { Link } from "wouter";
 import { DashboardWidget, StandardDashboard } from "@/components/layout/StandardDashboard";
 import { Badge } from "@/components/ui/badge";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
@@ -228,6 +230,36 @@ export default function WmsDashboard() {
                         </div>
                     </CardContent>
                 </Card>
+            </div>
+
+            {/* Quick Access Navigation Cards */}
+            <div>
+                <h3 className="text-lg font-semibold text-white mb-4 mt-2">Warehouse Operations</h3>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                    {[
+                        { title: "Operations", desc: "Putaway, pick, and pack tasks", href: "/scm/wms/operations", icon: Activity },
+                        { title: "Wave Planning", desc: "Plan and release pick waves", href: "/scm/wms/waves", icon: Waves },
+                        { title: "Task Monitor", desc: "Live task queue and metrics", href: "/scm/wms/tasks", icon: ClipboardList },
+                        { title: "Slotting", desc: "Optimise warehouse slot assignments", href: "/scm/wms/slotting", icon: Layers },
+                        { title: "Shipping", desc: "Packing, labels, and dispatch", href: "/scm/wms/shipping", icon: Ship },
+                        { title: "Labor", desc: "Labor performance and scheduling", href: "/scm/wms/labor", icon: Users },
+                        { title: "Master Data", desc: "Locations, bins, and SKU setup", href: "/scm/wms/masters", icon: Database },
+                        { title: "Yard Management", desc: "Inbound yard and dock management", href: "/scm/wms/yard", icon: MapPin },
+                    ].map((mod) => (
+                        <Link key={mod.href} to={mod.href}>
+                            <Card className="cursor-pointer bg-slate-900 border-slate-700 hover:border-blue-500 hover:shadow-md transition-all h-full">
+                                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                    <CardTitle className="text-xs font-medium text-slate-300">{mod.title}</CardTitle>
+                                    <ChevronRight className="h-3 w-3 text-slate-500" />
+                                </CardHeader>
+                                <CardContent className="pt-0">
+                                    <mod.icon className="h-5 w-5 text-blue-400 mb-1" />
+                                    <p className="text-[10px] text-slate-500">{mod.desc}</p>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </StandardDashboard>
     );

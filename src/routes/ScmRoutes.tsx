@@ -2,6 +2,14 @@ import { Route, Switch, useLocation } from "wouter";
 import { useEffect } from "react";
 // import { lazy } from "react";
 import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
+import CostManagementDashboard from "@/pages/scm/CostManagementDashboard";
+import GlobalTradeDashboard from "@/pages/scm/GlobalTradeDashboard";
+import TMSDashboard from "@/pages/scm/TMSDashboard";
+import InventoryItemsPage from "@/pages/inventory/InventoryItemsPage";
+import InventoryCycleCountPage from "@/pages/inventory/InventoryCycleCountPage";
+import InventoryReplenishmentPage from "@/pages/inventory/InventoryReplenishmentPage";
+import InventoryItemProfilePage from "@/pages/inventory/InventoryItemProfilePage";
+import InventoryProductMasterPage from "@/pages/inventory/InventoryProductMasterPage";
 
 // Static Imports for Manufacturing
 import ManufacturingDashboard from "@/pages/manufacturing/ManufacturingDashboard";
@@ -109,6 +117,11 @@ export default function ScmRoutes() {
             <Route path="/scm/fulfillment" component={FulfillmentWorkbench} />
             <Route path="/inventory" component={Inventory} />
             <Route path="/inventory/dashboard" component={Inventory} />
+            <Route path="/inventory/items" component={InventoryItemsPage} />
+            <Route path="/inventory/item-profile" component={InventoryItemProfilePage} />
+            <Route path="/inventory/product-master" component={InventoryProductMasterPage} />
+            <Route path="/inventory/cycle-count" component={InventoryCycleCountPage} />
+            <Route path="/inventory/replenishment" component={InventoryReplenishmentPage} />
             <Route path="/inventory/work-orders" component={WorkOrdersDashboard} />
             <Route path="/warehouse" component={Warehouse} />
             <Route path="/scm/wms/operations" component={WarehouseOperations} />
@@ -126,26 +139,20 @@ export default function ScmRoutes() {
 
             <Route path="/suppliers" component={SupplierManagement} />
 
-            {/* Cost Management & SLA */}
+            {/* Cost Management */}
+            <Route path="/scm/costing" component={CostManagementDashboard} />
             <Route path="/scm/costing/dashboard" component={CostDashboard} />
             <Route path="/scm/costing/approvals" component={CostAdjustmentApprovalWorkbench} />
             <Route path="/scm/lcm/operations" component={LcmWorkbench} />
             <Route path="/scm/lcm/components" component={CostComponents} />
             <Route path="/scm/lcm/trade-operation/:id" component={TradeOperationDetails} />
 
-            <Route path="/finance/sla/dashboard" component={SlaDashboard} />
-            <Route path="/finance/sla/mapping-sets" component={MappingSetWorkbench} />
-            <Route path="/finance/sla/mapping-sets/:id" component={MappingSetEditor} />
-            <Route path="/finance/sla/intelligence" component={SlaAIExplainability} />
-            <Route path="/finance/sla/reconciliation" component={SlaReconciliationWorkbench} />
-            <Route path="/finance/sla/adr" component={AdrBuilder} />
-
             {/* Warehouse Management (WMS) */}
             <Route path="/logistics" component={LogisticsDashboard} />
             <Route path="/transportation/planning" component={RoutePlanningWorkbench} />
             <Route path="/transportation/carriers" component={CarrierManager} />
             <Route path="/transportation/freight" component={FreightSettlementConsole} />
-            <Route path="/transportation" component={TransportationManagementSystem} />
+            <Route path="/transportation" component={TMSDashboard} />
 
             {/* TMS - New Components */}
             <Route path="/tms/analytics" component={TransportationBIDashboard} />
@@ -158,6 +165,7 @@ export default function ScmRoutes() {
             <Route path="/transportation/carrier-rates" component={CarrierRateWorkbench} />
             <Route path="/transportation/tracking" component={ShipmentTrackingDashboard} />
 
+            <Route path="/scm/gtm" component={GlobalTradeDashboard} />
             <Route component={GenericModuleDashboard} />
         </Switch>
     );

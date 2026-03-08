@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import React, { useState } from 'react';
 import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
-import { FolderKanban, DollarSign, BarChart3, TrendingUp } from 'lucide-react';
+import { FolderKanban, DollarSign, BarChart3, TrendingUp, ChevronRight, Kanban, Timer, Users, CalendarDays, Settings, FileText } from 'lucide-react';
+import { Link } from 'wouter';
 import { AnalyticsChart } from '@/components/AnalyticsChart';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
@@ -93,6 +94,32 @@ export default function ProjectsDashboard() {
                         type="bar"
                         dataKey="value"
                     />
+                </div>
+            </DashboardWidget>
+
+            {/* Quick Access Navigation Cards */}
+            <DashboardWidget title="Project Functions" colSpan={4} className="min-h-0">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 mt-2">
+                    {[
+                        { title: "Analytics", desc: "Portfolio performance analytics", href: "/projects/analytics", icon: BarChart3 },
+                        { title: "Kanban Board", desc: "Task board and sprint view", href: "/projects/kanban", icon: Kanban },
+                        { title: "Timeline", desc: "Gantt chart and scheduling", href: "/projects/timeline", icon: CalendarDays },
+                        { title: "Resources", desc: "Resource planning and allocation", href: "/projects/resources", icon: Users },
+                        { title: "Sprints", desc: "Agile sprint management", href: "/projects/sprints", icon: Timer },
+                        { title: "Settings", desc: "Project configuration and setup", href: "/projects/settings", icon: Settings },
+                        { title: "Contracts", desc: "Contract and billing setup", href: "/contracts", icon: FileText },
+                    ].map((mod) => (
+                        <Link key={mod.href} to={mod.href}>
+                            <div className="cursor-pointer border rounded-lg p-3 hover:shadow-md hover:border-primary/50 transition-all h-full flex flex-col gap-1">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-semibold">{mod.title}</span>
+                                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                                </div>
+                                <mod.icon className="h-4 w-4 text-muted-foreground" />
+                                <p className="text-[10px] text-muted-foreground">{mod.desc}</p>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
             </DashboardWidget>
         </StandardDashboard>

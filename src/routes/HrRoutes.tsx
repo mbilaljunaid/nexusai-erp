@@ -69,6 +69,8 @@ import CommunityBrowser from "../pages/hr/learning/admin/CommunityBrowser";
 import WorkforceStructureSetup from "../pages/hr/WorkforceStructureSetup";
 import DocumentOfRecords from "../pages/hr/DocumentOfRecords";
 import BenefitsProgramSetup from "../pages/hr/benefits/BenefitsProgramSetup";
+import CompBenDashboard from "../pages/hr/CompBenDashboard";
+import WorkforceStructureDashboard from "../pages/hr/WorkforceStructureDashboard";
 
 // Workforce Management (WFM) Imports
 import TimeRuleBuilder from "../pages/hr/TimeRuleBuilder";
@@ -178,9 +180,11 @@ export default function HrRoutes() {
                 <Route path="/hr/wfm/absence/setup" component={AbsencePlanSetup} />
 
                 {/* Configuration / Setup */}
+                <Route path="/hr/setup" component={WorkforceStructureDashboard} />
                 <Route path="/hr/setup/workforce-structures" component={WorkforceStructureSetup} />
                 <Route path="/hr/setup/document-records" component={DocumentOfRecords} />
                 <Route path="/hr/setup/benefits-programs" component={BenefitsProgramSetup} />
+                <Route path="/hr/compensation" component={CompBenDashboard} />
 
                 {/* Learning Management (LMS) Routes */}
                 <Route path="/hr/learning/me" component={LearningDashboard} />
@@ -226,6 +230,7 @@ export default function HrRoutes() {
                 <Route path="/hr/wfm/payroll" component={PayrollTransfer} />
 
                 {/* Main HR Dashboard */}
+                <Route path="/hr/regulatory-calendar" component={RegulatoryCalendar} />
                 <Route path="/hr" component={HR} />
 
                 {/* Fallback for any other /hr/* route */}

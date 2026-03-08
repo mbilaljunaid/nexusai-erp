@@ -54,6 +54,7 @@ const SCMDashboard = lazyWithRetry(() => import("@/pages/SCMOverview"));
 const IndustryDashboard = lazyWithRetry(() => import("@/pages/IndustryDashboard"));
 const DashboardPage = lazyWithRetry(() => import("@/pages/Dashboard"));
 const EPMPage = lazyWithRetry(() => import("@/pages/EPMPage"));
+const ESGDashboard = lazyWithRetry(() => import("@/pages/epm/ESGDashboard"));
 
 // Talent/Learning
 const ManagerLearningDashboard = lazyWithRetry(() => import("@/pages/hr/learning/manager/ManagerLearningDashboard"));
@@ -130,11 +131,17 @@ function Router() {
         <Route path="/processes/*" component={ProcessRoutes} />
         <Route path="/operations" component={SCMDashboard} />
         <Route path="/system-configuration" component={SettingsPage} />
+        <Route path="/system/setup" component={() => { const C = lazyWithRetry(() => import("@/pages/system/FunctionalSetupDashboard")); return <C />; }} />
         <Route path="/manufacturing"><Redirect to="/manufacturing/dashboard" /></Route>
         <Route path="/scm" component={SCMDashboard} />
         <Route path="/epm" component={EPMPage} />
+        <Route path="/epm/esg" component={ESGDashboard} />
+        <Route path="/epm/esg/sustainability" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/ESGSustainabilityCompliance")); return <C />; }} />
+        <Route path="/epm/esg/reporting" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/ESGReporting")); return <C />; }} />
+        <Route path="/epm/esg/analytics" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/EmissionsAnalytics")); return <C />; }} />
+        <Route path="/epm/esg/targets" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/GlobalTargets")); return <C />; }} />
+        <Route path="/epm/esg/risks" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/ESGRiskIncidents")); return <C />; }} />
         <Route path="/epm/*" component={EPMPage} />
-        <Route path="/wfm"><Redirect to="/wfm/my-time" /></Route>
 
         {/* Analytics & Compliance */}
         <Route path="/analytics" component={AnalyticsRoutes} />
@@ -142,6 +149,7 @@ function Router() {
         <Route path="/compliance" component={ComplianceRoutes} />
         <Route path="/compliance/*" component={ComplianceRoutes} />
         <Route path="/compliance-module" component={ComplianceRoutes} />
+        <Route path="/wfm"><Redirect to="/hr/wfm/me/time" /></Route>
         <Route path="/wfm/analytics" component={WfmAnalytics} />
         <Route path="/rewards/payroll" component={PayrollWorkbench} />
         <Route path="/wfm/admin/accrual-test" component={AccrualTesting} />
@@ -261,11 +269,11 @@ function Router() {
         <Route path="/maintenance*" component={MaintenanceRoutes} />
 
         <Route path="/me/payslips" component={MyPayslips} />
-        <Route path="/intercompany" component={IntercompanyWorkbench} />
-        <Route path="/intercompany/reconciliation" component={IntercompanyReconciliation} />
-        <Route path="/intercompany/netting" component={NettingWorkbench} />
-        <Route path="/intercompany/allocations" component={AllocationsWorkbench} />
-        <Route path="/intercompany/data-access" component={ICDataAccessManager} />
+        <Route path="/intercompany"><Redirect to="/finance/intercompany/workbench" /></Route>
+        <Route path="/intercompany/reconciliation"><Redirect to="/finance/intercompany/reconciliation" /></Route>
+        <Route path="/intercompany/netting"><Redirect to="/finance/intercompany/netting" /></Route>
+        <Route path="/intercompany/allocations"><Redirect to="/finance/intercompany/allocations" /></Route>
+        <Route path="/intercompany/data-access"><Redirect to="/finance/intercompany/data-access" /></Route>
 
         {/* ERP Core (Temporary placeholder until refactored) */}
         {/* ERP Core */}

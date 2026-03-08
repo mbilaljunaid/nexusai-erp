@@ -11,7 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, FileText } from "lucide-react";
+import { Plus, Search, FileText, ChevronRight, ClipboardList, Calendar, Shield, GitBranch, RefreshCw, Settings, DollarSign } from "lucide-react";
+import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { LeaseDetailView } from "./LeaseDetailView";
 import { LeaseExtractionWizard } from "@/components/lease/LeaseExtractionWizard";
@@ -120,6 +121,31 @@ export default function LeasePortfolioWorkbench() {
                         <CardHeader className="pb-2"><CardTitle className="text-sm">Avg. Interest Rate</CardTitle></CardHeader>
                         <CardContent><div className="text-2xl font-bold">4.2%</div></CardContent>
                     </Card>
+                </div>
+
+
+                {/* Quick Nav */}
+                <div>
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Lease Functions</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+                        {[
+                            { title: "Schedules", href: "/finance/leases/schedules", icon: Calendar },
+                            { title: "Approvals", href: "/finance/leases/approvals", icon: ClipboardList },
+                            { title: "Approval Chains", href: "/finance/leases/approval-chains", icon: GitBranch },
+                            { title: "Modification", href: "/finance/leases/modify", icon: RefreshCw },
+                            { title: "Subleases", href: "/finance/leases/subleases", icon: Shield },
+                            { title: "IDC", href: "/finance/leases/initial-direct-costs", icon: DollarSign },
+                            { title: "Compliance", href: "/finance/leases/compliance", icon: Shield },
+                            { title: "Disclosure Rpt", href: "/finance/leases/reports/disclosure", icon: FileText },
+                        ].map((mod) => (
+                            <Link key={mod.href} to={mod.href}>
+                                <div className="border rounded-lg p-2 text-center cursor-pointer hover:border-primary/50 hover:shadow-sm transition-all">
+                                    <mod.icon className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
+                                    <p className="text-[10px] font-medium leading-tight">{mod.title}</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
 
                 <div className="flex items-center space-x-2 bg-card p-4 rounded-lg border">

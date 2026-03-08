@@ -109,11 +109,12 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "finance-gl", title: "General Ledger", type: "link", path: "/finance/gl" },
                     { id: "finance-ap", title: "Accounts Payable", type: "link", path: "/finance/ap" },
-                    { id: "finance-ar", title: "Accounts Receivable", type: "link", path: "/finance/accounts-receivable" },
-                    { id: "finance-cm", title: "Cash & Treasury", type: "link", path: "/finance/treasury" },
+                    { id: "finance-ar", title: "Accounts Receivable", type: "link", path: "/finance/ar" },
+                    { id: "finance-cm", title: "Cash & Treasury", type: "link", path: "/finance/cash" },
                     { id: "finance-rev", title: "Billing & Revenue", type: "link", path: "/finance/revenue" },
                     { id: "finance-fa", title: "Fixed Assets", type: "link", path: "/finance/fixed-assets" },
-                    { id: "finance-ic", title: "Intercompany", type: "link", path: "/finance/intercompany/workbench" },
+                    { id: "finance-leases", title: "Lease Accounting", type: "link", path: "/finance/leases" },
+                    { id: "finance-ic", title: "Intercompany", type: "link", path: "/finance/intercompany" },
                     { id: "finance-sla", title: "Subledger Accounting", type: "link", path: "/finance/sla" },
                     { id: "finance-expense", title: "Expense Management", type: "link", path: "/finance/expense-management" },
                     { id: "finance-tax", title: "Tax Management", type: "link", path: "/finance/tax" },
@@ -122,11 +123,11 @@ export const navigationConfig: SidebarNode[] = [
             {
                 id: "epm", title: "Enterprise Performance (EPM)", type: "group", icon: TrendingUp, path: "/epm",
                 children: [
-                    { id: "epm-planning", title: "Planning", type: "link", path: "/epm/planning" },
-                    { id: "epm-budgeting", title: "Budgeting", type: "link", path: "/epm/budgeting" },
-                    { id: "epm-forecasting", title: "Forecasting", type: "link", path: "/epm/forecasting" },
-                    { id: "epm-modeling", title: "Financial Modeling", type: "link", path: "/epm/modeling" },
+                    { id: "epm-planning", title: "Planning & Budgeting", type: "link", path: "/epm" },
+                    { id: "epm-controls", title: "Budget Controls", type: "link", path: "/finance/epm/budget-controls" },
+                    { id: "epm-scenarios", title: "Scenario Comparison", type: "link", path: "/finance/epm/scenarios" },
                     { id: "epm-consolidation", title: "Consolidation", type: "link", path: "/finance/gl/consolidation" },
+                    { id: "epm-esg", title: "ESG & Sustainability", type: "link", path: "/epm/esg" },
                 ]
             },
             {
@@ -135,7 +136,8 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "procurement", title: "Procurement", type: "link", path: "/scm/procurement" },
                     { id: "portal-supplier", title: "Supplier Portal", type: "link", path: "/portal/supplier" },
                     { id: "inventory", title: "Inventory", type: "link", path: "/inventory" },
-                    { id: "costing", title: "Cost Management", type: "link", path: "/scm/costing/dashboard" },
+                    { id: "costing", title: "Cost Management", type: "link", path: "/scm/costing" },
+                    { id: "gtm", title: "Global Trade (GTM)", type: "link", path: "/scm/gtm" },
                 ]
             },
             {
@@ -156,7 +158,9 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "crm-sales", title: "Sales Execution", type: "link", path: "/crm" },
                     { id: "crm-cpq", title: "CPQ & Quotes", type: "link", path: "/crm/cpq" },
                     { id: "crm-service", title: "Service & Customer Portal", type: "link", path: "/service" },
-                    { id: "crm-marketing", title: "Marketing", type: "link", path: "/marketing" },
+                    { id: "crm-marketing", title: "Marketing", type: "link", path: "/crm/campaigns" },
+                    { id: "crm-fieldservice", title: "Field Service", type: "link", path: "/crm/field-service" },
+                    { id: "crm-incentives", title: "Incentive Comp", type: "link", path: "/crm/incentives" },
                     { id: "crm-partners", title: "Partners (PRM)", type: "link", path: "/crm/partners" }
                 ]
             },
@@ -164,10 +168,12 @@ export const navigationConfig: SidebarNode[] = [
                 id: "hr", title: "HR & Talent", type: "group", icon: Briefcase, path: "/hr",
                 children: [
                     { id: "hr-core", title: "Core HR", type: "link", path: "/hr" },
+                    { id: "hr-self-service", title: "My HR (Self-Service)", type: "link", path: "/hr/self-service/me" },
                     { id: "hr-recruit", title: "Recruitment", type: "link", path: "/hr/recruitment" },
                     { id: "hr-talent", title: "Talent & Learning", type: "link", path: "/hr/learning/me" },
                     { id: "hr-wfm", title: "Workforce Mgmt (WFM)", type: "link", path: "/hr/wfm/me/time" },
-                    { id: "hr-rewards", title: "Rewards", type: "link", path: "/hr/rewards/compensation" },
+                    { id: "hr-comp-ben", title: "Compensation & Benefits", type: "link", path: "/hr/compensation" },
+                    { id: "hr-workforce-setup", title: "Workforce Setup", type: "link", path: "/hr/setup" },
                     { id: "hr-analytics", title: "HR Analytics", type: "link", path: "/hr/analytics" },
                 ]
             },
@@ -187,6 +193,7 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "compliance", title: "Compliance & Risk", type: "link", path: "/compliance/dashboard" },
                     { id: "audit", title: "Audit Trails", type: "link", path: "/compliance/audit" },
                     { id: "security", title: "Security Profiles", type: "link", path: "/compliance/security" },
+                    { id: "fsm", title: "Functional Setup (FSM)", type: "link", path: "/system/setup" },
                 ]
             }
         ]

@@ -5,10 +5,21 @@ import { Badge } from "@/components/ui/badge";
 import { IconNavigation } from "@/components/IconNavigation";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
-import { Plus, TrendingUp, Zap, AlertCircle, DollarSign, PieChart } from "lucide-react";
+import { Plus, TrendingUp, Zap, AlertCircle, DollarSign, PieChart, Shield, BarChart3, ChevronRight, GitBranch, RefreshCw } from "lucide-react";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
 import { formatNumber } from '@/lib/formatters';
+
+const epmModules = [
+  { title: "Budget Controls", description: "Rules and thresholds for budget enforcement", href: "/finance/epm/budget-controls", icon: Shield },
+  { title: "Variance Analysis", description: "Budget vs. actual variance workbench", href: "/finance/epm/variance-analysis", icon: BarChart3 },
+  { title: "Scenario Comparison", description: "Compare Budget, Forecast, and Actuals", href: "/finance/epm/scenarios", icon: Zap },
+  { title: "Budget Reconciliation", description: "Reconcile budget entries and carry-forwards", href: "/finance/epm/budget-reconciliation", icon: RefreshCw },
+  { title: "Budget Workflow", description: "Submit and approve budgets", href: "/finance/epm/workflow", icon: GitBranch },
+  { title: "Budget Allocation", description: "Allocate budgets across cost centers", href: "/finance/epm/allocations", icon: PieChart },
+  { title: "ESG & Sustainability", description: "Environmental, social, and governance metrics", href: "/epm/esg", icon: TrendingUp },
+];
 
 export default function EPMPage() {
   const [activeNav, setActiveNav] = useState("budget");
@@ -90,6 +101,27 @@ export default function EPMPage() {
     >
 
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {/* EPM Module Navigation Cards */}
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wide">EPM Modules</h3>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+          {epmModules.map((mod) => (
+            <Link key={mod.href} to={mod.href}>
+              <Card className="cursor-pointer transition-all hover:shadow-md hover:border-primary/50 h-full">
+                <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
+                  <CardTitle className="text-xs font-medium">{mod.title}</CardTitle>
+                  <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />
+                </CardHeader>
+                <CardContent className="px-3 pb-3">
+                  <mod.icon className="h-5 w-5 text-muted-foreground mb-1" />
+                  <p className="text-xs text-muted-foreground leading-tight">{mod.description}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
 
       {activeNav === "budget" && (
         <div className="space-y-4">

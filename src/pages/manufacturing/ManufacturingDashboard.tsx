@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
     Factory, ClipboardList, CheckCircle2, AlertOctagon,
-    BarChart3, Activity, Users, Settings2, Building2
+    BarChart3, Activity, Users, Settings2, Building2,
+    ChevronRight, Layers, GitBranch, Zap, Package, Wrench, FlaskConical
 } from "lucide-react";
+import { Link } from "wouter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Skeleton } from "@/components/ui/skeleton";
 import { EnterpriseContextSwitcher, buildScopeHeaders } from "@/components/enterprise/EnterpriseContextSwitcher";
@@ -207,6 +209,42 @@ export default function ManufacturingDashboard() {
                         </div>
                     </CardContent>
                 </Card>
+            </div>
+
+            {/* Quick Access Navigation */}
+            <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">Manufacturing Functions</h3>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    {[
+                        { title: "Work Orders", desc: "Create and manage work orders", href: "/manufacturing/work-orders", icon: ClipboardList },
+                        { title: "BOM Designer", desc: "Bill of materials management", href: "/manufacturing/bom", icon: Layers },
+                        { title: "Shop Floor", desc: "Real-time shop floor terminal", href: "/manufacturing/shop-floor", icon: Factory },
+                        { title: "MRP Workbench", desc: "Material requirements planning", href: "/manufacturing/mrp-workbench", icon: BarChart3 },
+                        { title: "Routings", desc: "Production routing editor", href: "/manufacturing/routings", icon: GitBranch },
+                        { title: "Work Centers", desc: "Manage work center resources", href: "/manufacturing/work-centers", icon: Building2 },
+                        { title: "Quality Mgr", desc: "Quality control and inspections", href: "/manufacturing/quality", icon: CheckCircle2 },
+                        { title: "Production Gantt", desc: "Visual production scheduling", href: "/manufacturing/gantt", icon: Activity },
+                        { title: "Batch Workbench", desc: "Process batch manufacturing", href: "/manufacturing/batches", icon: FlaskConical },
+                        { title: "WIP Dashboard", desc: "Work in process tracking", href: "/manufacturing/wip", icon: Zap },
+                        { title: "Variances", desc: "Manufacturing variance analysis", href: "/manufacturing/variances", icon: BarChart3 },
+                        { title: "Formulas", desc: "Process manufacturing formulas", href: "/manufacturing/formulas", icon: FlaskConical },
+                        { title: "Standard Ops", desc: "Standard operation library", href: "/manufacturing/standard-operations", icon: Settings2 },
+                        { title: "Calendars", desc: "Production calendars and shifts", href: "/manufacturing/calendars", icon: Settings2 },
+                    ].map((mod) => (
+                        <Link key={mod.href} to={mod.href}>
+                            <Card className="cursor-pointer hover:shadow-md hover:border-primary/50 transition-all h-full">
+                                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                    <CardTitle className="text-xs font-medium">{mod.title}</CardTitle>
+                                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                                </CardHeader>
+                                <CardContent className="pt-0">
+                                    <mod.icon className="h-5 w-5 text-muted-foreground mb-1" />
+                                    <p className="text-[10px] text-muted-foreground">{mod.desc}</p>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </StandardPage>
     );

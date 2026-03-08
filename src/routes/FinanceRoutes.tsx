@@ -59,6 +59,7 @@ import RevenueWaterfallDashboard from "@/pages/billing/RevenueWaterfallDashboard
 import CreditMemoWorkbench from "@/pages/billing/CreditMemoWorkbench";
 
 import ARInvoices from "@/pages/finance/ar/ARInvoices";
+import ARDashboard from "@/pages/finance/ar/ARDashboard";
 import ARInvoiceDetail from "@/pages/finance/ar/ARInvoiceDetail";
 import AutoInvoiceWorkbench from "@/pages/finance/ar/AutoInvoiceWorkbench";
 import ArAutoAccountingSetup from "@/pages/finance/ar/ArAutoAccountingSetup";
@@ -145,9 +146,14 @@ import PhysicalInventoryReconciliation from "@/pages/fixed-assets/PhysicalInvent
 import CapitalProjectsInterface from "@/pages/fixed-assets/CapitalProjectsInterface";
 import ArAdjustmentApprovals from "@/pages/finance/ar/ArAdjustmentApprovals";
 import VatReturnOutput from "@/pages/finance/tax/VatReturnOutput";
+import TaxDashboard from "@/pages/finance/tax/TaxDashboard";
+import ExpenseDashboard from "@/pages/finance/expenses/ExpenseDashboard";
+import ICDashboard from "@/pages/finance/intercompany/ICDashboard";
 import IcAutoInvoice from "@/pages/finance/intercompany/IcAutoInvoice";
 import SupplierMerge from "@/pages/finance/ap/SupplierMerge";
 import NotionalCashPooling from "@/pages/finance/cash/NotionalCashPooling";
+import FADashboard from "@/pages/finance/fixed-assets/FADashboard";
+import SLADashboard from "@/pages/finance/sla/SLADashboard";
 
 // Oracle Parity — Round 2 P2 Pages
 import RecurringInvoiceTemplates from "@/pages/finance/ap/RecurringInvoiceTemplates";
@@ -250,12 +256,12 @@ import BudgetWorkflow from "@/pages/epm/BudgetWorkflow";
 import BudgetAllocationWorkbench from "@/pages/epm/BudgetAllocationWorkbench";
 
 import ModuleLayout from "@/components/layouts/ModuleLayout";
-// import { FinanceSidebar } from "@/components/nav/FinanceSidebar";
+import { FinanceSidebar } from "@/components/nav/FinanceSidebar";
 
 export default function FinanceRoutes() {
     console.log("DEBUG: FinanceRoutes RENDERED. Path:", window.location.pathname);
     return (
-        <ModuleLayout>
+        <ModuleLayout sidebar={<FinanceSidebar />}>
             <Switch>
                 <Route path="/finance/cash" component={CashManagementDashboard} />
                 <Route path="/finance/cash-management" component={CashManagementDashboard} />
@@ -268,7 +274,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/treasury" component={TreasuryCommandCenter} />
                 <Route path="/finance/treasury/bank-accounts" component={TreasuryBankAccounts} />
                 <Route path="/finance/cash/accounts/:id/reconcile" component={ReconciliationPage} />
-                <Route path="/finance/fixed-assets" component={FAAssetWorkbench} />
+                <Route path="/finance/fixed-assets" component={FADashboard} />
                 <Route path="/finance/fixed-assets/workbench" component={FAAssetWorkbench} />
                 <Route path="/finance/fixed-assets/inquiry" component={FixedAssets} />
                 <Route path="/finance/fixed-assets/prorate-conventions" component={ProrateConventionSetup} />
@@ -319,6 +325,8 @@ export default function FinanceRoutes() {
                 <Route path="/finance/billing/profiles" component={BillingProfileManager} />
                 <Route path="/finance/billing/anomalies" component={BillingAnomalyDashboard} />
 
+                <Route path="/finance/ar" component={ARDashboard} />
+                <Route path="/finance/accounts-receivable" component={ARDashboard} />
                 <Route path="/finance/ar/invoices/:id" component={ARInvoiceDetail} />
                 <Route path="/finance/ar/invoices" component={ARInvoices} />
                 <Route path="/finance/ar/autoinvoice" component={AutoInvoiceWorkbench} />
@@ -332,7 +340,9 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/receipt-application" component={ReceiptApplicationWorkbench} />
                 <Route path="/finance/ar/adjustment-approvals" component={ArAdjustmentApprovals} />
                 <Route path="/finance/tax/vat-return" component={VatReturnOutput} />
+                <Route path="/finance/intercompany/auto-invoice" component={IcAutoInvoice} />
                 <Route path="/intercompany/auto-invoice" component={IcAutoInvoice} />
+                <Route path="/finance/intercompany/receiver-workbench" component={IcReceiverWorkbench} />
                 <Route path="/intercompany/receiver-workbench" component={IcReceiverWorkbench} />
                 <Route path="/finance/ar/analytics" component={ArAnalytics} />
                 <Route path="/finance/ar/reports" component={ArReports} />
@@ -345,6 +355,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/collections" component={CollectionsWorkbench} />
                 <Route path="/finance/ar/profile-classes" component={CustomerProfileClasses} />
                 <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
+                <Route path="/finance/intercompany/netting-settlement" component={NettingSettlementPayment} />
                 <Route path="/intercompany/netting-settlement" component={NettingSettlementPayment} />
 
                 <Route path="/finance/gl" component={GLDashboard} />
@@ -377,12 +388,8 @@ export default function FinanceRoutes() {
                 <Route path="/finance/gl/config/calendars" component={CalendarSetup} />
                 <Route path="/finance/gl/config/sla" component={AccountingHubWorkbench} />
                 <Route path="/finance/gl/config/sla/adr" component={AdrBuilder} />
-                <Route path="/finance/sla" component={() => {
-                    const [, setLocation] = useLocation();
-                    useEffect(() => setLocation("/finance/sla/dashboard"), [setLocation]);
-                    return null;
-                }} />
-                <Route path="/finance/sla/dashboard" component={SlaDashboard} />
+                <Route path="/finance/sla" component={SLADashboard} />
+                <Route path="/finance/sla/dashboard" component={SLADashboard} />
                 <Route path="/finance/sla/manual-entry" component={ManualJournalEntry} />
                 <Route path="/finance/sla/reconciliation" component={SlaReconciliation} />
                 <Route path="/finance/gl/config/translation" component={TranslationRules} />
@@ -412,17 +419,26 @@ export default function FinanceRoutes() {
                 <Route path="/finance/gl/consolidation/elimination-rules" component={EliminationRules} />
 
                 {/* Intercompany Module */}
+                <Route path="/finance/intercompany" component={ICDashboard} />
                 <Route path="/finance/intercompany/workbench" component={IntercompanyWorkbench} />
                 <Route path="/finance/intercompany/netting" component={NettingWorkbench} />
                 <Route path="/finance/intercompany/allocations" component={AllocationsWorkbench} />
                 <Route path="/finance/intercompany/reconciliation" component={IntercompanyReconciliation} />
                 <Route path="/finance/intercompany/data-access" component={ICDataAccessManager} />
 
-                <Route path="/finance/tax" component={TaxManagement} />
+                <Route path="/finance/tax" component={TaxDashboard} />
+                <Route path="/finance/tax/management" component={TaxManagement} />
                 <Route path="/finance/tax/regimes" component={TaxRegimeSetup} />
                 <Route path="/finance/tax/determining-factors" component={TaxDeterminingFactors} />
                 <Route path="/finance/tax/supplier-trn" component={SupplierTRNValidator} />
-                <Route path="/finance/expense-management" component={ExpenseManagement} />
+                <Route path="/finance/expense-management" component={ExpenseDashboard} />
+                <Route path="/finance/expenses/cash-advances" component={CashAdvanceReconciliation} />
+                <Route path="/finance/expenses/audit-rules" component={ExpenseAuditRuleSets} />
+                <Route path="/finance/expenses/payroll-reimbursement" component={ExpensePayrollReimbursement} />
+                <Route path="/finance/expenses/per-diem-rates" component={PerDiemRateTable} />
+                <Route path="/finance/expenses/new-report" component={ExpenseReportEntry} />
+                <Route path="/finance/expenses/approvals" component={ExpenseApprovalWorkbench} />
+                {/* Legacy redirects for old /expenses/* paths */}
                 <Route path="/expenses/cash-advances" component={CashAdvanceReconciliation} />
                 <Route path="/expenses/audit-rules" component={ExpenseAuditRuleSets} />
                 <Route path="/expenses/payroll-reimbursement" component={ExpensePayrollReimbursement} />
@@ -431,9 +447,13 @@ export default function FinanceRoutes() {
                 <Route path="/expenses/approvals" component={ExpenseApprovalWorkbench} />
                 <Route path="/finance/ap/config/distribution-sets" component={DistributionSetTemplates} />
                 <Route path="/finance/ap/config/match-tolerances" component={FourWayMatchConfig} />
+                <Route path="/finance/fixed-assets/mass-change" component={FaMassChange} />
                 <Route path="/fixed-assets/mass-change" component={FaMassChange} />
+                <Route path="/finance/fixed-assets/what-if" component={FaWhatIfAnalysis} />
                 <Route path="/fixed-assets/what-if" component={FaWhatIfAnalysis} />
+                <Route path="/finance/fixed-assets/add-asset" component={FaAssetAdditionWizard} />
                 <Route path="/fixed-assets/add-asset" component={FaAssetAdditionWizard} />
+                <Route path="/finance/fixed-assets/depreciation-projection" component={FaDepreciationProjection} />
                 <Route path="/fixed-assets/depreciation-projection" component={FaDepreciationProjection} />
                 <Route path="/finance/tax/vat-return" component={VatReturnWizard} />
                 <Route path="/finance/tax/subscriptions" component={TaxSubscriptionSetup} />
@@ -441,16 +461,23 @@ export default function FinanceRoutes() {
                 <Route path="/finance/cash/match-rules" component={BankStatementMatchRules} />
                 <Route path="/finance/ar/statements" component={ArStatementPrint} />
                 <Route path="/finance/ar/lockbox-setup" component={ArLockboxSetup} />
+                <Route path="/finance/gl/encumbrance-types" component={GlEncumbranceSetup} />
                 <Route path="/gl/encumbrance-types" component={GlEncumbranceSetup} />
+                <Route path="/finance/gl/secondary-ledgers" component={GlSecondaryLedgerSetup} />
                 <Route path="/gl/secondary-ledgers" component={GlSecondaryLedgerSetup} />
+                <Route path="/finance/leases/subleases" component={SubleaseManagement} />
                 <Route path="/leases/subleases" component={SubleaseManagement} />
                 <Route path="/finance/ap/positive-pay" component={APPositivePayConfig} />
+                <Route path="/finance/fixed-assets/mass-additions" component={FaMassAdditions} />
                 <Route path="/fixed-assets/mass-additions" component={FaMassAdditions} />
+                <Route path="/finance/fixed-assets/group-assets" component={FaGroupAssets} />
                 <Route path="/fixed-assets/group-assets" component={FaGroupAssets} />
+                <Route path="/finance/fixed-assets/impairment" component={FaImpairmentTesting} />
                 <Route path="/fixed-assets/impairment" component={FaImpairmentTesting} />
                 <Route path="/finance/ar/remittance-batches" component={ArRemittanceBatch} />
                 <Route path="/finance/ar/customer-hierarchy" component={ArCustomerHierarchy} />
                 <Route path="/finance/cash/camt-import" component={CamtImport} />
+                <Route path="/finance/leases/initial-direct-costs" component={LeaseInitialDirectCosts} />
                 <Route path="/leases/initial-direct-costs" component={LeaseInitialDirectCosts} />
 
 

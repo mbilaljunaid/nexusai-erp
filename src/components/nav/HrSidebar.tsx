@@ -45,6 +45,9 @@ const hrMenu = [
             { title: "Dashboard", url: "/hr", icon: Users },
             { title: "Person Management", url: "/hr/employees", icon: Users2 },
             { title: "Competency Management", url: "/hr/talent/competencies", icon: Award },
+            { title: "Performance Reviews", url: "/hr/performance", icon: ClipboardList },
+            { title: "Calibration Board", url: "/hr/performance/calibration", icon: CheckCircle },
+            { title: "Succession Planning", url: "/hr/succession", icon: GitBranch },
             { title: "Payroll Workbench", url: "/hr/payroll", icon: Award },
         ]
     },
@@ -108,6 +111,9 @@ const hrMenu = [
         items: [
             { title: "Shift Configuration", url: "/hr/wfm/admin/shifts", icon: Settings },
             { title: "Holiday Calendar", url: "/hr/wfm/admin/holidays", icon: CalendarDays },
+            { title: "Time Periods", url: "/hr/wfm/admin/time-periods", icon: CalendarDays },
+            { title: "Time Rules", url: "/hr/wfm/admin/time-rules", icon: ClipboardList },
+            { title: "Absence Setup", url: "/hr/wfm/absence/setup", icon: Calendar },
             { title: "Labor Analytics", url: "/hr/wfm/analytics", icon: BarChart3 },
             { title: "Violations", url: "/hr/wfm/violations", icon: AlertTriangle },
             { title: "AI Workforce Insights", url: "/hr/wfm/insights", icon: Sparkles },
@@ -123,9 +129,19 @@ const hrMenu = [
             { title: "Time Card", url: "/hr/self-service/time", icon: Clock },
             { title: "Delegations", url: "/hr/self-service/delegation", icon: Handshake },
         ]
+    },
+    {
+        label: "Setup & Config",
+        items: [
+            { title: "Workforce Config", url: "/hr/setup", icon: Settings },
+            { title: "Workforce Structures", url: "/hr/setup/workforce-structures", icon: Settings },
+            { title: "Document Records", url: "/hr/setup/document-records", icon: FileText },
+            { title: "Benefits Programs", url: "/hr/setup/benefits-programs", icon: DollarSign },
+            { title: "Regulatory Calendar", url: "/hr/regulatory-calendar", icon: Calendar },
+            { title: "Comp & Benefits", url: "/hr/compensation", icon: DollarSign },
+        ]
     }
 ];
-
 export function HrSidebar() {
     const [location] = useLocation();
 

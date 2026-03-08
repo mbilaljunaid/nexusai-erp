@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { IconNavigation } from "@/components/IconNavigation";
 import { AutoRequisitionForm } from "@/components/forms/AutoRequisitionForm";
-import { Package, Plus, Search, AlertTriangle, Warehouse, Trash2, LayoutDashboard, Building2 } from "lucide-react";
+import { Package, Plus, Search, AlertTriangle, Warehouse, Trash2, LayoutDashboard, Building2, ChevronRight, RefreshCw, BarChart3 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import InventoryDashboardView from "./InventoryDashboardView";
@@ -68,6 +68,35 @@ export default function Inventory() {
         <EnterpriseContextSwitcher />
       </div>
       <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {/* Inventory navigation cards */}
+      {activeNav === "dashboard" && (
+        <div className="mt-4 mb-6">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Quick Access</h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {[
+              { title: "Item Directory", desc: "Browse all items", href: "/inventory/items", icon: Package },
+              { title: "Item Profile", desc: "Item attributes & UOM", href: "/inventory/item-profile", icon: Building2 },
+              { title: "Product Master", desc: "Product catalog", href: "/inventory/product-master", icon: LayoutDashboard },
+              { title: "Cycle Count", desc: "Physical count audit", href: "/inventory/cycle-count", icon: RefreshCw },
+              { title: "Replenishment", desc: "Stock replenishment rules", href: "/inventory/replenishment", icon: BarChart3 },
+            ].map((mod) => (
+              <Link key={mod.href} to={mod.href}>
+                <Card className="cursor-pointer transition-all hover:shadow-md hover:border-primary/50 h-full">
+                  <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
+                    <CardTitle className="text-xs font-medium">{mod.title}</CardTitle>
+                    <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />
+                  </CardHeader>
+                  <CardContent className="px-3 pb-3">
+                    <mod.icon className="h-5 w-5 text-muted-foreground mb-1" />
+                    <p className="text-xs text-muted-foreground leading-tight">{mod.desc}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-6">
         {activeNav === "dashboard" && <InventoryDashboardView />}

@@ -270,6 +270,7 @@ __export(schema_exports, {
   communityVotes: () => communityVotes,
   competitors: () => competitors,
   complianceConfigs: () => complianceConfigs,
+  configurationTemplates: () => configurationTemplates,
   connectorInstances: () => connectorInstances,
   connectors: () => connectors,
   constructionClaims: () => constructionClaims,
@@ -713,6 +714,7 @@ __export(schema_exports, {
   insertComplianceRuleSchema: () => insertComplianceRuleSchema,
   insertComplianceSchema: () => insertComplianceSchema,
   insertComplianceViolationSchema: () => insertComplianceViolationSchema,
+  insertConfigurationTemplateSchema: () => insertConfigurationTemplateSchema,
   insertConnectorInstanceSchema: () => insertConnectorInstanceSchema,
   insertConnectorSchema: () => insertConnectorSchema,
   insertConstructionContractLineSchema: () => insertConstructionContractLineSchema,
@@ -915,6 +917,7 @@ __export(schema_exports, {
   insertMaintInspectionSchema: () => insertMaintInspectionSchema,
   insertMaintPMDefinitionSchema: () => insertMaintPMDefinitionSchema,
   insertMaintPermitSchema: () => insertMaintPermitSchema,
+  insertMaintPermitTypeSchema: () => insertMaintPermitTypeSchema,
   insertMaintServiceRequestSchema: () => insertMaintServiceRequestSchema,
   insertMaintWorkCenterSchema: () => insertMaintWorkCenterSchema,
   insertMaintWorkDefinitionSchema: () => insertMaintWorkDefinitionSchema,
@@ -1085,6 +1088,7 @@ __export(schema_exports, {
   insertTaxCodeSchema: () => insertTaxCodeSchema,
   insertTaxExemptionSchema: () => insertTaxExemptionSchema,
   insertTaxJurisdictionSchema: () => insertTaxJurisdictionSchema,
+  insertTemplateApplicationSchema: () => insertTemplateApplicationSchema,
   insertTenantSchema: () => insertTenantSchema,
   insertTerritoryRuleSchema: () => insertTerritoryRuleSchema,
   insertTerritorySchema: () => insertTerritorySchema,
@@ -1202,6 +1206,7 @@ __export(schema_exports, {
   maintPMDefinitionsRelations: () => maintPMDefinitionsRelations,
   maintParameters: () => maintParameters,
   maintPermitTypeEnum: () => maintPermitTypeEnum,
+  maintPermitTypes: () => maintPermitTypes,
   maintPermits: () => maintPermits,
   maintPermitsRelations: () => maintPermitsRelations,
   maintServiceRequests: () => maintServiceRequests,
@@ -1409,6 +1414,7 @@ __export(schema_exports, {
   taxCodes: () => taxCodes,
   taxExemptions: () => taxExemptions,
   taxJurisdictions: () => taxJurisdictions,
+  templateApplications: () => templateApplications,
   tenants: () => tenants,
   territories: () => territories,
   territoryRules: () => territoryRules,
@@ -3358,7 +3364,8 @@ var leads = pgTable5("leads", {
   description: text5("description"),
   createdAt: timestamp5("created_at").default(sql5`now()`),
   updatedAt: timestamp5("updated_at").default(sql5`now()`),
-  ownerId: varchar5("owner_id")
+  ownerId: varchar5("owner_id"),
+  entBusinessUnitId: varchar5("ent_business_unit_id")
 });
 var insertLeadSchema = createInsertSchema5(leads).extend({
   lastName: z4.string().min(1, "Last Name is required"),
@@ -3401,6 +3408,7 @@ var accounts = pgTable5("accounts", {
   createdAt: timestamp5("created_at").default(sql5`now()`),
   updatedAt: timestamp5("updated_at").default(sql5`now()`),
   ownerId: varchar5("owner_id"),
+  entBusinessUnitId: varchar5("ent_business_unit_id"),
   // TCA Linkage (Organization Party)
   partyId: varchar5("party_id").references(() => hzParties.id)
 });
@@ -3435,6 +3443,7 @@ var contacts = pgTable5("contacts", {
   createdAt: timestamp5("created_at").default(sql5`now()`),
   updatedAt: timestamp5("updated_at").default(sql5`now()`),
   ownerId: varchar5("owner_id"),
+  entBusinessUnitId: varchar5("ent_business_unit_id"),
   // TCA Linkage (Person Party)
   partyId: varchar5("party_id").references(() => hzParties.id)
 });
@@ -3459,7 +3468,8 @@ var campaigns = pgTable5("campaigns", {
   description: text5("description"),
   createdAt: timestamp5("created_at").default(sql5`now()`),
   updatedAt: timestamp5("updated_at").default(sql5`now()`),
-  ownerId: varchar5("owner_id")
+  ownerId: varchar5("owner_id"),
+  entBusinessUnitId: varchar5("ent_business_unit_id")
 });
 var insertCampaignSchema = createInsertSchema5(campaigns).extend({
   name: z4.string().min(1, "Campaign name is required"),
@@ -3505,7 +3515,8 @@ var opportunities = pgTable5("opportunities", {
   // Link to Price Book
   createdAt: timestamp5("created_at").default(sql5`now()`),
   updatedAt: timestamp5("updated_at").default(sql5`now()`),
-  ownerId: varchar5("owner_id")
+  ownerId: varchar5("owner_id"),
+  entBusinessUnitId: varchar5("ent_business_unit_id")
 });
 var insertOpportunitySchema = createInsertSchema5(opportunities).extend({
   name: z4.string().min(1, "Opportunity name is required"),
@@ -3598,8 +3609,9 @@ var quotes = pgTable5("crm_quotes", {
   billToCountry: text5("bill_to_country"),
   createdAt: timestamp5("created_at").default(sql5`now()`),
   updatedAt: timestamp5("updated_at").default(sql5`now()`),
-  priceBookId: varchar5("price_book_id")
+  priceBookId: varchar5("price_book_id"),
   // CPQ Support
+  entBusinessUnitId: varchar5("ent_business_unit_id")
 });
 var quoteLineItems = pgTable5("crm_quote_line_items", {
   id: varchar5("id").primaryKey().default(sql5`gen_random_uuid()`),
@@ -3626,7 +3638,8 @@ var orders = pgTable5("crm_orders", {
   billingAddress: text5("billing_address"),
   shippingAddress: text5("shipping_address"),
   createdAt: timestamp5("created_at").default(sql5`now()`),
-  updatedAt: timestamp5("updated_at").default(sql5`now()`)
+  updatedAt: timestamp5("updated_at").default(sql5`now()`),
+  entBusinessUnitId: varchar5("ent_business_unit_id")
 });
 var cases = pgTable5("crm_cases", {
   id: varchar5("id").primaryKey().default(sql5`gen_random_uuid()`),
@@ -3643,7 +3656,8 @@ var cases = pgTable5("crm_cases", {
   userId: text5("user_id"),
   // Assigned User (legacy text id for now)
   createdAt: timestamp5("created_at").default(sql5`now()`),
-  updatedAt: timestamp5("updated_at").default(sql5`now()`)
+  updatedAt: timestamp5("updated_at").default(sql5`now()`),
+  entBusinessUnitId: varchar5("ent_business_unit_id")
 });
 var caseComments = pgTable5("crm_case_comments", {
   id: varchar5("id").primaryKey().default(sql5`gen_random_uuid()`),
@@ -3879,7 +3893,8 @@ var commissions = pgTable5("crm_commissions", {
   status: varchar5("status").default("pending"),
   // pending, approved, paid
   generatedAt: timestamp5("generated_at").default(sql5`now()`),
-  paidAt: timestamp5("paid_at")
+  paidAt: timestamp5("paid_at"),
+  entBusinessUnitId: varchar5("ent_business_unit_id")
 });
 var insertCommissionPlanSchema = createInsertSchema5(commissionPlans).extend({
   name: z4.string().min(1),
@@ -4742,6 +4757,7 @@ var employees = pgTable7("employees", {
   department: varchar7("department"),
   hireDate: timestamp7("hire_date"),
   status: varchar7("status").default("active"),
+  entLegalEntityId: varchar7("ent_legal_entity_id"),
   createdAt: timestamp7("created_at").default(sql7`now()`)
 });
 var insertEmployeeSchema = createInsertSchema7(employees).extend({
@@ -4760,6 +4776,7 @@ var payroll = pgTable7("payroll", {
   deductions: numeric7("deductions", { precision: 18, scale: 2 }).default("0"),
   netPay: numeric7("net_pay", { precision: 18, scale: 2 }),
   payPeriod: varchar7("pay_period"),
+  entLegalEntityId: varchar7("ent_legal_entity_id"),
   createdAt: timestamp7("created_at").default(sql7`now()`)
 });
 var insertPayrollSchema = createInsertSchema7(payroll).extend({
@@ -4780,6 +4797,7 @@ var payrollConfigs = pgTable7("payroll_configs", {
   benefitSettings: jsonb5("benefit_settings"),
   overtimeRules: jsonb5("overtime_rules"),
   isActive: boolean7("is_active").default(true),
+  entLegalEntityId: varchar7("ent_legal_entity_id"),
   createdAt: timestamp7("created_at").default(sql7`now()`),
   updatedAt: timestamp7("updated_at").default(sql7`now()`)
 });
@@ -4807,6 +4825,7 @@ var timeEntries = pgTable7("time_entries", {
   // Hourly cost
   status: varchar7("status").default("SUBMITTED"),
   // SUBMITTED, APPROVED, PROCESSED
+  entLegalEntityId: varchar7("ent_legal_entity_id"),
   createdAt: timestamp7("created_at").default(sql7`now()`)
 });
 var insertTimeEntrySchema = createInsertSchema7(timeEntries).extend({
@@ -4831,6 +4850,7 @@ var leaveRequests = pgTable7("leave_requests", {
   reason: varchar7("reason"),
   status: varchar7("status").default("PENDING"),
   // PENDING, APPROVED, REJECTED
+  entLegalEntityId: varchar7("ent_legal_entity_id"),
   createdAt: timestamp7("created_at").default(sql7`now()`)
 });
 var insertLeaveRequestSchema = createInsertSchema7(leaveRequests).extend({
@@ -5330,6 +5350,7 @@ var hrComplianceFrameworks = pgTable17("hr_compliance_frameworks", {
   jurisdiction: varchar17("jurisdiction"),
   // e.g., EU, US, UK, GLOBAL
   isActive: boolean15("is_active").default(true),
+  entLegalEntityId: varchar17("ent_legal_entity_id"),
   createdAt: timestamp17("created_at").default(sql17`now()`)
 });
 var hrComplianceRules = pgTable17("hr_compliance_rules", {
@@ -5467,6 +5488,7 @@ var hrAnalyticsSnapshots = pgTable18("hr_analytics_snapshots", {
   // Example: { "department": "Sales", "location": "US-East" }
   dimensions: jsonb11("dimensions").default(sql18`'{}'::jsonb`),
   tenantId: varchar18("tenant_id").notNull(),
+  entLegalEntityId: varchar18("ent_legal_entity_id"),
   createdAt: timestamp18("created_at").default(sql18`now()`)
 });
 var insertHrAnalyticsSnapshotSchema = createInsertSchema18(hrAnalyticsSnapshots);
@@ -5509,6 +5531,7 @@ var hrReportSchedules = pgTable18("hr_report_schedules", {
   // ["email@example.com"]
   isActive: boolean16("is_active").default(true),
   tenantId: varchar18("tenant_id").notNull(),
+  entLegalEntityId: varchar18("ent_legal_entity_id"),
   lastRunAt: timestamp18("last_run_at"),
   createdAt: timestamp18("created_at").default(sql18`now()`)
 });
@@ -5596,6 +5619,8 @@ var productionOrders = pgTable19("production_orders", {
   scheduledDate: timestamp19("scheduled_date"),
   routingId: varchar19("routing_id"),
   bomId: varchar19("bom_id"),
+  entInventoryOrgId: varchar19("ent_inventory_org_id"),
+  // LE Scoping (Module 23)
   createdAt: timestamp19("created_at").default(sql19`now()`)
 });
 var productionTransactions = pgTable19("production_transactions", {
@@ -5769,6 +5794,8 @@ var wipBalances = pgTable19("mfg_wip_balances", {
   productionOrderId: varchar19("production_order_id").notNull(),
   costElementId: varchar19("cost_element_id").notNull(),
   balance: numeric12("balance", { precision: 18, scale: 4 }).default("0"),
+  entInventoryOrgId: varchar19("ent_inventory_org_id"),
+  // LE Scoping (Module 24)
   lastUpdated: timestamp19("last_updated").default(sql19`now()`)
 });
 var varianceJournals = pgTable19("mfg_variance_journals", {
@@ -5826,6 +5853,8 @@ var manufacturingBatches = pgTable19("mfg_batches", {
   // planned, released, wip, completed, closed
   startDate: timestamp19("start_date"),
   endDate: timestamp19("end_date"),
+  entInventoryOrgId: varchar19("ent_inventory_org_id"),
+  // LE Scoping (Module 23 / Process Mfg)
   createdAt: timestamp19("created_at").default(sql19`now()`)
 });
 var batchTransactions = pgTable19("mfg_batch_transactions", {
@@ -5921,6 +5950,8 @@ var insertSupplierSiteSchema = createInsertSchema20(supplierSites).extend({
 });
 var purchaseOrders = pgTable20("purchase_orders", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entBusinessUnitId: varchar20("ent_business_unit_id"),
+  // Operating Unit/BU Scope
   orderNumber: varchar20("order_number").notNull().unique(),
   supplierId: varchar20("supplier_id"),
   totalAmount: numeric13("total_amount", { precision: 18, scale: 2 }),
@@ -5933,6 +5964,8 @@ var purchaseOrders = pgTable20("purchase_orders", {
 });
 var purchaseOrderLines = pgTable20("purchase_order_lines", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entBusinessUnitId: varchar20("ent_business_unit_id"),
+  // Operating Unit/BU Scope
   poHeaderId: varchar20("po_header_id").notNull(),
   // FK to purchaseOrders
   lineNumber: integer16("line_number").notNull(),
@@ -5974,6 +6007,8 @@ var inventoryOrganizations = pgTable20("inv_organizations", {
 });
 var inventory = pgTable20("inv_items", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   itemNumber: varchar20("itemNumber").notNull(),
   description: varchar20("description"),
   primaryUomCode: varchar20("primaryUomCode"),
@@ -5986,6 +6021,8 @@ var inventory = pgTable20("inv_items", {
 });
 var inventorySubinventories = pgTable20("inv_subinventories", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   organizationId: varchar20("organizationId"),
   code: varchar20("code").notNull(),
   name: varchar20("name").notNull(),
@@ -5994,6 +6031,8 @@ var inventorySubinventories = pgTable20("inv_subinventories", {
 });
 var inventoryLocators = pgTable20("inv_locators", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   subinventoryId: varchar20("subinventoryId"),
   code: varchar20("code").notNull(),
   zoneId: varchar20("zone_id"),
@@ -6010,6 +6049,8 @@ var insertInventorySchema = createInsertSchema20(inventory).extend({
 });
 var inventoryTransactions = pgTable20("inv_material_transactions", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   // organizationId: varchar("organizationId"), 
   itemId: varchar20("itemId").notNull(),
   transactionType: varchar20("transactionType").notNull(),
@@ -6038,6 +6079,8 @@ var insertInventoryTransactionSchema = createInsertSchema20(inventoryTransaction
 });
 var inventoryOnHandQuantities = pgTable20("inv_on_hand_quantities", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   organizationId: varchar20("organizationId").notNull(),
   itemId: varchar20("itemId").notNull(),
   subinventoryId: varchar20("subinventoryId").notNull(),
@@ -6068,6 +6111,8 @@ var insertInventoryLotSerialSchema = createInsertSchema20(inventoryLotSerial).ex
 });
 var purchaseRequisitions = pgTable20("purchase_requisitions", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entBusinessUnitId: varchar20("ent_business_unit_id"),
+  // Operating Unit/BU Scope
   requisitionNumber: varchar20("requisition_number").notNull().unique(),
   requesterId: varchar20("requester_id"),
   description: text12("description"),
@@ -6081,6 +6126,8 @@ var purchaseRequisitions = pgTable20("purchase_requisitions", {
 });
 var purchaseRequisitionLines = pgTable20("purchase_requisition_lines", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entBusinessUnitId: varchar20("ent_business_unit_id"),
+  // Operating Unit/BU Scope
   requisitionId: varchar20("requisition_id").notNull(),
   lineNumber: integer16("line_number").notNull(),
   itemId: varchar20("item_id"),
@@ -6241,6 +6288,8 @@ var insertScorecardSchema = createInsertSchema20(supplierScorecards);
 var insertQualityEventSchema = createInsertSchema20(supplierQualityEvents);
 var sourcingRfqs = pgTable20("scm_sourcing_rfqs", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entBusinessUnitId: varchar20("ent_business_unit_id"),
+  // Operating Unit/BU Scope
   rfqNumber: varchar20("rfq_number").notNull().unique(),
   title: varchar20("title").notNull(),
   description: text12("description"),
@@ -6284,6 +6333,8 @@ var insertSourcingBidSchema = createInsertSchema20(sourcingBids);
 var insertSourcingBidLineSchema = createInsertSchema20(sourcingBidLines);
 var wmsZones = pgTable20("wms_zones", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   warehouseId: varchar20("warehouse_id").notNull(),
   // Inventory Organization ID
   zoneCode: varchar20("zone_code").notNull(),
@@ -6297,6 +6348,8 @@ var wmsZones = pgTable20("wms_zones", {
 });
 var wmsHandlingUnits = pgTable20("wms_handling_units", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   lpnNumber: varchar20("lpn_number").notNull().unique(),
   // License Plate Number
   warehouseId: varchar20("warehouse_id").notNull(),
@@ -6324,6 +6377,8 @@ var wmsLpnContents = pgTable20("wms_lpn_contents", {
 });
 var wmsWaves = pgTable20("wms_waves", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   waveNumber: varchar20("wave_number").notNull().unique(),
   warehouseId: varchar20("warehouse_id").notNull(),
   status: varchar20("status").default("PLANNED"),
@@ -6334,6 +6389,8 @@ var wmsWaves = pgTable20("wms_waves", {
 });
 var wmsTasks = pgTable20("wms_tasks", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  // Inventory Org Scope
   taskNumber: varchar20("task_number").unique(),
   // Auto-generated
   warehouseId: varchar20("warehouse_id").notNull(),
@@ -6661,6 +6718,8 @@ var projects2 = pgTable21("projects2", {
   status: varchar21("status").default("active"),
   startDate: timestamp21("start_date"),
   endDate: timestamp21("end_date"),
+  entBusinessUnitId: varchar21("ent_business_unit_id"),
+  // Enterprise Scoping – Business Unit
   createdAt: timestamp21("created_at").default(sql21`now()`)
 });
 var insertProject2Schema = createInsertSchema21(projects2).extend({
@@ -6735,6 +6794,8 @@ var paCostDistributionLines = pgTable21("pa_cost_distribution_lines", {
   currencyCode: varchar21("currency_code").notNull(),
   billableFlag: boolean19("billable_flag").default(true),
   billedFlag: boolean19("billed_flag").default(false),
+  entBusinessUnitId: varchar21("ent_business_unit_id"),
+  // Enterprise Scoping – Business Unit
   createdAt: timestamp21("created_at").default(sql21`now()`)
 });
 var insertPaCostDistributionLineSchema = createInsertSchema21(paCostDistributionLines);
@@ -8270,6 +8331,39 @@ var insertAdminLogSchema = createInsertSchema31(adminLogs).extend({
   justification: z19.string().optional(),
   tenantId: z19.string().optional()
 });
+var configurationTemplates = pgTable31("configuration_templates", {
+  id: varchar31("id").primaryKey().default(sql31`gen_random_uuid()`),
+  name: varchar31("name").notNull(),
+  description: text22("description"),
+  industryId: varchar31("industry_id"),
+  moduleId: varchar31("module_id"),
+  templateData: jsonb17("template_data").notNull().default({}),
+  templateCategory: varchar31("template_category"),
+  isDefault: boolean25("is_default").default(false),
+  sortOrder: integer22("sort_order").default(0),
+  dependencies: jsonb17("dependencies").default([]),
+  validationRules: jsonb17("validation_rules").default({}),
+  version: varchar31("version").default("1.0"),
+  isActive: boolean25("is_active").default(true),
+  createdAt: timestamp31("created_at").default(sql31`now()`),
+  updatedAt: timestamp31("updated_at").default(sql31`now()`)
+});
+var insertConfigurationTemplateSchema = createInsertSchema31(configurationTemplates);
+var templateApplications = pgTable31("template_applications", {
+  id: varchar31("id").primaryKey().default(sql31`gen_random_uuid()`),
+  tenantId: varchar31("tenant_id").notNull(),
+  templateId: varchar31("template_id").references(() => configurationTemplates.id).notNull(),
+  appliedBy: varchar31("applied_by"),
+  appliedAt: timestamp31("applied_at").default(sql31`now()`),
+  status: varchar31("status").default("applied"),
+  // applied, rolled_back, failed
+  appliedData: jsonb17("applied_data").notNull().default({}),
+  errorMessage: text22("error_message"),
+  metadata: jsonb17("metadata").default({}),
+  createdAt: timestamp31("created_at").default(sql31`now()`),
+  updatedAt: timestamp31("updated_at").default(sql31`now()`)
+});
+var insertTemplateApplicationSchema = createInsertSchema31(templateApplications);
 
 // shared/schema/epm.ts
 import { pgTable as pgTable32, varchar as varchar32, text as text23, timestamp as timestamp32, numeric as numeric20, boolean as boolean26, jsonb as jsonb18, integer as integer23, date as date7 } from "drizzle-orm/pg-core";
@@ -8286,7 +8380,8 @@ var budgets = pgTable32("budgets", {
   status: varchar32("status").default("draft"),
   notes: text23("notes"),
   createdAt: timestamp32("created_at").default(sql32`now()`),
-  updatedAt: timestamp32("updated_at").default(sql32`now()`)
+  updatedAt: timestamp32("updated_at").default(sql32`now()`),
+  entLedgerId: varchar32("ent_ledger_id")
 });
 var planScenarios = pgTable32("plan_scenarios", {
   id: varchar32("id").primaryKey().default(sql32`gen_random_uuid()`),
@@ -8296,7 +8391,8 @@ var planScenarios = pgTable32("plan_scenarios", {
   description: text23("description"),
   isSystem: boolean26("is_system").default(false),
   createdAt: timestamp32("created_at").default(sql32`now()`),
-  updatedAt: timestamp32("updated_at").default(sql32`now()`)
+  updatedAt: timestamp32("updated_at").default(sql32`now()`),
+  entLedgerId: varchar32("ent_ledger_id")
 });
 var planVersions = pgTable32("plan_versions", {
   id: varchar32("id").primaryKey().default(sql32`gen_random_uuid()`),
@@ -8307,7 +8403,8 @@ var planVersions = pgTable32("plan_versions", {
   isLocked: boolean26("is_locked").default(false),
   isFinal: boolean26("is_final").default(false),
   createdAt: timestamp32("created_at").default(sql32`now()`),
-  updatedAt: timestamp32("updated_at").default(sql32`now()`)
+  updatedAt: timestamp32("updated_at").default(sql32`now()`),
+  entLedgerId: varchar32("ent_ledger_id")
 });
 var planDimensions = pgTable32("plan_dimensions", {
   id: varchar32("id").primaryKey().default(sql32`gen_random_uuid()`),
@@ -8337,7 +8434,8 @@ var planUnits = pgTable32("plan_units", {
   project: varchar32("project"),
   status: varchar32("status").default("draft"),
   createdAt: timestamp32("created_at").default(sql32`now()`),
-  updatedAt: timestamp32("updated_at").default(sql32`now()`)
+  updatedAt: timestamp32("updated_at").default(sql32`now()`),
+  entLedgerId: varchar32("ent_ledger_id")
 });
 var planDrivers = pgTable32("plan_drivers", {
   id: varchar32("id").primaryKey().default(sql32`gen_random_uuid()`),
@@ -9311,6 +9409,8 @@ var faAssets = pgTable41("fa_assets", {
   // Overall Status
   status: varchar40("status", { length: 20 }).default("ACTIVE"),
   // ACTIVE, RETIRED, CIP
+  // LE Scoping (assets owned by a specific legal entity)
+  entLegalEntityId: varchar40("ent_legal_entity_id", { length: 255 }),
   // Lease Reference (L4)
   leaseId: varchar40("lease_id"),
   // Hierarchy (L3 Reference)
@@ -9412,6 +9512,8 @@ var faMassAdditions = pgTable41("fa_mass_additions", {
   amount: numeric23("amount", { precision: 20, scale: 2 }).notNull(),
   date: timestamp41("date").notNull(),
   vendorName: varchar40("vendor_name"),
+  // LE Scoping
+  entLegalEntityId: varchar40("ent_legal_entity_id", { length: 255 }),
   // Asset Prep Info
   status: varchar40("status", { length: 20 }).default("QUEUE"),
   // QUEUE, POSTED, ON_HOLD
@@ -9703,6 +9805,7 @@ import { createInsertSchema as createInsertSchema44 } from "drizzle-zod";
 import { z as z26 } from "zod";
 var taxJurisdictions = pgTable44("tax_jurisdictions", {
   id: serial3("id").primaryKey(),
+  entLegalEntityId: varchar43("ent_legal_entity_id", { length: 255 }),
   name: varchar43("name", { length: 255 }).notNull(),
   type: varchar43("type", { length: 50 }).notNull(),
   // Country, State, City
@@ -9713,6 +9816,7 @@ var taxJurisdictions = pgTable44("tax_jurisdictions", {
 var insertTaxJurisdictionSchema = createInsertSchema44(taxJurisdictions);
 var taxCodes = pgTable44("tax_codes", {
   id: serial3("id").primaryKey(),
+  entLegalEntityId: varchar43("ent_legal_entity_id", { length: 255 }),
   name: varchar43("name", { length: 255 }).notNull(),
   rate: numeric25("rate", { precision: 5, scale: 4 }).notNull(),
   // e.g., 0.0750 for 7.5%
@@ -9727,6 +9831,7 @@ var insertTaxCodeSchema = createInsertSchema44(taxCodes).extend({
 });
 var taxExemptions = pgTable44("tax_exemptions", {
   id: serial3("id").primaryKey(),
+  entLegalEntityId: varchar43("ent_legal_entity_id", { length: 255 }),
   customerId: varchar43("customer_id"),
   siteId: varchar43("site_id"),
   taxCodeId: integer34("tax_code_id").notNull(),
@@ -10583,6 +10688,8 @@ var ppmProjects = pgTable47("ppm_projects", {
   // Planned Value (BAC)
   percentComplete: numeric28("percent_complete", { precision: 5, scale: 2 }).default("0.00"),
   // For EV calculation
+  entBusinessUnitId: varchar46("ent_business_unit_id"),
+  // Enterprise Scoping – Business Unit
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
 var insertPpmProjectSchema = createInsertSchema47(ppmProjects);
@@ -10920,6 +11027,7 @@ var revenueContracts = pgTable48("revenue_contracts", {
   // Added for Phase A
   orgId: varchar47("org_id"),
   // Added for Phase A
+  entBusinessUnitId: varchar47("ent_business_unit_id"),
   currency: varchar47("currency").default("USD"),
   totalTransactionPrice: numeric29("total_transaction_price", { precision: 18, scale: 2 }).default("0"),
   totalAllocatedPrice: numeric29("total_allocated_price", { precision: 18, scale: 2 }).default("0"),
@@ -10952,6 +11060,7 @@ var performanceObligations = pgTable48("performance_obligations", {
   // "Software License", "Implementation"
   itemType: varchar47("item_type"),
   // Goods, Service, Subscription
+  entBusinessUnitId: varchar47("ent_business_unit_id"),
   // Amounts
   transactionPrice: numeric29("transaction_price", { precision: 18, scale: 2 }).default("0"),
   // What we sold it for
@@ -10974,6 +11083,7 @@ var revenueRecognitions = pgTable48("revenue_recognitions", {
   pobId: varchar47("pob_id").notNull(),
   // Link to POB
   contractId: varchar47("contract_id").notNull(),
+  entBusinessUnitId: varchar47("ent_business_unit_id"),
   // Timing
   periodName: varchar47("period_name").notNull(),
   // "Jan-26"
@@ -11002,6 +11112,7 @@ var revenueSourceEvents = pgTable48("revenue_source_events", {
   eventType: varchar47("event_type").notNull(),
   // Booking, Shipment, Consumption, Invoice
   eventDate: timestamp47("event_date").notNull(),
+  entBusinessUnitId: varchar47("ent_business_unit_id"),
   // Data Payload
   itemId: varchar47("item_id"),
   quantity: numeric29("quantity", { precision: 18, scale: 2 }),
@@ -11118,6 +11229,7 @@ var cstItemCosts = pgTable52("cst_item_costs", {
   costBookId: text41("costBookId"),
   unitCost: decimal3("unitCost", { precision: 18, scale: 4 }).default("0"),
   currencyCode: text41("currencyCode").notNull(),
+  entInventoryOrgId: text41("ent_inventory_org_id"),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
@@ -11136,6 +11248,7 @@ var cstCostDistributions = pgTable52("cst_cost_distributions", {
   // Draft, Final, Posted
   accounted: boolean44("accounted").default(false),
   glAccountId: text41("glAccountId"),
+  entInventoryOrgId: text41("ent_inventory_org_id"),
   createdAt: timestamp51("createdAt").defaultNow()
 });
 var cmrReceiptDistributions = pgTable52("cmr_receipt_distributions", {
@@ -11149,6 +11262,7 @@ var cmrReceiptDistributions = pgTable52("cmr_receipt_distributions", {
   accountedAmount: decimal3("accountedAmount", { precision: 18, scale: 4 }),
   glAccountId: text41("glAccountId"),
   status: text41("status").default("Draft"),
+  entInventoryOrgId: text41("ent_inventory_org_id"),
   createdAt: timestamp51("createdAt").defaultNow()
 });
 var cstCostOrganizations = pgTable52("cst_cost_organizations", {
@@ -11262,6 +11376,7 @@ var cstTransactions = pgTable52("cst_transactions", {
   unitCost: decimal3("unit_cost", { precision: 16, scale: 4 }).default("0"),
   totalCost: decimal3("total_cost", { precision: 16, scale: 2 }).default("0"),
   orgId: text41("org_id").notNull(),
+  entInventoryOrgId: text41("ent_inventory_org_id"),
   transactionDate: timestamp51("transaction_date").defaultNow(),
   glStatus: text41("gl_status").default("PENDING")
 });
@@ -11303,6 +11418,8 @@ var expenseReports = pgTable54("expense_reports", {
   // DRAFT, SUBMITTED, APPROVED, PAID, REJECTED
   totalAmount: decimal4("total_amount", { precision: 20, scale: 2 }).notNull().default("0"),
   currency: varchar53("currency").notNull().default("USD"),
+  entBusinessUnitId: varchar53("ent_business_unit_id"),
+  entLegalEntityId: varchar53("ent_legal_entity_id"),
   submittedAt: timestamp53("submitted_at"),
   approvedAt: timestamp53("approved_at"),
   approvedBy: varchar53("approved_by"),
@@ -11321,6 +11438,8 @@ var expenseLines = pgTable54("expense_lines", {
   amount: decimal4("amount", { precision: 20, scale: 2 }).notNull(),
   taxAmount: decimal4("tax_amount", { precision: 20, scale: 2 }).default("0"),
   currency: varchar53("currency").notNull().default("USD"),
+  entBusinessUnitId: varchar53("ent_business_unit_id"),
+  entLegalEntityId: varchar53("ent_legal_entity_id"),
   description: text43("description"),
   receiptUrl: text43("receipt_url"),
   status: varchar53("status").notNull().default("PENDING"),
@@ -11426,6 +11545,7 @@ var insertBillingProfileSchema = createInsertSchema55(billingProfiles).extend({
 var billingBatches = pgTable55("billing_batches", {
   id: varchar54("id").primaryKey().default(sql52`gen_random_uuid()`),
   runDate: timestamp54("run_date").default(sql52`now()`),
+  entBusinessUnitId: varchar54("ent_business_unit_id"),
   status: varchar54("status").default("Processing"),
   // 'Processing', 'Completed', 'Failed', 'Completed with Errors'
   totalEventsProcessed: integer43("total_events_processed").default(0),
@@ -11445,6 +11565,7 @@ var billingEvents = pgTable55("billing_events", {
   // ID of the Project Task, Order Line, etc.
   customerId: varchar54("customer_id").notNull(),
   eventDate: timestamp54("event_date").notNull(),
+  entBusinessUnitId: varchar54("ent_business_unit_id"),
   amount: numeric31("amount", { precision: 18, scale: 2 }).notNull(),
   currency: varchar54("currency").default("USD"),
   description: text44("description").notNull(),
@@ -11915,6 +12036,8 @@ var maintWorkOrders = pgTable60("maint_work_orders", {
   failureProblemId: varchar58("failure_problem_id"),
   failureCauseId: varchar58("failure_cause_id"),
   failureRemedyId: varchar58("failure_remedy_id"),
+  entInventoryOrgId: varchar58("ent_inventory_org_id"),
+  // LE Scoping (EAM)
   createdAt: timestamp59("created_at").default(sql56`now()`),
   updatedAt: timestamp59("updated_at").default(sql56`now()`)
 });
@@ -12231,7 +12354,7 @@ var maintWorkCentersRelations = relations17(maintWorkCenters, ({ many }) => ({
 var insertMaintWorkCenterSchema = createInsertSchema64(maintWorkCenters);
 
 // shared/schema/maintenance_quality.ts
-import { pgTable as pgTable68, text as text55, timestamp as timestamp67, varchar as varchar66, boolean as boolean58, jsonb as jsonb39, pgEnum as pgEnum2 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable68, text as text55, timestamp as timestamp67, varchar as varchar66, boolean as boolean58, integer as integer56, jsonb as jsonb39, pgEnum as pgEnum2 } from "drizzle-orm/pg-core";
 import { relations as relations18, sql as sql63 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema65 } from "drizzle-zod";
 var maintPermitTypeEnum = pgEnum2("maint_permit_type", [
@@ -12273,6 +12396,19 @@ var maintInspections = pgTable68("maint_inspections", {
   createdAt: timestamp67("created_at").defaultNow(),
   updatedAt: timestamp67("updated_at").defaultNow()
 });
+var maintPermitTypes = pgTable68("permit_types", {
+  id: varchar66("id").primaryKey().default(sql63`gen_random_uuid()`),
+  name: varchar66("name", { length: 150 }).notNull(),
+  description: text55("description"),
+  category: varchar66("category", { length: 100 }),
+  requiresApproval: boolean58("requires_approval").default(true),
+  approvalLevels: integer56("approval_levels").default(1),
+  validityHours: integer56("validity_hours").default(8),
+  requiredDocuments: jsonb39("required_documents").default([]),
+  isActive: boolean58("is_active").default(true),
+  createdAt: timestamp67("created_at").defaultNow(),
+  updatedAt: timestamp67("updated_at").defaultNow()
+});
 var maintPermits = pgTable68("maint_permits", {
   id: varchar66("id").primaryKey().default(sql63`gen_random_uuid()`),
   permitNumber: varchar66("permit_number", { length: 50 }).notNull().unique(),
@@ -12310,6 +12446,7 @@ var maintPermitsRelations = relations18(maintPermits, ({ one }) => ({
 var insertMaintInspectionDefSchema = createInsertSchema65(maintInspectionDefinitions);
 var insertMaintInspectionSchema = createInsertSchema65(maintInspections);
 var insertMaintPermitSchema = createInsertSchema65(maintPermits);
+var insertMaintPermitTypeSchema = createInsertSchema65(maintPermitTypes);
 
 // shared/schema/maintenance_failure.ts
 import { pgTable as pgTable69, text as text56, varchar as varchar67, timestamp as timestamp68 } from "drizzle-orm/pg-core";
@@ -12394,6 +12531,7 @@ var treasuryDeals = pgTable70("treasury_deals", {
   // Phase 5
   valuationMethod: varchar68("valuation_method", { length: 20 }).default("AMORTIZED_COST"),
   legalEntityId: varchar68("legal_entity_id"),
+  entLegalEntityId: varchar68("ent_legal_entity_id"),
   ledgerId: varchar68("ledger_id"),
   description: text57("description"),
   metadata: jsonb40("metadata"),
@@ -12454,6 +12592,7 @@ var treasuryFxDeals = pgTable70("treasury_fx_deals", {
   // Valuation
   markToMarket: numeric41("mark_to_market", { precision: 20, scale: 2 }).default("0"),
   lastRevaluationDate: timestamp69("last_revaluation_date"),
+  entLegalEntityId: varchar68("ent_legal_entity_id"),
   notes: text57("notes"),
   createdAt: timestamp69("created_at").default(sql65`now()`)
 });
@@ -12496,6 +12635,7 @@ var treasuryCashForecasts = pgTable70("treasury_cash_forecasts", {
   // 0-100%
   sourceId: varchar68("source_id"),
   // Link to Invoice ID or Deal ID
+  entLegalEntityId: varchar68("ent_legal_entity_id"),
   generatedAt: timestamp69("generated_at").default(sql65`now()`)
 });
 var insertTreasuryCashForecastSchema = createInsertSchema66(treasuryCashForecasts);
@@ -12506,6 +12646,7 @@ var treasuryInternalAccounts = pgTable70("treasury_internal_accounts", {
   balance: numeric41("balance", { precision: 20, scale: 2 }).default("0"),
   status: varchar68("status", { length: 20 }).default("ACTIVE"),
   linkedGlAccount: varchar68("linked_gl_account", { length: 50 }),
+  entLegalEntityId: varchar68("ent_legal_entity_id"),
   updatedAt: timestamp69("updated_at").default(sql65`now()`)
 });
 var insertTreasuryInternalAccountSchema = createInsertSchema66(treasuryInternalAccounts);
@@ -12592,6 +12733,7 @@ var constructionContracts = pgTable71("construction_contracts", {
   // PRIME, SUBCONTRACT
   status: varchar69("status").default("DRAFT"),
   // DRAFT, ACTIVE, CLOSED
+  entBusinessUnitId: varchar69("ent_business_unit_id"),
   subject: varchar69("subject").notNull(),
   description: text58("description"),
   awardedDate: timestamp70("awarded_date"),
@@ -12612,6 +12754,7 @@ var constructionContractLines = pgTable71("construction_contract_lines", {
   taskId: varchar69("task_id"),
   // Link to PPM Task
   description: varchar69("description").notNull(),
+  entBusinessUnitId: varchar69("ent_business_unit_id"),
   uom: varchar69("uom").default("LS"),
   // Lump Sum, Each, etc.
   quantity: numeric42("quantity", { precision: 18, scale: 4 }).default("1"),
@@ -12645,6 +12788,7 @@ var constructionPayApps = pgTable71("construction_pay_apps", {
   applicationNumber: integer58("application_number").notNull(),
   periodStart: timestamp70("period_start").notNull(),
   periodEnd: timestamp70("period_end").notNull(),
+  entBusinessUnitId: varchar69("ent_business_unit_id"),
   status: varchar69("status").default("DRAFT"),
   // DRAFT, SUBMITTED, ARCHITECT_APPROVED, ENGINEER_APPROVED, CERTIFIED, PAID
   isLocked: boolean60("is_locked").default(false),
@@ -12897,6 +13041,8 @@ var lcmTradeOperations = pgTable76("lcm_trade_operations", {
   // DRAFT, PENDING, APPROVED, REJECTED
   approvedBy: varchar73("approved_by"),
   approvedAt: timestamp75("approved_at"),
+  // LE Scoping (Module 19)
+  entInventoryOrgId: varchar73("ent_inventory_org_id"),
   createdAt: timestamp75("created_at").default(sql69`now()`)
 });
 var insertLcmTradeOperationSchema = createInsertSchema70(lcmTradeOperations);
@@ -13037,6 +13183,7 @@ var tlShipments = pgTable77("tl_shipments", {
   // Linked location
   status: varchar74("status").default("PLANNED"),
   // PLANNED, DISPATCHED, IN_TRANSIT, DELIVERED, CANCELLED
+  entInventoryOrgId: varchar74("ent_inventory_org_id"),
   carrierId: varchar74("carrier_id"),
   laneId: varchar74("lane_id"),
   plannedDeparture: timestamp76("planned_departure"),
@@ -13071,6 +13218,7 @@ var tlFreightCharges = pgTable77("tl_freight_charges", {
   // BASE_FREIGHT, FUEL_SURCHARGE, ACCESSORIAL, TAX
   description: varchar74("description"),
   plannedAmount: numeric46("planned_amount", { precision: 18, scale: 2 }).notNull(),
+  entInventoryOrgId: varchar74("ent_inventory_org_id"),
   actualAmount: numeric46("actual_amount", { precision: 18, scale: 2 }),
   varianceAmount: numeric46("variance_amount", { precision: 18, scale: 2 }),
   currency: varchar74("currency").default("USD"),
@@ -13090,6 +13238,7 @@ var tlStops = pgTable77("tl_stops", {
   // 1, 2, 3...
   stopType: varchar74("stop_type").notNull(),
   // PICKUP, DROPOFF
+  entInventoryOrgId: varchar74("ent_inventory_org_id"),
   plannedArrival: timestamp76("planned_arrival"),
   actualArrival: timestamp76("actual_arrival"),
   notes: text63("notes"),
@@ -13208,6 +13357,8 @@ var leaseHeaders = pgTable78("lease_headers", {
   status: varchar75("status").default("DRAFT"),
   // DRAFT, ACTIVE, CLOSED, TERMINATED
   currency: varchar75("currency").default("USD"),
+  entBusinessUnitId: varchar75("ent_business_unit_id"),
+  entLegalEntityId: varchar75("ent_legal_entity_id"),
   // Dates
   commencementDate: timestamp77("commencement_date").notNull(),
   expirationDate: timestamp77("expiration_date").notNull(),
@@ -13236,6 +13387,8 @@ var leasePayments = pgTable78("lease_payments", {
   id: varchar75("id").primaryKey().default(sql71`gen_random_uuid()`),
   leaseId: varchar75("lease_id").notNull(),
   // FK to lease_headers
+  entBusinessUnitId: varchar75("ent_business_unit_id"),
+  entLegalEntityId: varchar75("ent_legal_entity_id"),
   paymentType: varchar75("payment_type").default("FIXED"),
   // FIXED, VARIABLE, BALLOON
   amount: numeric47("amount", { precision: 18, scale: 2 }).notNull(),
@@ -13260,6 +13413,8 @@ var leaseAssets = pgTable78("lease_assets", {
 var leaseSchedules = pgTable78("lease_schedules", {
   id: varchar75("id").primaryKey().default(sql71`gen_random_uuid()`),
   leaseId: varchar75("lease_id").notNull(),
+  entBusinessUnitId: varchar75("ent_business_unit_id"),
+  entLegalEntityId: varchar75("ent_legal_entity_id"),
   period: integer63("period").notNull(),
   // 1, 2, 3...
   date: timestamp77("date").notNull(),
@@ -13327,6 +13482,7 @@ var contracts = pgTable79("contracts", {
   // MSA, SOW, LEASE, NDA, PURCHASE, SALES
   status: varchar76("status").default("DRAFT"),
   // DRAFT, IN_REVIEW, APPROVED, ACTIVE, ON_HOLD, EXPIRED, TERMINATED, CLOSED
+  entBusinessUnitId: varchar76("ent_business_unit_id"),
   // Parties
   vendorId: varchar76("vendor_id"),
   // Link to scm_suppliers (optional if customer contract)
@@ -13353,6 +13509,7 @@ var contractLines = pgTable79("contract_lines", {
   contractId: varchar76("contract_id").notNull(),
   //.references(() => contracts.id),
   lineNumber: integer64("line_number").notNull(),
+  entBusinessUnitId: varchar76("ent_business_unit_id"),
   itemDescription: varchar76("item_description").notNull(),
   quantity: numeric48("quantity", { precision: 15, scale: 2 }),
   unitPrice: numeric48("unit_price", { precision: 18, scale: 2 }),
@@ -13439,6 +13596,7 @@ var icBatches = pgTable80("ic_batches", {
   currencyCode: text66("currency_code").notNull(),
   totalAmount: numeric49("total_amount", { precision: 20, scale: 2 }),
   totalTransactions: integer65("total_transactions").default(0),
+  entLegalEntityId: text66("ent_legal_entity_id"),
   createdAt: timestamp79("created_at").defaultNow(),
   createdBy: text66("created_by")
 });
@@ -13463,6 +13621,7 @@ var icHeaders = pgTable80("ic_headers", {
   // Unsettled, Selected, Settled
   settlementBatchId: varchar77("settlement_batch_id"),
   // Link to ic_netting_batches
+  entLegalEntityId: text66("ent_legal_entity_id"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icLines = pgTable80("ic_lines", {
@@ -13544,6 +13703,7 @@ var icNettingSessions = pgTable80("ic_netting_sessions", {
   runBy: text66("run_by"),
   settledBy: text66("settled_by"),
   settlementInstructions: jsonb44("settlement_instructions"),
+  entLegalEntityId: text66("ent_legal_entity_id"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var transferPricingPolicies = pgTable80("transfer_pricing_policies", {

@@ -58,11 +58,12 @@ import CrmDashboard from "@/pages/crm/CrmDashboard";
 
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import GenericModuleDashboard from "@/components/shared/GenericModuleDashboard";
-// import { CrmSidebar } from "@/components/nav/CrmSidebar";
+import { CrmSidebar } from "@/components/nav/CrmSidebar";
+import CPQDashboard from "@/pages/crm/CPQDashboard";
 
 export default function CrmRoutes() {
     return (
-        <ModuleLayout>
+        <ModuleLayout sidebar={<CrmSidebar />}>
             <Switch>
                 <Route path="/crm/leads/:id" component={LeadsDetail} />
                 <Route path="/crm/leads" component={LeadsDetail} />
@@ -92,7 +93,8 @@ export default function CrmRoutes() {
                 <Route path="/crm/analytics" component={CrmAnalyticsDashboard} />
                 <Route path="/crm/deal-desk" component={DealDesk} />
                 <Route path="/crm/catalog" component={ProductCatalogManager} />
-                <Route path="/crm/cpq" component={CpqConfigurator} />
+                <Route path="/crm/cpq" component={CPQDashboard} />
+                <Route path="/crm/cpq/configure" component={CpqConfigurator} />
                 <Route path="/crm/marketing/campaigns" component={EmailCampaignBuilder} />
                 <Route path="/crm/marketing/automation" component={MarketingAutomation} />
                 <Route path="/crm/service" component={() => {
