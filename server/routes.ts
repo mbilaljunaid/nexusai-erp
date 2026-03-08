@@ -102,6 +102,7 @@ import { registerWMSRoutes } from "./modules/wms/routes";
 import { registerSupplierRoutes } from "./modules/supplier/routes";
 import featureFlagRoutes from "./modules/admin/feature-flag.routes";
 import pdfRoutes from "./routes/pdf.routes";
+import { oracleParityRouter } from "./routes/oracle-parity-round5";
 
 
 export async function registerRoutes(
@@ -342,6 +343,9 @@ export async function registerRoutes(
   // Expense Management
   app.use("/api/expenses", expenseRouter);
   app.use("/api/expense-policies", expensePolicyRouter);
+
+  // Oracle Parity Round 5 — AR Memos, AP Match Tolerances, FA Tax Books, Expense, Tax eBTax, Lease Approval Chains
+  app.use("/api", oracleParityRouter);
 
   // Order Management
   app.use("/api/order-management", orderRouter);

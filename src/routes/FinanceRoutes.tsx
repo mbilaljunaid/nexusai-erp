@@ -149,6 +149,32 @@ import IcAutoInvoice from "@/pages/finance/intercompany/IcAutoInvoice";
 import SupplierMerge from "@/pages/finance/ap/SupplierMerge";
 import NotionalCashPooling from "@/pages/finance/cash/NotionalCashPooling";
 
+// Oracle Parity — Round 2 P2 Pages
+import RecurringInvoiceTemplates from "@/pages/finance/ap/RecurringInvoiceTemplates";
+import InvoiceHoldTypesConfig from "@/pages/finance/ap/config/InvoiceHoldTypesConfig";
+import ChargeBackSetup from "@/pages/finance/ar/ChargeBackSetup";
+import BankStatementExceptions from "@/pages/finance/cash/BankStatementExceptions";
+import TaxBookConfiguration from "@/pages/fixed-assets/TaxBookConfiguration";
+import IcReceiverWorkbench from "@/pages/finance/intercompany/IcReceiverWorkbench";
+
+// Oracle Parity — P3 Pages
+import BankStatementImport from "@/pages/finance/cash/BankStatementImport";
+import APOpenInterface from "@/pages/finance/ap/APOpenInterface";
+import AssetReclassification from "@/pages/fixed-assets/AssetReclassification";
+import SupplierTRNValidator from "@/pages/tax/SupplierTRNValidator";
+import CashAdvanceReconciliation from "@/pages/expenses/CashAdvanceReconciliation";
+import ExpenseAuditRuleSets from "@/pages/expenses/ExpenseAuditRuleSets";
+import NettingSettlementPayment from "@/pages/finance/intercompany/NettingSettlementPayment";
+import LeaseApprovalChainConfig from "@/pages/leases/LeaseApprovalChainConfig";
+
+// Oracle Parity — Round 4 (AR + Expense gaps)
+import CreditDebitMemoWorkbench from "@/pages/finance/ar/CreditDebitMemoWorkbench";
+import ReceiptApplicationWorkbench from "@/pages/finance/ar/ReceiptApplicationWorkbench";
+import ExpensePayrollReimbursement from "@/pages/expenses/ExpensePayrollReimbursement";
+import DistributionSetTemplates from "@/pages/finance/ap/config/DistributionSetTemplates";
+import FourWayMatchConfig from "@/pages/finance/ap/config/FourWayMatchConfig";
+import PerDiemRateTable from "@/pages/expenses/PerDiemRateTable";
+
 // Lease & Contracts
 import LeasePortfolioWorkbench from "@/pages/leases/LeasePortfolioWorkbench";
 import LeaseSystemSetup from "@/pages/leases/LeaseSystemSetup";
@@ -219,7 +245,11 @@ export default function FinanceRoutes() {
                 <Route path="/finance/fixed-assets/prorate-conventions" component={ProrateConventionSetup} />
                 <Route path="/finance/fixed-assets/physical-inventory" component={PhysicalInventoryReconciliation} />
                 <Route path="/finance/fixed-assets/capital-projects" component={CapitalProjectsInterface} />
+                <Route path="/finance/fixed-assets/tax-books" component={TaxBookConfiguration} />
+                <Route path="/finance/fixed-assets/reclassification" component={AssetReclassification} />
                 <Route path="/finance/cash/notional-pooling" component={NotionalCashPooling} />
+                <Route path="/finance/cash/bank-exceptions" component={BankStatementExceptions} />
+                <Route path="/finance/cash/bank-statement-import" component={BankStatementImport} />
                 <Route path="/finance/ap/supplier-merge" component={SupplierMerge} />
                 <Route path="/finance/ap/supplier-portal" component={SupplierPortal} />
                 <Route path="/finance/ap/suppliers/:id" component={APSupplierDetail} />
@@ -238,7 +268,9 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ap/prepayments" component={APPrepayments} />
                 <Route path="/finance/ap/payment-terms" component={PaymentTermsMaster} />
                 <Route path="/finance/ap/period-close" component={APPeriodClose} />
+                <Route path="/finance/ap/config/hold-types" component={InvoiceHoldTypesConfig} />
                 <Route path="/finance/ap/config" component={APSystemConfig} />
+                <Route path="/finance/ap/recurring-invoices" component={RecurringInvoiceTemplates} />
                 <Route path="/finance/ap" component={APDashboard} />
                 {/* Legacy redirect for backward compatibility */}
                 <Route path="/finance/accounts-payable" component={() => {
@@ -266,9 +298,13 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/receipts/:id" component={ARReceiptDetail} />
                 <Route path="/finance/ar/receipts" component={ARReceipts} />
                 <Route path="/finance/ar/customers" component={ARCustomers} />
+                <Route path="/finance/ar/chargebacks" component={ChargeBackSetup} />
+                <Route path="/finance/ar/credit-debit-memos" component={CreditDebitMemoWorkbench} />
+                <Route path="/finance/ar/receipt-application" component={ReceiptApplicationWorkbench} />
                 <Route path="/finance/ar/adjustment-approvals" component={ArAdjustmentApprovals} />
                 <Route path="/finance/tax/vat-return" component={VatReturnOutput} />
                 <Route path="/intercompany/auto-invoice" component={IcAutoInvoice} />
+                <Route path="/intercompany/receiver-workbench" component={IcReceiverWorkbench} />
                 <Route path="/finance/ar/analytics" component={ArAnalytics} />
                 <Route path="/finance/ar/reports" component={ArReports} />
                 <Route path="/finance/ar/customers/:id" component={CustomerDetails} />
@@ -280,6 +316,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/collections" component={CollectionsWorkbench} />
                 <Route path="/finance/ar/profile-classes" component={CustomerProfileClasses} />
                 <Route path="/finance/ic/disputes" component={ICDisputeWorkbench} />
+                <Route path="/intercompany/netting-settlement" component={NettingSettlementPayment} />
 
                 <Route path="/finance/gl" component={GLDashboard} />
                 <Route path="/finance/gl/journals/new" component={JournalEntry} />
@@ -355,7 +392,14 @@ export default function FinanceRoutes() {
                 <Route path="/finance/tax" component={TaxManagement} />
                 <Route path="/finance/tax/regimes" component={TaxRegimeSetup} />
                 <Route path="/finance/tax/determining-factors" component={TaxDeterminingFactors} />
+                <Route path="/finance/tax/supplier-trn" component={SupplierTRNValidator} />
                 <Route path="/finance/expense-management" component={ExpenseManagement} />
+                <Route path="/expenses/cash-advances" component={CashAdvanceReconciliation} />
+                <Route path="/expenses/audit-rules" component={ExpenseAuditRuleSets} />
+                <Route path="/expenses/payroll-reimbursement" component={ExpensePayrollReimbursement} />
+                <Route path="/expenses/per-diem-rates" component={PerDiemRateTable} />
+                <Route path="/finance/ap/config/distribution-sets" component={DistributionSetTemplates} />
+                <Route path="/finance/ap/config/match-tolerances" component={FourWayMatchConfig} />
 
                 <Route path="/finance/ap/settings">
                     <ProtectedRoute>
@@ -388,6 +432,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/leases/compliance" component={LeaseComplianceDashboard} />
                 <Route path="/finance/leases/approvals" component={LeaseApprovalsWorkbench} />
                 <Route path="/finance/leases/setup" component={LeaseSystemSetup} />
+                <Route path="/finance/leases/approval-chains" component={LeaseApprovalChainConfig} />
                 <Route path="/finance/leases/reports/disclosure" component={LeaseDisclosureReport} />
                 <Route path="/finance/leases/:id" component={LeaseDetailPage} />
                 <Route path="/finance/leases/:id/schedules">{(params: { id: string }) => <LeaseSchedulesView leaseId={params.id} />}</Route>
