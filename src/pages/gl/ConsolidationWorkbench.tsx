@@ -155,19 +155,19 @@ export default function ConsolidationWorkbench() {
                 {/* Action Bar */}
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2">
-                        <Link href="/gl/consolidation/ledger-sets">
+                        <Link href="/finance/gl/consolidation/ledger-sets">
                             <Button variant="outline" size="sm">
                                 <Layers className="h-4 w-4 mr-2" />
                                 Ledger Sets
                             </Button>
                         </Link>
-                        <Link href="/gl/consolidation/fx-rates">
+                        <Link href="/finance/gl/consolidation/fx-rates">
                             <Button variant="outline" size="sm">
                                 <RefreshCw className="h-4 w-4 mr-2" />
                                 FX Rates
                             </Button>
                         </Link>
-                        <Link href="/gl/consolidation/rules">
+                        <Link href="/finance/gl/consolidation/rules">
                             <Button variant="outline" size="sm">
                                 <Settings className="h-4 w-4 mr-2" />
                                 Elimination Rules

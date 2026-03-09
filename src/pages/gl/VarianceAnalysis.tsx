@@ -59,7 +59,7 @@ export default function VarianceAnalysis() {
             description="Compare consolidated financial results across accounting periods."
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
-                { label: "Consolidation", href: "/gl/consolidation" },
+                { label: "Consolidation", href: "/finance/gl/consolidation" },
                 { label: "Variance Analysis" }
             ]}
         >

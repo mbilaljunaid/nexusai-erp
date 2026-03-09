@@ -464,9 +464,9 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ar/statements" component={ArStatementPrint} />
                 <Route path="/finance/ar/lockbox-setup" component={ArLockboxSetup} />
                 <Route path="/finance/gl/encumbrance-types" component={GlEncumbranceSetup} />
-                <Route path="/gl/encumbrance-types" component={GlEncumbranceSetup} />
+                <Route path="/finance/gl/encumbrance-types" component={GlEncumbranceSetup} />
                 <Route path="/finance/gl/secondary-ledgers" component={GlSecondaryLedgerSetup} />
-                <Route path="/gl/secondary-ledgers" component={GlSecondaryLedgerSetup} />
+                <Route path="/finance/gl/secondary-ledgers" component={GlSecondaryLedgerSetup} />
                 <Route path="/finance/leases/subleases" component={SubleaseManagement} />
                 <Route path="/leases/subleases" component={SubleaseManagement} />
                 <Route path="/finance/ap/positive-pay" component={APPositivePayConfig} />

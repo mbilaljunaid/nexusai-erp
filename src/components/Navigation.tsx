@@ -77,7 +77,7 @@ export function Header() {
                     {/* Finance & Ops */}
                     <div>
                       <p className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Finance & Operations</p>
-                      <Link to="/gl/journals" className="block rounded hover:bg-slate-700 p-2 transition-colors">
+                      <Link to="/finance/gl/journals" className="block rounded hover:bg-slate-700 p-2 transition-colors">
                         <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
                           <BookOpen className="w-3.5 h-3.5 text-blue-400" /> General Ledger
                         </div>

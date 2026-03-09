@@ -164,6 +164,7 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "costing-variance", title: "Variance Report", type: "link", path: "/scm/costing/variance" },
                     { id: "costing-receipt", title: "Receipt Accounting", type: "link", path: "/scm/costing/receipt-accounting" },
                     { id: "costing-transfer-pricing", title: "Transfer Pricing", type: "link", path: "/scm/costing/transfer-pricing" },
+                    { id: "costing-landed-cost", title: "Landed Cost Apportionment", type: "link", path: "/scm/costing/landed-cost" },
 
                     { id: "gtm", title: "Global Trade (GTM)", type: "link", path: "/scm/gtm" },
                 ]
@@ -187,6 +188,7 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "wms-lpn", title: "LPN Workbench", type: "link", path: "/scm/wms/lpn" },
                     { id: "wms-bol", title: "BOL & Rate Shopping", type: "link", path: "/scm/wms/bol" },
                     { id: "wms-rma", title: "RMA / Returns", type: "link", path: "/scm/wms/rma" },
+                    { id: "wms-locator-seq", title: "Locator Picking Sequence", type: "link", path: "/scm/wms/locator-sequence" },
 
 
                     { id: "wms-interleaving", title: "Task Interleaving", type: "link", path: "/scm/wms/task-interleaving" },

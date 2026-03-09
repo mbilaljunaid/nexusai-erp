@@ -133,7 +133,7 @@ export default function JournalEntries() {
           <Button variant="outline" className="border-border hover:bg-slate-500/10 text-muted-foreground">
             <Download className="h-4 w-4 mr-2" /> Export
           </Button>
-          <Button onClick={() => setLocation("/gl/journals/new")} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100 px-6">
+          <Button onClick={() => setLocation("/finance/gl/journals/new")} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100 px-6">
             <Plus className="h-4 w-4 mr-2" /> Create Journal
           </Button>
         </div>

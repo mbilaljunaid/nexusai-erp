@@ -155,7 +155,7 @@ export default function FinancialReports() {
                     <Button variant="secondary" onClick={() => setIsAnalysisOpen(true)}>
                         <TrendingUp className="mr-2 h-4 w-4" /> Analyze Variance
                     </Button>
-                    <Link href="/gl/reports/builder">
+                    <Link href="/finance/gl/reports/builder">
                         <Button variant="outline">
                             <Layout className="mr-2 h-4 w-4" /> Builder
                         </Button>

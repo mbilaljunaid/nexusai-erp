@@ -107,6 +107,8 @@ import CostVarianceReport from "@/pages/cost-management/CostVarianceReport";
 import ReceiptAccountingViewer from "@/pages/cost-management/ReceiptAccountingViewer";
 import CostMethodSetup from "@/pages/cost-management/CostMethodSetup";
 import TransferPricingSetup from "@/pages/cost-management/TransferPricingSetup";
+import LandedCostApportionment from "@/pages/cost-management/LandedCostApportionment";
+import LocatorPickingSequence from "@/pages/scm/wms/LocatorPickingSequence";
 
 
 import SlaDashboard from "@/pages/sla/SlaDashboard";
@@ -190,6 +192,8 @@ export default function ScmRoutes() {
             <Route path="/manufacturing/mrp-explosion" component={MRPExplosionViewer} />
             <Route path="/manufacturing/bom-effectivity" component={BOMEffectivityEditor} />
             <Route path="/manufacturing/production-adherence" component={ProductionAdherenceReport} />
+            <Route path="/scm/costing/landed-cost" component={LandedCostApportionment} />
+            <Route path="/scm/wms/locator-sequence" component={LocatorPickingSequence} />
 
 
 

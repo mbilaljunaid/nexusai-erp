@@ -95,8 +95,8 @@ export default function BalanceCubeInquiry() {
             title="Balance Cube Inquiry"
             description="Real-time multi-dimensional pivot of GL account balances. Configure Row and Column dimensions, apply filters, and click any cell to drill through to journal lines."
             breadcrumbs={[
-                { label: "General Ledger", href: "/gl/journals" },
-                { label: "Inquiries", href: "/gl/inquiry" },
+                { label: "General Ledger", href: "/finance/gl/journals" },
+                { label: "Inquiries", href: "/finance/gl/inquiry" },
                 { label: "Balance Cube Inquiry" },
             ]}
         >

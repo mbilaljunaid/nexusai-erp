@@ -18,7 +18,7 @@ export default function AccountingHubWorkbench() {
             title="Accounting Hub Cloud Service (AHCS)"
             description="Centralized accounting engine configuration. Define how transactions from any subsystem are accounted."
             actions={
-                <Link href="/gl/dashboard">
+                <Link href="/finance/gl/dashboard">
                     <Button variant="outline" size="sm">
                         <ArrowLeft className="mr-2 h-4 w-4" /> Back to GL
                     </Button>

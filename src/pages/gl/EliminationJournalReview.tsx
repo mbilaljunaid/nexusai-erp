@@ -60,7 +60,7 @@ export default function EliminationJournalReview() {
             description="Review auto-generated elimination journals from consolidation runs."
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
-                { label: "Consolidation", href: "/gl/consolidation" },
+                { label: "Consolidation", href: "/finance/gl/consolidation" },
                 { label: "Journals" }
             ]}
         >

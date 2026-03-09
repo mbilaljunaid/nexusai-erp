@@ -220,7 +220,7 @@ export default function EliminationRuleBuilder() {
             description="Configure intercompany elimination rules for automated journal generation during consolidation."
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
-                { label: "Consolidation", href: "/gl/consolidation" },
+                { label: "Consolidation", href: "/finance/gl/consolidation" },
                 { label: "Elimination Rules" }
             ]}
         >

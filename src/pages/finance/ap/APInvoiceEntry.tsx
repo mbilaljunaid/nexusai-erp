@@ -144,8 +144,8 @@ export default function APInvoiceEntry() {
     });
 
     const { data: supplierSites } = useQuery<any>({
-        queryKey: ["/api/finance/ap/supplier-sites", header.supplierId],
-        queryFn: () => fetch(`/api/finance/ap/suppliers/${header.supplierId}/sites`).then(r => r.json()),
+        queryKey: ["/api/ap/supplier-sites", header.supplierId],
+        queryFn: () => fetch(`/api/ap/suppliers/${header.supplierId}/sites`).then(r => r.json()),
         enabled: !!header.supplierId,
     });
 
@@ -486,7 +486,7 @@ export default function APInvoiceEntry() {
         const payload = {
             header: {
                 ...header,
-                supplierSiteId: header.supplierSiteId ? parseInt(header.supplierSiteId) : undefined, // Backend expects number or undefined
+                supplierSiteId: header.supplierSiteId || undefined, // Backend expects string uuid
                 invoiceDate: new Date(header.invoiceDate).toISOString(),
                 transactionDate: header.transactionDate ? new Date(header.transactionDate).toISOString() : undefined,
                 termsDate: header.termsDate ? new Date(header.termsDate).toISOString() : undefined,

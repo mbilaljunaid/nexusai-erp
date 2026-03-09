@@ -22,7 +22,7 @@ const router = Router();
  * POST /api/gl/post
  * Create GL entries from form data
  */
-router.post("/gl/post", async (req, res) => {
+router.post("/post", async (req, res) => {
   try {
     const { formId, formData, userId, description } = req.body;
 
@@ -97,7 +97,7 @@ router.post("/gl/post", async (req, res) => {
  * GET /api/gl/stats
  * Get GL statistics for dashboards
  */
-router.get("/gl/stats", async (req, res) => {
+router.get("/stats", async (req, res) => {
   try {
     const stats = await financeService.getGLStats();
     res.json(stats);
@@ -110,7 +110,7 @@ router.get("/gl/stats", async (req, res) => {
  * GET /api/gl/journals
  * Get list of journals with optional filters
  */
-router.get("/gl/journals", async (req, res) => {
+router.get("/journals", async (req, res) => {
   try {
     const { status, ledgerId, search, limit, offset } = req.query;
     const journals = await financeService.listJournals({
@@ -136,7 +136,7 @@ router.get("/gl/journals", async (req, res) => {
  * Get GL entries for a form
  */
 // Migrated to direct DB query or simple return empty
-router.get("/gl/entries/:formId", async (req, res) => {
+router.get("/entries/:formId", async (req, res) => {
   try {
     // For now return empty as UI might not strictly depend on this exact format anymore
     // or implement real query later if needed.
@@ -150,7 +150,7 @@ router.get("/gl/entries/:formId", async (req, res) => {
  * GET /api/gl/account/:account
  * Get GL entries for an account
  */
-router.get("/gl/account/:account", async (req, res) => {
+router.get("/account/:account", async (req, res) => {
   try {
     // Legacy endpoint, returning empty array
     res.json([]);
@@ -163,7 +163,7 @@ router.get("/gl/account/:account", async (req, res) => {
  * GET /api/gl/balance/:account
  * Get account balance
  */
-router.get("/gl/balance/:account", async (req, res) => {
+router.get("/balance/:account", async (req, res) => {
   try {
     // Legacy endpoint, returning zero
     res.json({ debit: 0, credit: 0, balance: 0 });
@@ -176,7 +176,7 @@ router.get("/gl/balance/:account", async (req, res) => {
  * POST /api/gl/validate
  * Validate GL entries
  */
-router.post("/gl/validate", (req, res) => {
+router.post("/validate", (req, res) => {
   try {
     const { entries } = req.body;
     const result = dualEntryValidator.validateEntries(entries);
@@ -190,7 +190,7 @@ router.post("/gl/validate", (req, res) => {
  * GET /api/gl/reconciliation
  * Generate reconciliation report
  */
-router.get("/gl/reconciliation", async (req, res) => {
+router.get("/reconciliation", async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
     // const start = new Date(String(startDate));
@@ -208,7 +208,7 @@ router.get("/gl/reconciliation", async (req, res) => {
  * GET /api/gl/trial-balance
  * Get trial balance (Compatibility & Reporting)
  */
-router.get("/gl/trial-balance", async (req, res) => {
+router.get("/trial-balance", async (req, res) => {
   try {
     const { ledgerId, periodId, limit, offset, accountType } = req.query;
     const report = await financeService.calculateTrialBalance(
@@ -228,7 +228,7 @@ router.get("/gl/trial-balance", async (req, res) => {
  * GET /api/gl/reporting/trial-balance
  * Alias for standardized reporting path
  */
-router.get("/gl/reporting/trial-balance", async (req, res) => {
+router.get("/reporting/trial-balance", async (req, res) => {
   try {
     const { ledgerId, periodId, limit, offset, accountType } = req.query;
     const report = await financeService.calculateTrialBalance(
@@ -248,7 +248,7 @@ router.get("/gl/reporting/trial-balance", async (req, res) => {
  * GET /api/gl/reporting/drill-down/:ccid
  * Get journal lines for a specific balance
  */
-router.get("/gl/reporting/drill-down/:ccid", async (req, res) => {
+router.get("/reporting/drill-down/:ccid", async (req, res) => {
   try {
     const { ccid } = req.params;
     const { periodId } = req.query;
@@ -264,7 +264,7 @@ router.get("/gl/reporting/drill-down/:ccid", async (req, res) => {
  * GET /api/gl/inquire
  * Account Inquiry Endpoint (T-Account / drill-down helper)
  */
-router.get("/gl/inquire", async (req, res) => {
+router.get("/inquire", async (req, res) => {
   try {
     const { ledgerId, periodId, ccid } = req.query;
 
@@ -334,7 +334,7 @@ router.get("/audit/report", (req, res) => {
  * POST /api/gl/ledgersets
  * Create a new Ledger Set
  */
-router.post("/gl/ledgersets", async (req, res) => {
+router.post("/ledgersets", async (req, res) => {
   try {
     const ledgerSet = await financeService.createLedgerSet(req.body);
     res.json(ledgerSet);
@@ -347,7 +347,7 @@ router.post("/gl/ledgersets", async (req, res) => {
  * POST /api/gl/ledgersets/:id/assign
  * Assign a ledger to a set
  */
-router.post("/gl/ledgersets/:id/assign", async (req, res) => {
+router.post("/ledgersets/:id/assign", async (req, res) => {
   try {
     const { id } = req.params;
     const { ledgerId } = req.body;
@@ -375,7 +375,7 @@ router.post("/api/gl/legal-entities", async (req, res) => {
  * GET /api/gl/coa/structure/:ledgerId
  * Get COA structure (segments) for a ledger
  */
-router.get("/gl/coa/structure/:ledgerId", async (req, res) => {
+router.get("/coa/structure/:ledgerId", async (req, res) => {
   try {
     const { ledgerId } = req.params;
     const structure = await financeService.getFullCoaStructure(ledgerId);
@@ -388,7 +388,7 @@ router.get("/gl/coa/structure/:ledgerId", async (req, res) => {
 /**
  * Period Close Checklist Routes
  */
-router.get("/gl/periods/:periodId/tasks", async (req, res) => {
+router.get("/periods/:periodId/tasks", async (req, res) => {
   try {
     const { periodId } = req.params;
     const { ledgerId } = req.query;
@@ -402,7 +402,7 @@ router.get("/gl/periods/:periodId/tasks", async (req, res) => {
   }
 });
 
-router.patch("/gl/periods/tasks/:taskId", async (req, res) => {
+router.patch("/periods/tasks/:taskId", async (req, res) => {
   try {
     const { taskId } = req.params;
     const task = await financeService.updateCloseTask(taskId, req.body);
@@ -416,7 +416,7 @@ router.patch("/gl/periods/tasks/:taskId", async (req, res) => {
  * GET /api/gl/reporting/explain-variance
  * AI Action: Explain variance between two periods
  */
-router.get("/gl/reporting/explain-variance", async (req, res) => {
+router.get("/reporting/explain-variance", async (req, res) => {
   try {
     const { periodId, benchmarkPeriodId, ledgerId } = req.query;
     if (!periodId || !benchmarkPeriodId) {
@@ -438,7 +438,7 @@ router.get("/gl/reporting/explain-variance", async (req, res) => {
 /**
  * GL Configuration Routes (Chunk 8)
  */
-router.get("/gl/config/sources", async (req, res) => {
+router.get("/config/sources", async (req, res) => {
   try {
     const sources = await financeService.listGlJournalSources();
     res.json(sources);
@@ -447,7 +447,7 @@ router.get("/gl/config/sources", async (req, res) => {
   }
 });
 
-router.post("/gl/config/sources", async (req, res) => {
+router.post("/config/sources", async (req, res) => {
   try {
     const source = await financeService.createGlJournalSource(req.body);
     res.json(source);
@@ -456,7 +456,7 @@ router.post("/gl/config/sources", async (req, res) => {
   }
 });
 
-router.get("/gl/config/categories", async (req, res) => {
+router.get("/config/categories", async (req, res) => {
   try {
     const categories = await financeService.listGlJournalCategories();
     res.json(categories);
@@ -465,7 +465,7 @@ router.get("/gl/config/categories", async (req, res) => {
   }
 });
 
-router.post("/gl/config/categories", async (req, res) => {
+router.post("/config/categories", async (req, res) => {
   try {
     const category = await financeService.createGlJournalCategory(req.body);
     res.json(category);
@@ -474,7 +474,7 @@ router.post("/gl/config/categories", async (req, res) => {
   }
 });
 
-router.get("/gl/config/rate-types", async (req, res) => {
+router.get("/config/rate-types", async (req, res) => {
   try {
     const rateTypes = await financeService.listRateTypes();
     res.json(rateTypes);
@@ -483,7 +483,7 @@ router.get("/gl/config/rate-types", async (req, res) => {
   }
 });
 
-router.post("/gl/config/rate-types", async (req, res) => {
+router.post("/config/rate-types", async (req, res) => {
   try {
     const rateType = await financeService.createRateType(req.body);
     res.json(rateType);
@@ -492,7 +492,7 @@ router.post("/gl/config/rate-types", async (req, res) => {
   }
 });
 
-router.get("/gl/config/calendars", async (req, res) => {
+router.get("/config/calendars", async (req, res) => {
   try {
     const calendars = await financeService.listAccountingCalendars();
     res.json(calendars);
@@ -501,7 +501,7 @@ router.get("/gl/config/calendars", async (req, res) => {
   }
 });
 
-router.post("/gl/config/calendars", async (req, res) => {
+router.post("/config/calendars", async (req, res) => {
   try {
     const calendar = await financeService.createAccountingCalendar(req.body);
     res.json(calendar);
@@ -510,7 +510,7 @@ router.post("/gl/config/calendars", async (req, res) => {
   }
 });
 
-router.get("/gl/config/ledger/:ledgerId/controls", async (req, res) => {
+router.get("/config/ledger/:ledgerId/controls", async (req, res) => {
   try {
     const { ledgerId } = req.params;
     const controls = await financeService.getGlLedgerControl(ledgerId);
@@ -520,7 +520,7 @@ router.get("/gl/config/ledger/:ledgerId/controls", async (req, res) => {
   }
 });
 
-router.post("/gl/config/ledger/controls", async (req, res) => {
+router.post("/config/ledger/controls", async (req, res) => {
   try {
     const control = await financeService.upsertGlLedgerControl(req.body);
     res.json(control);
@@ -529,7 +529,7 @@ router.post("/gl/config/ledger/controls", async (req, res) => {
   }
 });
 
-router.get("/gl/config/ledger/:ledgerId/autopost-rules", async (req, res) => {
+router.get("/config/ledger/:ledgerId/autopost-rules", async (req, res) => {
   try {
     const { ledgerId } = req.params;
     const rules = await financeService.listGlAutoPostRules(ledgerId);
@@ -542,7 +542,7 @@ router.get("/gl/config/ledger/:ledgerId/autopost-rules", async (req, res) => {
 /**
  * Intercompany Rules (Chunk 9)
  */
-router.get("/gl/config/intercompany-rules", async (req, res) => {
+router.get("/config/intercompany-rules", async (req, res) => {
   try {
     const rules = await financeService.listIntercompanyRules();
     res.json(rules);
@@ -551,7 +551,7 @@ router.get("/gl/config/intercompany-rules", async (req, res) => {
   }
 });
 
-router.post("/gl/config/intercompany-rules", async (req, res) => {
+router.post("/config/intercompany-rules", async (req, res) => {
   try {
     const rule = await financeService.createIntercompanyRule(req.body);
     res.json(rule);
@@ -563,7 +563,7 @@ router.post("/gl/config/intercompany-rules", async (req, res) => {
 /**
  * Mass Allocations (Chunk 9)
  */
-router.get("/gl/allocations", async (req, res) => {
+router.get("/allocations", async (req, res) => {
   try {
     const { ledgerId } = req.query;
     const rules = await financeService.listAllocations(ledgerId as string);
@@ -573,7 +573,7 @@ router.get("/gl/allocations", async (req, res) => {
   }
 });
 
-router.post("/gl/allocations/run", async (req, res) => {
+router.post("/allocations/run", async (req, res) => {
   try {
     const { allocationId, periodName, userId } = req.body;
     const result = await financeService.runAllocation(allocationId, periodName, userId);
@@ -586,7 +586,7 @@ router.post("/gl/allocations/run", async (req, res) => {
 /**
  * Budgetary Control (Chunk 9)
  */
-router.get("/gl/config/budget-rules", async (req, res) => {
+router.get("/config/budget-rules", async (req, res) => {
   try {
     const { ledgerId } = req.query;
     const rules = await financeService.listBudgetControlRules(ledgerId as string);
@@ -596,7 +596,7 @@ router.get("/gl/config/budget-rules", async (req, res) => {
   }
 });
 
-router.post("/gl/config/budget-rules", async (req, res) => {
+router.post("/config/budget-rules", async (req, res) => {
   try {
     const rule = await financeService.createBudgetControlRule(req.body);
     res.json(rule);
@@ -605,7 +605,7 @@ router.post("/gl/config/budget-rules", async (req, res) => {
   }
 });
 
-router.get("/gl/budget-balances", async (req, res) => {
+router.get("/budget-balances", async (req, res) => {
   try {
     const { ledgerId, periodName } = req.query;
     const balances = await financeService.listBudgetBalances(ledgerId as string, periodName as string);
@@ -630,7 +630,7 @@ const csvService = new FxRateCsvService();
  * GET /api/gl/consolidation/results/:runId/export
  * Export consolidation results to Excel
  */
-router.get("/gl/consolidation/results/:runId/export", async (req, res, next) => {
+router.get("/consolidation/results/:runId/export", async (req, res, next) => {
   try {
     await exportService.handleExportRequest(req, res, next);
   } catch (error: any) {
@@ -642,7 +642,7 @@ router.get("/gl/consolidation/results/:runId/export", async (req, res, next) => 
  * GET /api/gl/consolidation/fx-rates
  * Get exchange rates configured for consolidation
  */
-router.get("/gl/consolidation/fx-rates", async (req, res) => {
+router.get("/consolidation/fx-rates", async (req, res) => {
   try {
     const rates = await storage.getAllGlDailyRates();
     res.json(rates);
@@ -655,7 +655,7 @@ router.get("/gl/consolidation/fx-rates", async (req, res) => {
  * POST /api/gl/consolidation/fx-rates
  * Create a new exchange rate manually
  */
-router.post("/gl/consolidation/fx-rates", async (req, res) => {
+router.post("/consolidation/fx-rates", async (req, res) => {
   try {
     const rate = await storage.createGlDailyRate(req.body);
     res.status(201).json(rate);
@@ -668,7 +668,7 @@ router.post("/gl/consolidation/fx-rates", async (req, res) => {
  * POST /api/gl/consolidation/fx-rates/upload
  * Upload FX rates via CSV
  */
-router.post("/gl/consolidation/fx-rates/upload", upload.single('file'), async (req, res) => {
+router.post("/consolidation/fx-rates/upload", upload.single('file'), async (req, res) => {
   try {
     const db = (req as any).db; // Assuming db is attached to req
     await csvService.handleCsvUpload(req, res, db);
@@ -681,7 +681,7 @@ router.post("/gl/consolidation/fx-rates/upload", upload.single('file'), async (r
  * GET /api/gl/consolidation/fx-rates/template
  * Download CSV template for FX rate upload
  */
-router.get("/gl/consolidation/fx-rates/template", (req, res) => {
+router.get("/consolidation/fx-rates/template", (req, res) => {
   try {
     const template = csvService.generateTemplate();
     res.setHeader('Content-Type', 'text/csv');
@@ -696,7 +696,7 @@ router.get("/gl/consolidation/fx-rates/template", (req, res) => {
  * GET /api/gl/consolidation/variance
  * Get period-over-period variance analysis data
  */
-router.get("/gl/consolidation/variance", async (req, res) => {
+router.get("/consolidation/variance", async (req, res) => {
   try {
     const { currentPeriod, priorPeriod, ledgerSetId } = req.query;
 
@@ -720,7 +720,7 @@ router.get("/gl/consolidation/variance", async (req, res) => {
  * GET /api/gl/consolidation/history
  * Get consolidation run history
  */
-router.get("/gl/consolidation/history", async (req, res) => {
+router.get("/consolidation/history", async (req, res) => {
   try {
     const { ledgerSetId } = req.query;
 
@@ -741,7 +741,7 @@ router.get("/gl/consolidation/history", async (req, res) => {
  * GET /api/gl/ledgers
  * List all GL Ledgers (used by LedgerContext)
  */
-router.get("/gl/ledgers", async (req, res) => {
+router.get("/ledgers", async (req, res) => {
   try {
     const ledgers = await financeService.listLedgers();
     res.json(ledgers);
@@ -780,7 +780,7 @@ router.get("/finance/currencies", async (req, res) => {
  * GET /api/gl/ledgers/:id
  * Get a single ledger
  */
-router.get("/gl/ledgers/:id", async (req, res) => {
+router.get("/ledgers/:id", async (req, res) => {
   try {
     const ledger = await financeService.getLedger(req.params.id);
     if (!ledger) return res.status(404).json({ error: "Ledger not found" });
@@ -794,7 +794,7 @@ router.get("/gl/ledgers/:id", async (req, res) => {
  * POST /api/gl/ledgers
  * Create a new ledger
  */
-router.post("/gl/ledgers", async (req, res) => {
+router.post("/ledgers", async (req, res) => {
   try {
     const ledger = await financeService.createLedger(req.body);
     res.json(ledger);
@@ -807,7 +807,7 @@ router.post("/gl/ledgers", async (req, res) => {
  * PATCH /api/gl/ledgers/:id
  * Update a ledger
  */
-router.patch("/gl/ledgers/:id", async (req, res) => {
+router.patch("/ledgers/:id", async (req, res) => {
   try {
     const ledger = await financeService.updateLedger(req.params.id, req.body);
     res.json(ledger);
@@ -824,7 +824,7 @@ router.patch("/gl/ledgers/:id", async (req, res) => {
  * GET /api/gl/periods
  * List all periods, optionally filtered by ledgerId
  */
-router.get("/gl/periods", async (req, res) => {
+router.get("/periods", async (req, res) => {
   try {
     const { ledgerId } = req.query;
     const periods = await financeService.listPeriods(ledgerId as string | undefined);
@@ -838,7 +838,7 @@ router.get("/gl/periods", async (req, res) => {
  * POST /api/gl/periods
  * Create a new period
  */
-router.post("/gl/periods", async (req, res) => {
+router.post("/periods", async (req, res) => {
   try {
     const period = await financeService.createPeriod(req.body);
     res.json(period);
@@ -851,7 +851,7 @@ router.post("/gl/periods", async (req, res) => {
  * PATCH /api/gl/periods/:id/open
  * Open a period
  */
-router.patch("/gl/periods/:id/open", async (req, res) => {
+router.patch("/periods/:id/open", async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.body;
@@ -866,7 +866,7 @@ router.patch("/gl/periods/:id/open", async (req, res) => {
  * PATCH /api/gl/periods/:id/close
  * Close a period
  */
-router.patch("/gl/periods/:id/close", async (req, res) => {
+router.patch("/periods/:id/close", async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.body;
@@ -889,7 +889,7 @@ router.patch("/gl/periods/:id/close", async (req, res) => {
  * GET /api/gl/periods/:id/exceptions
  * Get pre-close exceptions (unposted journals, etc.)
  */
-router.get("/gl/periods/:id/exceptions", async (req, res) => {
+router.get("/periods/:id/exceptions", async (req, res) => {
   try {
     const exceptions = await financeService.getPeriodExceptions(req.params.id);
     res.json(exceptions);
@@ -906,7 +906,7 @@ router.get("/gl/periods/:id/exceptions", async (req, res) => {
  * GET /api/gl/journals/:id
  * Get single journal with lines
  */
-router.get("/gl/journals/:id", async (req, res) => {
+router.get("/journals/:id", async (req, res) => {
   try {
     const journal = await financeService.getJournal(req.params.id);
     if (!journal) return res.status(404).json({ error: "Journal not found" });
@@ -920,7 +920,7 @@ router.get("/gl/journals/:id", async (req, res) => {
  * POST /api/gl/journals
  * Create a new journal with lines
  */
-router.post("/gl/journals", async (req, res) => {
+router.post("/journals", async (req, res) => {
   try {
     const { lines, userId, ...journalData } = req.body;
     const journal = await financeService.createJournal(journalData, lines || [], userId || "system");
@@ -934,7 +934,7 @@ router.post("/gl/journals", async (req, res) => {
  * POST /api/gl/journals/:id/post
  * Post a journal (triggers async background posting)
  */
-router.post("/gl/journals/:id/post", async (req, res) => {
+router.post("/journals/:id/post", async (req, res) => {
   try {
     const { userId } = req.body;
     const result = await financeService.postJournal(req.params.id, userId || "system");
@@ -948,7 +948,7 @@ router.post("/gl/journals/:id/post", async (req, res) => {
  * POST /api/gl/journals/:id/submit
  * Submit a journal for approval
  */
-router.post("/gl/journals/:id/submit", async (req, res) => {
+router.post("/journals/:id/submit", async (req, res) => {
   try {
     const { userId } = req.body;
     const result = await financeService.submitJournalForApproval(req.params.id, userId || "system");
@@ -962,7 +962,7 @@ router.post("/gl/journals/:id/submit", async (req, res) => {
  * POST /api/gl/journals/:id/approve
  * Approve a journal
  */
-router.post("/gl/journals/:id/approve", async (req, res) => {
+router.post("/journals/:id/approve", async (req, res) => {
   try {
     const { approverId, comments } = req.body;
     const result = await financeService.approveJournal(req.params.id, approverId || "system", comments);
@@ -976,7 +976,7 @@ router.post("/gl/journals/:id/approve", async (req, res) => {
  * POST /api/gl/journals/:id/reject
  * Reject a journal
  */
-router.post("/gl/journals/:id/reject", async (req, res) => {
+router.post("/journals/:id/reject", async (req, res) => {
   try {
     const { approverId, comments } = req.body;
     const result = await financeService.rejectJournal(req.params.id, approverId || "system", comments);
@@ -990,7 +990,7 @@ router.post("/gl/journals/:id/reject", async (req, res) => {
  * POST /api/gl/journals/:id/reverse
  * Create a reversal journal
  */
-router.post("/gl/journals/:id/reverse", async (req, res) => {
+router.post("/journals/:id/reverse", async (req, res) => {
   try {
     const { userId, reversalPeriodId } = req.body;
     const result = await financeService.reverseJournal(req.params.id, userId || "system", reversalPeriodId);
@@ -1004,7 +1004,7 @@ router.post("/gl/journals/:id/reverse", async (req, res) => {
  * GET /api/gl/journals/:id/audit
  * Get audit trail for a journal
  */
-router.get("/gl/journals/:id/audit", async (req, res) => {
+router.get("/journals/:id/audit", async (req, res) => {
   try {
     const logs = await financeService.getJournalAuditLogs(req.params.id);
     res.json(logs);
@@ -1021,7 +1021,7 @@ router.get("/gl/journals/:id/audit", async (req, res) => {
  * GET /api/gl/revaluations
  * List revaluation runs, optionally filtered by ledgerId
  */
-router.get("/gl/revaluations", async (req, res) => {
+router.get("/revaluations", async (req, res) => {
   try {
     const { ledgerId } = req.query;
     const revaluations = await financeService.getRevaluations(ledgerId as string | undefined);
@@ -1035,7 +1035,7 @@ router.get("/gl/revaluations", async (req, res) => {
  * POST /api/gl/revaluation
  * Run FX revaluation for a ledger/period/currency
  */
-router.post("/gl/revaluation", async (req, res) => {
+router.post("/revaluation", async (req, res) => {
   try {
     const { ledgerId, periodName, foreignCurrency, rateType, unrealizedGainLossAccountId } = req.body;
     if (!ledgerId || !periodName || !foreignCurrency) {
@@ -1056,7 +1056,7 @@ router.post("/gl/revaluation", async (req, res) => {
  * GET /api/gl/translation/rules
  * List all translation rules
  */
-router.get("/gl/translation/rules", async (req, res) => {
+router.get("/translation/rules", async (req, res) => {
   try {
     const { ledgerId } = req.query;
     const rules = await financeService.listTranslationRules((ledgerId as string) || "PRIMARY");
@@ -1070,7 +1070,7 @@ router.get("/gl/translation/rules", async (req, res) => {
  * POST /api/gl/translation/rules
  * Create a translation rule
  */
-router.post("/gl/translation/rules", async (req, res) => {
+router.post("/translation/rules", async (req, res) => {
   try {
     const rule = await financeService.createTranslationRule(req.body);
     res.json(rule);
@@ -1083,7 +1083,7 @@ router.post("/gl/translation/rules", async (req, res) => {
  * POST /api/gl/translation/run
  * Run FASB 52 translation for a source ledger/period
  */
-router.post("/gl/translation/run", async (req, res) => {
+router.post("/translation/run", async (req, res) => {
   try {
     const { sourceLedgerId, targetLedgerId, periodName, translationDate, userId } = req.body;
     if (!sourceLedgerId || !periodName) {
@@ -1112,7 +1112,7 @@ router.post("/gl/translation/run", async (req, res) => {
  * POST /api/gl/consolidation/run
  * Run a consolidation
  */
-router.post("/gl/consolidation/run", async (req, res) => {
+router.post("/consolidation/run", async (req, res) => {
   try {
     const { ledgerSetId, periodName, userId } = req.body;
     if (!ledgerSetId || !periodName) {
@@ -1143,7 +1143,7 @@ router.post("/gl/consolidation/run", async (req, res) => {
  * GET /api/gl/consolidation/history
  * Get history of consolidation runs
  */
-router.get("/gl/consolidation/history", async (req, res) => {
+router.get("/consolidation/history", async (req, res) => {
   try {
     const history = await db.select()
       .from(glConsolidationRuns)
@@ -1163,7 +1163,7 @@ router.get("/gl/consolidation/history", async (req, res) => {
  * GET /api/gl/imports
  * List all journal import jobs
  */
-router.get("/gl/imports", async (req, res) => {
+router.get("/imports", async (req, res) => {
   try {
     const { ledgerId } = req.query;
     // We are mocking this for now until financeService.listJournalImports is implemented
@@ -1182,7 +1182,7 @@ router.get("/gl/imports", async (req, res) => {
  * POST /api/gl/imports/upload
  * Upload a journal file
  */
-router.post("/gl/imports/upload", upload.single('file'), async (req, res) => {
+router.post("/imports/upload", upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -1214,7 +1214,7 @@ router.post("/gl/imports/upload", upload.single('file'), async (req, res) => {
  * POST /api/gl/imports/:id/process
  * Process a staged journal import
  */
-router.post("/gl/imports/:id/process", async (req, res) => {
+router.post("/imports/:id/process", async (req, res) => {
   try {
     const { id } = req.params;
     // Real implementation would invoke the processing engine to convert staged records to journals

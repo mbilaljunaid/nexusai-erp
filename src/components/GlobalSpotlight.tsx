@@ -57,7 +57,7 @@ export function GlobalSpotlight() {
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
                     </CommandItem>
-                    <CommandItem onSelect={() => runCommand(() => setLocation("/gl/journals"))}>
+                    <CommandItem onSelect={() => runCommand(() => setLocation("/finance/gl/journals"))}>
                         <FileText className="mr-2 h-4 w-4" />
                         <span>Journals</span>
                     </CommandItem>

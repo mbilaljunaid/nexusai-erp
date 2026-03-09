@@ -34,11 +34,14 @@ export const financeMenu = [
         label: "General Ledger",
         items: [
             { title: "Dashboard", url: "/finance", icon: BarChart3 },
-            { title: "Journals", url: "/gl/journals", icon: FileText },
-            { title: "Trial Balance", url: "/gl/trial-balance", icon: BarChart3 },
-            { title: "Consolidation", url: "/gl/consolidation", icon: Layers },
-            { title: "Close Center", url: "/gl/close-center", icon: CheckSquare },
-            { title: "Chart of Accounts", url: "/gl/coa-structures", icon: Settings },
+            { title: "Journals", url: "/finance/gl/journals", icon: FileText },
+            { title: "Trial Balance", url: "/finance/gl/trial-balance", icon: BarChart3 },
+            { title: "Consolidation", url: "/finance/gl/consolidation", icon: Layers },
+            { title: "Close Center", url: "/finance/gl/close-center", icon: CheckSquare },
+            { title: "Chart of Accounts", url: "/finance/gl/coa-structures", icon: Settings },
+            { title: "Configuration Hub", url: "/finance/gl/config", icon: Settings },
+            { title: "Accounting Calendars", url: "/finance/gl/config/calendars", icon: Settings },
+            { title: "Value Sets", url: "/finance/gl/value-sets", icon: Settings },
         ],
     },
     {
@@ -164,8 +167,8 @@ export const financeMenu = [
     {
         label: "Reporting",
         items: [
-            { title: "Financial Reports", url: "/gl/reports", icon: BarChart3 },
-            { title: "Report Builder", url: "/gl/reports/builder", icon: Settings },
+            { title: "Financial Reports", url: "/finance/gl/reports", icon: BarChart3 },
+            { title: "Report Builder", url: "/finance/gl/reports/builder", icon: Settings },
         ],
     },
 ];

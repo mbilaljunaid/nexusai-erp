@@ -82,7 +82,7 @@ export default function JournalApprovalHub() {
             title="Journal Approvals"
             description="Review and approve pending journal entries."
             breadcrumbs={[
-                { label: "General Ledger", href: "/gl/journals" },
+                { label: "General Ledger", href: "/finance/gl/journals" },
                 { label: "Approvals" }
             ]}
         >

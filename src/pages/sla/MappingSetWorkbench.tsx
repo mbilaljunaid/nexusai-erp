@@ -34,7 +34,7 @@ export default function MappingSetWorkbench() {
         <StandardPage
             title="Accounting Mapping Sets"
             description="Manage translation rules to derive GL account segments from transaction attributes."
-            breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "SLA Configuration", href: "/gl/config" }, { label: "Mapping Sets" }]}
+            breadcrumbs={[{ label: "Finance", href: "/finance" }, { label: "SLA Configuration", href: "/finance/gl/config" }, { label: "Mapping Sets" }]}
         >
             <div className="flex flex-col gap-6">
                 <Card>

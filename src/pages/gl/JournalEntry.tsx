@@ -70,7 +70,7 @@ import { formatNumber } from '@/lib/formatters';
 export default function JournalEntry() {
     const { toast } = useToast();
     const { currentLedgerId, activeLedger } = useLedger();
-    const [match, params] = useRoute("/gl/journals/:id");
+    const [match, params] = useRoute("/finance/gl/journals/:id");
     const [journalId, setJournalId] = useState<string | null>(match ? (params as any)?.id : null);
 
     const [header, setHeader] = useState({
@@ -166,9 +166,10 @@ export default function JournalEntry() {
     const { data: realAuditLogs = [] } = useQuery<any>({
         queryKey: ["journal-audit", journalId],
         queryFn: async () => {
-            if (!journalId) return [];
+            if (!journalId || journalId === "new") return [];
             const res = await fetch(`/api/gl/journals/${journalId}/audit`);
-            return await res.json();
+            const data = await res.json();
+            return Array.isArray(data) ? data : [];
         },
         enabled: !!journalId
     });
@@ -186,13 +187,13 @@ export default function JournalEntry() {
     });
 
     // Map to UI Event
-    const auditEvents: AuditEvent[] = realAuditLogs.map((log: any) => ({
+    const auditEvents: AuditEvent[] = Array.isArray(realAuditLogs) ? realAuditLogs.map((log: any) => ({
         id: log.id,
         action: log.action,
         actor: log.actor || "System",
         timestamp: log.timestamp,
         details: log.details
-    }));
+    })) : [];
 
     // Derived State (Real-time Balancing)
     const totals = useMemo(() => {
@@ -312,8 +313,8 @@ export default function JournalEntry() {
         <StandardPage
             title="New Journal Entry"
             breadcrumbs={[
-                { label: "General Ledger", href: "/gl/journals" },
-                { label: "Journals", href: "/gl/journals" },
+                { label: "General Ledger", href: "/finance/gl/journals" },
+                { label: "Journals", href: "/finance/gl/journals" },
                 { label: journalId ? `Journal: ${journalId.substring(0, 8)}...` : "New Entry" },
             ]}
             description={<LedgerContextBadge />}

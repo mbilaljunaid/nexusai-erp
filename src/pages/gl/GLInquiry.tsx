@@ -84,7 +84,7 @@ export default function GLInquiry() {
         <StandardPage
             title="Account Inquiry"
             breadcrumbs={[
-                { label: "General Ledger", href: "/gl/journals" },
+                { label: "General Ledger", href: "/finance/gl/journals" },
                 { label: "Account Inquiry" },
             ]}
             description={<LedgerContextBadge />}

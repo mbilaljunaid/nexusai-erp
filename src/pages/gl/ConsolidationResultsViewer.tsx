@@ -99,7 +99,7 @@ export default function ConsolidationResultsViewer() {
             description="View consolidated financial statements with entity drill-down and FX translation details."
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
-                { label: "Consolidation", href: "/gl/consolidation" },
+                { label: "Consolidation", href: "/finance/gl/consolidation" },
                 { label: "Results" }
             ]}
         >

@@ -206,7 +206,7 @@ export default function MappingSetEditorPage({ params }: { params: { id: string 
             description="Fine-tune accounting translation logic."
             breadcrumbs={[
                 { label: "Finance", href: "/finance" },
-                { label: "SLA Configuration", href: "/gl/config" },
+                { label: "SLA Configuration", href: "/finance/gl/config" },
                 { label: "Mapping Sets", href: "/finance/sla/mapping-sets" },
                 { label: "Editor" }
             ]}

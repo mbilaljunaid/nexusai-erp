@@ -111,7 +111,7 @@ export default function AdrBuilder() {
             description="Visual logic designer for determining dynamic account combinations."
             breadcrumbs={[
                 { label: "Finance", href: "/finance" },
-                { label: "SLA Config", href: "/gl/config/sla" },
+                { label: "SLA Config", href: "/finance/gl/config/sla" },
                 { label: "ADR Builder" }
             ]}
         >

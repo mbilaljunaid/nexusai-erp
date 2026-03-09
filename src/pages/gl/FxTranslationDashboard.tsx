@@ -144,7 +144,7 @@ export default function FxTranslationDashboard() {
             }
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
-                { label: "Consolidation", href: "/gl/consolidation" },
+                { label: "Consolidation", href: "/finance/gl/consolidation" },
                 { label: "FX Translation" }
             ]}
         >

@@ -144,7 +144,7 @@ export default function GLAllocations() {
         <StandardPage
             title="Mass Allocations"
             breadcrumbs={[
-                { label: "General Ledger", href: "/gl/journals" },
+                { label: "General Ledger", href: "/finance/gl/journals" },
                 { label: "Allocations" },
             ]}
             description={<LedgerContextBadge />}

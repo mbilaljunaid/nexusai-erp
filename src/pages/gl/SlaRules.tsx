@@ -61,7 +61,7 @@ export default function SlaRules() {
                                         </Card>
                     </Button>
 
-                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation("/gl/config/sla/adr")}>
+                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setLocation("/finance/gl/config/sla/adr")}>
                     <Card className="hover:border-primary/50 transition-colors cursor-pointer group">
                                             <CardHeader className="flex flex-row items-center justify-between pb-2">
                                                 <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">

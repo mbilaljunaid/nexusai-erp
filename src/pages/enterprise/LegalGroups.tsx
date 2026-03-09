@@ -45,10 +45,10 @@ export default function LegalGroups() {
         }
     });
 
-    const filteredGroups = legalGroups?.filter((g: any) =>
+    const filteredGroups = Array.isArray(legalGroups) ? legalGroups.filter((g: any) =>
         g.name.toLowerCase().includes(search.toLowerCase()) ||
         g.registrationNumber?.toLowerCase().includes(search.toLowerCase())
-    ) || [];
+    ) : [];
 
     return (
         <StandardPage

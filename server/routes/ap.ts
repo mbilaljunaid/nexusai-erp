@@ -11,7 +11,7 @@ import {
     insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema,
     insertApInvoiceLineSchema, insertApPaymentBatchSchema,
     slaJournalHeaders, slaJournalLines,
-    apWhtGroups, apWhtRates, insertApWhtGroupSchema, insertApWhtRateSchema
+    apWhtGroups, apWhtRates, insertApWhtGroupSchema, insertApWhtRateSchema, apSupplierSites
 } from "@shared/schema";
 import { z } from "zod";
 import multer from "multer";
@@ -109,9 +109,11 @@ apRouter.post("/distribution-sets", async (req, res) => {
 
 // Schema for the compound payload
 const createInvoiceSchema = z.object({
-    header: insertApInvoiceSchema.omit({ invoiceDate: true, dueDate: true }).extend({
+    header: insertApInvoiceSchema.omit({ invoiceDate: true, dueDate: true, transactionDate: true, termsDate: true }).extend({
         invoiceDate: z.coerce.date(),
-        dueDate: z.coerce.date().optional()
+        dueDate: z.coerce.date().optional(),
+        transactionDate: z.coerce.date().optional(),
+        termsDate: z.coerce.date().optional()
     }),
     lines: z.array(insertApInvoiceLineSchema.omit({ invoiceId: true }).extend({
         invoiceId: z.string().optional()
@@ -160,7 +162,6 @@ apRouter.get("/suppliers/:id", async (req, res) => {
 // Supplier Sites
 apRouter.get("/suppliers/:id/sites", async (req, res) => {
     try {
-        const { apSupplierSites } = await import("@shared/schema");
         const sites = await db.select().from(apSupplierSites).where(eq(apSupplierSites.supplierId, req.params.id));
         res.json(sites);
     } catch (e: any) {
@@ -176,7 +177,6 @@ apRouter.post("/suppliers", async (req, res) => {
     // Optionally create a default payment site with banking details
     const { siteName, address, iban, swiftCode } = req.body;
     if (iban || swiftCode || siteName || address) {
-        const { apSupplierSites } = await import('../../shared/schema/ap');
         await db.insert(apSupplierSites).values({
             supplierId: (created as any).id,
             siteName: siteName || "HEADQUARTERS",

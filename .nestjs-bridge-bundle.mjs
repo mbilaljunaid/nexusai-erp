@@ -316,6 +316,8 @@ __export(schema_exports, {
   cstLandedCosts: () => cstLandedCosts,
   cstStandardCosts: () => cstStandardCosts,
   cstTransactions: () => cstTransactions,
+  cstTransferPricingAdjustments: () => cstTransferPricingAdjustments,
+  cstTransferPricingPolicies: () => cstTransferPricingPolicies,
   customerNotifications: () => customerNotifications,
   cycleCountEntries: () => cycleCountEntries,
   cycleCountEntriesRelations: () => cycleCountEntriesRelations,
@@ -739,6 +741,8 @@ __export(schema_exports, {
   insertCostElementSchema: () => insertCostElementSchema,
   insertCstCostDistributionSchema: () => insertCstCostDistributionSchema,
   insertCstItemCostSchema: () => insertCstItemCostSchema,
+  insertCstTransferPricingAdjustmentSchema: () => insertCstTransferPricingAdjustmentSchema,
+  insertCstTransferPricingPolicySchema: () => insertCstTransferPricingPolicySchema,
   insertCustomerNotificationSchema: () => insertCustomerNotificationSchema,
   insertCycleCountEntrySchema: () => insertCycleCountEntrySchema,
   insertCycleCountHeaderSchema: () => insertCycleCountHeaderSchema,
@@ -1054,6 +1058,10 @@ __export(schema_exports, {
   insertRunResultSchema: () => insertRunResultSchema,
   insertSalaryBasisSchema: () => insertSalaryBasisSchema,
   insertSalesQuotaSchema: () => insertSalesQuotaSchema,
+  insertScmAsnAcknowledgementSchema: () => insertScmAsnAcknowledgementSchema,
+  insertScmConsignmentLineSchema: () => insertScmConsignmentLineSchema,
+  insertScmRmaHeaderSchema: () => insertScmRmaHeaderSchema,
+  insertScmRmaLineSchema: () => insertScmRmaLineSchema,
   insertScorecardSchema: () => insertScorecardSchema,
   insertServiceAppointmentSchema: () => insertServiceAppointmentSchema,
   insertServiceCategorySchema: () => insertServiceCategorySchema,
@@ -1102,6 +1110,7 @@ __export(schema_exports, {
   insertTlLaneSchema: () => insertTlLaneSchema,
   insertTlLocationSchema: () => insertTlLocationSchema,
   insertTlMilestoneSchema: () => insertTlMilestoneSchema,
+  insertTlMultimodalQuoteSchema: () => insertTlMultimodalQuoteSchema,
   insertTlRateAgreementSchema: () => insertTlRateAgreementSchema,
   insertTlRateQuoteSchema: () => insertTlRateQuoteSchema,
   insertTlShipmentSchema: () => insertTlShipmentSchema,
@@ -1362,6 +1371,11 @@ __export(schema_exports, {
   routingOperations: () => routingOperations,
   routings: () => routings,
   salesQuotas: () => salesQuotas,
+  scmAsnAcknowledgements: () => scmAsnAcknowledgements,
+  scmConsignmentLines: () => scmConsignmentLines,
+  scmRmaHeaders: () => scmRmaHeaders,
+  scmRmaLines: () => scmRmaLines,
+  scmRmaRelations: () => scmRmaRelations,
   selectAgentActionSchema: () => selectAgentActionSchema,
   selectAgentExecutionSchema: () => selectAgentExecutionSchema,
   selectCostCodeSchema: () => selectCostCodeSchema,
@@ -1427,6 +1441,7 @@ __export(schema_exports, {
   tlLanes: () => tlLanes,
   tlLocations: () => tlLocations,
   tlMilestones: () => tlMilestones,
+  tlMultimodalQuotes: () => tlMultimodalQuotes,
   tlRateAgreements: () => tlRateAgreements,
   tlRateQuotes: () => tlRateQuotes,
   tlShipmentTracking: () => tlShipmentTracking,
@@ -6689,6 +6704,94 @@ var cycleCountEntriesRelations = relations2(cycleCountEntries, ({ one }) => ({
     references: [cycleCountHeaders.id]
   })
 }));
+var scmConsignmentLines = pgTable20("scm_consignment_lines", {
+  id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entInventoryOrgId: varchar20("ent_inventory_org_id"),
+  supplierId: varchar20("supplier_id").notNull(),
+  itemId: varchar20("item_id").notNull(),
+  subinventoryId: varchar20("subinventory_id"),
+  locatorId: varchar20("locator_id"),
+  lotNumber: varchar20("lot_number"),
+  quantityConsumed: numeric13("quantity_consumed", { precision: 18, scale: 4 }).notNull(),
+  uom: varchar20("uom"),
+  consumptionDate: timestamp20("consumption_date").notNull(),
+  unitCost: numeric13("unit_cost", { precision: 18, scale: 4 }),
+  billingAmount: numeric13("billing_amount", { precision: 18, scale: 2 }),
+  currencyCode: varchar20("currency_code").default("USD"),
+  billingStatus: varchar20("billing_status").default("PENDING"),
+  // PENDING, BILLED, CANCELLED
+  apInvoiceId: varchar20("ap_invoice_id"),
+  // filled after AP invoice created
+  billedAt: timestamp20("billed_at"),
+  notes: text12("notes"),
+  createdAt: timestamp20("created_at").default(sql20`now()`)
+});
+var insertScmConsignmentLineSchema = createInsertSchema20(scmConsignmentLines);
+var scmRmaHeaders = pgTable20("scm_rma_headers", {
+  id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  entBusinessUnitId: varchar20("ent_business_unit_id"),
+  rmaNumber: varchar20("rma_number").notNull().unique(),
+  originalOrderId: varchar20("original_order_id"),
+  // Link to sales order or PO
+  customerId: varchar20("customer_id"),
+  supplierId: varchar20("supplier_id"),
+  requestedBy: varchar20("requested_by"),
+  authorizationDate: timestamp20("authorization_date"),
+  returnReason: varchar20("return_reason"),
+  // DEFECTIVE, WRONG_ITEM, OVERSHIPPED, DAMAGED
+  status: varchar20("status").default("AUTHORIZED"),
+  // AUTHORIZED, RECEIVED, INSPECTED, CLOSED, CANCELLED
+  totalCreditValue: numeric13("total_credit_value", { precision: 18, scale: 2 }),
+  currencyCode: varchar20("currency_code").default("USD"),
+  creditMemoId: varchar20("credit_memo_id"),
+  // AR credit memo created on disposition
+  notes: text12("notes"),
+  createdAt: timestamp20("created_at").default(sql20`now()`)
+});
+var scmRmaLines = pgTable20("scm_rma_lines", {
+  id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  rmaId: varchar20("rma_id").notNull(),
+  lineNumber: integer16("line_number").notNull(),
+  itemId: varchar20("item_id").notNull(),
+  itemDescription: text12("item_description"),
+  qtyAuthorized: numeric13("qty_authorized", { precision: 18, scale: 4 }).notNull(),
+  qtyReceived: numeric13("qty_received", { precision: 18, scale: 4 }).default("0"),
+  qtyInspected: numeric13("qty_inspected", { precision: 18, scale: 4 }).default("0"),
+  uom: varchar20("uom"),
+  unitCost: numeric13("unit_cost", { precision: 18, scale: 4 }),
+  disposition: varchar20("disposition"),
+  // RESTOCK, SCRAP, SUPPLIER_RETURN, REPAIR
+  qcStatus: varchar20("qc_status").default("PENDING"),
+  // PENDING, PASS, FAIL
+  qcNotes: text12("qc_notes"),
+  creditValue: numeric13("credit_value", { precision: 18, scale: 2 }),
+  receivedAt: timestamp20("received_at"),
+  createdAt: timestamp20("created_at").default(sql20`now()`)
+});
+var insertScmRmaHeaderSchema = createInsertSchema20(scmRmaHeaders);
+var insertScmRmaLineSchema = createInsertSchema20(scmRmaLines);
+var scmRmaRelations = relations2(scmRmaHeaders, ({ many }) => ({
+  lines: many(scmRmaLines)
+}));
+var scmAsnAcknowledgements = pgTable20("scm_asn_acknowledgements", {
+  id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  poId: varchar20("po_id").notNull(),
+  supplierId: varchar20("supplier_id").notNull(),
+  asnId: varchar20("asn_id"),
+  // FK to asn_headers if submitted
+  ackStatus: varchar20("ack_status").default("PENDING"),
+  // PENDING, CONFIRMED, RESCHEDULED, REJECTED
+  originalDeliveryDate: timestamp20("original_delivery_date"),
+  confirmedDeliveryDate: timestamp20("confirmed_delivery_date"),
+  rescheduleReason: text12("reschedule_reason"),
+  acknowledgedBy: varchar20("acknowledged_by"),
+  acknowledgedAt: timestamp20("acknowledged_at"),
+  dockPreAdvised: boolean18("dock_pre_advised").default(false),
+  // true if WMS dock scheduled
+  notes: text12("notes"),
+  createdAt: timestamp20("created_at").default(sql20`now()`)
+});
+var insertScmAsnAcknowledgementSchema = createInsertSchema20(scmAsnAcknowledgements);
 
 // shared/schema/projects.ts
 import { pgTable as pgTable21, varchar as varchar21, text as text13, timestamp as timestamp21, integer as integer17, decimal, boolean as boolean19 } from "drizzle-orm/pg-core";
@@ -11383,6 +11486,44 @@ var cstTransactions = pgTable52("cst_transactions", {
 var insertCstItemCostSchema = createInsertSchema52(cstItemCosts);
 var insertCstCostDistributionSchema = createInsertSchema52(cstCostDistributions);
 var insertCmrReceiptDistributionSchema = createInsertSchema52(cmrReceiptDistributions);
+var cstTransferPricingPolicies = pgTable52("cst_transfer_pricing_policies", {
+  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  policyCode: text41("policyCode").notNull().unique(),
+  description: text41("description"),
+  entityFrom: text41("entityFrom").notNull(),
+  entityTo: text41("entityTo").notNull(),
+  method: text41("method").notNull(),
+  // COST_PLUS, CUP, RESALE_PRICE, PROFIT_SPLIT
+  markupPercent: decimal3("markupPercent", { precision: 8, scale: 4 }).default("0"),
+  baseCostType: text41("baseCostType").default("Standard"),
+  currencyCode: text41("currencyCode").default("USD"),
+  effectiveFrom: timestamp51("effectiveFrom").notNull(),
+  effectiveTo: timestamp51("effectiveTo"),
+  status: text41("status").default("Active"),
+  glAccount: text41("glAccount"),
+  taxImpactTracked: boolean44("taxImpactTracked").default(true),
+  notes: text41("notes"),
+  createdAt: timestamp51("createdAt").defaultNow(),
+  updatedAt: timestamp51("updatedAt").defaultNow()
+});
+var cstTransferPricingAdjustments = pgTable52("cst_transfer_pricing_adjustments", {
+  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  policyId: text41("policyId").notNull(),
+  period: text41("period").notNull(),
+  baseAmount: decimal3("baseAmount", { precision: 18, scale: 2 }).notNull(),
+  markupAmount: decimal3("markupAmount", { precision: 18, scale: 2 }).notNull(),
+  transferPrice: decimal3("transferPrice", { precision: 18, scale: 2 }).notNull(),
+  taxImpactAmount: decimal3("taxImpactAmount", { precision: 18, scale: 2 }),
+  currencyCode: text41("currencyCode").default("USD"),
+  glPosted: boolean44("glPosted").default(false),
+  glJournalRef: text41("glJournalRef"),
+  postedAt: timestamp51("postedAt"),
+  status: text41("status").default("Draft"),
+  notes: text41("notes"),
+  createdAt: timestamp51("createdAt").defaultNow()
+});
+var insertCstTransferPricingPolicySchema = createInsertSchema52(cstTransferPricingPolicies);
+var insertCstTransferPricingAdjustmentSchema = createInsertSchema52(cstTransferPricingAdjustments);
 
 // shared/schema/cost_ai.ts
 import { pgTable as pgTable53, varchar as varchar52, text as text42, timestamp as timestamp52 } from "drizzle-orm/pg-core";
@@ -13342,6 +13483,34 @@ var insertTlContractRateSchema = createInsertSchema71(tlContractRates);
 var insertTlShipmentTrackingSchema = createInsertSchema71(tlShipmentTracking);
 var insertTlTrackingMilestoneSchema = createInsertSchema71(tlTrackingMilestones);
 var insertTlTrackingAlertSchema = createInsertSchema71(tlTrackingAlerts);
+var tlMultimodalQuotes = pgTable77("tl_multimodal_quotes", {
+  id: varchar74("id").primaryKey().default(sql70`gen_random_uuid()`),
+  shipmentId: varchar74("shipment_id"),
+  quoteReference: varchar74("quote_reference").notNull().unique(),
+  originLocationId: varchar74("origin_location_id"),
+  destinationLocationId: varchar74("destination_location_id"),
+  totalWeightKg: numeric46("total_weight_kg", { precision: 18, scale: 4 }),
+  totalVolumeCbm: numeric46("total_volume_cbm", { precision: 18, scale: 4 }),
+  mode: varchar74("mode").notNull(),
+  // SEA_LCL, SEA_FCL, AIR, RAIL, MULTIMODAL
+  carrierId: varchar74("carrier_id"),
+  carrierName: varchar74("carrier_name"),
+  freightCost: numeric46("freight_cost", { precision: 18, scale: 2 }),
+  customsDuty: numeric46("customs_duty", { precision: 18, scale: 2 }).default("0"),
+  insuranceCost: numeric46("insurance_cost", { precision: 18, scale: 2 }).default("0"),
+  totalLandedCost: numeric46("total_landed_cost", { precision: 18, scale: 2 }),
+  currency: varchar74("currency").default("USD"),
+  transitDays: integer62("transit_days"),
+  co2KgEmissions: numeric46("co2_kg_emissions", { precision: 18, scale: 2 }),
+  status: varchar74("status").default("QUOTED"),
+  // QUOTED, AWARDED, REJECTED, EXPIRED
+  awardedAt: timestamp76("awarded_at"),
+  awardedBy: varchar74("awarded_by"),
+  validUntil: timestamp76("valid_until"),
+  notes: text63("notes"),
+  createdAt: timestamp76("created_at").default(sql70`now()`)
+});
+var insertTlMultimodalQuoteSchema = createInsertSchema71(tlMultimodalQuotes);
 
 // shared/schema/lease.ts
 import { pgTable as pgTable78, varchar as varchar75, text as text64, timestamp as timestamp77, numeric as numeric47, integer as integer63, boolean as boolean64, jsonb as jsonb43 } from "drizzle-orm/pg-core";
@@ -15615,210 +15784,6 @@ TaskController = __decorateClass([
 // backend/src/modules/projects/task.service.ts
 import { Inject as Inject2, Injectable as Injectable3 } from "@nestjs/common";
 import { eq as eq2 } from "drizzle-orm";
-
-// shared/schema.ts
-import { pgTable as pgTable100, varchar as varchar96, numeric as numeric61, timestamp as timestamp99, text as text84, boolean as boolean85, integer as integer82 } from "drizzle-orm/pg-core";
-import { createInsertSchema as createInsertSchema92 } from "drizzle-zod";
-import { sql as sql91 } from "drizzle-orm";
-import { z as z38 } from "zod";
-var arTransactionTypes2 = pgTable100("ar_transaction_types", {
-  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
-  name: varchar96("name").notNull().unique(),
-  // e.g. "Standard Invoice", "Credit Memo - Tax Only"
-  description: text84("description"),
-  class: varchar96("class").notNull(),
-  // INV, CM, DM, CB, DEP, GUAR
-  creationSign: varchar96("creation_sign").default("Any"),
-  // Positive, Negative, Any
-  generateOpenReceivable: boolean85("generate_open_receivable").default(true),
-  postToGl: boolean85("post_to_gl").default(true),
-  defaultReceivableAccount: varchar96("default_receivable_account"),
-  defaultRevenueAccount: varchar96("default_revenue_account"),
-  defaultTaxAccount: varchar96("default_tax_account"),
-  defaultFreightAccount: varchar96("default_freight_account"),
-  defaultClearingAccount: varchar96("default_clearing_account"),
-  defaultUnbilledAccount: varchar96("default_unbilled_account"),
-  defaultUnearnedAccount: varchar96("default_unearned_account"),
-  status: varchar96("status").default("Active"),
-  createdAt: timestamp99("created_at").default(sql91`now()`)
-});
-var insertArTransactionTypeSchema2 = createInsertSchema92(arTransactionTypes2).extend({
-  name: z38.string().min(1),
-  class: z38.string().min(1),
-  creationSign: z38.string().optional(),
-  generateOpenReceivable: z38.boolean().optional(),
-  postToGl: z38.boolean().optional(),
-  defaultReceivableAccount: z38.string().optional().nullable(),
-  defaultRevenueAccount: z38.string().optional().nullable(),
-  defaultTaxAccount: z38.string().optional().nullable(),
-  defaultFreightAccount: z38.string().optional().nullable(),
-  defaultClearingAccount: z38.string().optional().nullable(),
-  defaultUnbilledAccount: z38.string().optional().nullable(),
-  defaultUnearnedAccount: z38.string().optional().nullable(),
-  status: z38.string().optional()
-});
-var arBatchSources2 = pgTable100("ar_batch_sources", {
-  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
-  name: varchar96("name").notNull().unique(),
-  // e.g. "Manual Invoice", "Order Management Import"
-  description: text84("description"),
-  type: varchar96("type").notNull().default("Manual"),
-  // Manual, Imported
-  activeDate: timestamp99("active_date").default(sql91`now()`),
-  inactiveDate: timestamp99("inactive_date"),
-  autoNumbering: boolean85("auto_numbering").default(true),
-  lastNumber: integer82("last_number").default(0),
-  standardTransactionType: varchar96("standard_transaction_type"),
-  // Default trans type for this source
-  copyDocumentNumber: boolean85("copy_document_number").default(false),
-  allowDuplicateDocument: boolean85("allow_duplicate_document").default(false),
-  createdAt: timestamp99("created_at").default(sql91`now()`)
-});
-var insertArBatchSourceSchema2 = createInsertSchema92(arBatchSources2).extend({
-  name: z38.string().min(1),
-  type: z38.string().optional(),
-  activeDate: z38.preprocess((arg) => {
-    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z38.date()).optional().nullable(),
-  inactiveDate: z38.preprocess((arg) => {
-    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z38.date()).optional().nullable(),
-  autoNumbering: z38.boolean().optional(),
-  lastNumber: z38.number().int().optional(),
-  standardTransactionType: z38.string().optional().nullable(),
-  copyDocumentNumber: z38.boolean().optional(),
-  allowDuplicateDocument: z38.boolean().optional()
-});
-var arReceiptMethods2 = pgTable100("ar_receipt_methods", {
-  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
-  name: varchar96("name").notNull().unique(),
-  // e.g. "Bank Transfer - USD", "Lockbox"
-  receiptClass: varchar96("receipt_class").notNull(),
-  // Manual, Automatic
-  creationMethod: varchar96("creation_method").default("Manual"),
-  // Manual, Automatic, Routing
-  remittanceMethod: varchar96("remittance_method").default("Standard"),
-  // Standard, Factoring, None
-  clearanceMethod: varchar96("clearance_method").default("Directly"),
-  // By Automatic Clearing, By Matching, Directly
-  remittanceBankAccount: varchar96("remittance_bank_account"),
-  cashAccount: varchar96("cash_account"),
-  unappliedAccount: varchar96("unapplied_account"),
-  unidentifiedAccount: varchar96("unidentified_account"),
-  onAccountAccount: varchar96("on_account_account"),
-  earnedDiscountAccount: varchar96("earned_discount_account"),
-  unearnedDiscountAccount: varchar96("unearned_discount_account"),
-  status: varchar96("status").default("Active"),
-  createdAt: timestamp99("created_at").default(sql91`now()`)
-});
-var insertArReceiptMethodSchema2 = createInsertSchema92(arReceiptMethods2).extend({
-  name: z38.string().min(1),
-  receiptClass: z38.string().min(1),
-  creationMethod: z38.string().optional(),
-  remittanceMethod: z38.string().optional(),
-  clearanceMethod: z38.string().optional(),
-  remittanceBankAccount: z38.string().optional().nullable(),
-  cashAccount: z38.string().optional().nullable(),
-  unappliedAccount: z38.string().optional().nullable(),
-  unidentifiedAccount: z38.string().optional().nullable(),
-  onAccountAccount: z38.string().optional().nullable(),
-  earnedDiscountAccount: z38.string().optional().nullable(),
-  unearnedDiscountAccount: z38.string().optional().nullable(),
-  status: z38.string().optional()
-});
-var arAutoAccountingRules2 = pgTable100("ar_auto_accounting_rules", {
-  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
-  accountType: varchar96("account_type").notNull(),
-  // Receivable, Revenue, Tax, Freight, Clearing, Unbilled, Unearned
-  segmentName: varchar96("segment_name").notNull(),
-  // e.g. "Company", "Department", "Account"
-  sourceType: varchar96("source_type").notNull(),
-  // Constant, Transaction Type, Salesperson, Standard Line, Taxes
-  constantValue: varchar96("constant_value"),
-  // Value if sourceType is Constant
-  description: text84("description"),
-  status: varchar96("status").default("Active"),
-  createdAt: timestamp99("created_at").default(sql91`now()`)
-});
-var insertArAutoAccountingRuleSchema2 = createInsertSchema92(arAutoAccountingRules2).extend({
-  accountType: z38.string().min(1),
-  segmentName: z38.string().min(1),
-  sourceType: z38.string().min(1),
-  constantValue: z38.string().optional().nullable(),
-  description: z38.string().optional().nullable(),
-  status: z38.string().optional()
-});
-var arCustomerProfiles2 = pgTable100("ar_customer_profiles", {
-  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
-  entityType: varchar96("entity_type").notNull(),
-  // 'CUSTOMER', 'ACCOUNT', 'SITE'
-  entityId: varchar96("entity_id").notNull(),
-  // ID of the Customer, Account, or Site
-  profileClassName: varchar96("profile_class_name").notNull(),
-  // e.g., 'Corporate Standard'
-  creditLimit: numeric61("credit_limit", { precision: 18, scale: 2 }),
-  orderLimit: numeric61("order_limit", { precision: 18, scale: 2 }),
-  currency: varchar96("currency").default("USD"),
-  paymentTerms: varchar96("payment_terms"),
-  statementCycle: varchar96("statement_cycle"),
-  // e.g., 'Monthly', 'Weekly'
-  dunningLetters: boolean85("dunning_letters").default(true),
-  sendStatements: boolean85("send_statements").default(true),
-  lateChargeAssessment: boolean85("late_charge_assessment").default(false),
-  creditHold: boolean85("credit_hold").default(false),
-  status: varchar96("status").default("Active"),
-  createdAt: timestamp99("created_at").default(sql91`now()`)
-});
-var insertArCustomerProfileSchema2 = createInsertSchema92(arCustomerProfiles2).extend({
-  entityType: z38.string().min(1),
-  entityId: z38.string().min(1),
-  profileClassName: z38.string().min(1),
-  creditLimit: z38.string().optional().nullable(),
-  orderLimit: z38.string().optional().nullable(),
-  currency: z38.string().optional(),
-  paymentTerms: z38.string().optional().nullable(),
-  statementCycle: z38.string().optional().nullable(),
-  dunningLetters: z38.boolean().optional(),
-  sendStatements: z38.boolean().optional(),
-  lateChargeAssessment: z38.boolean().optional(),
-  creditHold: z38.boolean().optional(),
-  status: z38.string().optional()
-});
-var arCustomerBankAccounts2 = pgTable100("ar_customer_bank_accounts", {
-  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
-  customerId: varchar96("customer_id").notNull(),
-  accountId: varchar96("account_id"),
-  // Optional: link to specific account or site
-  siteId: varchar96("site_id"),
-  bankName: varchar96("bank_name").notNull(),
-  branchName: varchar96("branch_name"),
-  accountNumber: varchar96("account_number").notNull(),
-  routingNumber: varchar96("routing_number"),
-  currency: varchar96("currency").default("USD"),
-  primaryFlag: boolean85("primary_flag").default(false),
-  activeDate: timestamp99("active_date").default(sql91`now()`),
-  inactiveDate: timestamp99("inactive_date"),
-  createdAt: timestamp99("created_at").default(sql91`now()`)
-});
-var insertArCustomerBankAccountSchema2 = createInsertSchema92(arCustomerBankAccounts2).extend({
-  customerId: z38.string().min(1),
-  accountId: z38.string().optional().nullable(),
-  siteId: z38.string().optional().nullable(),
-  bankName: z38.string().min(1),
-  branchName: z38.string().optional().nullable(),
-  accountNumber: z38.string().min(1),
-  routingNumber: z38.string().optional().nullable(),
-  currency: z38.string().optional(),
-  primaryFlag: z38.boolean().optional(),
-  activeDate: z38.preprocess((arg) => {
-    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z38.date()).optional().nullable(),
-  inactiveDate: z38.preprocess((arg) => {
-    if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-  }, z38.date()).optional().nullable()
-});
-
-// backend/src/modules/projects/task.service.ts
 var TaskService = class {
   constructor(db) {
     this.db = db;
@@ -19360,7 +19325,7 @@ MetricsController = __decorateClass([
 
 // backend/src/modules/admin/metrics/metrics.service.ts
 import { Injectable as Injectable35, Inject as Inject28 } from "@nestjs/common";
-import { sql as sql92 } from "drizzle-orm";
+import { sql as sql91 } from "drizzle-orm";
 import { tenants as tenants3 } from "@shared/schema";
 import { adminLogs as adminLogs2 } from "@shared/schema/admin";
 import { eq as eq26, gte } from "drizzle-orm";
@@ -19375,9 +19340,9 @@ var MetricsService = class {
       activeTenantsResult,
       recentLogsResult
     ] = await Promise.all([
-      this.db.select({ count: sql92`count(*)::int` }).from(tenants3),
-      this.db.select({ count: sql92`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
-      this.db.select({ count: sql92`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
+      this.db.select({ count: sql91`count(*)::int` }).from(tenants3),
+      this.db.select({ count: sql91`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
+      this.db.select({ count: sql91`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
     ]);
     return {
       data: {
@@ -19434,7 +19399,7 @@ AuditLogsController = __decorateClass([
 
 // backend/src/modules/admin/audit-logs/audit-logs.service.ts
 import { Injectable as Injectable36, Inject as Inject29 } from "@nestjs/common";
-import { sql as sql93, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
+import { sql as sql92, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
 import { adminLogs as adminLogs3 } from "@shared/schema";
 var AuditLogsService = class {
   constructor(db) {
@@ -19452,7 +19417,7 @@ var AuditLogsService = class {
     const where = conditions.length > 0 ? and14(...conditions) : void 0;
     const [logs, countResult] = await Promise.all([
       this.db.select().from(adminLogs3).where(where).orderBy(desc(adminLogs3.createdAt)).limit(limit).offset(offset),
-      this.db.select({ count: sql93`count(*)::int` }).from(adminLogs3).where(where)
+      this.db.select({ count: sql92`count(*)::int` }).from(adminLogs3).where(where)
     ]);
     const total = countResult[0]?.count ?? 0;
     return {
@@ -19778,7 +19743,7 @@ ManufacturingVarianceController = __decorateClass([
 
 // backend/src/modules/manufacturing/manufacturing-variance.service.ts
 import { Injectable as Injectable38, Inject as Inject30 } from "@nestjs/common";
-import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql94 } from "drizzle-orm";
+import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql93 } from "drizzle-orm";
 import { varianceJournals as varianceJournals2 } from "@shared/schema/manufacturing";
 var ManufacturingVarianceService = class {
   constructor(db) {
@@ -19797,7 +19762,7 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const [items, countResult] = await Promise.all([
       this.db.select().from(varianceJournals2).where(where).orderBy(desc2(varianceJournals2.transactionDate)).limit(limit).offset(offset),
-      this.db.select({ count: sql94`count(*)::int` }).from(varianceJournals2).where(where)
+      this.db.select({ count: sql93`count(*)::int` }).from(varianceJournals2).where(where)
     ]);
     return {
       items,
@@ -19815,8 +19780,8 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const summary = await this.db.select({
       varianceType: varianceJournals2.varianceType,
-      total: sql94`sum(${varianceJournals2.amount})::numeric`,
-      count: sql94`count(*)::int`
+      total: sql93`sum(${varianceJournals2.amount})::numeric`,
+      count: sql93`count(*)::int`
     }).from(varianceJournals2).where(where).groupBy(varianceJournals2.varianceType);
     const netVariance = summary.reduce((acc, s) => acc + Number(s.total), 0);
     return {

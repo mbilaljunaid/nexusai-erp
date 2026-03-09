@@ -150,7 +150,7 @@ export default function LedgerSetManager() {
             description="Configure consolidation groups by assigning child ledgers to parent consolidation sets."
             breadcrumbs={[
                 { label: "General Ledger", href: "/gl" },
-                { label: "Consolidation", href: "/gl/consolidation" },
+                { label: "Consolidation", href: "/finance/gl/consolidation" },
                 { label: "Ledger Sets" }
             ]}
         >

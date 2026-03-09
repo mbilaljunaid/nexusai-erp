@@ -27,7 +27,7 @@ const configTiles = [
         title: "Ledger Architecture",
         description: "Primary, Secondary, and Reporting ledgers setup",
         icon: Library,
-        path: "/gl/config/ledgers",
+        path: "/finance/gl/config/ledgers",
         color: "text-blue-600",
         bgColor: "bg-blue-100/50"
     },
@@ -35,7 +35,7 @@ const configTiles = [
         title: "Ledger Sets",
         description: "Group ledgers for consolidation and close",
         icon: Layers,
-        path: "/gl/config/ledger-sets",
+        path: "/finance/gl/config/ledger-sets",
         color: "text-indigo-600",
         bgColor: "bg-indigo-100/50"
     },
@@ -43,7 +43,7 @@ const configTiles = [
         title: "Accounting Calendars",
         description: "Define fiscal years, periods, and status controls",
         icon: Calendar,
-        path: "/gl/config/calendars",
+        path: "/finance/gl/config/calendars",
         color: "text-purple-600",
         bgColor: "bg-purple-100/50"
     },
@@ -51,7 +51,7 @@ const configTiles = [
         title: "Sources & Categories",
         description: "Journal origins and transaction types",
         icon: Tags,
-        path: "/gl/config/sources",
+        path: "/finance/gl/config/sources",
         color: "text-amber-600",
         bgColor: "bg-amber-100/50"
     },
@@ -59,7 +59,7 @@ const configTiles = [
         title: "Rate Types",
         description: "Manage exchange rate types (Spot, Corporate, User)",
         icon: Globe,
-        path: "/gl/config/rate-types",
+        path: "/finance/gl/config/rate-types",
         color: "text-blue-500",
         bgColor: "bg-blue-100/50"
     },
@@ -68,7 +68,7 @@ const configTiles = [
 
         description: "Auto-post criteria for journals",
         icon: Zap,
-        path: "/gl/config/posting-rules",
+        path: "/finance/gl/config/posting-rules",
         color: "text-amber-500",
         bgColor: "bg-amber-100/50"
     },
@@ -76,7 +76,7 @@ const configTiles = [
         title: "Validation Controls",
         description: "Period strictness & Source freeze settings",
         icon: ShieldCheck,
-        path: "/gl/config/validations",
+        path: "/finance/gl/config/validations",
         color: "text-red-500",
         bgColor: "bg-red-100/50"
     },
@@ -84,7 +84,7 @@ const configTiles = [
         title: "Intercompany Rules",
         description: "Define balancing accounts for interco transactions",
         icon: ArrowRightLeft,
-        path: "/gl/intercompany",
+        path: "/finance/gl/intercompany",
         color: "text-rose-600",
         bgColor: "bg-rose-100/50"
     },
@@ -92,7 +92,7 @@ const configTiles = [
         title: "Posting Controls",
         description: "Suspense, Rounding, and Netting rules",
         icon: Settings,
-        path: "/gl/config/controls",
+        path: "/finance/gl/config/controls",
         color: "text-muted-foreground",
         bgColor: "bg-muted/50"
     },
@@ -100,7 +100,7 @@ const configTiles = [
         title: "Cross-Validation Rules",
         description: "Prevent invalid account combinations",
         icon: ShieldCheck,
-        path: "/gl/cvr",
+        path: "/finance/gl/cvr",
         color: "text-rose-600",
         bgColor: "bg-rose-100/50"
     },
@@ -108,7 +108,7 @@ const configTiles = [
         title: "Data Access Sets",
         description: "Manage security policies and assignments",
         icon: Lock,
-        path: "/gl/data-access",
+        path: "/finance/gl/data-access",
         color: "text-emerald-600",
         bgColor: "bg-emerald-100/50"
     },
@@ -116,7 +116,7 @@ const configTiles = [
         title: "Chart of Accounts",
         description: "Define segments, labels, and structures",
         icon: ListTree,
-        path: "/gl/coa-structures",
+        path: "/finance/gl/coa-structures",
         color: "text-blue-500",
         bgColor: "bg-blue-100/50"
     },
@@ -124,7 +124,7 @@ const configTiles = [
         title: "Segment Values",
         description: "Manage value sets and independent values",
         icon: Tags,
-        path: "/gl/value-sets",
+        path: "/finance/gl/value-sets",
         color: "text-indigo-500",
         bgColor: "bg-indigo-100/50"
     },
@@ -132,7 +132,7 @@ const configTiles = [
         title: "Legal Entities",
         description: "Manage legal entities and registrations",
         icon: Building2,
-        path: "/gl/config/legal-entities",
+        path: "/finance/gl/config/legal-entities",
         color: "text-muted-foreground",
         bgColor: "bg-muted/50"
     },
@@ -140,7 +140,7 @@ const configTiles = [
         title: "Budget Manager",
         description: "Control budgets and encumbrances",
         icon: Calculator,
-        path: "/gl/budgets",
+        path: "/finance/gl/budgets",
         color: "text-emerald-600",
         bgColor: "bg-emerald-100/50"
     },
@@ -148,7 +148,7 @@ const configTiles = [
         title: "Segment Hierarchies",
         description: "Define parent-child relationships for reporting",
         icon: ListTree,
-        path: "/gl/hierarchies",
+        path: "/finance/gl/hierarchies",
         color: "text-cyan-600",
         bgColor: "bg-cyan-100/50"
     },
@@ -156,7 +156,7 @@ const configTiles = [
         title: "Journal Wizard",
         description: "High-volume spreadsheet style entry",
         icon: Zap,
-        path: "/gl/journals/wizard",
+        path: "/finance/gl/journals/wizard",
         color: "text-amber-600",
         bgColor: "bg-amber-100/50"
     },
@@ -164,7 +164,7 @@ const configTiles = [
         title: "Revaluation Engine",
         description: "Unrealized FX gain/loss calculation",
         icon: Globe,
-        path: "/gl/revaluation",
+        path: "/finance/gl/revaluation",
         color: "text-purple-600",
         bgColor: "bg-purple-100/50"
     },
@@ -172,7 +172,7 @@ const configTiles = [
         title: "Audit Logs",
         description: "Track system changes and user activity",
         icon: ShieldCheck,
-        path: "/gl/audit",
+        path: "/finance/gl/audit",
         color: "text-foreground/90",
         bgColor: "bg-slate-200/50"
     }

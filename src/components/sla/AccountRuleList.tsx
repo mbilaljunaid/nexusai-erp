@@ -160,7 +160,7 @@ export function AccountRuleList() {
                             </TableCell>
                             <TableCell>
                                 <div className="flex items-center justify-end gap-2">
-                                    <Link href="/gl/config/sla/adr">
+                                    <Link href="/finance/gl/config/sla/adr">
                                         <Button variant="ghost" size="icon" title="Edit in Builder" aria-label="Edit">
                                             <Edit className="h-4 w-4 text-blue-500" />
                                         </Button>

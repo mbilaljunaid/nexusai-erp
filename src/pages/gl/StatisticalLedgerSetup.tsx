@@ -130,8 +130,8 @@ export default function StatisticalLedgerSetup() {
             title="Statistical & Reporting Currency Ledgers"
             description="Configure statistical ledgers for operational metrics and reporting currencies for multi-currency consolidation."
             breadcrumbs={[
-                { label: "General Ledger", href: "/gl/journals" },
-                { label: "Configuration", href: "/gl/config" },
+                { label: "General Ledger", href: "/finance/gl/journals" },
+                { label: "Configuration", href: "/finance/gl/config" },
                 { label: "Statistical & Reporting Ledgers" },
             ]}
         >

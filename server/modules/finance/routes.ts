@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Express, Request, Response } from "express";
 import { storage } from "../../storage";
-import { insertInvoiceSchema, insertPaymentSchema, insertGlAutoPostRuleSchema, insertGlDataAccessSetSchema, glCloseTasks, insertGlCloseTaskSchema, glEliminationDefinitions } from "../../../shared/schema";
+import { insertInvoiceSchema, insertPaymentSchema, insertGlAutoPostRuleSchema, insertGlDataAccessSetSchema, glCloseTasks, insertGlCloseTaskSchema, glEliminationDefinitions, glValueSets, glSegmentValues, glCoaStructures, glSegments } from "../../../shared/schema";
 import { financeService } from "../../services/finance";
 import { eq } from "drizzle-orm";
 import { db } from "../../db";
@@ -29,6 +29,91 @@ export function registerFinanceRoutes(app: Express) {
             res.json(invoice);
         } catch (error) {
             res.status(500).json({ error: "Failed to get invoice" });
+        }
+    });
+
+    // GL Configurations
+    app.get("/api/finance/gl/value-sets", async (req, res) => {
+        try {
+            const result = await db.query.glValueSets.findMany({
+                orderBy: (vs, { desc }) => [desc(vs.createdAt)]
+            });
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to list value sets", detail: error.message });
+        }
+    });
+
+    app.post("/api/finance/gl/value-sets", async (req, res) => {
+        try {
+            const [result] = await db.insert(glValueSets).values(req.body).returning();
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to create value set", detail: error.message });
+        }
+    });
+
+    app.get("/api/finance/gl/segment-values", async (req, res) => {
+        const { valueSetId } = req.query;
+        try {
+            const result = await db.query.glSegmentValues.findMany({
+                where: (sv, { eq }) => eq(sv.valueSetId, valueSetId as string),
+                orderBy: (sv, { asc }) => [asc(sv.value)]
+            });
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to list segment values", detail: error.message });
+        }
+    });
+
+    app.post("/api/finance/gl/segment-values", async (req, res) => {
+        try {
+            const [result] = await db.insert(glSegmentValues).values(req.body).returning();
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to create segment value", detail: error.message });
+        }
+    });
+
+    app.get("/api/finance/gl/coa-structures", async (req, res) => {
+        try {
+            const result = await db.query.glCoaStructures.findMany({
+                orderBy: (coa, { desc }) => [desc(coa.createdAt)]
+            });
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to list coa structures", detail: error.message });
+        }
+    });
+
+    app.post("/api/finance/gl/coa-structures", async (req, res) => {
+        try {
+            const [result] = await db.insert(glCoaStructures).values(req.body).returning();
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to create coa structure", detail: error.message });
+        }
+    });
+
+    app.get("/api/finance/gl/segments", async (req, res) => {
+        const { coaStructureId } = req.query;
+        try {
+            const result = await db.query.glSegments.findMany({
+                where: (s, { eq }) => eq(s.coaStructureId, coaStructureId as string),
+                orderBy: (s, { asc }) => [asc(s.segmentNumber)]
+            });
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to list segments", detail: error.message });
+        }
+    });
+
+    app.post("/api/finance/gl/segments", async (req, res) => {
+        try {
+            const [result] = await db.insert(glSegments).values(req.body).returning();
+            res.status(201).json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to create segment", detail: error.message });
         }
     });
 
@@ -84,10 +169,10 @@ export function registerFinanceRoutes(app: Express) {
 
     app.get("/api/finance/gl/ledgers", async (req, res) => {
         try {
-            const ledgers = await financeService.listLedgers();
+            const ledgers = await storage.listGlLedgers();
             res.json(ledgers);
-        } catch (error) {
-            res.status(500).json({ error: "Failed to list ledgers" });
+        } catch (error: any) {
+            res.status(500).json({ error: "Failed to list ledgers", detail: error.message });
         }
     });
 
