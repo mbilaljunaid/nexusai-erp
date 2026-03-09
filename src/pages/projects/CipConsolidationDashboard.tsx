@@ -48,8 +48,9 @@ export default function CipConsolidationDashboard() {
     const { data: batches = [] } = useQuery<ConsolidationBatch[]>({
         queryKey: ["consolidation-batches"],
         queryFn: async () => {
-            // Mock - replace with real API
-            return [];
+            const res = await fetch("/api/ppm/cip/batches");
+            if (!res.ok) throw new Error("Failed to fetch consolidation batches");
+            return res.json();
         }
     });
 

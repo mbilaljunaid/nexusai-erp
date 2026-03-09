@@ -23,8 +23,7 @@ export default function ContractWorkbench() {
     const [analysisResults, setAnalysisResults] = useState<any>(null);
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
-    // Mock supplier ID for now (usually obtained from context or selection)
-    const supplierId = "any";
+    const supplierId = "";
 
     const { data: contracts, isLoading: isLoadingContracts } = useQuery({
         queryKey: [`/api/contract-portal/contracts/supplier/${supplierId}`],

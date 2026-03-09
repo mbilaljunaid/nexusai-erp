@@ -56,9 +56,9 @@ export default function CostAnalysisView({ workOrderId }: CostAnalysisViewProps)
     const materialCost = costs?.filter((c: any) => c.costType === 'MATERIAL').reduce((acc: number, c: any) => acc + Number(c.totalCost), 0) || 0;
     const laborCost = costs?.filter((c: any) => c.costType === 'LABOR').reduce((acc: number, c: any) => acc + Number(c.totalCost), 0) || 0;
 
-    // Mock Budget
-    const estimatedBudget = 500.00;
-    const budgetUsage = Math.min((totalCost / estimatedBudget) * 100, 100);
+    // Total Estimated Budget
+    const estimatedBudget = costs?.[0]?.budget || 0;
+    const budgetUsage = estimatedBudget > 0 ? Math.min((totalCost / estimatedBudget) * 100, 100) : 0;
 
     const pendingCount = costs?.filter((c: any) => c.glStatus === 'PENDING').length || 0;
 

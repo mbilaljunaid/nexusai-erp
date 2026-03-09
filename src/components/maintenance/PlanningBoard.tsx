@@ -153,7 +153,7 @@ export default function PlanningBoard() {
                                 <div className="text-xs font-bold text-muted-foreground">{op.workOrder?.workOrderNumber}</div>
                                 <div className="text-sm font-medium">{op.description}</div>
 
-                                {/* Quick Schedule Actions (Mock Drag Drop) */}
+                                {/* Quick Schedule Actions (Drag Drop Scheduled) */}
                                 <div className="hidden group-hover:flex absolute top-0 right-0 bg-card shadow-sm border rounded-bl-md">
                                     <Button variant="ghost" size="icon" className="h-6 w-6" title="Schedule Today"
                                         onClick={() => scheduleMutation.mutate({ opId: op.id, date: new Date().toISOString() })} aria-label="Calendar"

@@ -40,26 +40,19 @@ export default function PartRequirementList({ workOrderId }: PartRequirementList
     const { data: materials, isLoading } = useQuery({
         queryKey: ["/api/maintenance/work-orders", workOrderId, "materials"],
         queryFn: async () => {
-            // Mock endpoint response if not ready, but relying on implementation plan backend
             const res = await fetch(`/api/maintenance/work-orders/${workOrderId}/materials`);
-            if (!res.ok) {
-                // Fallback mock for initial UI testing if backend empty
-                return [];
-            }
+            if (!res.ok) throw new Error("Failed to fetch materials");
             return res.json();
         }
     });
 
-    // 2. Fetch Inventory Items (for selection) - Mock for now or real API
+    // 2. Fetch Inventory Items (for selection)
     const { data: inventoryItems } = useQuery({
-        queryKey: ["/api/wms/inventory-stub"], // Assuming WMS module exists, otherwise use stub
+        queryKey: ["/api/inventory/items"],
         queryFn: async () => {
-            // Return stub items for demo
-            return [
-                { id: "inv-1", itemNumber: "BEARING-6204", description: "Ball Bearing 20mm", quantityOnHand: 45 },
-                { id: "inv-2", itemNumber: "LUBE-OIL-ISO68", description: "Hydraulic Oil (Liters)", quantityOnHand: 200 },
-                { id: "inv-3", itemNumber: "GASKET-KIT-A", description: "Seal Kit Type A", quantityOnHand: 5 }
-            ];
+            const res = await fetch("/api/inventory/items");
+            if (!res.ok) throw new Error("Failed to fetch inventory items");
+            return res.json();
         }
     });
 

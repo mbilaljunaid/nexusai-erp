@@ -30,7 +30,7 @@ export default function DispatchConsole() {
     const queryClient = useQueryClient();
     const [selectedTech, setSelectedTech] = useState<string | null>(null);
 
-    // 1. Fetch Techs (Mock for now, or use MaintenanceService if available)
+    // 1. Fetch Techs (Use MaintenanceService if available)
     // Ideally, valid users with 'Technician' role.
     // 1. Fetch Techs
     const { data: technicians, isLoading: loadingTechs } = useQuery<any[]>({
@@ -148,25 +148,25 @@ export default function DispatchConsole() {
                             </ScrollArea>
 
                             {/* Pagination Controls */}
-                            
+
                             <Pagination className="mt-4">
-                              <PaginationContent>
-                                <PaginationItem>
-                                  <PaginationPrevious 
-                                    onClick={() => setPage(p => Math.max(1, p - 1))} 
-                                    className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
-                                  />
-                                </PaginationItem>
-                                <PaginationItem>
-                                  <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
-                                </PaginationItem>
-                                <PaginationItem>
-                                  <PaginationNext 
-                                    onClick={() => setPage(p => p + 1)} 
-                                    className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                                  />
-                                </PaginationItem>
-                              </PaginationContent>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious
+                                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                                            className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                        />
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <span className="text-sm font-medium mx-4">Page {page} of {totalPages}</span>
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationNext
+                                            onClick={() => setPage(p => p + 1)}
+                                            className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                        />
+                                    </PaginationItem>
+                                </PaginationContent>
                             </Pagination>
                         </CardContent>
                     </Card>

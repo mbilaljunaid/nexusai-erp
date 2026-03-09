@@ -25,6 +25,8 @@ const Asset360View = lazyWithRetry(() => import("@/pages/maintenance/Asset360Vie
 const PMRouteManager = lazyWithRetry(() => import("@/pages/maintenance/PMRouteManager"));
 const AssetWarrantyManager = lazyWithRetry(() => import("@/pages/maintenance/AssetWarrantyManager"));
 const FMEAWorkbench = lazyWithRetry(() => import("@/pages/maintenance/FMEAWorkbench"));
+const CBMRulesEngine = lazyWithRetry(() => import("@/pages/maintenance/CBMRulesEngine"));
+const MeterConfiguration = lazyWithRetry(() => import("@/pages/maintenance/MeterConfiguration"));
 
 
 
@@ -61,6 +63,8 @@ export default function MaintenanceRoutes() {
             <Route path="/maintenance/pm-routes" component={PMRouteManager} />
             <Route path="/maintenance/warranty" component={AssetWarrantyManager} />
             <Route path="/maintenance/fmea" component={FMEAWorkbench} />
+            <Route path="/maintenance/cbm-rules" component={CBMRulesEngine} />
+            <Route path="/maintenance/meters-config" component={MeterConfiguration} />
 
 
             <Route component={GenericModuleDashboard} />

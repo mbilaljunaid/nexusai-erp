@@ -64,18 +64,6 @@ export const PackingStation: React.FC = () => {
             return;
         }
 
-        // Mock warehouseId (In real app, comes from user context)
-        // We'll try to get it from currentLpn, or default to first one from Org list?
-        // For Verification V1, we need to pass a valid Warehouse ID.
-        // We'll hardcode a fetch or input for Warehouse ID if needed.
-        // Or assume user context has it. 
-        // NOTE: For now, I'll add a temporary Input for WarehouseID for testing simplicity.
-        // Or better, fetch from `/api/organizations`.
-
-        // Let's rely on the Verification Script primarily, UI is secondary.
-        // I'll hardcode a Warehouse GUID via a prop or assume context.
-        // I'll just use a placeholder input for WarehouseId.
-
         try {
             setLoading(true);
             const res = await fetch("/api/wms/packing/pack", {

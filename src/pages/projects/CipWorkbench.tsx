@@ -68,8 +68,10 @@ export default function CipWorkbench() {
     const { data: assetLines = [] } = useQuery<AssetLine[]>({
         queryKey: ["asset-lines", selectedAssetId],
         queryFn: async () => {
-            // Mock implementation - replace with actual API
-            return [];
+            if (!selectedAssetId) return [];
+            const res = await fetch(`/api/ppm/assets/${selectedAssetId}/lines`);
+            if (!res.ok) throw new Error("Failed to fetch asset lines");
+            return res.json();
         },
         enabled: !!selectedAssetId
     });
@@ -291,28 +293,28 @@ export default function CipWorkbench() {
                                     <TableBody>
                                         {assets.map((asset) => (
                                             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedAssetId(asset.id)}>
-                                            <TableRow
-                                                                                            key={asset.id}
-                                                                                            className={selectedAssetId === asset.id ? "bg-blue-500/10" : "cursor-pointer hover:bg-muted/50"}
-                                                                                        >
-                                                                                            <TableCell className="font-medium">{asset.assetName}</TableCell>
-                                                                                            <TableCell><Badge variant="outline">{asset.assetType}</Badge></TableCell>
-                                                                                            <TableCell>{asset.lineCount || 0} lines</TableCell>
-                                                                                            <TableCell className="text-right font-mono">${(asset.totalCapitalizedAmount || 0).toFixed(2)}</TableCell>
-                                                                                            <TableCell><StatusBadge status={asset.status} /></TableCell>
-                                                                                            <TableCell>
-                                                                                                <Button
-                                                                                                    variant="ghost"
-                                                                                                    size="icon"
-                                                                                                    onClick={(e) => {
-                                                                                                        e.stopPropagation();
-                                                                                                        setSelectedAssetId(asset.id);
-                                                                                                    }} aria-label="Go forward"
-                                                                                                >
-                                                                                                    <ArrowRight className="h-4 w-4" />
-                                                                                                </Button>
-                                                                                            </TableCell>
-                                                                                        </TableRow>
+                                                <TableRow
+                                                    key={asset.id}
+                                                    className={selectedAssetId === asset.id ? "bg-blue-500/10" : "cursor-pointer hover:bg-muted/50"}
+                                                >
+                                                    <TableCell className="font-medium">{asset.assetName}</TableCell>
+                                                    <TableCell><Badge variant="outline">{asset.assetType}</Badge></TableCell>
+                                                    <TableCell>{asset.lineCount || 0} lines</TableCell>
+                                                    <TableCell className="text-right font-mono">${(asset.totalCapitalizedAmount || 0).toFixed(2)}</TableCell>
+                                                    <TableCell><StatusBadge status={asset.status} /></TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSelectedAssetId(asset.id);
+                                                            }} aria-label="Go forward"
+                                                        >
+                                                            <ArrowRight className="h-4 w-4" />
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
                                             </Button>
                                         ))}
                                     </TableBody>

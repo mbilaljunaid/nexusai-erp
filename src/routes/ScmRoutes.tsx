@@ -15,6 +15,7 @@ import OnHandBalanceInquiry from "@/pages/inventory/OnHandBalanceInquiry";
 import ItemRelationships from "@/pages/inventory/ItemRelationships";
 import MinMaxPlanningSetup from "@/pages/inventory/MinMaxPlanningSetup";
 import MaterialStatusControls from "@/pages/inventory/MaterialStatusControls";
+import CatchWeightEntry from "@/pages/inventory/CatchWeightEntry";
 
 
 // Static Imports for Manufacturing
@@ -24,6 +25,7 @@ import RoutingEditor from "@/pages/manufacturing/RoutingEditor";
 import WorkCenterManager from "@/pages/manufacturing/WorkCenterManager";
 import ResourceManager from "@/pages/manufacturing/ResourceManager";
 import WorkOrderList from "@/pages/manufacturing/WorkOrderList";
+import ReworkOrderDispatcher from "@/pages/manufacturing/ReworkOrderDispatcher";
 import ShopFloorTerminal from "@/pages/manufacturing/ShopFloorTerminal";
 import QualityManager from "@/pages/manufacturing/QualityManager";
 import MRPWorkbench from "@/pages/manufacturing/MRPWorkbench";
@@ -37,12 +39,16 @@ import FormulaDesigner from "@/pages/manufacturing/FormulaDesigner";
 import RecipeManager from "@/pages/manufacturing/RecipeManager";
 import BatchWorkbench from "@/pages/manufacturing/BatchWorkbench";
 import BatchGenealogy from "@/pages/manufacturing/BatchGenealogy";
+import FormulaYieldEditor from "@/pages/manufacturing/FormulaYieldEditor";
 import OSPWorkbench from "@/pages/manufacturing/OSPWorkbench";
 import SCMEventMonitor from "@/pages/manufacturing/SCMEventMonitor";
 import WorkInstructionLibrary from "@/pages/manufacturing/WorkInstructionLibrary";
 import MRPExplosionViewer from "@/pages/manufacturing/MRPExplosionViewer";
 import BOMEffectivityEditor from "@/pages/manufacturing/BOMEffectivityEditor";
 import ProductionAdherenceReport from "@/pages/manufacturing/ProductionAdherenceReport";
+import KanbanReplenishmentSetup from "@/pages/manufacturing/KanbanReplenishmentSetup";
+import DropShipB2BWorkbench from "@/pages/procurement/DropShipB2BWorkbench";
+import FreightClaimManagement from "@/pages/transportation/FreightClaimManagement";
 
 
 
@@ -66,6 +72,7 @@ import PunchoutCatalogSetup from "@/pages/procurement/PunchoutCatalogSetup";
 import SupplierNegotiationWorkbench from "@/pages/procurement/SupplierNegotiationWorkbench";
 import SupplierScorecardKPI from "@/pages/procurement/SupplierScorecardKPI";
 import SupplierASNPortal from "@/pages/procurement/SupplierASNPortal";
+import SupplierQualificationManager from "@/pages/procurement/SupplierQualificationManager";
 
 
 
@@ -107,6 +114,8 @@ import CostVarianceReport from "@/pages/cost-management/CostVarianceReport";
 import ReceiptAccountingViewer from "@/pages/cost-management/ReceiptAccountingViewer";
 import CostMethodSetup from "@/pages/cost-management/CostMethodSetup";
 import TransferPricingSetup from "@/pages/cost-management/TransferPricingSetup";
+import OverheadAbsorptionRules from "@/pages/cost-management/OverheadAbsorptionRules";
+import PeriodCloseReconciliation from "@/pages/cost-management/PeriodCloseReconciliation";
 import LandedCostApportionment from "@/pages/cost-management/LandedCostApportionment";
 import LocatorPickingSequence from "@/pages/scm/wms/LocatorPickingSequence";
 
@@ -144,6 +153,7 @@ import UOMConversionMatrix from "@/pages/inventory/UOMConversionMatrix";
 import ItemCategoryHierarchy from "@/pages/inventory/ItemCategoryHierarchy";
 import ItemMasterOrgTabs from "@/pages/inventory/ItemMasterOrgTabs";
 import ConsignmentStockManager from "@/pages/inventory/ConsignmentStockManager";
+import ABCClassificationSetup from "@/pages/inventory/ABCClassificationSetup";
 
 
 
@@ -172,6 +182,7 @@ export default function ScmRoutes() {
             <Route path="/manufacturing/work-centers" component={WorkCenterManager} />
             <Route path="/manufacturing/resources" component={ResourceManager} />
             <Route path="/manufacturing/work-orders" component={WorkOrderList} />
+            <Route path="/manufacturing/rework-orders" component={ReworkOrderDispatcher} />
             <Route path="/manufacturing/shop-floor" component={ShopFloorTerminal} />
             <Route path="/manufacturing/terminal" component={ShopFloorTerminal} />
             <Route path="/manufacturing/quality" component={QualityManager} />
@@ -183,6 +194,7 @@ export default function ScmRoutes() {
             <Route path="/manufacturing/wip" component={WIPDashboard} />
             <Route path="/manufacturing/variances" component={MFGVarianceAnalysis} />
             <Route path="/manufacturing/formulas" component={FormulaDesigner} />
+            <Route path="/manufacturing/formula-yield" component={FormulaYieldEditor} />
             <Route path="/manufacturing/recipes" component={RecipeManager} />
             <Route path="/manufacturing/batches" component={BatchWorkbench} />
             <Route path="/manufacturing/genealogy" component={BatchGenealogy} />
@@ -192,6 +204,7 @@ export default function ScmRoutes() {
             <Route path="/manufacturing/mrp-explosion" component={MRPExplosionViewer} />
             <Route path="/manufacturing/bom-effectivity" component={BOMEffectivityEditor} />
             <Route path="/manufacturing/production-adherence" component={ProductionAdherenceReport} />
+            <Route path="/manufacturing/kanban-setup" component={KanbanReplenishmentSetup} />
             <Route path="/scm/costing/landed-cost" component={LandedCostApportionment} />
             <Route path="/scm/wms/locator-sequence" component={LocatorPickingSequence} />
 
@@ -217,6 +230,7 @@ export default function ScmRoutes() {
             <Route path="/procurement/punchout" component={PunchoutCatalogSetup} />
             <Route path="/procurement/negotiations" component={SupplierNegotiationWorkbench} />
             <Route path="/procurement/supplier-scorecard" component={SupplierScorecardKPI} />
+            <Route path="/procurement/supplier-qualifications" component={SupplierQualificationManager} />
             <Route path="/procurement/asn-portal" component={SupplierASNPortal} />
 
 
@@ -225,6 +239,7 @@ export default function ScmRoutes() {
 
 
             <Route path="/scm/fulfillment" component={FulfillmentWorkbench} />
+            <Route path="/scm/fulfillment/drop-ship" component={DropShipB2BWorkbench} />
             <Route path="/inventory" component={Inventory} />
             <Route path="/inventory/dashboard" component={Inventory} />
             <Route path="/inventory/items" component={InventoryItemsPage} />
@@ -237,10 +252,12 @@ export default function ScmRoutes() {
             <Route path="/inventory/item-relationships" component={ItemRelationships} />
             <Route path="/inventory/min-max" component={MinMaxPlanningSetup} />
             <Route path="/inventory/material-status" component={MaterialStatusControls} />
+            <Route path="/inventory/catch-weight" component={CatchWeightEntry} />
             <Route path="/inventory/uom-conversions" component={UOMConversionMatrix} />
             <Route path="/inventory/categories" component={ItemCategoryHierarchy} />
             <Route path="/inventory/item-master-orgs" component={ItemMasterOrgTabs} />
             <Route path="/inventory/consignment" component={ConsignmentStockManager} />
+            <Route path="/inventory/abc-classification" component={ABCClassificationSetup} />
 
 
 
@@ -286,6 +303,8 @@ export default function ScmRoutes() {
             <Route path="/scm/costing/receipt-accounting" component={ReceiptAccountingViewer} />
             <Route path="/scm/costing/method-setup" component={CostMethodSetup} />
             <Route path="/scm/costing/transfer-pricing" component={TransferPricingSetup} />
+            <Route path="/scm/costing/overhead-rules" component={OverheadAbsorptionRules} />
+            <Route path="/scm/costing/period-close" component={PeriodCloseReconciliation} />
 
 
             <Route path="/scm/lcm/operations" component={LcmWorkbench} />
@@ -300,6 +319,7 @@ export default function ScmRoutes() {
             <Route path="/transportation" component={TMSDashboard} />
 
             {/* TMS - New Components */}
+            <Route path="/tms/claims" component={FreightClaimManagement} />
             <Route path="/tms/analytics" component={TransportationBIDashboard} />
             <Route path="/transportation/freight-accounting" component={FreightAccountingWorkbench} />
             <Route path="/transportation/freight-settlement" component={FreightSettlementWorkbench} />

@@ -59,61 +59,7 @@ export default function FreightSettlementWorkbench() {
         queryKey: ["/api/freight/charges"],
         queryFn: async () => {
             const res = await fetch("/api/freight/charges");
-            if (!res.ok) {
-                // Mock data
-                return [
-                    {
-                        id: "fc-1",
-                        shipmentId: "SHP-001",
-                        chargeType: "BASE_FREIGHT",
-                        plannedAmount: "1500.00",
-                        actualAmount: "1520.00",
-                        currency: "USD",
-                        status: "MATCHED" as const,
-                        varianceAmount: "20.00",
-                        reconciledAt: new Date().toISOString(),
-                        reconciledBy: "AI_SETTLEMENT_ENGINE",
-                        carrierId: "carr-1",
-                        carrierName: "FedEx"
-                    },
-                    {
-                        id: "fc-2",
-                        shipmentId: "SHP-002",
-                        chargeType: "FUEL_SURCHARGE",
-                        plannedAmount: "250.00",
-                        actualAmount: "285.00",
-                        currency: "USD",
-                        status: "DISPUTED" as const,
-                        varianceAmount: "35.00",
-                        reconciledAt: new Date().toISOString(),
-                        carrierId: "carr-2",
-                        carrierName: "UPS"
-                    },
-                    {
-                        id: "fc-3",
-                        shipmentId: "SHP-003",
-                        chargeType: "BASE_FREIGHT",
-                        plannedAmount: "2100.00",
-                        currency: "USD",
-                        status: "ACCRUED" as const,
-                        carrierId: "carr-1",
-                        carrierName: "FedEx"
-                    },
-                    {
-                        id: "fc-4",
-                        shipmentId: "SHP-004",
-                        chargeType: "ACCESSORIAL",
-                        plannedAmount: "75.00",
-                        actualAmount: "75.00",
-                        currency: "USD",
-                        status: "PAID" as const,
-                        varianceAmount: "0.00",
-                        reconciledAt: new Date(Date.now() - 86400000).toISOString(),
-                        carrierId: "carr-3",
-                        carrierName: "DHL"
-                    }
-                ];
-            }
+            if (!res.ok) throw new Error("Failed to fetch freight charges");
             return res.json();
         }
     });
@@ -123,14 +69,7 @@ export default function FreightSettlementWorkbench() {
         queryKey: ["/api/freight/settlement/metrics"],
         queryFn: async () => {
             const res = await fetch("/api/freight/settlement/metrics");
-            if (!res.ok) {
-                return {
-                    pending: charges.filter(c => c.status === "ACCRUED").length,
-                    matched: charges.filter(c => c.status === "MATCHED").length,
-                    disputed: charges.filter(c => c.status === "DISPUTED").length,
-                    totalVariance: charges.reduce((sum, c) => sum + parseFloat(c.varianceAmount || "0"), 0)
-                };
-            }
+            if (!res.ok) throw new Error("Failed to fetch settlement metrics");
             return res.json();
         }
     });

@@ -1,35 +1,38 @@
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, PieChart, TrendingUp, AlertTriangle, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react";
+import { DollarSign, PieChart, TrendingUp, AlertTriangle, ArrowUpRight, ArrowDownRight, Activity, Loader2 } from "lucide-react";
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { formatNumber } from '@/lib/formatters';
-
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function AccountingDashboard() {
-    const { data: summary } = useQuery<any>({
+    const { data: summary, isLoading } = useQuery<any>({
         queryKey: ['/api/ppm/accounting/summary'],
-        // Mock data for now until API endpoint is created/verified
-        initialData: {
-            uncostedItems: 12,
-            pendingBurden: 5,
-            cipBalance: 1250000,
-            revenueRecognized: 4500000,
-            margin: 18.5,
-            alerts: [
-                { id: 1, type: "critical", message: "12 Uncosted Labor Items > 10 days" },
-                { id: 2, type: "warning", message: "Burden Schedule 'FY26-Corp' expires in 15 days" }
-            ]
+        queryFn: async () => {
+            const res = await fetch('/api/ppm/accounting/summary');
+            if (!res.ok) throw new Error("Failed to fetch accounting summary");
+            return res.json();
         }
     });
+
+    if (isLoading || !summary) {
+        return (
+            <StandardPage title="Project Accounting">
+                <div className="flex h-64 items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+            </StandardPage>
+        );
+    }
 
     return (
         <StandardPage title="Project Accounting">
             <div className="flex items-center justify-between">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Financial control center for project portfolio</p>
                 </div>
                 <div className="flex gap-2">
@@ -87,8 +90,18 @@ export default function AccountingDashboard() {
                         <CardTitle>Cost Trends</CardTitle>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <div className="h-48 flex items-center justify-center text-muted-foreground bg-muted/20 rounded-md border border-dashed border-muted">
-                            Cost Transaction Volume Chart Placeholder
+                        <div className="h-[250px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={summary.costTrends || []} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
+                                    <Tooltip cursor={{ fill: 'transparent' }} />
+                                    <Bar dataKey="laborCost" stackId="a" fill="#3b82f6" radius={[0, 0, 4, 4]} name="Labor" />
+                                    <Bar dataKey="materialCost" stackId="a" fill="#8b5cf6" name="Material" />
+                                    <Bar dataKey="burdenCost" stackId="a" fill="#f97316" radius={[4, 4, 0, 0]} name="Burden" />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </CardContent>
                 </Card>

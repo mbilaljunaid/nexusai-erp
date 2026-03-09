@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,8 +76,8 @@ export default function CostVarianceReport() {
         { id: "actions", header: "", width: "100px", cell: r => <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setSelectedItem(r)}>Drill Down</Button> },
     ], []);
 
-    const drillItem = selectedItem ?? SEED_ITEMS[0];
-    const drillData = COST_ELEMENTS.map(el => ({ element: el, ...drillItem.breakdown[el] }));
+    const drillItem = selectedItem ?? itemsToDisplay[0];
+    const drillData = drillItem ? COST_ELEMENTS.map(el => ({ element: el, ...drillItem.breakdown[el] })) : [];
 
     const drillCols = useMemo<SpreadsheetColumn<any>[]>(() => [
         { id: "element", header: "Cost Element", width: "180px", cell: r => <span className="font-semibold">{r.element}</span> },
@@ -86,7 +87,7 @@ export default function CostVarianceReport() {
         { id: "varPct", header: "% of Std", width: "110px", cell: r => { const p = r.std > 0 ? ((r.var / r.std) * 100).toFixed(1) : "0"; return <span className={`text-right block font-bold ${r.var > 0 ? "text-red-600" : r.var < 0 ? "text-green-700" : "text-muted-foreground"}`}>{r.var > 0 ? "+" : ""}{p}%</span>; } },
         {
             id: "bar", header: "Variance Profile", width: "250px", cell: r => {
-                const max = Math.max(...drillData.map(d => Math.abs(d.var)), 1);
+                const max = drillData.length > 0 ? Math.max(...drillData.map(d => Math.abs(d.var)), 1) : 1;
                 const pct = Math.abs(r.var) / max * 100;
                 return (
                     <div className="flex items-center gap-2">
@@ -101,9 +102,9 @@ export default function CostVarianceReport() {
     // Variance summary by element (across all items)
     const elementSummary = COST_ELEMENTS.map(el => ({
         element: el,
-        totalStd: SEED_ITEMS.reduce((s, r) => s + r.breakdown[el].std, 0),
-        totalActual: SEED_ITEMS.reduce((s, r) => s + r.breakdown[el].actual, 0),
-        totalVar: SEED_ITEMS.reduce((s, r) => s + r.breakdown[el].var, 0),
+        totalStd: itemsToDisplay.reduce((s: number, r: any) => s + r.breakdown[el].std, 0),
+        totalActual: itemsToDisplay.reduce((s: number, r: any) => s + r.breakdown[el].actual, 0),
+        totalVar: itemsToDisplay.reduce((s: number, r: any) => s + r.breakdown[el].var, 0),
     }));
 
     const elementCols = useMemo<SpreadsheetColumn<any>[]>(() => [
@@ -139,20 +140,20 @@ export default function CostVarianceReport() {
                     <CardContent><div className={`text-xl font-bold flex items-center gap-1 ${totalVar > 0 ? "text-red-600" : "text-green-700"}`}>{totalVar > 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}${Math.abs(totalVar).toLocaleString()}</div></CardContent>
                 </Card>
                 <Card><CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Unfavourable Items</CardTitle></CardHeader>
-                    <CardContent><div className="text-xl font-bold text-red-600">{SEED_ITEMS.filter(r => r.variance > 0).length}</div></CardContent>
+                    <CardContent><div className="text-xl font-bold text-red-600">{itemsToDisplay.filter((r: any) => r.variance > 0).length}</div></CardContent>
                 </Card>
             </div>
 
             <Tabs defaultValue="summary">
                 <TabsList className="mb-4">
                     <TabsTrigger value="summary">Item Variance Summary</TabsTrigger>
-                    <TabsTrigger value="drill">Element Drill-Down — {drillItem.item}</TabsTrigger>
+                    <TabsTrigger value="drill">Element Drill-Down {drillItem ? `— ${drillItem.item}` : ''}</TabsTrigger>
                     <TabsTrigger value="elements">By Cost Element (All Items)</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="summary">
                     <Card><CardHeader><CardTitle>Item-Level Variance — {period}</CardTitle><CardDescription>Click "Drill Down" on any row to see variance by cost element.</CardDescription></CardHeader>
-                        <CardContent className="p-0"><InteractiveSpreadsheet data={SEED_ITEMS} columns={summaryCols} onChange={() => { }} containerHeight="420px" /></CardContent>
+                        <CardContent className="p-0"><InteractiveSpreadsheet data={itemsToDisplay} columns={summaryCols} onChange={() => { }} containerHeight="420px" /></CardContent>
                     </Card>
                 </TabsContent>
 

@@ -54,12 +54,9 @@ export default function CostBurdeningInterface() {
     const { data: schedules = [] } = useQuery<BurdenSchedule[]>({
         queryKey: ["burden-schedules"],
         queryFn: async () => {
-            // Mock data - replace with actual API call
-            return [
-                { id: "1", name: "Standard Corporate Burden", version: "1.0", activeFlag: true },
-                { id: "2", name: "Government Contract Burden", version: "2.0", activeFlag: true },
-                { id: "3", name: "Internal Projects Burden", version: "1.5", activeFlag: false }
-            ];
+            const res = await fetch("/api/ppm/burden-schedules");
+            if (!res.ok) throw new Error("Failed to fetch burden schedules");
+            return res.json();
         }
     });
 
@@ -68,12 +65,9 @@ export default function CostBurdeningInterface() {
         queryKey: ["burden-rules", selectedScheduleId],
         queryFn: async () => {
             if (!selectedScheduleId) return [];
-            // Mock data - replace with actual API call
-            return [
-                { id: "1", expenditureTypeId: "LAB-001", expenditureTypeName: "Professional Services", multiplier: 0.25, description: "25% overhead" },
-                { id: "2", expenditureTypeId: "MAT-001", expenditureTypeName: "Materials", multiplier: 0.10, description: "10% handling" },
-                { id: "3", expenditureTypeId: "TRV-001", expenditureTypeName: "Travel", multiplier: 0.05, description: "5% admin" }
-            ];
+            const res = await fetch(`/api/ppm/burden-schedules/${selectedScheduleId}/rules`);
+            if (!res.ok) throw new Error("Failed to fetch burden rules");
+            return res.json();
         },
         enabled: !!selectedScheduleId
     });

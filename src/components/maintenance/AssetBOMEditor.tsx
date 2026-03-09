@@ -25,20 +25,22 @@ export default function AssetBOMEditor({ assetId }: AssetBOMEditorProps) {
     const { data: bomParts, isLoading } = useQuery({
         queryKey: ["/api/maintenance/assets", assetId, "bom"],
         queryFn: async () => {
-            // Mock data until API is wired
-            // return fetch(`/api/maintenance/assets/${assetId}/bom`).then(r => r.json());
-            return [
-                { id: "1", inventoryId: "INV-001", itemNumber: "BRG-6205", description: "Ball Bearing", quantity: 2, isCritical: true },
-                { id: "2", inventoryId: "INV-002", itemNumber: "FLT-AIR-05", description: "Air Filter", quantity: 1, isCritical: false }
-            ];
+            const res = await fetch(`/api/maintenance/assets/${assetId}/bom`);
+            if (!res.ok) throw new Error("Failed to fetch BOM details");
+            return res.json();
         }
     });
 
-    // 2. Add Part Mutation (Mock)
+    // 2. Add Part Mutation
     const addMutation = useMutation({
         mutationFn: async (data: any) => {
-            // await fetch...
-            return { success: true };
+            const res = await fetch(`/api/maintenance/assets/${assetId}/bom`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error("Failed to add part to Asset BOM");
+            return res.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/maintenance/assets", assetId, "bom"] });

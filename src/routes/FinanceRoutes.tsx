@@ -32,6 +32,7 @@ import APSystemConfig from "@/pages/finance/ap/APSystemConfig";
 import PaymentTermsMaster from "@/pages/finance/ap/PaymentTermsMaster";
 import APPeriodClose from "@/pages/finance/ap/APPeriodClose";
 import SupplierPortal from "@/pages/finance/ap/SupplierPortal";
+import ERSSettlementEngine from "@/pages/finance/ap/ERSSettlementEngine";
 
 // Cash Management
 import CashManagementDashboard from "@/pages/finance/cash/CashManagementDashboard";
@@ -307,6 +308,7 @@ export default function FinanceRoutes() {
                 <Route path="/finance/ap/config/hold-types" component={InvoiceHoldTypesConfig} />
                 <Route path="/finance/ap/config" component={APSystemConfig} />
                 <Route path="/finance/ap/recurring-invoices" component={RecurringInvoiceTemplates} />
+                <Route path="/finance/ap/ers-settlement" component={ERSSettlementEngine} />
                 <Route path="/finance/ap" component={APDashboard} />
                 {/* Legacy redirect for backward compatibility */}
                 <Route path="/finance/accounts-payable" component={() => {

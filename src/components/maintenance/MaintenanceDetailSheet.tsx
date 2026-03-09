@@ -242,14 +242,13 @@ export default function MaintenanceDetailSheet({ workOrderId, open, onOpenChange
 function MaterialsSection({ workOrderId, materials, status, onUpdate }: { workOrderId: string, materials: any[], status: string, onUpdate: () => void }) {
     const { toast } = useToast();
     const [newMat, setNewMat] = useState({ inventoryId: "", plannedQuantity: 1 });
-    // In real app, fetch inventory list. Stubbing for UI:
     const { data: inventoryItems } = useQuery({
-        queryKey: ["/api/maintenance/inventory-stub"], // Replace with real endpoint if available or mock
-        queryFn: async () => [
-            { id: "inv-1", itemName: "Bearing 6205", quantity: 10 },
-            { id: "inv-2", itemName: "Hydraulic Oil (L)", quantity: 50 },
-            { id: "inv-3", itemName: "M6 Bolt", quantity: 100 }
-        ]
+        queryKey: ["/api/inventory/items"],
+        queryFn: async () => {
+            const res = await fetch("/api/inventory/items");
+            if (!res.ok) throw new Error("Failed to fetch inventory items");
+            return res.json();
+        }
     });
 
     const addMatMutation = useMutation({
@@ -341,10 +340,13 @@ function ResourcesSection({ workOrderId, resources, status, onUpdate }: { workOr
     const [newRes, setNewRes] = useState({ userId: "", plannedHours: 8 });
     const [logging, setLogging] = useState<{ id: string, hours: number } | null>(null);
 
-    // In real app, fetch technicians list
     const { data: technicians } = useQuery({
-        queryKey: ["/api/maintenance/technicians-stub"],
-        queryFn: () => fetch("/api/maintenance/technicians-stub").then(r => r.json())
+        queryKey: ["/api/maintenance/technicians"],
+        queryFn: async () => {
+            const res = await fetch("/api/maintenance/technicians");
+            if (!res.ok) throw new Error("Failed to fetch technicians");
+            return res.json();
+        }
     });
 
     const assignMutation = useMutation({

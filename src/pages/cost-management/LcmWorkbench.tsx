@@ -42,7 +42,7 @@ export default function LcmWorkbench() {
 
     const tradeOperations = operationsData?.items || operationsData || [];
 
-    // Create Mutation (Placeholder for now)
+    // Create Mutation
     const createMutation = useMutation({
         mutationFn: async (data: any) => {
             const res = await fetch("/api/lcm/trade-operations", {

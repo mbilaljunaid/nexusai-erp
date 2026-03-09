@@ -78,6 +78,7 @@ export default function Inventory() {
               { title: "Item Directory", desc: "Browse all items", href: "/inventory/items", icon: Package },
               { title: "Item Profile", desc: "Item attributes & UOM", href: "/inventory/item-profile", icon: Building2 },
               { title: "Product Master", desc: "Product catalog", href: "/inventory/product-master", icon: LayoutDashboard },
+              { title: "ABC Analytics", desc: "ABC Classification Setup", href: "/inventory/abc-classification", icon: BarChart3 },
               { title: "Cycle Count", desc: "Physical count audit", href: "/inventory/cycle-count", icon: RefreshCw },
               { title: "Replenishment", desc: "Stock replenishment rules", href: "/inventory/replenishment", icon: BarChart3 },
             ].map((mod) => (

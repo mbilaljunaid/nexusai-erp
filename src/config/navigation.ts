@@ -109,6 +109,7 @@ export const navigationConfig: SidebarNode[] = [
                 children: [
                     { id: "finance-gl", title: "General Ledger", type: "link", path: "/finance/gl" },
                     { id: "finance-ap", title: "Accounts Payable", type: "link", path: "/finance/ap" },
+                    { id: "finance-ap-ers", title: "Evaluated Receipt Settlement", type: "link", path: "/finance/ap/ers-settlement" },
                     { id: "finance-ar", title: "Accounts Receivable", type: "link", path: "/finance/ar" },
                     { id: "finance-cm", title: "Cash & Treasury", type: "link", path: "/finance/cash" },
                     { id: "finance-rev", title: "Billing & Revenue", type: "link", path: "/finance/revenue" },
@@ -138,6 +139,7 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "procurement-bpa", title: "Blanket Agreements", type: "link", path: "/procurement/blanket-agreements" },
                     { id: "procurement-cpa", title: "Contract Agreements", type: "link", path: "/procurement/cpas" },
                     { id: "procurement-buyer", title: "Buyer Work Area", type: "link", path: "/procurement/buyer-workarea" },
+                    { id: "procurement-qualification", title: "Supplier Qualification", type: "link", path: "/procurement/supplier-qualifications" },
                     { id: "procurement-negotiations", title: "Supplier Negotiations", type: "link", path: "/procurement/negotiations" },
                     { id: "procurement-scorecard", title: "Supplier Scorecards", type: "link", path: "/procurement/supplier-scorecard" },
                     { id: "procurement-asn", title: "Supplier ASN Portal", type: "link", path: "/procurement/asn-portal" },
@@ -147,11 +149,14 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "procurement-funds", title: "Funds Check", type: "link", path: "/procurement/funds-check" },
                     { id: "procurement-distributions", title: "PO Distributions", type: "link", path: "/procurement/distributions" },
                     { id: "procurement-change", title: "Change Orders", type: "link", path: "/procurement/change-orders" },
+                    { id: "procurement-dropship", title: "Drop Ship & B2B", type: "link", path: "/scm/fulfillment/drop-ship" },
                     { id: "portal-supplier", title: "Supplier Portal", type: "link", path: "/portal/supplier" },
                     { id: "inventory", title: "Inventory", type: "link", path: "/inventory" },
                     { id: "inventory-uom", title: "UOM Conversions", type: "link", path: "/inventory/uom-conversions" },
+                    { id: "inventory-cw", title: "Catch Weight", type: "link", path: "/inventory/catch-weight" },
                     { id: "inventory-categories", title: "Item Categories", type: "link", path: "/inventory/categories" },
                     { id: "inventory-org-tabs", title: "Item Master (Org Tabs)", type: "link", path: "/inventory/item-master-orgs" },
+                    { id: "inventory-abc", title: "ABC Classification", type: "link", path: "/inventory/abc-classification" },
                     { id: "inventory-consignment", title: "Consignment Stock", type: "link", path: "/inventory/consignment" },
 
 
@@ -162,8 +167,10 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "costing-rollup", title: "Cost Rollup", type: "link", path: "/scm/costing/rollup" },
                     { id: "costing-processor", title: "Cost Processor", type: "link", path: "/scm/costing/processor" },
                     { id: "costing-variance", title: "Variance Report", type: "link", path: "/scm/costing/variance" },
+                    { id: "costing-period-close", title: "Period Reconciliation", type: "link", path: "/scm/costing/period-close" },
                     { id: "costing-receipt", title: "Receipt Accounting", type: "link", path: "/scm/costing/receipt-accounting" },
                     { id: "costing-transfer-pricing", title: "Transfer Pricing", type: "link", path: "/scm/costing/transfer-pricing" },
+                    { id: "costing-overhead", title: "Overhead Rules", type: "link", path: "/scm/costing/overhead-rules" },
                     { id: "costing-landed-cost", title: "Landed Cost Apportionment", type: "link", path: "/scm/costing/landed-cost" },
 
                     { id: "gtm", title: "Global Trade (GTM)", type: "link", path: "/scm/gtm" },
@@ -175,9 +182,13 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "manufacturing", title: "Manufacturing", type: "link", path: "/manufacturing/dashboard" },
                     { id: "mfg-bom", title: "BOM Designer", type: "link", path: "/manufacturing/bom" },
                     { id: "mfg-work-orders", title: "Work Orders", type: "link", path: "/manufacturing/work-orders" },
+                    { id: "mfg-rework-orders", title: "Non-Standard / Rework", type: "link", path: "/manufacturing/rework-orders" },
+                    { id: "mfg-formulas", title: "Formula Designer", type: "link", path: "/manufacturing/formulas" },
+                    { id: "mfg-formula-yield", title: "Formula Yields (Co/By)", type: "link", path: "/manufacturing/formula-yield" },
                     { id: "mfg-mrp", title: "MRP Workbench", type: "link", path: "/manufacturing/mrp" },
                     { id: "mfg-mrp-explosion", title: "MRP BOM Explosion", type: "link", path: "/manufacturing/mrp-explosion" },
                     { id: "mfg-bom-effectivity", title: "BOM Effectivity Editor", type: "link", path: "/manufacturing/bom-effectivity" },
+                    { id: "mfg-kanban-setup", title: "Kanban Replenishment", type: "link", path: "/manufacturing/kanban-setup" },
                     { id: "mfg-production-adherence", title: "Production Adherence", type: "link", path: "/manufacturing/production-adherence" },
 
 
@@ -197,9 +208,8 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "tms", title: "Transportation (TMS)", type: "link", path: "/transportation" },
                     { id: "tms-edi", title: "EDI 214 Events", type: "link", path: "/transportation/edi-events" },
                     { id: "tms-carriers", title: "Carrier Management", type: "link", path: "/transportation/carriers" },
-                    { id: "tms-rates", title: "Carrier Rates", type: "link", path: "/transportation/carrier-rates" },
-                    { id: "tms-dangerous", title: "Dangerous Goods", type: "link", path: "/transportation/dangerous-goods" },
                     { id: "tms-multimodal", title: "Multi-Modal Optimizer", type: "link", path: "/transportation/multimodal" },
+                    { id: "tms-claims", title: "Freight Claims (OS&D)", type: "link", path: "/tms/claims" },
 
                     { id: "lcm", title: "Landed Cost (LCM)", type: "link", path: "/scm/lcm/operations" },
                     { id: "logistics", title: "Logistics", type: "link", path: "/logistics" },
@@ -209,6 +219,8 @@ export const navigationConfig: SidebarNode[] = [
                     { id: "maintenance-pm-routes", title: "PM Routes", type: "link", path: "/maintenance/pm-routes" },
                     { id: "maintenance-warranty", title: "Asset Warranty", type: "link", path: "/maintenance/warranty" },
                     { id: "maintenance-fmea", title: "FMEA Workbench", type: "link", path: "/maintenance/fmea" },
+                    { id: "maintenance-cbm", title: "CBM Engine", type: "link", path: "/maintenance/cbm-rules" },
+                    { id: "maintenance-meters", title: "Meter Rollovers", type: "link", path: "/maintenance/meters-config" },
                     { id: "maintenance-inspections", title: "Inspections", type: "link", path: "/maintenance/inspections" },
                     { id: "maintenance-permits", title: "Permits", type: "link", path: "/maintenance/permits" },
                 ]

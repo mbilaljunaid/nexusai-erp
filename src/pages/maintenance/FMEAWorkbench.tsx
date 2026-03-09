@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -57,21 +56,18 @@ export default function FMEAWorkbench() {
         onError: () => { toast({ title: "FMEA saved (pending API)" }); setIsOpen(false); },
     });
 
-    const cols = useMemo<SpreadsheetColumn<any>[]>(() => [
-        { id: "system", header: "System", width: "150px", cell: r => <span className="font-medium text-xs">{r.system}</span> },
-        { id: "assembly", header: "Assembly", width: "140px", cell: r => <Badge variant="outline" className="text-xs">{r.assembly}</Badge> },
-        { id: "failureMode", header: "Failure Mode", width: "200px", cell: r => <span className="text-sm font-medium">{r.failureMode}</span> },
-        { id: "failureEffect", header: "Effect", width: "260px", cell: r => <span className="text-xs text-muted-foreground">{r.failureEffect}</span> },
-        { id: "severity", header: "S", width: "60px", cell: r => <ScoreCell val={r.severity} type="severity" /> },
-        { id: "occurrence", header: "O", width: "60px", cell: r => <ScoreCell val={r.occurrence} type="occurrence" /> },
-        { id: "detection", header: "D", width: "60px", cell: r => <ScoreCell val={r.detection} type="detection" /> },
-        { id: "rpn", header: "RPN", width: "85px", cell: r => <div className="flex justify-center"><RpnBadge rpn={r.rpn} /></div> },
-        { id: "owner", header: "Owner", width: "130px", cell: r => <span className="text-xs">{r.owner}</span> },
-        { id: "status", header: "Status", width: "130px", cell: r => <Badge variant={r.status === "Accepted" ? "secondary" : r.status === "In Progress" ? "outline" : "destructive"} className="text-xs">{r.status}</Badge> },
-        { id: "actions", header: "", width: "80px", cell: r => <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setDetail(r)}>View</Button> },
-    ], []);
-
     const rpn = newFM.severity * newFM.occurrence * newFM.detection;
+
+    // Group FMEA data into a tree hierarchy: System -> Assembly -> Failure Modes
+    const fmeaTree = useMemo(() => {
+        const tree: Record<string, Record<string, any[]>> = {};
+        filtered.forEach(f => {
+            if (!tree[f.system]) tree[f.system] = {};
+            if (!tree[f.system][f.assembly]) tree[f.system][f.assembly] = [];
+            tree[f.system][f.assembly].push(f);
+        });
+        return tree;
+    }, [filtered]);
 
     return (
         <StandardPage
@@ -98,14 +94,65 @@ export default function FMEAWorkbench() {
             <Card>
                 <CardHeader>
                     <div className="flex justify-between items-center">
-                        <div><CardTitle>FMEA Register</CardTitle><CardDescription>S = Severity (1–10) · O = Occurrence (1–10) · D = Detection (1–10) · RPN = S×O×D. Target: RPN &lt; 80 for all critical assets.</CardDescription></div>
+                        <div><CardTitle>FMEA Tree Hierarchy</CardTitle><CardDescription>System → Assembly → Failure Mode (S×O×D = RPN)</CardDescription></div>
                         <Select value={filterSystem} onValueChange={setFilterSystem}>
                             <SelectTrigger className="w-44"><SelectValue placeholder="Filter system" /></SelectTrigger>
                             <SelectContent><SelectItem value="All">All Systems</SelectItem>{SYSTEMS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                         </Select>
                     </div>
                 </CardHeader>
-                <CardContent className="p-0"><InteractiveSpreadsheet data={filtered} columns={cols} onChange={() => { }} containerHeight="460px" /></CardContent>
+                <CardContent className="p-0">
+                    <div className="border rounded-md m-4 hidden lg:block">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="border-b bg-muted/50 text-left text-muted-foreground">
+                                    <th className="p-3 font-medium w-[250px]">Node structure</th>
+                                    <th className="p-3 font-medium">Failure Effect / Cause</th>
+                                    <th className="p-3 font-medium w-[80px] text-center">S</th>
+                                    <th className="p-3 font-medium w-[80px] text-center">O</th>
+                                    <th className="p-3 font-medium w-[80px] text-center">D</th>
+                                    <th className="p-3 font-medium w-[100px] text-center">RPN</th>
+                                    <th className="p-3 font-medium w-[120px]">Status</th>
+                                    <th className="p-3 font-medium w-[80px]"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.keys(fmeaTree).length === 0 && (
+                                    <tr><td colSpan={8} className="p-4 text-center text-muted-foreground">No FMEA records found.</td></tr>
+                                )}
+                                {Object.entries(fmeaTree).map(([sys, assemblies]) => (
+                                    <React.Fragment key={sys}>
+                                        <tr className="border-b bg-gray-50/50">
+                                            <td colSpan={8} className="p-3 font-semibold text-blue-800"><ChevronRight className="h-4 w-4 inline mr-1 text-blue-500" />System: {sys}</td>
+                                        </tr>
+                                        {Object.entries(assemblies).map(([assm, modes]) => (
+                                            <React.Fragment key={`${sys}-${assm}`}>
+                                                <tr className="border-b bg-gray-50/20">
+                                                    <td colSpan={8} className="p-3 pl-8 font-medium text-gray-700">↳ Assembly: <Badge variant="outline" className="ml-1">{assm}</Badge></td>
+                                                </tr>
+                                                {modes.map(mode => (
+                                                    <tr key={mode.id} className="border-b hover:bg-muted/30">
+                                                        <td className="p-3 pl-14 font-medium"><div className="flex items-center gap-2"><span className="text-gray-400">↳</span> {mode.failureMode}</div></td>
+                                                        <td className="p-3 text-xs">
+                                                            <div className="text-red-600 font-medium mb-1">E: {mode.failureEffect}</div>
+                                                            <div className="text-muted-foreground">C: {mode.failureCause}</div>
+                                                        </td>
+                                                        <td className="p-3"><ScoreCell val={mode.severity} type="severity" /></td>
+                                                        <td className="p-3"><ScoreCell val={mode.occurrence} type="occurrence" /></td>
+                                                        <td className="p-3"><ScoreCell val={mode.detection} type="detection" /></td>
+                                                        <td className="p-3 flex justify-center"><RpnBadge rpn={mode.rpn} /></td>
+                                                        <td className="p-3"><Badge variant={mode.status === "Accepted" ? "secondary" : mode.status === "In Progress" ? "outline" : "destructive"} className="text-xs">{mode.status}</Badge></td>
+                                                        <td className="p-3"><Button size="sm" variant="ghost" onClick={() => setDetail(mode)}>View</Button></td>
+                                                    </tr>
+                                                ))}
+                                            </React.Fragment>
+                                        ))}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardContent>
             </Card>
 
             {/* Detail */}

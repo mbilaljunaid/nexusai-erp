@@ -22,7 +22,7 @@ export default function WmsSlottingWorkbench() {
         }
     });
 
-    // Mock Pagination Handling since the backend might return all at once (as per current service)
+    // Pagination Handling since the backend might return all at once (as per current service)
     // In a real scenario, we'd pass page/limit to API.
     // Here we just display what we get.
 
@@ -64,25 +64,25 @@ export default function WmsSlottingWorkbench() {
                         </TableBody>
                     </Table>
                 </div>
-                
+
                 <Pagination className="mt-4">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        onClick={() => setPage(p => Math.max(1, p - 1))} 
-                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"} 
-                      />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <span className="text-sm font-medium mx-4">Page {page} of {1}</span>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext 
-                        onClick={() => setPage(p => p + 1)} 
-                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                            />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <span className="text-sm font-medium mx-4">Page {page} of {1}</span>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext
+                                onClick={() => setPage(p => p + 1)}
+                                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
                 </Pagination>
             </CardContent>
         </Card>

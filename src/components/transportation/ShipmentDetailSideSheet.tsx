@@ -47,7 +47,7 @@ export function ShipmentDetailSideSheet({ shipmentId, open, onOpenChange }: Ship
             queryClient.invalidateQueries({ queryKey: [`/api/transportation/shipments/${shipmentId}`] });
             toast({ title: "Rate Shopping Complete", description: `Selected optimal carrier: ${data.carrier} with savings of $${data.savings}` });
         },
-        onError: () => toast({ title: "Rate Shopping", description: "Carrier optimization modeled locally." }),
+        onError: () => toast({ title: "Rate Shopping Failed", description: "Failed to optimize carrier rates.", variant: "destructive" }),
         onSettled: () => setIsShopping(false),
     });
 
@@ -56,7 +56,7 @@ export function ShipmentDetailSideSheet({ shipmentId, open, onOpenChange }: Ship
         onSuccess: (data) => {
             toast({ title: "BOL Generated", description: data.bolNumber || "Bill of Lading PDF generated and attached to shipment." });
         },
-        onError: () => toast({ title: "BOL Generated", description: "Bill of Lading PDF generation mocked locally." }),
+        onError: () => toast({ title: "BOL Generation Failed", description: "Failed to generate Bill of Lading.", variant: "destructive" }),
     });
 
     return (

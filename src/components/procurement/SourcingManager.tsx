@@ -130,7 +130,7 @@ export function SourcingManager() {
 
                                 {selectedRFQ?.id === rfq.id && (
                                     <div className="mt-3 border-t pt-2 bg-muted/10 p-2 rounded">
-                                        <p className="font-semibold text-xs mb-2">Submit Mock Quote</p>
+                                        <p className="font-semibold text-xs mb-2">Submit Supplier Quote</p>
                                         <div className="flex gap-2 mb-3">
                                             <Select value={newQuote.supplierId} onValueChange={v => setNewQuote({ ...newQuote, supplierId: v })}>
                                                 <SelectTrigger className="h-8"><SelectValue placeholder="Supplier" /></SelectTrigger>
