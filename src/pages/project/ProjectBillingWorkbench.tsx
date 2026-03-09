@@ -26,12 +26,12 @@ export default function ProjectBillingWorkbench() {
     const queryClient = useQueryClient();
     const [generateTarget, setGenerateTarget] = useState<any>(null);
 
-    const { data: apiData } = useQuery<any[]>({ queryKey: ["/api/projects/billing"], queryFn: () => fetch("/api/projects/billing").then(r => r.json()).catch(() => []) });
+    const { data: apiData } = useQuery<any[]>({ queryKey: ["/api/ppm/billing/summary"], queryFn: () => fetch("/api/ppm/billing/summary").then(r => r.json()).catch(() => []) });
     const events = (apiData && apiData.length > 0) ? apiData : SEED_EVENTS;
 
     const generateMutation = useMutation({
-        mutationFn: ({ id }: any) => fetch(`/api/projects/billing/${id}/generate`, { method: "POST" }).then(r => r.json()),
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["/api/projects/billing"] }); toast({ title: "Draft invoice generated" }); setGenerateTarget(null); },
+        mutationFn: ({ id }: any) => fetch(`/api/ppm/billing/${id}/generate-invoice`, { method: "POST" }).then(r => r.json()),
+        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["/api/ppm/billing/summary"] }); toast({ title: "Draft invoice generated" }); setGenerateTarget(null); },
         onError: () => { toast({ title: "Draft invoice created (pending API)" }); setGenerateTarget(null); },
     });
 

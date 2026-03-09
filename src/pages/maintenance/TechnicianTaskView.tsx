@@ -15,6 +15,7 @@ import InspectionFormRunner from "@/components/maintenance/InspectionFormRunner"
 import { Wifi, WifiOff } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { useAuth } from "@/hooks/useAuth";
 
 
 export default function TechnicianTaskView() {
@@ -47,8 +48,8 @@ export default function TechnicianTaskView() {
         }
     };
 
-    // Mock User ID (Technician) - In real app, get from context
-    const currentUserId = "tech-1";
+    const { user } = useAuth();
+    const currentUserId = user?.id || "tech-1";
 
     const { data: myTasks, isLoading } = useQuery<any>({
         queryKey: ["/api/maintenance/my-tasks", currentUserId],
@@ -118,18 +119,21 @@ export default function TechnicianTaskView() {
                         <TabsContent value="ops" className="space-y-4 mt-4">
                             {/* Operations List */}
                             <div className="space-y-2">
-                                {/* Mock Operations if none exist */}
-                                {[1, 2, 3].map((step) => (
-                                    <div key={step} className="flex items-center gap-3 p-3 border rounded-lg bg-card">
+                                {selectedTask.operations?.length > 0 ? selectedTask.operations.map((op: any, idx: number) => (
+                                    <div key={op.id || idx} className="flex items-center gap-3 p-3 border rounded-lg bg-card">
                                         <div className="h-6 w-6 rounded-full border-2 flex items-center justify-center text-xs text-muted-foreground">
-                                            {step}
+                                            {op.operationSequence || (idx + 1)}
                                         </div>
-                                        <div className="flex-1 text-sm font-medium">Step {step}: Inspect safety guards</div>
+                                        <div className="flex-1 text-sm font-medium">{op.description || `Operation ${op.operationSequence || idx + 1}`}</div>
                                         <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600" aria-label="Confirm">
                                             <CheckCircle2 className="h-5 w-5" />
                                         </Button>
                                     </div>
-                                ))}
+                                )) : (
+                                    <div className="p-4 text-center text-muted-foreground text-sm border rounded-lg border-dashed">
+                                        No specific operations defined for this task.
+                                    </div>
+                                )}
                             </div>
                         </TabsContent>
 
@@ -197,19 +201,19 @@ export default function TechnicianTaskView() {
             <div className="p-4 space-y-4">
                 {isLoading ? <Skeleton className="h-24 w-full" /> : myTasks?.map((wo: any) => (
                     <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedTask(wo)}>
-                    <Card key={wo.id} className="cursor-pointer active:scale-95 transition-transform">
-                                            <CardContent className="p-4">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <span className="font-bold">{wo.workOrderNumber}</span>
-                                                    <Badge>{wo.status}</Badge>
-                                                </div>
-                                                <p className="text-sm line-clamp-2 mb-3">{wo.description}</p>
-                                                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                                    <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Workshop B</span>
-                                                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Due Today</span>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                        <Card key={wo.id} className="cursor-pointer active:scale-95 transition-transform">
+                            <CardContent className="p-4">
+                                <div className="flex justify-between items-start mb-2">
+                                    <span className="font-bold">{wo.workOrderNumber}</span>
+                                    <Badge>{wo.status}</Badge>
+                                </div>
+                                <p className="text-sm line-clamp-2 mb-3">{wo.description}</p>
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                    <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Workshop B</span>
+                                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Due Today</span>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </Button>
                 ))}
 

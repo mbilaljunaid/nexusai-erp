@@ -63,8 +63,9 @@ export default function BudgetConfiguration() {
     const { data: budgetLines = [] } = useQuery<BudgetLine[]>({
         queryKey: ["budget-lines", selectedVersionId],
         queryFn: async () => {
-            // Mock - replace with actual API
-            return [];
+            const res = await fetch(`/api/ppm/planning/budget/${selectedVersionId}/lines`);
+            if (!res.ok) throw new Error("Failed to fetch budget lines");
+            return res.json();
         },
         enabled: !!selectedVersionId
     });
@@ -246,20 +247,20 @@ export default function BudgetConfiguration() {
                                     <TableBody>
                                         {versions.map((version) => (
                                             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedVersionId(version.id)}>
-                                            <TableRow
-                                                                                            key={version.id}
-                                                                                            className={selectedVersionId === version.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
-                                                                                        >
-                                                                                            <TableCell className="font-medium">{version.versionName}</TableCell>
-                                                                                            <TableCell><Badge variant="outline">{version.versionType}</Badge></TableCell>
-                                                                                            <TableCell className="text-right font-mono">
-                                                                                                ${(version.totalAmount || 0).toFixed(2)}
-                                                                                            </TableCell>
-                                                                                            <TableCell><StatusBadge status={version.currentFlag ? "CURRENT" : version.status} /></TableCell>
-                                                                                            <TableCell className="text-xs text-muted-foreground">
-                                                                                                {version.baselineDate ? formatDate(version.baselineDate) : "—"}
-                                                                                            </TableCell>
-                                                                                        </TableRow>
+                                                <TableRow
+                                                    key={version.id}
+                                                    className={selectedVersionId === version.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
+                                                >
+                                                    <TableCell className="font-medium">{version.versionName}</TableCell>
+                                                    <TableCell><Badge variant="outline">{version.versionType}</Badge></TableCell>
+                                                    <TableCell className="text-right font-mono">
+                                                        ${(version.totalAmount || 0).toFixed(2)}
+                                                    </TableCell>
+                                                    <TableCell><StatusBadge status={version.currentFlag ? "CURRENT" : version.status} /></TableCell>
+                                                    <TableCell className="text-xs text-muted-foreground">
+                                                        {version.baselineDate ? formatDate(version.baselineDate) : "—"}
+                                                    </TableCell>
+                                                </TableRow>
                                             </Button>
                                         ))}
                                     </TableBody>

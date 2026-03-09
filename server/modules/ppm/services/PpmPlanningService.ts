@@ -38,6 +38,26 @@ export class PpmPlanningService {
         }))).returning();
     }
 
+    async getBudgetLines(versionId: string) {
+        const lines = await db.select({
+            id: ppmBudgetLines.id,
+            versionId: ppmBudgetLines.versionId,
+            taskId: ppmBudgetLines.taskId,
+            taskName: ppmTasks.name,
+            periodName: ppmBudgetLines.periodName,
+            amount: ppmBudgetLines.amount,
+            quantity: ppmBudgetLines.quantity
+        }).from(ppmBudgetLines)
+            .leftJoin(ppmTasks, eq(ppmBudgetLines.taskId, ppmTasks.id))
+            .where(eq(ppmBudgetLines.versionId, versionId));
+
+        return lines.map(l => ({
+            ...l,
+            amount: Number(l.amount || 0),
+            quantity: Number(l.quantity || 0)
+        }));
+    }
+
     async baselineBudget(versionId: string) {
         // 1. Get the project ID
         const version = await db.query.ppmBudgetVersions.findFirst({

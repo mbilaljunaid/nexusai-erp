@@ -12,40 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Play, ChevronRight, ChevronDown, Package, RefreshCw, AlertTriangle } from "lucide-react";
 import { formatNumber } from "@/lib/formatters";
 
-// Recursive BOM tree structure
+// SEED_ITEMS represents finished goods that can be exploded
 const SEED_ITEMS = ["PUMP-ASSY-001", "MOTOR-CTRL-005", "VALVE-GATE-12", "HVAC-UNIT-AHU"];
-
-const BOM_TREE: Record<string, any> = {
-    "PUMP-ASSY-001": {
-        item: "PUMP-ASSY-001", desc: "Centrifugal Pump Assembly", level: 0, qty: 1, uom: "EA", qoh: 12, demand: 15, netDemand: 3, plannedOrder: 5, costPerUnit: 2840,
-        children: [
-            {
-                item: "PUMP-BODY-001", desc: "Pump Body (Cast Iron)", level: 1, qty: 1, uom: "EA", qoh: 8, demand: 15, netDemand: 7, plannedOrder: 10, costPerUnit: 420,
-                children: [
-                    { item: "CI-CASTING-A", desc: "Cast Iron Casting Grade A", level: 2, qty: 2.5, uom: "KG", qoh: 120, demand: 37.5, netDemand: 0, plannedOrder: 0, costPerUnit: 4.2, children: [] },
-                    { item: "FASTENER-M12", desc: "M12 Hex Bolt SS", level: 2, qty: 12, uom: "EA", qoh: 450, demand: 180, netDemand: 0, plannedOrder: 0, costPerUnit: 0.35, children: [] },
-                ]
-            },
-            {
-                item: "IMPELLER-SS-01", desc: "Stainless Impeller 6-Blade", level: 1, qty: 1, uom: "EA", qoh: 3, demand: 15, netDemand: 12, plannedOrder: 15, costPerUnit: 680,
-                children: [
-                    { item: "SS316-BAR-25MM", desc: "SS316 Bar 25mm dia", level: 2, qty: 0.8, uom: "M", qoh: 45, demand: 12, netDemand: 0, plannedOrder: 0, costPerUnit: 28.5, children: [] },
-                ]
-            },
-            {
-                item: "SEAL-MECH-01", desc: "Mechanical Seal Pack", level: 1, qty: 1, uom: "EA", qoh: 0, demand: 15, netDemand: 15, plannedOrder: 20, costPerUnit: 190,
-                children: []
-            },
-            {
-                item: "MOTOR-3PH-5KW", desc: "3-Phase Motor 5KW", level: 1, qty: 1, uom: "EA", qoh: 5, demand: 15, netDemand: 10, plannedOrder: 10, costPerUnit: 1240,
-                children: [
-                    { item: "COPPER-WIND-2MM", desc: "Copper Winding Wire 2mm", level: 2, qty: 1.2, uom: "KG", qoh: 80, demand: 12, netDemand: 0, plannedOrder: 0, costPerUnit: 18, children: [] },
-                    { item: "BEARING-6205", desc: "Deep Groove Ball Bearing 6205", level: 2, qty: 2, uom: "EA", qoh: 60, demand: 20, netDemand: 0, plannedOrder: 0, costPerUnit: 12.5, children: [] },
-                ]
-            },
-        ]
-    }
-};
 
 function BOMNodeRow({ node, expanded, toggleExpand, expandedIds }: { node: any; expanded: boolean; toggleExpand: (id: string) => void; expandedIds: Set<string> }) {
     const indent = node.level * 24;
@@ -85,16 +53,21 @@ function BOMNodeRow({ node, expanded, toggleExpand, expandedIds }: { node: any; 
 export default function MRPExplosionViewer() {
     const { toast } = useToast();
     const [selectedItem, setSelectedItem] = useState(SEED_ITEMS[0]);
-    const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["PUMP-ASSY-001"]));
+    const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
     const [runDate, setRunDate] = useState("2026-03-10");
-
-    const rootNode = BOM_TREE[selectedItem];
+    const [explodedData, setExplodedData] = useState<any>(null);
 
     const runMutation = useMutation({
         mutationFn: (d: any) => fetch("/api/manufacturing/mrp/explode", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }).then(r => r.json()),
-        onSuccess: () => toast({ title: "MRP explosion completed — planned orders created for all net shortages" }),
-        onError: () => toast({ title: "Explosion run complete (pending API) — planned orders ready for release" }),
+        onSuccess: (data) => {
+            setExplodedData(data);
+            setExpandedIds(new Set([data.item]));
+            toast({ title: "MRP explosion completed — planned orders created for all net shortages" });
+        },
+        onError: () => toast({ title: "Explosion run failed", variant: "destructive" }),
     });
+
+    const rootNode = explodedData;
 
     const toggleExpand = (id: string) => {
         setExpandedIds(prev => {

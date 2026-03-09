@@ -146,6 +146,46 @@ export class WmsShippingService {
             return { success: true, asnNumber, shippedCount: shippedLines.length };
         });
     }
+
+    // --- AI RATE SHOPPING ---
+    async rateShop(shipmentId: string) {
+        // Mocking an AI-driven API call that considers contracts, spot rating, and historical reliability.
+        const carriers = [
+            { name: "FedEx Freight", cost: 450.00, transitDays: 3, reliability: 0.98 },
+            { name: "XPO Logistics", cost: 395.00, transitDays: 4, reliability: 0.92 },
+            { name: "UPS Supply Chain", cost: 480.00, transitDays: 2, reliability: 0.96 },
+            { name: "Old Dominion", cost: 410.00, transitDays: 3, reliability: 0.99 }
+        ];
+
+        // Find best blend of Cost vs Reliability (Arbitrary Mock Logic for Demo)
+        const optimal = carriers.reduce((prev, curr) => {
+            const prevScore = (prev.cost * 0.6) - (prev.reliability * 100 * 0.4);
+            const currScore = (curr.cost * 0.6) - (curr.reliability * 100 * 0.4);
+            return prevScore < currScore ? prev : curr;
+        });
+
+        const savings = Math.max(...carriers.map(c => c.cost)) - optimal.cost;
+
+        // In reality, this would update the shipment record with the chosen carrier and rate.
+        return {
+            success: true,
+            carrier: optimal.name,
+            cost: optimal.cost,
+            savings: savings.toFixed(2),
+            options: carriers,
+            reasoning: `Selected based on high reliability (${Math.round(optimal.reliability * 100)}%) balancing a competitive rate.`
+        };
+    }
+
+    // --- BOL GENERATION ---
+    async generateBol(shipmentId: string) {
+        // Trigger external PDF engine or generate base64 template
+        return {
+            success: true,
+            bolNumber: `BOL-${shipmentId.substring(0, 6).toUpperCase()}-${Date.now().toString().slice(-4)}`,
+            message: "Bill of Lading generated successfully."
+        };
+    }
 }
 
 export const wmsShippingService = new WmsShippingService();

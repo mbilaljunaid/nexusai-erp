@@ -460,6 +460,17 @@ export class RevenueController {
         }
     }
 
+    async autoSweepPeriod(req: Request, res: Response) {
+        try {
+            const periods = await db.select().from(revenuePeriods).where(eq(revenuePeriods.status, "Open")).orderBy(desc(revenuePeriods.startDate)).limit(1);
+            if (!periods.length) return res.status(404).json({ error: "No open periods found to sweep" });
+            const result = await revenueService.runPeriodCloseSweep(periods[0].id);
+            res.json({ message: "Auto sweep completed successfully", ...result });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
     async getAuditTrace(req: Request, res: Response) {
         try {
             const { sourceId } = req.params;

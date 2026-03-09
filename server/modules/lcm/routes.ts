@@ -23,3 +23,8 @@ lcmRouter.post("/trade-operations/:id/predict", lcmController.predictCosts);
 
 // Accounting
 lcmRouter.post("/trade-operations/:id/accounting", lcmController.createAccounting);
+
+// Landed Cost Apportionment Batches
+lcmRouter.post("/apportionment-batches", lcmController.createApportionmentBatch);
+lcmRouter.post("/apportionment-batches/:id/calculate", lcmController.calculateApportionment);
+lcmRouter.post("/apportionment-batches/:id/post", lcmController.postApportionmentToCost);

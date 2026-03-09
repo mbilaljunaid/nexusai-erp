@@ -1,14 +1,14 @@
-import { useState, useMemo} from"react";
-import { useQuery, useMutation, useQueryClient} from"@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription} from"@/components/ui/card";
-import { Button} from"@/components/ui/button";
-import { FolderTree, AlertTriangle, Loader2} from"lucide-react";
-import { useToast} from"@/hooks/use-toast";
-import { InteractiveSpreadsheet} from"@/components/ui/InteractiveSpreadsheet";
-import { StandardPage} from"@/components/layout/StandardPage";
+import { useState, useMemo } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { FolderTree, AlertTriangle, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
 
 export default function FailureCodeConfig() {
-    const { toast} = useToast();
+    const { toast } = useToast();
     const queryClient = useQueryClient();
 
     // Filters
@@ -16,42 +16,47 @@ export default function FailureCodeConfig() {
     const [selectedParent, setSelectedParent] = useState<string | null>(null);
 
     // 1. Fetch Tree
-    const { data: tree} = useQuery<any>({
+    const { data: tree } = useQuery<any>({
         queryKey: ["/api/maintenance/failure-codes/tree"],
         queryFn: async () => {
             const res = await fetch("/api/maintenance/failure-codes/tree");
             if (!res.ok) return [];
             return res.json();
-       }
-   });
+        }
+    });
 
     // 2. Fetch Flat List (for table)
-    const { data: list = [], isLoading} = useQuery<any>({
+    const { data: list = [], isLoading } = useQuery<any>({
         queryKey: ["/api/maintenance/failure-codes", selectedType, selectedParent],
         queryFn: async () => {
-            const res = await fetch(`/api/maintenance/failure-codes?type=${selectedType}${selectedParent ?`&parentId=${selectedParent}` :''}`);
+            const res = await fetch(`/api/maintenance/failure-codes?type=${selectedType}${selectedParent ? `&parentId=${selectedParent}` : ''}`);
             if (!res.ok) return [];
             return res.json();
-       }
-   });
+        }
+    });
 
     // 3. Update Mutation
     const updateMutation = useMutation({
         mutationFn: async (data: any[]) => {
-            // Simulated bulk update
-            return new Promise(resolve => setTimeout(resolve, 500));
-       },
+            const res = await fetch("/api/maintenance/failure-codes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error("Failed to save failure codes");
+            return res.json();
+        },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["/api/maintenance/failure-codes"]});
-            toast({ title:"Codes Updated", description:"Failure codes have been successfully saved."});
-       }
-   });
+            queryClient.invalidateQueries({ queryKey: ["/api/maintenance/failure-codes"] });
+            toast({ title: "Codes Updated", description: "Failure codes have been successfully saved." });
+        }
+    });
 
     const columns = useMemo(() => [
-        { id:"code", label:"Unique Code", type:"text" as const, required: true},
-        { id:"name", label:"Display Name", type:"text" as const, required: true},
-        { id:"description", label:"Description", type:"text" as const},
-        { id:"active", label:"Active Status", type:"boolean" as const, defaultValue: true}
+        { id: "code", label: "Unique Code", type: "text" as const, required: true },
+        { id: "name", label: "Display Name", type: "text" as const, required: true },
+        { id: "description", label: "Description", type: "text" as const },
+        { id: "active", label: "Active Status", type: "boolean" as const, defaultValue: true }
     ], []);
 
     return (
@@ -67,30 +72,30 @@ export default function FailureCodeConfig() {
                     </h3>
                     <div className="space-y-1">
                         <Button
-                            variant={selectedType ==='PROBLEM' ?"secondary" :"ghost"}
+                            variant={selectedType === 'PROBLEM' ? "secondary" : "ghost"}
                             className="w-full justify-start font-medium"
-                            onClick={() => { setSelectedType("PROBLEM"); setSelectedParent(null);}}
+                            onClick={() => { setSelectedType("PROBLEM"); setSelectedParent(null); }}
                         >
                             Problems (Roots)
                         </Button>
-                        {/* Mock Tree for Navigation */}
+                        {/* Live Tree from API */}
                         {tree?.map((problem: any) => (
                             <div key={problem.id} className="ml-2">
                                 <Button
-                                    variant={selectedType ==='CAUSE' && selectedParent === problem.id ?"secondary" :"ghost"}
+                                    variant={selectedType === 'CAUSE' && selectedParent === problem.id ? "secondary" : "ghost"}
                                     size="sm"
                                     className="w-full justify-start text-xs h-8 text-foreground/90"
-                                    onClick={() => { setSelectedType("CAUSE"); setSelectedParent(problem.id);}}
+                                    onClick={() => { setSelectedType("CAUSE"); setSelectedParent(problem.id); }}
                                 >
                                     <AlertTriangle className="h-3 w-3 mr-2" /> {problem.name}
                                 </Button>
                                 {problem.children?.map((cause: any) => (
                                     <Button
                                         key={cause.id}
-                                        variant={selectedType ==='REMEDY' && selectedParent === cause.id ?"secondary" :"ghost"}
+                                        variant={selectedType === 'REMEDY' && selectedParent === cause.id ? "secondary" : "ghost"}
                                         size="sm"
                                         className="w-full justify-start text-xs h-8 ml-4 text-muted-foreground"
-                                        onClick={() => { setSelectedType("REMEDY"); setSelectedParent(cause.id);}}
+                                        onClick={() => { setSelectedType("REMEDY"); setSelectedParent(cause.id); }}
                                     >
                                         ↳ {cause.name}
                                     </Button>
@@ -119,7 +124,7 @@ export default function FailureCodeConfig() {
                                 <InteractiveSpreadsheet
                                     data={list}
                                     columns={columns}
-                                    onSave={(data) => updateMutation.mutate(data.map(d => ({ ...d, type: selectedType, parentId: selectedParent})))}
+                                    onSave={(data) => updateMutation.mutate(data.map(d => ({ ...d, type: selectedType, parentId: selectedParent })))}
                                     isSaving={updateMutation.isPending}
                                     containerHeight="100%"
                                 />

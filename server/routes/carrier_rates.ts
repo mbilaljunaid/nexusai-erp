@@ -31,6 +31,17 @@ router.post("/carrier-rates", async (req, res) => {
     }
 });
 
+// POST /api/carrier-rates/bulk - Bulk create/update rate cards
+router.post("/carrier-rates/bulk", async (req, res) => {
+    try {
+        const { lines } = req.body;
+        const results = await CarrierRateService.bulkUpsertRateCards(lines);
+        res.status(200).json(results);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // PUT /api/carrier-rates/:id - Update rate card
 router.put("/carrier-rates/:id", async (req, res) => {
     try {

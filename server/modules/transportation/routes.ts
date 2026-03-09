@@ -37,6 +37,21 @@ transportationRouter.get("/carriers/:id/scorecard", async (req, res) => {
     res.json(scorecard);
 });
 
+transportationRouter.get("/carriers/metrics", async (req, res) => {
+    const metrics = await carrierRatingService.getCarrierMetrics();
+    res.json(metrics);
+});
+
+transportationRouter.get("/carriers/:id/trend", async (req, res) => {
+    const trend = await carrierRatingService.getCarrierTrend(req.params.id);
+    res.json(trend);
+});
+
+transportationRouter.post("/carriers/:id/refresh-rating", async (req, res) => {
+    const newRating = await carrierRatingService.refreshCarrierRating(req.params.id);
+    res.json({ newRating });
+});
+
 // --- Shipments ---
 transportationRouter.get("/shipments", async (req, res) => {
     try {

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet";
+import { BOMTree } from "@/components/manufacturing/BOMTree";
 
 interface InventoryItem {
     id: string;
@@ -91,17 +92,7 @@ export default function BOMDesigner() {
     };
 
     const addComponent = () => {
-        setBomComponents([...bomComponents, { componentId: "", quantity: 1, uom: "EA" }]);
-    };
-
-    const removeComponent = (index: number) => {
-        setBomComponents(bomComponents.filter((_, i) => i !== index));
-    };
-
-    const updateComponent = (index: number, field: keyof BomItem, value: any) => {
-        const updated = [...bomComponents];
-        updated[index] = { ...updated[index], [field]: value };
-        setBomComponents(updated);
+        setBomComponents([...bomComponents, { id: Math.random().toString(36).substr(2, 9), componentId: "", name: "New Node", sku: "TBD", quantity: 1, uom: "EA", children: [] } as any]);
     };
 
     const handleSave = () => {
@@ -110,17 +101,30 @@ export default function BOMDesigner() {
             return;
         }
 
+        // Flatten tree for backend
+        const flatItems: any[] = [];
+        const traverse = (nodes: any[], parentId?: string) => {
+            nodes.forEach(node => {
+                flatItems.push({
+                    componentId: node.componentId,
+                    quantity: node.quantity,
+                    uom: node.uom,
+                    parentId: parentId || null
+                });
+                if (node.children && node.children.length > 0) {
+                    traverse(node.children, node.componentId);
+                }
+            });
+        };
+        traverse(bomComponents);
+
         const payload = {
             header: {
                 bomNumber: newBomNumber,
                 productId: newBomProduct,
                 status: "active"
             },
-            items: bomComponents.map(c => ({
-                componentId: c.componentId,
-                quantity: c.quantity,
-                uom: c.uom
-            }))
+            items: flatItems
         };
         createMutation.mutate(payload);
     };
@@ -201,52 +205,13 @@ export default function BOMDesigner() {
 
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium">Components / Ingredients</CardTitle>
+                                    <CardTitle className="text-sm font-medium">BOM Visual Designer</CardTitle>
                                     <Button size="sm" variant="outline" onClick={addComponent}>
-                                        <Plus className="h-4 w-4 mr-1" /> Add
+                                        <Plus className="h-4 w-4 mr-1" /> Add Root Item
                                     </Button>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="space-y-3">
-                                        {bomComponents.map((comp, idx) => (
-                                            <div key={idx} className="flex gap-2 items-end border-b pb-3 group">
-                                                <div className="flex-1 space-y-1">
-                                                    <Label className="text-[10px] uppercase">Component</Label>
-                                                    <Select value={comp.componentId} onValueChange={val => updateComponent(idx, "componentId", val)}>
-                                                        <SelectTrigger className="h-8"><SelectValue placeholder="Select Comp" /></SelectTrigger>
-                                                        <SelectContent>
-                                                            {inventory.map(item => (
-                                                                <SelectItem key={item.id} value={item.id}>{item.itemName}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                                <div className="w-20 space-y-1">
-                                                    <Label className="text-[10px] uppercase">Qty</Label>
-                                                    <Input type="number" className="h-8" value={comp.quantity} onChange={e => updateComponent(idx, "quantity", parseFloat(e.target.value))} />
-                                                </div>
-                                                <div className="w-24 space-y-1">
-                                                    <Label className="text-[10px] uppercase">UOM</Label>
-                                                    <Select value={comp.uom} onValueChange={val => updateComponent(idx, "uom", val)}>
-                                                        <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="EA">Each</SelectItem>
-                                                            <SelectItem value="KG">KG</SelectItem>
-                                                            <SelectItem value="L">Liters</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 mb-0" onClick={() => removeComponent(idx)} aria-label="Close">
-                                                    <X className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        ))}
-                                        {bomComponents.length === 0 && (
-                                            <div className="py-8 text-center text-xs text-muted-foreground border-dashed border-2 rounded-md">
-                                                No components added.
-                                            </div>
-                                        )}
-                                    </div>
+                                    <BOMTree data={bomComponents as any} onChange={(d) => setBomComponents(d as any)} />
                                 </CardContent>
                             </Card>
 

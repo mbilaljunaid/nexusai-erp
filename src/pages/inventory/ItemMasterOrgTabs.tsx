@@ -32,7 +32,9 @@ export default function ItemMasterOrgTabs() {
 
     const saveMutation = useMutation({
         mutationFn: (d: any) => fetch("/api/inventory/item-master", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }).then(r => r.json()),
-        onSuccess: () => toast({ title: `Item master saved for org ${org}` }),
+        onSuccess: (data, variables) => {
+            toast({ title: `Item master saved for org ${variables.org}` });
+        },
         onError: () => toast({ title: "Item master saved (pending API)" }),
     });
 

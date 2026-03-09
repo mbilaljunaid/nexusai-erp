@@ -90,12 +90,8 @@ export default function CarrierRateWorkbench() {
             queryClient.invalidateQueries({ queryKey: ["/api/carrier-rates"] });
             toast({ title: "Success", description: "Rate cards saved successfully" });
         },
-        onError: () => {
-            // Optimistic UI updates / Mock success
-            queryClient.setQueryData(["/api/carrier-rates"], (old: any) => {
-                return [...old || []]; // Mock keeping data 
-            });
-            toast({ title: "Changes Saved", description: "Rate cards saved successfully (Mock)." });
+        onError: (err: any) => {
+            toast({ title: "Error", description: err.message || "Failed to save rate cards.", variant: "destructive" });
         }
     });
 

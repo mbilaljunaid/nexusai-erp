@@ -80,3 +80,30 @@ procurementRouter.get("/suppliers", async (req: any, res: any) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// --- Supplier Negotiation Mock Endpoints (MVP) ---
+procurementRouter.post("/negotiations/:id/open-round", async (req: any, res: any) => {
+    try {
+        res.json({ success: true, message: "Next bid round opened" });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+procurementRouter.post("/negotiations/:id/close", async (req: any, res: any) => {
+    try {
+        res.json({ success: true, message: "Bids sealed and closed" });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+procurementRouter.post("/negotiations/:id/award", async (req: any, res: any) => {
+    try {
+        const { supplier } = req.body;
+        // In a real flow, this generates a Purchase Order or CPA
+        res.json({ success: true, message: `Awarded to ${supplier}`, supplier });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});

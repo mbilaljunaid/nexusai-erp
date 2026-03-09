@@ -388,15 +388,40 @@ export class MaintenanceService {
 
     async createServiceRequest(data: any) {
         // Auto-generate Request Number if not provided
-        if (!data.requestNumber) {
+        let requestNumber = data.requestNumber;
+        if (!requestNumber) {
             const count = await db.select({ count: sql<number>`count(*)` }).from(maintServiceRequests);
-            data.requestNumber = `SR-${new Date().getFullYear()}-${Number(count[0].count) + 1}`;
+            requestNumber = `SR-${new Date().getFullYear()}-${Number(count[0].count) + 1}`;
         }
-        return await db.insert(maintServiceRequests).values(data).returning();
+
+        const priorityMap: Record<string, string> = { 'URGENT': 'CRITICAL', 'MEDIUM': 'NORMAL' };
+        const mappedPriority = priorityMap[data.priority] || data.priority || 'NORMAL';
+
+        const [inserted] = await db.insert(maintServiceRequests).values({
+            requestNumber,
+            title: data.title || '',
+            description: data.description,
+            location: data.location || null,
+            priority: mappedPriority,
+            status: 'NEW',
+            assetId: data.assetId || null,
+            requestedBy: null
+        }).returning();
+
+        return {
+            id: inserted.id,
+            srNumber: inserted.requestNumber,
+            title: inserted.title,
+            description: inserted.description,
+            location: inserted.location,
+            priority: data.priority,
+            status: 'SUBMITTED',
+            submittedDate: inserted.createdAt?.toISOString()
+        };
     }
 
     async listServiceRequests() {
-        return await db.query.maintServiceRequests.findMany({
+        const reqs = await db.query.maintServiceRequests.findMany({
             with: {
                 asset: true,
                 requester: true,
@@ -404,9 +429,29 @@ export class MaintenanceService {
             },
             orderBy: desc(maintServiceRequests.createdAt)
         });
+
+        return reqs.map((r: any) => ({
+            id: r.id,
+            srNumber: r.requestNumber,
+            title: r.title || 'Service Request',
+            description: r.description,
+            location: r.location,
+            requestedBy: r.requester ? r.requester.username : r.requestedBy || 'Unknown',
+            requestedByEmail: r.requester ? r.requester.email : 'user@example.com',
+            assetId: r.assetId,
+            assetName: r.asset ? r.asset.assetNumber || r.asset.description : r.assetId,
+            priority: r.priority === 'CRITICAL' ? 'URGENT' : (r.priority === 'NORMAL' ? 'MEDIUM' : r.priority),
+            status: r.status === 'NEW' ? 'SUBMITTED'
+                : r.status === 'IN_REVIEW' ? 'UNDER_REVIEW'
+                    : r.status === 'CONVERTED' ? 'CONVERTED_TO_WO'
+                        : r.status,
+            submittedDate: r.createdAt?.toISOString(),
+            convertedWoNumber: r.workOrder ? r.workOrder.workOrderNumber : null,
+            priorityScore: r.priority === 'CRITICAL' ? 10 : (r.priority === 'HIGH' ? 7 : (r.priority === 'NORMAL' ? 4 : 1))
+        }));
     }
 
-    async convertSRtoWO(srId: string, woData: any) {
+    async convertSRtoWO(srId: string, woData?: any) {
         // Fetch SR to get Asset ID
         const sr = await db.query.maintServiceRequests.findFirst({
             where: eq(maintServiceRequests.id, srId)
@@ -414,12 +459,13 @@ export class MaintenanceService {
 
         if (!sr) throw new Error("Service Request not found");
 
+        const actualWoData = woData || {};
         // 1. Create WO (Corrective)
         const wo = await this.createWorkOrder({
-            ...woData,
-            assetId: sr.assetId, // Mandatory from SR
+            ...actualWoData,
+            assetId: sr.assetId, // Mandatory from SR (could be null if frontend didn't pass, handled in schema)
             type: "CORRECTIVE",
-            description: woData.description || `Corrective Work for SR: ${sr.requestNumber}`
+            description: actualWoData.description || `Corrective Work for SR: ${sr.requestNumber}`
         });
 
         // 2. Link SR to WO and Update Status
@@ -431,7 +477,7 @@ export class MaintenanceService {
             } as any)
             .where(eq(maintServiceRequests.id, srId));
 
-        return wo;
+        return { workOrder: wo, woNumber: wo.workOrderNumber, srId };
     }
 
 

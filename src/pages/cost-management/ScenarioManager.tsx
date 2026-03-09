@@ -8,19 +8,24 @@ import { format } from 'date-fns';
 import { StandardPage } from "@/components/layout/StandardPage";
 
 
+import { useQuery } from '@tanstack/react-query';
+
 export default function ScenarioManager() {
-    // Mock Data
-    const [scenarios] = useState([
-        { id: '1', name: '2026 Standard Costs', type: 'Current', date: new Date('2026-01-01'), org: 'US Ops' },
-        { id: '2', name: '2026 Q2 Proposed', type: 'Pending', date: new Date(), org: 'US Ops' },
-        { id: '3', name: '2025 Historical', type: 'Historical', date: new Date('2025-01-01'), org: 'US Ops' },
-    ]);
+    // Fetch Data
+    const { data: scenarios = [] } = useQuery({
+        queryKey: ['/api/manufacturing/cost-scenarios'],
+        queryFn: async () => {
+            const res = await fetch('/api/manufacturing/cost-scenarios');
+            if (!res.ok) throw new Error("Failed to fetch scenarios");
+            return res.json();
+        }
+    });
 
     return (
         <StandardPage title="Scenario Manager">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Define and publish standard costs for inventory valuation.</p>
                 </div>
                 <Button>
@@ -44,24 +49,24 @@ export default function ScenarioManager() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {scenarios.map((scenario) => (
+                            {scenarios.map((scenario: any) => (
                                 <TableRow key={scenario.id}>
                                     <TableCell className="font-medium">{scenario.name}</TableCell>
-                                    <TableCell>{scenario.org}</TableCell>
+                                    <TableCell>{scenario.costOrganizationId || 'N/A'}</TableCell>
                                     <TableCell>
                                         <Badge variant={
-                                            scenario.type === 'Current' ? 'default' :
-                                                scenario.type === 'Pending' ? 'secondary' : 'outline'
+                                            scenario.scenarioType === 'Current' ? 'default' :
+                                                scenario.scenarioType === 'Pending' ? 'secondary' : 'outline'
                                         }>
-                                            {scenario.type}
+                                            {scenario.scenarioType || 'Pending'}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>{format(scenario.date, 'MMM dd, yyyy')}</TableCell>
+                                    <TableCell>{scenario.effectiveDate ? format(new Date(scenario.effectiveDate), 'MMM dd, yyyy') : 'No Date'}</TableCell>
                                     <TableCell className="text-right space-x-2">
                                         <Button variant="ghost" size="sm">
                                             <Eye className="h-4 w-4" />
                                         </Button>
-                                        {scenario.type === 'Pending' && (
+                                        {scenario.scenarioType === 'Pending' && (
                                             <Button variant="outline" size="sm" className="text-green-600 border-green-200 hover:bg-green-500/10">
                                                 <Check className="mr-1 h-3 w-3" /> Publish
                                             </Button>

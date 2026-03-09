@@ -40,9 +40,9 @@ export default function CarrierScorecardDashboard() {
 
     // Fetch all carriers
     const { data: carriers = [], isLoading: loadingCarriers } = useQuery<Carrier[]>({
-        queryKey: ["/api/carriers"],
+        queryKey: ["/api/transportation/carriers"],
         queryFn: async () => {
-            const res = await fetch("/api/carriers");
+            const res = await fetch("/api/transportation/carriers");
             if (!res.ok) {
                 return [];
             }
@@ -52,10 +52,10 @@ export default function CarrierScorecardDashboard() {
 
     // Fetch scorecard for selected carrier
     const { data: scorecard } = useQuery<CarrierScorecard>({
-        queryKey: ["/api/carriers/scorecard", selectedCarrier],
+        queryKey: ["/api/transportation/carriers/scorecard", selectedCarrier],
         queryFn: async () => {
             if (!selectedCarrier) return null;
-            const res = await fetch(`/api/carriers/${selectedCarrier}/scorecard`);
+            const res = await fetch(`/api/transportation/carriers/${selectedCarrier}/scorecard`);
             if (!res.ok) {
                 return { onTimePercent: 0, totalShipments: 0, avgRating: 0 };
             }
@@ -66,9 +66,9 @@ export default function CarrierScorecardDashboard() {
 
     // Fetch all carrier metrics for overview
     const { data: allMetrics = [] } = useQuery<CarrierMetrics[]>({
-        queryKey: ["/api/carriers/metrics"],
+        queryKey: ["/api/transportation/carriers/metrics"],
         queryFn: async () => {
-            const res = await fetch("/api/carriers/metrics");
+            const res = await fetch("/api/transportation/carriers/metrics");
             if (!res.ok) {
                 return [];
             }
@@ -79,15 +79,15 @@ export default function CarrierScorecardDashboard() {
     // Refresh rating mutation
     const refreshRatingMutation = useMutation({
         mutationFn: async (carrierId: string) => {
-            const res = await fetch(`/api/carriers/${carrierId}/refresh-rating`, {
+            const res = await fetch(`/api/transportation/carriers/${carrierId}/refresh-rating`, {
                 method: "POST"
             });
             if (!res.ok) throw new Error("Failed to refresh rating");
             return res.json();
         },
         onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ["/api/carriers"] });
-            queryClient.invalidateQueries({ queryKey: ["/api/carriers/scorecard"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/transportation/carriers"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/transportation/carriers/scorecard"] });
             toast({
                 title: "Rating Refreshed",
                 description: `New rating: ${data.newRating?.toFixed(1) || "N/A"} stars`
@@ -98,24 +98,20 @@ export default function CarrierScorecardDashboard() {
         }
     });
 
-    // Performance trend data (mock)
-    const performanceTrend = [
-        { month: "Jul", onTime: 94.2 },
-        { month: "Aug", onTime: 95.1 },
-        { month: "Sep", onTime: 93.8 },
-        { month: "Oct", onTime: 96.5 },
-        { month: "Nov", onTime: 95.9 },
-        { month: "Dec", onTime: 96.8 }
-    ];
+    // Fetch trend data dynamically
+    const { data: trendData } = useQuery({
+        queryKey: ["/api/transportation/carriers/trend", selectedCarrier],
+        queryFn: async () => {
+            if (!selectedCarrier) return null;
+            const res = await fetch(`/api/transportation/carriers/${selectedCarrier}/trend`);
+            if (!res.ok) return { performanceTrend: [], shipmentTrend: [] };
+            return res.json();
+        },
+        enabled: !!selectedCarrier
+    });
 
-    const shipmentTrend = [
-        { month: "Jul", count: 185 },
-        { month: "Aug", count: 203 },
-        { month: "Sep", count: 198 },
-        { month: "Oct", count: 221 },
-        { month: "Nov", count: 215 },
-        { month: "Dec", count: 221 }
-    ];
+    const performanceTrend = trendData?.performanceTrend || [];
+    const shipmentTrend = trendData?.shipmentTrend || [];
 
     const topPerformers = allMetrics
         .filter(c => c.avgRating >= 4.5)
@@ -134,7 +130,7 @@ export default function CarrierScorecardDashboard() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground mt-1">Monitor carrier performance, ratings, and KPIs</p>
                 </div>
                 <Button variant="outline" size="sm">
@@ -339,27 +335,27 @@ export default function CarrierScorecardDashboard() {
                                 <div className="space-y-3">
                                     {topPerformers.map((carrier, index) => (
                                         <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCarrier(carrier.id)}>
-                                        <div
-                                                                                    key={carrier.id}
-                                                                                    className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-lg hover:bg-emerald-500/15 transition-colors cursor-pointer"
-                                                                                >
-                                                                                    <div className="flex justify-between items-start mb-2">
-                                                                                        <div className="flex items-center gap-2">
-                                                                                            <span className="flex items-center justify-center h-6 w-6 rounded-full bg-emerald-600 text-white text-xs font-bold">
-                                                                                                {index + 1}
-                                                                                            </span>
-                                                                                            <span className="font-semibold text-emerald-900 dark:text-emerald-200">{carrier.name}</span>
-                                                                                        </div>
-                                                                                        <div className="flex items-center gap-1 text-amber-600">
-                                                                                            <Star className="h-4 w-4 fill-amber-500" />
-                                                                                            <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div className="grid grid-cols-2 gap-2 text-xs text-emerald-700">
-                                                                                        <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
-                                                                                        <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
-                                                                                    </div>
-                                                                                </div>
+                                            <div
+                                                key={carrier.id}
+                                                className="p-3 bg-emerald-500/10 border border-emerald-200 rounded-lg hover:bg-emerald-500/15 transition-colors cursor-pointer"
+                                            >
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="flex items-center justify-center h-6 w-6 rounded-full bg-emerald-600 text-white text-xs font-bold">
+                                                            {index + 1}
+                                                        </span>
+                                                        <span className="font-semibold text-emerald-900 dark:text-emerald-200">{carrier.name}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-amber-600">
+                                                        <Star className="h-4 w-4 fill-amber-500" />
+                                                        <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-2 text-xs text-emerald-700">
+                                                    <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
+                                                    <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
+                                                </div>
+                                            </div>
                                         </Button>
                                     ))}
                                 </div>
@@ -387,22 +383,22 @@ export default function CarrierScorecardDashboard() {
                                 <div className="space-y-3">
                                     {underPerformers.map((carrier) => (
                                         <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCarrier(carrier.id)}>
-                                        <div
-                                                                                    key={carrier.id}
-                                                                                    className="p-3 bg-rose-500/10 border border-rose-200 rounded-lg hover:bg-rose-500/15 transition-colors cursor-pointer"
-                                                                                >
-                                                                                    <div className="flex justify-between items-start mb-2">
-                                                                                        <span className="font-semibold text-rose-900 dark:text-rose-200">{carrier.name}</span>
-                                                                                        <div className="flex items-center gap-1 text-rose-600">
-                                                                                            <Star className="h-4 w-4" />
-                                                                                            <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div className="grid grid-cols-2 gap-2 text-xs text-rose-700">
-                                                                                        <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
-                                                                                        <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
-                                                                                    </div>
-                                                                                </div>
+                                            <div
+                                                key={carrier.id}
+                                                className="p-3 bg-rose-500/10 border border-rose-200 rounded-lg hover:bg-rose-500/15 transition-colors cursor-pointer"
+                                            >
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <span className="font-semibold text-rose-900 dark:text-rose-200">{carrier.name}</span>
+                                                    <div className="flex items-center gap-1 text-rose-600">
+                                                        <Star className="h-4 w-4" />
+                                                        <span className="font-semibold">{carrier.avgRating.toFixed(1)}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-2 text-xs text-rose-700">
+                                                    <div>On-Time: <span className="font-semibold">{carrier.onTimePercent.toFixed(1)}%</span></div>
+                                                    <div>Shipments: <span className="font-semibold">{carrier.totalShipments}</span></div>
+                                                </div>
+                                            </div>
                                         </Button>
                                     ))}
                                 </div>

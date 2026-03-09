@@ -51,17 +51,17 @@ export default function ErpIntegrationDashboard() {
     const { data: connections = [] } = useQuery<ErpConnection[]>({
         queryKey: ["erp-connections"],
         queryFn: async () => {
-            // Mock data - replace with actual API
-            return [
-                {
-                    id: "1",
-                    name: "SAP Production",
-                    system: "SAP",
-                    status: "CONNECTED",
-                    lastSync: "2026-02-11T15:30:00Z",
-                    endpoint: "https://sap.example.com/api"
-                }
-            ];
+            const res = await fetch("/api/ppm/integrations/connections");
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.map((c: any) => ({
+                id: c.id,
+                name: c.name,
+                system: c.config?.system || "SAP",
+                endpoint: c.config?.endpoint || "",
+                status: c.status,
+                lastSync: c.createdAt // Simple fallback
+            }));
         }
     });
 

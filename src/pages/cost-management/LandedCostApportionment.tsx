@@ -136,6 +136,54 @@ export default function LandedCostApportionment() {
     const [batches, setBatches] = useState<LandedCostBatch[]>(SEED_BATCHES);
     const lines = SEED_LINES.filter(l => l.batchId === selectedBatch?.id);
 
+    const queryClient = useQueryClient();
+
+    const createBatchMutation = useMutation({
+        mutationFn: async (b: Partial<LandedCostBatch>) => {
+            const res = await fetch('/api/lcm/apportionment-batches', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(b)
+            });
+            if (!res.ok) throw new Error("Failed to create batch");
+            return res.json();
+        },
+        onSuccess: (data) => {
+            setBatches(p => [...p, data]);
+            setShowNewBatch(false);
+            toast({ title: `Batch ${data.batchNumber} created`, description: `Total landed cost: $${fmt(data.totalLandedCost)}` });
+        },
+        onError: (err: any) => toast({ title: "Creation Failed", description: err.message, variant: "destructive" })
+    });
+
+    const calculateMutation = useMutation({
+        mutationFn: async (id: string) => {
+            const res = await fetch(`/api/lcm/apportionment-batches/${id}/calculate`, { method: 'POST' });
+            if (!res.ok) throw new Error("Calculation failed");
+            return res.json();
+        },
+        onSuccess: (data, id) => {
+            setBatches(p => p.map(b => b.id === id ? { ...b, status: 'CALCULATED' } : b));
+            if (selectedBatch?.id === id) setSelectedBatch(prev => prev ? { ...prev, status: 'CALCULATED' } : null);
+            toast({ title: 'Apportionment Calculated', description: data.message });
+        },
+        onError: (err: any) => toast({ title: "Calculation Failed", description: err.message, variant: "destructive" })
+    });
+
+    const postCostMutation = useMutation({
+        mutationFn: async (id: string) => {
+            const res = await fetch(`/api/lcm/apportionment-batches/${id}/post`, { method: 'POST' });
+            if (!res.ok) throw new Error("Posting failed");
+            return res.json();
+        },
+        onSuccess: (data, id) => {
+            setBatches(p => p.map(b => b.id === id ? { ...b, status: 'POSTED' } : b));
+            if (selectedBatch?.id === id) setSelectedBatch(prev => prev ? { ...prev, status: 'POSTED' } : null);
+            toast({ title: 'Posted to Item Cost', description: data.message });
+        },
+        onError: (err: any) => toast({ title: "Posting Failed", description: err.message, variant: "destructive" })
+    });
+
     function totalCharges() {
         return ['totalFreight', 'totalDuty', 'totalInsurance', 'totalBrokerage', 'totalMisc']
             .reduce((s, k) => s + Number((newBatch as any)[k] || 0), 0);
@@ -147,9 +195,7 @@ export default function LandedCostApportionment() {
             toast({ title: 'Required fields missing', variant: 'destructive' });
             return;
         }
-        const b: LandedCostBatch = {
-            id: `b${Date.now()}`,
-            batchNumber: `LCB-${new Date().getFullYear()}-${String(batches.length + 1).padStart(3, '0')}`,
+        createBatchMutation.mutate({
             shipmentReference: newBatch.shipmentReference,
             carrier: newBatch.carrier,
             portOfEntry: newBatch.portOfEntry,
@@ -160,25 +206,17 @@ export default function LandedCostApportionment() {
             totalBrokerage: Number(newBatch.totalBrokerage || 0),
             totalMisc: Number(newBatch.totalMisc || 0),
             totalLandedCost: total,
-            status: 'DRAFT',
             apportionmentMethod: newBatch.apportionmentMethod,
-            receiptLineCount: 0,
             currency: newBatch.currency,
-        };
-        setBatches(p => [...p, b]);
-        setShowNewBatch(false);
-        toast({ title: `Batch ${b.batchNumber} created`, description: `Total landed cost: $${fmt(total)}` });
+        });
     }
 
     function handleCalculate(batch: LandedCostBatch) {
-        setBatches(p => p.map(b => b.id === batch.id ? { ...b, status: 'CALCULATED' } : b));
-        toast({ title: 'Apportionment calculated', description: `Charges distributed to PO receipt lines using ${batch.apportionmentMethod} method.` });
+        calculateMutation.mutate(batch.id);
     }
 
     function handlePostToItemCost(batch: LandedCostBatch) {
-        setBatches(p => p.map(b => b.id === batch.id ? { ...b, status: 'POSTED' } : b));
-        if (selectedBatch?.id === batch.id) setSelectedBatch({ ...batch, status: 'POSTED' });
-        toast({ title: 'Posted to Item Cost', description: 'Landed cost unit adjustments applied to inventory item standard/average cost.' });
+        postCostMutation.mutate(batch.id);
     }
 
     // ─── Columns ──────────────────────────────────────────────────────────────

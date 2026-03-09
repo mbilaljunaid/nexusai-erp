@@ -499,3 +499,51 @@ These items are ⚠️ Partial — they exist but may benefit from future deepen
 - **Module 17:** None (fully closed)
 
 *Document last updated: 2026-03-08 v3 Final — verified against live codebase file scan*
+
+---
+
+## DEEP AUDIT 2026: Granular Component & Backend Review
+**Scope**: SCM & Manufacturing Modules (Procurement, Inventory, WMS, Manufacturing, Cost Management, EAM, TMS, PPM)
+**Objective**: Identification of Mock Data, TODOs, Placeholders, and Unwired Components
+**Evaluation**: Frontend UI/UX, Backend Architecture, Database Schema Parity against Oracle Fusion Cloud ERP
+
+> **CRITICAL FINDING**: Despite the 100% parity scores in the UI, several components are acting as visual placeholders ("unwired") relying on mock data or lacking complete database hookups. According to enterprise standards, any TODO, Mock, or unwired component is considered a FAILURE.
+
+### Component Audit Report (Tabular Format)
+
+| Category | Module | Page / Component | Gap Type | Details (Unwired / Mock / TODO) | Action Required |
+|---|---|---|---|---|---|
+| **PIM/Inventory** | Inventory | `LotSerialManager.tsx` | Mock Data | Two instances of `// Mock bulk save` for lot/serial generation. UI actions do not commit to DB. | Wire save handlers to `api/inventory/lot-serial` via Drizzle. |
+| **Manufacturing** | Manufacturing | `WorkOrderList.tsx` | Mock Data | `// Mock fallback if API shouldn't fail`. Returns hardcoded WOs if backend fails. | Enforce strict DB fetching; remove optimistic mock fallback. |
+| **Maintenance** | EAM | `FailureCodeConfig.tsx` | Placeholder | `{/* Mock Tree for Navigation */}` exists for failure hierarchy. | Wire to `maintenance_failure_codes` recursive schema. |
+| **Maintenance** | EAM | `InspectionWorkflow.tsx` | FIXED | Missing toast notifications (Success/Error) on submission. | Fixed 100% (wired toasts). |
+| **Maintenance** | EAM | `ServiceRequestPortal.tsx` | FIXED | `// ✅ LIVE API CALL - Replace mock data with service layer` explicitly noted. | Fixed 100% (wired to DB). |
+| **Maintenance** | EAM | `MaterialPlanningView.tsx` | FIXED | Missing toast notifications (Success/Error). | Fixed 100% (wired toasts). |
+| **Maintenance** | EAM | `CostManagementHub.tsx` | FIXED | Hardcoded `projectId = "PROJ-2026-001"`. Missing user input dialog. | Fixed 100% (ProjectSelector added). |
+| **Maintenance** | EAM | `PermitWorkflow.tsx` | FIXED | `hazards: []` and `safeguards: []` marked as `TODO: collect from form`. | Fixed 100% (MultiSelect built). |
+| **Maintenance** | EAM | `TechnicianTaskView.tsx` | Mock Data | `// Mock User ID (Technician)` and `{/* Mock Operations if none exist */}`. | Inject active user ID context and enforce DB fetching for operations. |
+| **Maintenance** | EAM | `MeterReadingModule.tsx` | TODO | `// TODO: Show error toast` exists on submission failures. | Implement standard `toast()` UI error feedback. |
+| **Maintenance** | EAM | `PMScheduler.tsx` | TODO | Missing toast notifications (Success/Error) on PM generation. | Implement standard `toast()` UI feedback. |
+| **TMS** | Transportation| `CarrierRateWorkbench.tsx` | Mock Data | Optimistic UI updates / Mock success keeping data in state without DB commit. | Wire rate mutations to `tms_carrier_rates` table. |
+| **TMS** | Transportation| `FreightSettlementConsole`| Mock Data | ClassName helper mocked. | Implement dynamic tailwind class routing based on DB status. |
+| **TMS** | Transportation| `ShipmentTrackingDashboard`| Placeholder| `{/* Shipment Detail Modal (placeholder) */}`. | Build full ShipmentDetailDialog component and route. |
+| **TMS** | Transportation| `FreightSettlementWorkbench`| Mock Data | Fetch settlement trend data mocked. | Build `api/tms/settlement/trends` aggregation endpoint. |
+| **TMS** | Transportation| `CarrierScorecardDashboard.tsx`| Mock Data | `// Performance trend data (mock)`. | Build `api/tms/carrier-scorecard` trends aggregation via Drizzle. |
+| **TMS** | Transportation| `RoutePlanningWorkbench.tsx` | Placeholder | `{/* Additional workbench features placeholder */}`. | Deepen routing constraints configuration options. |
+| **PPM** | Projects | `BurdenRuleBuilder.tsx` | Mock Data | Entire burden multiplier logic relies on client-side mock array. | Wire to `ppm_burden_rules` schema. |
+| **PPM** | Projects | `CipConsolidationDashboard`| Mock Data | `// Mock - replace with real API`. | Aggregate CIP costs via Drizzle backend. |
+| **PPM** | Projects | `CostBurdeningInterface` | Mock Data | `// Mock data - replace with actual API call`. | Wire interface to burden calculation service. |
+| **PPM** | Projects | `BudgetConfiguration.tsx` | Mock Data | `// Mock - replace with actual API`. | Wire to `ppm_project_budgets` API. |
+| **PPM** | Projects | `AccountingDashboard.tsx` | Mock Data | `Cost Transaction Volume Chart Placeholder`. | Wire Recharts to actual subledger accounting API. |
+| **PPM** | Projects | `RevenueRecognitionDashboard`| Mock Data | `// Mock - replace with real API`. | Read revenue distributions from `gl_je_lines`. |
+| **PPM** | Projects | `ErpIntegrationDashboard` | Mock Data | `// Mock data - replace with actual API`. | Create webhook activity log queries. |
+| **PPM** | Projects | `DraftInvoiceWorkbench` | Mock Data | `// Mock implementation - replace with actual API`. | Wire to `ppm_draft_invoices` generation logic. |
+| **Costing** | Cost Mgmt | `CostDashboard.tsx` | Mock Fallback| `if (res.status === 404) return null; // Fallback to mock`. | Enforce strict routing and API failures. |
+| **Costing** | Cost Mgmt | `LcmWorkbench.tsx` | Placeholder | `// Create Mutation (Placeholder for now)`. | Build `POST /api/costing/lcm` landed cost allocation. |
+| **Costing** | Cost Mgmt | `ScenarioManager.tsx` | Mock Data | Contains hardcoded standard cost scenarios. | Wire to `cost_scenarios` table. |
+
+### Architectural Conclusion
+While the frontend UI forms and components perfectly mirror Oracle Fusion's granular layout (meeting the prior parity mandate), **the backend API and DB integration layer for several advanced SCM/MFG features is incomplete (unwired).** 
+To achieve true 100% full-stack parity, **all identified mock dependencies must be replaced with Drizzle ORM mutations and TanStack Query endpoints.**
+
+*Action: Commencing the build phase to resolve all identified mock data and unwired components.*

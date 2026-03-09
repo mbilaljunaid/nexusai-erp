@@ -38,9 +38,11 @@ export default function WorkOrderList() {
     const { data, isLoading } = useQuery<{ items: WorkOrder[], total: number }>({
         queryKey: ["/api/manufacturing/work-orders", page],
         queryFn: async () => {
-            // Mock fallback if API shouldn't fail
             const res = await fetch(`/api/manufacturing/work-orders?limit=${limit}&offset=${page * limit}`);
-            if (!res.ok) return { items: [], total: 0 };
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || "Failed to fetch work orders");
+            }
             return res.json();
         }
     });

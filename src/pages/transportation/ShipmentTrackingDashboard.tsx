@@ -16,6 +16,7 @@ import {
 import { exportToExcel, exportToCSV } from "@/lib/exportUtils";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { ShipmentDetailSideSheet } from "@/components/transportation/ShipmentDetailSideSheet";
 
 
 interface ShipmentTracking {
@@ -163,8 +164,8 @@ export default function ShipmentTrackingDashboard() {
     ];
 
     return (
-        <div className="p-6 space-y-6">
-            <div>
+        <StandardPage title="Shipment Tracking Dashboard">
+            <div className="space-y-6">
 
                 <p className="text-muted-foreground">Real-time shipment monitoring and ETA management</p>
             </div>
@@ -249,16 +250,16 @@ export default function ShipmentTrackingDashboard() {
                                     <TableBody>
                                         {activeShipments.slice(0, 10).map((shipment) => (
                                             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedShipment(shipment.shipmentId)}>
-                                            <TableRow
-                                                                                            key={shipment.shipmentId}
-                                                                                            className="cursor-pointer hover:bg-slate-500/10"
-                                                                                        >
-                                                                                            {shipmentColumns.map((col) => (
-                                                                                                <TableCell key={col.key}>
-                                                                                                    {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
-                                                                                                </TableCell>
-                                                                                            ))}
-                                                                                        </TableRow>
+                                                <TableRow
+                                                    key={shipment.shipmentId}
+                                                    className="cursor-pointer hover:bg-slate-500/10"
+                                                >
+                                                    {shipmentColumns.map((col) => (
+                                                        <TableCell key={col.key}>
+                                                            {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
                                             </Button>
                                         ))}
                                     </TableBody>
@@ -337,16 +338,16 @@ export default function ShipmentTrackingDashboard() {
                                     <TableBody>
                                         {activeShipments.map((shipment) => (
                                             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedShipment(shipment.shipmentId)}>
-                                            <TableRow
-                                                                                            key={shipment.shipmentId}
-                                                                                            className="cursor-pointer hover:bg-slate-500/10"
-                                                                                        >
-                                                                                            {shipmentColumns.map((col) => (
-                                                                                                <TableCell key={col.key}>
-                                                                                                    {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
-                                                                                                </TableCell>
-                                                                                            ))}
-                                                                                        </TableRow>
+                                                <TableRow
+                                                    key={shipment.shipmentId}
+                                                    className="cursor-pointer hover:bg-slate-500/10"
+                                                >
+                                                    {shipmentColumns.map((col) => (
+                                                        <TableCell key={col.key}>
+                                                            {col.render ? (col as any).render(shipment[col.key as keyof ActiveShipment]) : shipment[col.key as keyof ActiveShipment] as any}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
                                             </Button>
                                         ))}
                                     </TableBody>
@@ -467,30 +468,12 @@ export default function ShipmentTrackingDashboard() {
                 </TabsContent>
             </Tabs>
 
-            {/* Shipment Detail Modal (placeholder) */}
-            {selectedShipment && (
-                <Dialog open={!!selectedShipment} onOpenChange={() => setSelectedShipment(null)}>
-                    <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                            <DialogTitle>Shipment Details: {selectedShipment}</DialogTitle>
-                            <DialogDescription>Timeline and tracking information</DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                            <p className="text-sm text-muted-foreground">
-                                Detailed shipment view with milestone timeline and mini-map
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                Implementation: Fetch milestones and ETA breakdown for selected shipment
-                            </p>
-                        </div>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setSelectedShipment(null)}>
-                                Close
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            )}
-        </div>
+            {/* Shipment Detail Side Sheet */}
+            <ShipmentDetailSideSheet
+                shipmentId={selectedShipment}
+                open={!!selectedShipment}
+                onOpenChange={(open) => !open && setSelectedShipment(null)}
+            />
+        </StandardPage>
     );
 }

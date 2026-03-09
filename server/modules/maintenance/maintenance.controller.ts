@@ -137,8 +137,32 @@ export class MaintenanceController {
 
     async getAssetHealth(req: Request, res: Response) {
         try {
-            const health = await assetHealthService.getAssetHealth(req.params.id);
-            res.json(health);
+            if (req.params.id) {
+                const health = await assetHealthService.getAssetHealth(req.params.id);
+                res.json(health);
+            } else {
+                const health = await assetHealthService.getFleetHealth();
+                res.json(health);
+            }
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getPredictiveAlerts(req: Request, res: Response) {
+        try {
+            const alerts = await assetHealthService.getPredictiveAlerts();
+            res.json(alerts);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getHealthTrends(req: Request, res: Response) {
+        try {
+            if (!req.params.id) return res.status(400).json({ error: "Asset ID is required" });
+            const trends = await assetHealthService.getHealthTrends(req.params.id);
+            res.json(trends);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
@@ -519,6 +543,24 @@ export class MaintenanceController {
             const { type, parentId } = req.query;
             const codes = await failureAnalysisService.listFailureCodes(type as string, parentId as string);
             res.json(codes);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getFailureCodesTree(req: Request, res: Response) {
+        try {
+            const tree = await failureAnalysisService.getFailureCodesTree();
+            res.json(tree);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async upsertFailureCodes(req: Request, res: Response) {
+        try {
+            const results = await failureAnalysisService.upsertFailureCodes(req.body);
+            res.json(results);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }

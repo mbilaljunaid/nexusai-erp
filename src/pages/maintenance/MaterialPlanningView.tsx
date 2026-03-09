@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { materialService } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Package,
@@ -77,6 +78,7 @@ export function MaterialPlanningView() {
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState<string>("all");
     const [searchTerm, setSearchTerm] = useState("");
+    const { toast } = useToast();
 
     useEffect(() => {
         loadMaterialData();
@@ -113,9 +115,16 @@ export function MaterialPlanningView() {
             // Refresh data to show new PR
             await loadMaterialData();
 
-            // TODO: Show success toast
-        } catch (error) {
-            // TODO: Show error toast
+            toast({
+                title: "PR Generated",
+                description: `Purchase Requisition generated for material.`
+            });
+        } catch (error: any) {
+            toast({
+                title: "PR Generation Failed",
+                description: error.message || "An error occurred.",
+                variant: "destructive"
+            });
         }
     };
 
@@ -127,9 +136,16 @@ export function MaterialPlanningView() {
             // Refresh data to show updated status
             await loadMaterialData();
 
-            // TODO: Show success toast
-        } catch (error) {
-            // TODO: Show error toast
+            toast({
+                title: "PR Submitted",
+                description: `Purchase Requisition has been submitted for approval.`
+            });
+        } catch (error: any) {
+            toast({
+                title: "Submission Failed",
+                description: error.message || "An error occurred.",
+                variant: "destructive"
+            });
         }
     };
 

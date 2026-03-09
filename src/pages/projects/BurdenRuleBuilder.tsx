@@ -31,30 +31,43 @@ export default function BurdenRuleBuilder() {
 
     // Fetch burden rules
     const { data: rules = [] } = useQuery<BurdenRule[]>({
-        queryKey: ["burden-rules"],
+        queryKey: ["/api/ppm/burden-schedules"],
         queryFn: async () => {
-            // Mock data
-            return [
-                {
-                    id: "1",
-                    name: "Standard Corporate Burden",
-                    version: "2.0",
-                    status: "ACTIVE",
-                    tiers: [
-                        { id: "t1", name: "Base Overhead", order: 1, rate: 15, rateType: "PERCENTAGE" },
-                        { id: "t2", name: "G&A", order: 2, rate: 10, rateType: "PERCENTAGE" }
-                    ]
-                }
-            ];
+            const res = await fetch("/api/ppm/burden-schedules");
+            if (!res.ok) return [];
+            const data = await res.json();
+            return data.map((sch: any) => ({
+                id: sch.id,
+                name: sch.name,
+                version: sch.version,
+                status: sch.activeFlag ? "ACTIVE" : "ARCHIVED",
+                tiers: (sch.rules || []).map((r: any) => ({
+                    id: r.id,
+                    name: r.expenditureType || "Base Overhead",
+                    order: r.precedence,
+                    rate: (parseFloat(r.multiplier || "0") * 100).toFixed(2), // Assumes all percentages for simplicity since schema stores decimal
+                    rateType: "PERCENTAGE"
+                }))
+            }));
         }
     });
 
     const createRuleMutation = useMutation({
         mutationFn: async (ruleData: typeof newRule) => {
-            return new Promise(resolve => setTimeout(resolve, 500));
+            const res = await fetch("/api/ppm/burden-schedules", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: ruleData.name,
+                    version: ruleData.version,
+                    activeFlag: true
+                })
+            });
+            if (!res.ok) throw new Error("Failed to create rule");
+            return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["burden-rules"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/ppm/burden-schedules"] });
             setIsCreateDialogOpen(false);
             setNewRule({ name: "", version: "1.0" });
             toast({ title: "Rule Created", description: "New burden rule created." });
@@ -63,19 +76,28 @@ export default function BurdenRuleBuilder() {
 
     const simulateMutation = useMutation({
         mutationFn: async (ruleId: string) => {
-            return new Promise(resolve => setTimeout(resolve, 800));
+            const res = await fetch(`/api/ppm/burden-schedules/${ruleId}/simulate`, { method: "POST" });
+            if (!res.ok) throw new Error("Failed to simulate");
+            return res.json();
         },
-        onSuccess: () => {
-            toast({ title: "Simulation Complete", description: "Tested against 1,204 expenditure items." });
+        onSuccess: (data) => {
+            toast({ title: "Simulation Complete", description: `Tested against ${data.simulatedItems} items. Burdened Cost Impact: ${data.simulatedBurdenCostTotal}` });
         }
     });
 
     const updateTiersMutation = useMutation({
         mutationFn: async (tiersData: any[]) => {
-            return new Promise(resolve => setTimeout(resolve, 500));
+            if (!selectedRuleId) throw new Error("No rule selected");
+            const res = await fetch(`/api/ppm/burden-schedules/${selectedRuleId}/tiers`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tiers: tiersData })
+            });
+            if (!res.ok) throw new Error("Failed to update tiers");
+            return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["burden-rules"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/ppm/burden-schedules"] });
             toast({ title: "Tiers Saved", description: "Burden rule tiers have been updated." });
         }
     });
@@ -190,22 +212,22 @@ export default function BurdenRuleBuilder() {
                                 <TableBody>
                                     {rules.map((rule) => (
                                         <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedRuleId(rule.id)}>
-                                        <TableRow
-                                                                                    key={rule.id}
-                                                                                    className={selectedRuleId === rule.id ? "bg-blue-500/10 border-l-4 border-l-blue-600" : "cursor-pointer"}
-                                                                                >
-                                                                                    <TableCell className="font-medium p-4 py-3">
-                                                                                        <div className="flex justify-between items-center w-full">
-                                                                                            <div>
-                                                                                                <div className="font-bold">{rule.name}</div>
-                                                                                                <div className="text-xs text-muted-foreground mt-1">v{rule.version} &middot; {rule.tiers.length} Tiers</div>
-                                                                                            </div>
-                                                                                            <Badge variant={rule.status === "ACTIVE" ? "default" : "secondary"}>
-                                                                                                {rule.status}
-                                                                                            </Badge>
-                                                                                        </div>
-                                                                                    </TableCell>
-                                                                                </TableRow>
+                                            <TableRow
+                                                key={rule.id}
+                                                className={selectedRuleId === rule.id ? "bg-blue-500/10 border-l-4 border-l-blue-600" : "cursor-pointer"}
+                                            >
+                                                <TableCell className="font-medium p-4 py-3">
+                                                    <div className="flex justify-between items-center w-full">
+                                                        <div>
+                                                            <div className="font-bold">{rule.name}</div>
+                                                            <div className="text-xs text-muted-foreground mt-1">v{rule.version} &middot; {rule.tiers.length} Tiers</div>
+                                                        </div>
+                                                        <Badge variant={rule.status === "ACTIVE" ? "default" : "secondary"}>
+                                                            {rule.status}
+                                                        </Badge>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
                                         </Button>
                                     ))}
                                 </TableBody>

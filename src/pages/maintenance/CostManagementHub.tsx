@@ -9,6 +9,16 @@ import { costService } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { ProjectSelector } from "@/components/ppm/ProjectSelector";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter
+} from "@/components/ui/dialog";
 import {
     DollarSign,
     TrendingUp,
@@ -84,6 +94,11 @@ export function CostManagementHub() {
     const [varianceData, setVarianceData] = useState<VarianceAnalysis[]>([]);
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState<string>("all");
+    const { toast } = useToast();
+
+    // Project Transfer State
+    const [transferCostId, setTransferCostId] = useState<string | null>(null);
+    const [selectedProjectId, setSelectedProjectId] = useState<string>("");
 
     useEffect(() => {
         loadCostData();
@@ -126,9 +141,16 @@ export function CostManagementHub() {
             // Refresh data after approval
             await loadCostData();
 
-            // TODO: Show success toast
-        } catch (error) {
-            // TODO: Show error toast
+            toast({
+                title: "Cost Approved",
+                description: "The work order cost has been approved successfully."
+            });
+        } catch (error: any) {
+            toast({
+                title: "Approval Failed",
+                description: error.message || "An error occurred.",
+                variant: "destructive"
+            });
         }
     };
 
@@ -143,25 +165,53 @@ export function CostManagementHub() {
             // Refresh data after posting
             await loadCostData();
 
-            // TODO: Show success toast
-        } catch (error) {
-            // TODO: Show error toast
+            toast({
+                title: "Posted to GL",
+                description: "The cost has been posted to the General Ledger."
+            });
+        } catch (error: any) {
+            toast({
+                title: "Post Failed",
+                description: error.message || "An error occurred.",
+                variant: "destructive"
+            });
         }
     };
 
-    const handleTransferToProject = async (costId: string) => {
+    const handleTransferToProject = (costId: string) => {
+        setTransferCostId(costId);
+    };
+
+    const confirmTransfer = async () => {
+        if (!transferCostId || !selectedProjectId) {
+            toast({
+                title: "Validation Error",
+                description: "Please select a project.",
+                variant: "destructive"
+            });
+            return;
+        }
+
         try {
             // ✅ LIVE API CALL - Transfer to project
-            // TODO: collect projectId from user input/dialog
-            const projectId = "PROJ-2026-001"; // Placeholder
-            await costService.transferToProject(costId, projectId);
+            await costService.transferToProject(transferCostId, selectedProjectId);
 
             // Refresh data after transfer
             await loadCostData();
 
-            // TODO: Show success toast
-        } catch (error) {
-            // TODO: Show error toast
+            setTransferCostId(null);
+            setSelectedProjectId("");
+
+            toast({
+                title: "Transferred to Project",
+                description: "The cost has been successfully transferred to the selected project."
+            });
+        } catch (error: any) {
+            toast({
+                title: "Transfer Failed",
+                description: error.message || "An error occurred.",
+                variant: "destructive"
+            });
         }
     };
 
@@ -477,6 +527,25 @@ export function CostManagementHub() {
                     </div>
                 </TabsContent>
             </Tabs>
+
+            {/* Project Transfer Dialog */}
+            <Dialog open={!!transferCostId} onOpenChange={(open) => !open && setTransferCostId(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Transfer Cost to Project</DialogTitle>
+                        <DialogDescription>
+                            Select the target project context to transfer this work order cost to. This action will update project actuals.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <ProjectSelector value={selectedProjectId} onChange={setSelectedProjectId} />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setTransferCostId(null)}>Cancel</Button>
+                        <Button onClick={confirmTransfer} disabled={!selectedProjectId}>Confirm Transfer</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

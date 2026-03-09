@@ -46,16 +46,23 @@ export default function UOMConversionMatrix() {
     const [calcResult, setCalcResult] = useState<number | null>(null);
     const [newConv, setNewConv] = useState({ fromUOM: "", toUOM: "", fromClass: UOM_CLASSES[0], toClass: UOM_CLASSES[0], convFactor: "", itemCode: "", note: "" });
 
+    const [conversions, setConversions] = useState<any[]>(SEED_STANDARD);
+
     const calc = () => {
-        const rule = SEED_STANDARD.find(r => r.fromUOM === calcFrom.fromUOM && r.toUOM === calcFrom.toUOM)
-            ?? SEED_STANDARD.find(r => r.toUOM === calcFrom.fromUOM && r.fromUOM === calcFrom.toUOM && false);
+        const rule = conversions.find(r => r.fromUOM === calcFrom.fromUOM && r.toUOM === calcFrom.toUOM)
+            ?? conversions.find(r => r.toUOM === calcFrom.fromUOM && r.fromUOM === calcFrom.toUOM && false);
         if (!rule || !calcFrom.qty) { toast({ title: "No conversion rule found for this UOM pair" }); return; }
         setCalcResult(parseFloat(calcFrom.qty) * rule.convFactor);
     };
 
     const createMutation = useMutation({
         mutationFn: (d: any) => fetch("/api/inventory/uom-conversions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }).then(r => r.json()),
-        onSuccess: () => { toast({ title: "UOM conversion rule saved" }); setIsOpen(false); },
+        onSuccess: (data, variables) => {
+            const newEntry = { id: `UC-${Date.now()}`, ...variables, interClass: variables.fromClass !== variables.toClass };
+            setConversions(prev => [...prev, newEntry]);
+            toast({ title: "UOM conversion rule saved" });
+            setIsOpen(false);
+        },
         onError: () => { toast({ title: "Conversion saved (pending API)" }); setIsOpen(false); },
     });
 
@@ -92,10 +99,10 @@ export default function UOMConversionMatrix() {
         >
             <div className="grid grid-cols-3 gap-4 mb-6">
                 <Card><CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Standard Conversions</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold">{SEED_STANDARD.filter(s => !s.interClass).length}</div></CardContent>
+                    <CardContent><div className="text-2xl font-bold">{conversions.filter(s => !s.interClass).length}</div></CardContent>
                 </Card>
                 <Card className="border-purple-200"><CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Inter-Class Conversions</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold text-purple-700">{SEED_STANDARD.filter(s => s.interClass).length}</div></CardContent>
+                    <CardContent><div className="text-2xl font-bold text-purple-700">{conversions.filter(s => s.interClass).length}</div></CardContent>
                 </Card>
                 <Card className="border-indigo-200"><CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Item-Specific Overrides</CardTitle></CardHeader>
                     <CardContent><div className="text-2xl font-bold text-indigo-700">{SEED_ITEM_OVERRIDES.length}</div></CardContent>
@@ -121,7 +128,7 @@ export default function UOMConversionMatrix() {
                 <TabsList className="mb-4"><TabsTrigger value="standard">Standard Conversions</TabsTrigger><TabsTrigger value="overrides">Item-Specific Overrides ({SEED_ITEM_OVERRIDES.length})</TabsTrigger></TabsList>
                 <TabsContent value="standard">
                     <Card><CardHeader><CardTitle>Conversion Rules</CardTitle><CardDescription>Inter-class conversions (purple) cross UOM class boundaries. Item-specific overrides apply only to a particular item code.</CardDescription></CardHeader>
-                        <CardContent className="p-0"><InteractiveSpreadsheet data={SEED_STANDARD} columns={stdCols} onChange={() => { }} containerHeight="420px" /></CardContent>
+                        <CardContent className="p-0"><InteractiveSpreadsheet data={conversions} columns={stdCols} onChange={() => { }} containerHeight="420px" /></CardContent>
                     </Card>
                 </TabsContent>
                 <TabsContent value="overrides">

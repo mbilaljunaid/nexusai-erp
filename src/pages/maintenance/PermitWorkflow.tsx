@@ -6,6 +6,8 @@ import { permitService } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -64,15 +66,29 @@ const permitSchema = z.object({
     permitTypeId: z.string().min(1, "Permit Type is required"),
     assetName: z.string().optional(),
     workOrderId: z.string().optional(),
-    safetyNotes: z.string().min(1, "Safety Notes / Precautions are required")
+    safetyNotes: z.string().min(1, "Safety Notes / Precautions are required"),
+    hazards: z.array(z.string()).min(1, "Select at least one hazard"),
+    safeguards: z.array(z.string()).min(1, "Select at least one safeguard"),
 });
+
+const AVAILABLE_HAZARDS = [
+    "Electrical", "Working at Heights", "Confined Space",
+    "Hot Work", "Chemical", "Heavy Machinery", "High Pressure"
+];
+
+const AVAILABLE_SAFEGUARDS = [
+    "LOTO (Lockout/Tagout)", "Fall Protection", "Gas Monitoring",
+    "Fire Watch", "PPE Level A/B", "Ventilation", "Barricades"
+];
 
 export function PermitWorkflow() {
     const [permitTypes, setPermitTypes] = useState<PermitType[]>([]);
     const [permits, setPermits] = useState<Permit[]>([]);
-    
+
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+
+    const { toast } = useToast();
 
     // Form state
 
@@ -82,7 +98,9 @@ export function PermitWorkflow() {
             permitTypeId: "",
             assetName: "",
             workOrderId: "",
-            safetyNotes: ""
+            safetyNotes: "",
+            hazards: [],
+            safeguards: []
         }
     });
 
@@ -140,17 +158,24 @@ export function PermitWorkflow() {
                 location: data.assetName || "Unspecified",
                 description: data.safetyNotes || `Permit for ${selectedType.name}`,
                 woId: data.workOrderId || undefined,
-                hazards: [], // TODO: collect from form
-                safeguards: [] // TODO: collect from form
+                hazards: data.hazards,
+                safeguards: data.safeguards
             });
 
-            // TODO: Show success toast
+            toast({
+                title: "Permit Requested",
+                description: "Your work permit request has been submitted successfully."
+            });
 
             await loadPermits(); // Refresh list
             setShowForm(false);
-            form.reset({ permitTypeId: "", assetName: "", workOrderId: "", safetyNotes: "" });
-        } catch (error) {
-            // TODO: Show error toast
+            form.reset({ permitTypeId: "", assetName: "", workOrderId: "", safetyNotes: "", hazards: [], safeguards: [] });
+        } catch (error: any) {
+            toast({
+                title: "Request Failed",
+                description: error.message || "Failed to submit permit request.",
+                variant: "destructive"
+            });
         }
     };
 
@@ -198,111 +223,209 @@ export function PermitWorkflow() {
                     </CardHeader>
                     <CardContent className="pt-6">
                         <Form {...form}>
-                          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            <FormField
-                                control={form.control}
-                                name="permitTypeId"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Permit Type *</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select permit type..." />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {permitTypes.map(type => (
-                                                    <SelectItem key={type.id} value={type.id}>
-                                                        {type.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        {selectedType && (
-                                            <p className="text-xs text-muted-foreground mt-1">{selectedType.description}</p>
-                                        )}
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {selectedType && (
-                                <>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <FormField
-                                            control={form.control}
-                                            name="assetName"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Asset Name</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="Enter asset name..." {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="workOrderId"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Work Order #</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="Optional" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    <FormField
-                                        control={form.control}
-                                        name="safetyNotes"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Safety Notes / Precautions *</FormLabel>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="permitTypeId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Permit Type *</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
                                                 <FormControl>
-                                                    <Textarea
-                                                        placeholder="Describe safety measures, equipment, personnel..."
-                                                        rows={4}
-                                                        {...field}
-                                                    />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select permit type..." />
+                                                    </SelectTrigger>
                                                 </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                                <SelectContent>
+                                                    {permitTypes.map(type => (
+                                                        <SelectItem key={type.id} value={type.id}>
+                                                            {type.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {selectedType && (
+                                                <p className="text-xs text-muted-foreground mt-1">{selectedType.description}</p>
+                                            )}
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                                    <div className="border rounded p-4 bg-blue-500/10">
-                                        <div className="text-sm font-medium mb-2">Required Documents:</div>
-                                        <ul className="text-sm space-y-1">
-                                            {selectedType.requiredDocuments.map((doc, i) => (
-                                                <li key={i} className="flex items-center gap-2">
-                                                    <ClipboardList className="h-4 w-4 text-blue-600" />
-                                                    {doc}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <div className="text-xs text-muted-foreground mt-3">
-                                            Valid for: {selectedType.validityHours} hours •
-                                            Approval levels: {selectedType.approvalLevels}
+                                {selectedType && (
+                                    <>
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="assetName"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Asset Name</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="Enter asset name..." {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="workOrderId"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Work Order #</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="Optional" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
                                         </div>
-                                    </div>
 
-                                    <div className="flex gap-2">
-                                        <Button type="button" variant="outline" className="flex-1" onClick={() => { setShowForm(false); form.reset(); }}>
-                                            Cancel
-                                        </Button>
-                                        <Button type="submit" className="flex-1">
-                                            Submit Request
-                                        </Button>
-                                    </div>
-                                </>
-                            )}
-                        </form>
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <FormField
+                                                control={form.control}
+                                                name="hazards"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <div className="mb-4">
+                                                            <FormLabel className="text-base">Identified Hazards *</FormLabel>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {AVAILABLE_HAZARDS.map((hazard) => (
+                                                                <FormField
+                                                                    key={hazard}
+                                                                    control={form.control}
+                                                                    name="hazards"
+                                                                    render={({ field }) => {
+                                                                        return (
+                                                                            <FormItem
+                                                                                key={hazard}
+                                                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                                                            >
+                                                                                <FormControl>
+                                                                                    <Checkbox
+                                                                                        checked={field.value?.includes(hazard)}
+                                                                                        onCheckedChange={(checked) => {
+                                                                                            return checked
+                                                                                                ? field.onChange([...field.value, hazard])
+                                                                                                : field.onChange(
+                                                                                                    field.value?.filter(
+                                                                                                        (value) => value !== hazard
+                                                                                                    )
+                                                                                                )
+                                                                                        }}
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormLabel className="font-normal text-sm">
+                                                                                    {hazard}
+                                                                                </FormLabel>
+                                                                            </FormItem>
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="safeguards"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <div className="mb-4">
+                                                            <FormLabel className="text-base">Required Safeguards *</FormLabel>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {AVAILABLE_SAFEGUARDS.map((safeguard) => (
+                                                                <FormField
+                                                                    key={safeguard}
+                                                                    control={form.control}
+                                                                    name="safeguards"
+                                                                    render={({ field }) => {
+                                                                        return (
+                                                                            <FormItem
+                                                                                key={safeguard}
+                                                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                                                            >
+                                                                                <FormControl>
+                                                                                    <Checkbox
+                                                                                        checked={field.value?.includes(safeguard)}
+                                                                                        onCheckedChange={(checked) => {
+                                                                                            return checked
+                                                                                                ? field.onChange([...field.value, safeguard])
+                                                                                                : field.onChange(
+                                                                                                    field.value?.filter(
+                                                                                                        (value) => value !== safeguard
+                                                                                                    )
+                                                                                                )
+                                                                                        }}
+                                                                                    />
+                                                                                </FormControl>
+                                                                                <FormLabel className="font-normal text-sm">
+                                                                                    {safeguard}
+                                                                                </FormLabel>
+                                                                            </FormItem>
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
+                                        <FormField
+                                            control={form.control}
+                                            name="safetyNotes"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Safety Notes / Precautions *</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder="Describe safety measures, equipment, personnel..."
+                                                            rows={4}
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <div className="border rounded p-4 bg-blue-500/10">
+                                            <div className="text-sm font-medium mb-2">Required Documents:</div>
+                                            <ul className="text-sm space-y-1">
+                                                {selectedType.requiredDocuments.map((doc, i) => (
+                                                    <li key={i} className="flex items-center gap-2">
+                                                        <ClipboardList className="h-4 w-4 text-blue-600" />
+                                                        {doc}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <div className="text-xs text-muted-foreground mt-3">
+                                                Valid for: {selectedType.validityHours} hours •
+                                                Approval levels: {selectedType.approvalLevels}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <Button type="button" variant="outline" className="flex-1" onClick={() => { setShowForm(false); form.reset(); }}>
+                                                Cancel
+                                            </Button>
+                                            <Button type="submit" className="flex-1">
+                                                Submit Request
+                                            </Button>
+                                        </div>
+                                    </>
+                                )}
+                            </form>
                         </Form>
                     </CardContent>
                 </Card>

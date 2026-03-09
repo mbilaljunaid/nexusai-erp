@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { formatNumber } from '@/lib/formatters';
-
+import { cn } from "@/lib/utils";
 
 export default function FreightSettlementConsole() {
     const { toast } = useToast();
@@ -44,6 +44,12 @@ export default function FreightSettlementConsole() {
             toast({ title: "Interfaced to AP", description: "Freight invoice created in Accounts Payable." });
         }
     });
+
+    const readyForPaymentCharges = (charges || []).filter((c: any) => c.status === "MATCHED");
+    const readyForPaymentSum = readyForPaymentCharges.reduce((sum: number, c: any) => sum + Number(c.actualAmount || 0), 0);
+
+    const disputedCharges = (charges || []).filter((c: any) => c.status === "DISPUTED");
+    const disputesSum = disputedCharges.reduce((sum: number, c: any) => sum + Math.abs(Number(c.varianceAmount || 0)), 0);
 
     const columns = [
         { id: "id", header: "Charge ID", width: "100px", cell: (info: any) => <div className="px-2 h-full flex items-center font-mono text-xs">{String(info.id || "").slice(0, 8)}</div> },
@@ -126,7 +132,7 @@ export default function FreightSettlementConsole() {
         <StandardPage title="Freight Settlement Console">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Manage carrier billing, automated reconciliation, and AP integration.</p>
                 </div>
                 <div className="flex gap-2">
@@ -148,8 +154,8 @@ export default function FreightSettlementConsole() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-black text-emerald-900 dark:text-emerald-200">$142,500.00</div>
-                        <p className="text-xs text-emerald-700/70 mt-1">12 Invoices validated vs agreements</p>
+                        <div className="text-2xl font-black text-emerald-900 dark:text-emerald-200">${formatNumber(readyForPaymentSum)}</div>
+                        <p className="text-xs text-emerald-700/70 mt-1">{readyForPaymentCharges.length} Invoices validated vs agreements</p>
                     </CardContent>
                 </Card>
                 <Card className="border-none shadow-premium bg-amber-500/10">
@@ -160,8 +166,8 @@ export default function FreightSettlementConsole() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-black text-amber-900 dark:text-amber-200">$6,840.00</div>
-                        <p className="text-xs text-amber-700/70 mt-1">3 variances exceeding 5% tolerance</p>
+                        <div className="text-2xl font-black text-amber-900 dark:text-amber-200">${formatNumber(disputesSum)}</div>
+                        <p className="text-xs text-amber-700/70 mt-1">{disputedCharges.length} variances exceeding 5% tolerance</p>
                     </CardContent>
                 </Card>
                 <Card className="border-none shadow-premium bg-indigo-500/10 backdrop-blur-sm border border-indigo-100">
@@ -216,6 +222,3 @@ export default function FreightSettlementConsole() {
         </StandardPage>
     );
 }
-
-// Helper for classNames (mock if not available)
-const cn = (...args: any[]) => args.filter(Boolean).join(" ");

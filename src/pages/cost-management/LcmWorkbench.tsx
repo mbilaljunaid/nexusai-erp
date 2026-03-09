@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Link as LinkIcon, Ship, Calendar, DollarSign, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,8 @@ export default function LcmWorkbench() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
+    const [newOpName, setNewOpName] = useState("");
+    const [newOpNum, setNewOpNum] = useState("");
 
     // Fetch Trade Operations
     const { data: operationsData, isLoading } = useQuery<any>({
@@ -52,6 +55,8 @@ export default function LcmWorkbench() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/lcm/trade-operations"] });
+            setNewOpName("");
+            setNewOpNum("");
             toast({ title: "Trade Operation Created" });
         }
     });
@@ -77,11 +82,30 @@ export default function LcmWorkbench() {
                             </SheetDescription>
                         </SheetHeader>
                         <div className="py-6 space-y-4">
-                            <div className="p-4 border rounded-md bg-muted/50 text-center text-muted-foreground text-sm">
-                                Creation Wizard Coming Soon
+                            <div className="space-y-2">
+                                <Label htmlFor="opName">Operation Name</Label>
+                                <Input
+                                    id="opName"
+                                    placeholder="e.g. Shanghai to LA Shipment"
+                                    value={newOpName}
+                                    onChange={(e) => setNewOpName(e.target.value)}
+                                />
                             </div>
-                            <Button className="w-full" onClick={() => createMutation.mutate({ name: "New Operation", operationNumber: `TO-${Date.now()}` })}>
-                                Quick Create Demo Op
+                            <div className="space-y-2">
+                                <Label htmlFor="opNum">Operation Number</Label>
+                                <Input
+                                    id="opNum"
+                                    placeholder="e.g. TO-2026-X"
+                                    value={newOpNum}
+                                    onChange={(e) => setNewOpNum(e.target.value)}
+                                />
+                            </div>
+                            <Button
+                                className="w-full mt-4"
+                                onClick={() => createMutation.mutate({ name: newOpName, operationNumber: newOpNum })}
+                                disabled={!newOpName || !newOpNum || createMutation.isPending}
+                            >
+                                {createMutation.isPending ? "Creating..." : "Create Trade Operation"}
                             </Button>
                         </div>
                     </SheetContent>

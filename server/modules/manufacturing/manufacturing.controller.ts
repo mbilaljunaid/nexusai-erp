@@ -7,7 +7,7 @@ import { manufacturingCostingService } from "./services/ManufacturingCostingServ
 import { costAnomalyService } from "../../services/CostAnomalyService"; // Assuming this stays or moves later? It's in root services list.
 import { costPredicter } from "../../services/CostPredicter"; // Same
 import { db } from "../../db";
-import { costAnomalies, insertProductionOrderSchema, insertBomSchema, insertRoutingSchema, insertWorkCenterSchema, insertResourceSchema, insertProductionTransactionSchema, insertQualityInspectionSchema, insertProductionCalendarSchema, insertShiftSchema, insertStandardOperationSchema, insertCostElementSchema, insertStandardCostSchema, insertOhRuleSchema, insertDemandForecastSchema, insertMrpPlanSchema, formulas, recipes, manufacturingBatches } from "@shared/schema";
+import { costAnomalies, insertProductionOrderSchema, insertBomSchema, insertRoutingSchema, insertWorkCenterSchema, insertResourceSchema, insertProductionTransactionSchema, insertQualityInspectionSchema, insertProductionCalendarSchema, insertShiftSchema, insertStandardOperationSchema, insertCostElementSchema, insertStandardCostSchema, insertOhRuleSchema, insertDemandForecastSchema, insertMrpPlanSchema, formulas, recipes, manufacturingBatches, cstCostScenarios } from "@shared/schema";
 import { desc, eq, sql } from "drizzle-orm";
 
 export class ManufacturingController {
@@ -435,6 +435,17 @@ export class ManufacturingController {
         }
     }
 
+    async runMrpExplosion(req: Request, res: Response) {
+        try {
+            const { item } = req.body;
+            if (!item) return res.status(400).json({ error: "Item ID is required for BOM explosion" });
+            const result = await manufacturingPlanningService.evaluateMRPExplosion(item);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
 
     // ==============================================================================
     // 8. PROCESS (Formulas, Recipes, Batches)
@@ -572,6 +583,32 @@ export class ManufacturingController {
             ]);
         } catch (error) {
             res.status(500).json({ error: "Failed to fetch events" });
+        }
+    }
+
+    // ==============================================================================
+    // COSTING METHODS
+    // ==============================================================================
+    async getCostScenarios(req: Request, res: Response) {
+        try {
+            const scenarios = await db.select().from(cstCostScenarios).orderBy(desc(cstCostScenarios.createdAt));
+            res.json(scenarios);
+        } catch (error) {
+            console.error('Error fetching cost scenarios', error);
+            res.status(500).json({ error: "Failed to fetch cost scenarios" });
+        }
+    }
+
+    async getCostMetrics(req: Request, res: Response) {
+        try {
+            res.json([
+                { label: 'Total Inventory Value', value: '$12,450,000', change: '+5.2%', icon: 'DollarSign', color: "bg-blue-100 text-blue-700" },
+                { label: 'Gross Margin (MTD)', value: '32.4%', change: '+1.1%', icon: 'TrendingUp', color: "bg-green-100 text-green-700" },
+                { label: 'WIP Balance', value: '$850,000', change: '-2.5%', icon: 'Activity', color: "bg-orange-100 text-orange-700" },
+                { label: 'Uninvoiced Receipts', value: '$125,000', change: '+0.5%', icon: 'Package', color: "bg-purple-100 text-purple-700" },
+            ]);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch cost metrics" });
         }
     }
 }

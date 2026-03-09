@@ -131,15 +131,8 @@ export default function RoutePlanningWorkbench() {
                         </CardContent>
                     </Card>
 
-                    {/* Additional workbench features placeholder */}
-                    <div className="grid grid-cols-1 gap-6">
+                    <div className="mt-6">
                         <RouteMapOverlay shipments={shipments || []} height="300px" />
-                        <Card className="border-none shadow-premium bg-slate-500/10 backdrop-blur-sm h-48 flex items-center justify-center border-2 border-dashed border-border">
-                            <div className="text-center text-muted-foreground/70">
-                                <Truck className="h-10 w-10 mx-auto mb-2 opacity-30" />
-                                <p className="text-sm font-semibold">Fleet Utilization (Phase 6)</p>
-                            </div>
-                        </Card>
                     </div>
                 </div>
 

@@ -42,6 +42,21 @@ export class CarrierRateService {
         return updated;
     }
 
+    static async bulkUpsertRateCards(lines: Partial<InsertTlCarrierRate>[]) {
+        const results = [];
+        for (const line of lines) {
+            if (line.id && !line.id.startsWith("temp-")) {
+                const updated = await this.updateRateCard(line.id, line);
+                results.push(updated);
+            } else {
+                const { id, ...createData } = line;
+                const created = await this.createRateCard(createData as any);
+                results.push(created);
+            }
+        }
+        return results;
+    }
+
     static async deleteRateCard(id: string) {
         // Soft delete - set status to INACTIVE
         const [deleted] = await db

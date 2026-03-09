@@ -59,10 +59,36 @@ export default function DraftInvoiceWorkbench() {
     const { data: invoiceLines = [] } = useQuery<InvoiceLine[]>({
         queryKey: ["invoice-lines", selectedInvoiceId],
         queryFn: async () => {
-            // Mock implementation - replace with actual API
-            return [];
+            const res = await fetch(`/api/ppm/invoices/${selectedInvoiceId}/lines`);
+            if (!res.ok) return [];
+            return res.json();
         },
         enabled: !!selectedInvoiceId
+    });
+
+    // Generate Invoice mutation
+    const generateMutation = useMutation({
+        mutationFn: async () => {
+            const res = await fetch(`/api/ppm/billing/${projectId}/generate-invoice`, {
+                method: "POST"
+            });
+            if (!res.ok) throw new Error("Failed to generate invoice");
+            return res.json();
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["project-invoices"] });
+            if (data) {
+                toast({
+                    title: "Invoice Generated",
+                    description: `Generated draft invoice number ${data.invoiceNumber}.`
+                });
+            } else {
+                toast({
+                    title: "No Invoice Generated",
+                    description: "No unbilled events found to generate an invoice for."
+                });
+            }
+        }
     });
 
     // Approve invoice mutation
@@ -176,10 +202,18 @@ export default function DraftInvoiceWorkbench() {
                     {/* Invoice List */}
                     <Card className="lg:col-span-2 border-t-4 border-t-blue-500">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <FileText className="h-5 w-5" /> Project Invoices
-                            </CardTitle>
-                            <CardDescription>Draft and approved invoices for this project.</CardDescription>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <FileText className="h-5 w-5" /> Project Invoices
+                                    </CardTitle>
+                                    <CardDescription>Draft and approved invoices for this project.</CardDescription>
+                                </div>
+                                <Button size="sm" onClick={() => generateMutation.mutate()} disabled={generateMutation.isPending}>
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    {generateMutation.isPending ? "Generating..." : "Generate Draft"}
+                                </Button>
+                            </div>
                         </CardHeader>
                         <CardContent>
                             {invoices.length === 0 ? (
@@ -201,20 +235,20 @@ export default function DraftInvoiceWorkbench() {
                                     <TableBody>
                                         {invoices.map((invoice) => (
                                             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedInvoiceId(invoice.id)}>
-                                            <TableRow
-                                                                                            key={invoice.id}
-                                                                                            className={selectedInvoiceId === invoice.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
-                                                                                        >
-                                                                                            <TableCell className="font-mono font-medium">{invoice.invoiceNumber}</TableCell>
-                                                                                            <TableCell className="text-xs text-muted-foreground">
-                                                                                                {format(new Date(invoice.invoiceDate), "MMM dd, yyyy")}
-                                                                                            </TableCell>
-                                                                                            <TableCell className="text-right font-mono font-bold">
-                                                                                                ${invoice.amount.toFixed(2)}
-                                                                                            </TableCell>
-                                                                                            <TableCell><StatusBadge status={invoice.status} /></TableCell>
-                                                                                            <TableCell><StatusBadge status={invoice.transferStatus} /></TableCell>
-                                                                                        </TableRow>
+                                                <TableRow
+                                                    key={invoice.id}
+                                                    className={selectedInvoiceId === invoice.id ? "bg-blue-500/10 cursor-pointer" : "cursor-pointer hover:bg-muted/50"}
+                                                >
+                                                    <TableCell className="font-mono font-medium">{invoice.invoiceNumber}</TableCell>
+                                                    <TableCell className="text-xs text-muted-foreground">
+                                                        {format(new Date(invoice.invoiceDate), "MMM dd, yyyy")}
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-mono font-bold">
+                                                        ${invoice.amount.toFixed(2)}
+                                                    </TableCell>
+                                                    <TableCell><StatusBadge status={invoice.status} /></TableCell>
+                                                    <TableCell><StatusBadge status={invoice.transferStatus} /></TableCell>
+                                                </TableRow>
                                             </Button>
                                         ))}
                                     </TableBody>

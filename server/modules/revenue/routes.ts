@@ -40,6 +40,7 @@ revenueRouter.get("/forecasting/projection", revenueController.getForecast);
 revenueRouter.get("/periods", revenueController.getPeriods);
 revenueRouter.post("/periods/close", revenueController.closePeriod);
 revenueRouter.post("/periods/:id/sweep", revenueController.sweepPeriod);
+revenueRouter.post("/periods/auto-sweep", revenueController.autoSweepPeriod);
 
 // Audit
 revenueRouter.get("/audit/trace/:sourceId", revenueController.getAuditTrace);

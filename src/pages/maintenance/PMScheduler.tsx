@@ -20,6 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format, addDays, isBefore, isAfter } from "date-fns";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 // Using PMDefinition type from service layer (imported as PMDefinitionType above)
 
@@ -31,6 +32,7 @@ interface GeneratedWorkOrder {
 }
 
 export function PMScheduler() {
+    const { toast } = useToast();
     const [definitions, setDefinitions] = useState<PMDefinitionType[]>([]);
     const [filteredDefs, setFilteredDefs] = useState<PMDefinitionType[]>([]);
     const [loading, setLoading] = useState(true);
@@ -131,13 +133,15 @@ export function PMScheduler() {
                 endDate: format(endDate, "yyyy-MM-dd")
             });
 
-            // TODO: Show success toast with count
+            // Show success toast with count
+            toast({ title: "PMs Generated", description: `Successfully scheduled ${result.count || "the"} maintenance work orders.` });
 
             setShowPreview(false);
             setSelectedDefs([]);
             await loadPMDefinitions(); // Refresh
-        } catch (error) {
-            // TODO: Show error toast
+        } catch (error: any) {
+            // Show error toast
+            toast({ title: "Error", description: error.message || "Failed to generate PMs.", variant: "destructive" });
         } finally {
             setGenerating(false);
         }
@@ -331,60 +335,60 @@ export function PMScheduler() {
 
                         return (
                             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => toggleSelection(def.id)}>
-                            <Card
-                                                            key={def.id}
-                                                            className={cn(
-                                                                "border-2 cursor-pointer transition-all",
-                                                                isSelected && "border-primary bg-primary/5"
-                                                            )}
-                                                        >
-                                                            <CardContent className="pt-6">
-                                                                <div className="flex items-start justify-between">
-                                                                    <div className="flex-1">
-                                                                        <div className="flex items-center gap-3 mb-2">
-                                                                            <h3 className="font-bold text-lg">{def.name}</h3>
-                                                                            <Badge
-                                                                                variant="outline"
-                                                                                className={def.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-muted text-foreground"}
-                                                                            >
-                                                                                {def.status}
-                                                                            </Badge>
-                                                                            <Badge variant="outline" className={freqConfig.color}>
-                                                                                {freqConfig.label}
-                                                                            </Badge>
-                                                                        </div>
+                                <Card
+                                    key={def.id}
+                                    className={cn(
+                                        "border-2 cursor-pointer transition-all",
+                                        isSelected && "border-primary bg-primary/5"
+                                    )}
+                                >
+                                    <CardContent className="pt-6">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <h3 className="font-bold text-lg">{def.name}</h3>
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={def.status === "ACTIVE" ? "bg-green-100 text-green-800" : "bg-muted text-foreground"}
+                                                    >
+                                                        {def.status}
+                                                    </Badge>
+                                                    <Badge variant="outline" className={freqConfig.color}>
+                                                        {freqConfig.label}
+                                                    </Badge>
+                                                </div>
 
-                                                                        <div className="text-sm text-muted-foreground mb-3">
-                                                                            Asset: {def.assetName} • Every {def.frequencyValue} {def.frequency.toLowerCase()}
-                                                                        </div>
+                                                <div className="text-sm text-muted-foreground mb-3">
+                                                    Asset: {def.assetName} • Every {def.frequencyValue} {def.frequency.toLowerCase()}
+                                                </div>
 
-                                                                        <div className="grid md:grid-cols-3 gap-4 text-sm">
-                                                                            <div>
-                                                                                <span className="text-muted-foreground">Last Generated:</span>
-                                                                                <div className="font-medium">
-                                                                                    {def.lastGenerated ? format(new Date(def.lastGenerated), "MMM dd, yyyy") : "Never"}
-                                                                                </div>
-                                                                            </div>
-                                                                            <div>
-                                                                                <span className="text-muted-foreground">Next Due:</span>
-                                                                                <div className={cn("font-medium flex items-center gap-1", dueStatus.color)}>
-                                                                                    <StatusIcon className="h-4 w-4" />
-                                                                                    {format(new Date(def.nextDue), "MMM dd, yyyy")}
-                                                                                </div>
-                                                                            </div>
-                                                                            <div>
-                                                                                <span className="text-muted-foreground">Status:</span>
-                                                                                <div className="font-medium">{dueStatus.label}</div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                <div className="grid md:grid-cols-3 gap-4 text-sm">
+                                                    <div>
+                                                        <span className="text-muted-foreground">Last Generated:</span>
+                                                        <div className="font-medium">
+                                                            {def.lastGenerated ? format(new Date(def.lastGenerated), "MMM dd, yyyy") : "Never"}
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-muted-foreground">Next Due:</span>
+                                                        <div className={cn("font-medium flex items-center gap-1", dueStatus.color)}>
+                                                            <StatusIcon className="h-4 w-4" />
+                                                            {format(new Date(def.nextDue), "MMM dd, yyyy")}
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-muted-foreground">Status:</span>
+                                                        <div className="font-medium">{dueStatus.label}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                                    <Button variant="ghost" size="icon" aria-label="Settings">
-                                                                        <Settings className="h-4 w-4" />
-                                                                    </Button>
-                                                                </div>
-                                                            </CardContent>
-                                                        </Card>
+                                            <Button variant="ghost" size="icon" aria-label="Settings">
+                                                <Settings className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             </Button>
                         );
                     })

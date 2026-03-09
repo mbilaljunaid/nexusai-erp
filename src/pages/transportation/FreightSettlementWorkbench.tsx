@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/dateUtils";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -135,15 +135,32 @@ export default function FreightSettlementWorkbench() {
         }
     });
 
-    // Fetch settlement trend data (mock)
-    const trendData = [
-        { month: "Jul", settled: 45, disputed: 3 },
-        { month: "Aug", settled: 52, disputed: 2 },
-        { month: "Sep", settled: 48, disputed: 5 },
-        { month: "Oct", settled: 61, disputed: 4 },
-        { month: "Nov", settled: 55, disputed: 2 },
-        { month: "Dec", settled: 58, disputed: 3 }
-    ];
+    // Compute settlement trend data dynamically from charges
+    const trendData = useMemo(() => {
+        const months = [];
+        const date = new Date();
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(date.getFullYear(), date.getMonth() - i, 1);
+            months.push({
+                month: d.toLocaleString('default', { month: 'short' }),
+                monthNum: d.getMonth(),
+                yearNum: d.getFullYear(),
+                settled: 0,
+                disputed: 0
+            });
+        }
+        (charges || []).forEach(c => {
+            if (c.reconciledAt || c.status === "DISPUTED") {
+                const recDate = c.reconciledAt ? new Date(c.reconciledAt) : new Date(); // Fallback to current if disputed but no date
+                const m = months.find(m => m.monthNum === recDate.getMonth() && m.yearNum === recDate.getFullYear());
+                if (m) {
+                    if (c.status === "MATCHED" || c.status === "PAID") m.settled++;
+                    if (c.status === "DISPUTED") m.disputed++;
+                }
+            }
+        });
+        return months;
+    }, [charges]);
 
     // Reconcile charge mutation
     const reconcileMutation = useMutation({

@@ -50,8 +50,19 @@ export default function CostVarianceReport() {
     const [period, setPeriod] = useState(PERIODS[0]);
     const [selectedItem, setSelectedItem] = useState<any>(null);
 
-    const totalStd = SEED_ITEMS.reduce((s, r) => s + r.stdCost, 0);
-    const totalActual = SEED_ITEMS.reduce((s, r) => s + r.actualCost, 0);
+    const { data: varianceData = [], isLoading } = useQuery({
+        queryKey: ["/api/manufacturing/variance-journals", period],
+        queryFn: async () => {
+            const res = await fetch("/api/manufacturing/variance-journals");
+            if (!res.ok) throw new Error("Failed to fetch variance data");
+            return res.json();
+        }
+    });
+
+    const itemsToDisplay = varianceData.length > 0 ? varianceData : SEED_ITEMS; // Fallback to SEED if API is not fully seeded yet for demo
+
+    const totalStd = itemsToDisplay.reduce((s: number, r: any) => s + r.stdCost, 0);
+    const totalActual = itemsToDisplay.reduce((s: number, r: any) => s + r.actualCost, 0);
     const totalVar = totalActual - totalStd;
 
     const summaryCols = useMemo<SpreadsheetColumn<any>[]>(() => [

@@ -300,6 +300,56 @@ export async function registerRoutes(
     }
   });
 
+  // -----------------------------------------------------------------
+  // EQUIPMENT MANAGEMENT (Backed by maintAssets)
+  // -----------------------------------------------------------------
+  app.get("/api/equipment", async (req, res) => {
+    try {
+      const { maintAssets } = await import("@shared/schema");
+      const assets = await db.select().from(maintAssets).where(eq(maintAssets.typeCategory, "Equipment"));
+
+      // Map to EquipmentManagement frontend structure
+      res.json(assets.map((a: any) => ({
+        id: a.id,
+        equipmentId: a.assetNumber || `EQ-${a.id.substring(0, 4)}`,
+        type: a.name,
+        location: a.locationId || "Main Site",
+        hourMeter: "0.00", // Would be fetched from meters
+        status: a.status === "GOOD" ? "operational" : "maintenance",
+        fuelCost: "0.00" // Stub for fuel cost
+      })));
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/equipment", async (req, res) => {
+    try {
+      const { maintAssets } = await import("@shared/schema");
+      const { equipmentId, type, location, status } = req.body;
+      const [asset] = await db.insert(maintAssets).values({
+        name: type,
+        assetNumber: equipmentId,
+        typeCategory: "Equipment",
+        status: status === "operational" ? "GOOD" : "WARNING",
+        criticality: "MEDIUM"
+      }).returning();
+      res.status(201).json(asset);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.delete("/api/equipment/:id", async (req, res) => {
+    try {
+      const { maintAssets } = await import("@shared/schema");
+      await db.delete(maintAssets).where(eq(maintAssets.id, req.params.id));
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   app.use("/api/portal", portalRouter); // Generic Portal (Customer)
   app.use("/api/fa", fixedAssetsRouter);
   app.use("/api/maintenance", maintenanceRouter);

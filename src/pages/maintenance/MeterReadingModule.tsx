@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { formatNumber } from '@/lib/formatters';
+import { useToast } from "@/hooks/use-toast";
 
 // Local types (differ from API types - see mappers below)
 interface Meter {
@@ -86,6 +87,7 @@ const readingSchema = z.object({
 });
 
 export function MeterReadingModule() {
+    const { toast } = useToast();
     const [meters, setMeters] = useState<Meter[]>([]);
     const [selectedMeter, setSelectedMeter] = useState<Meter | null>(null);
     const [readings, setReadings] = useState<MeterReading[]>([]);
@@ -169,8 +171,9 @@ export function MeterReadingModule() {
 
             // Reset form
             form.reset();
-        } catch (error) {
-            // TODO: Show error toast
+            toast({ title: "Success", description: "Meter reading submitted successfully." });
+        } catch (error: any) {
+            toast({ title: "Error", description: error.message || "Failed to submit reading.", variant: "destructive" });
         } finally {
             setSubmitting(false);
         }
@@ -253,65 +256,65 @@ export function MeterReadingModule() {
 
                             return (
                                 <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedMeter(meter)}>
-                                <Card
-                                                                    key={meter.id}
-                                                                    className={cn(
-                                                                        "border-2 cursor-pointer transition-all hover:border-primary",
-                                                                        selectedMeter?.id === meter.id && "border-primary bg-primary/5"
-                                                                    )}
-                                                                >
-                                                                    <CardContent className="pt-6">
-                                                                        <div className="space-y-4">
-                                                                            {/* Header */}
-                                                                            <div className="flex items-start justify-between">
-                                                                                <div className="flex-1">
-                                                                                    <h3 className="font-bold text-lg mb-1">{meter.assetName}</h3>
-                                                                                    <p className="text-sm text-muted-foreground">{meter.meterName}</p>
-                                                                                </div>
-                                                                                <Badge variant="outline" className={statusConfig.badge}>
-                                                                                    {meter.status}
-                                                                                </Badge>
-                                                                            </div>
+                                    <Card
+                                        key={meter.id}
+                                        className={cn(
+                                            "border-2 cursor-pointer transition-all hover:border-primary",
+                                            selectedMeter?.id === meter.id && "border-primary bg-primary/5"
+                                        )}
+                                    >
+                                        <CardContent className="pt-6">
+                                            <div className="space-y-4">
+                                                {/* Header */}
+                                                <div className="flex items-start justify-between">
+                                                    <div className="flex-1">
+                                                        <h3 className="font-bold text-lg mb-1">{meter.assetName}</h3>
+                                                        <p className="text-sm text-muted-foreground">{meter.meterName}</p>
+                                                    </div>
+                                                    <Badge variant="outline" className={statusConfig.badge}>
+                                                        {meter.status}
+                                                    </Badge>
+                                                </div>
 
-                                                                            {/* Current Value */}
-                                                                            <div className="flex items-baseline gap-2">
-                                                                                <Gauge className={cn("h-5 w-5", statusConfig.color)} />
-                                                                                <span className="text-3xl font-bold">{formatNumber(meter.currentValue)}</span>
-                                                                                <span className="text-muted-foreground">{meter.uom}</span>
-                                                                            </div>
+                                                {/* Current Value */}
+                                                <div className="flex items-baseline gap-2">
+                                                    <Gauge className={cn("h-5 w-5", statusConfig.color)} />
+                                                    <span className="text-3xl font-bold">{formatNumber(meter.currentValue)}</span>
+                                                    <span className="text-muted-foreground">{meter.uom}</span>
+                                                </div>
 
-                                                                            {/* Thresholds */}
-                                                                            {meter.highThreshold && (
-                                                                                <div className="space-y-2">
-                                                                                    <div className="flex justify-between text-sm">
-                                                                                        <span className="text-muted-foreground">Threshold Progress</span>
-                                                                                        <span className={cn("font-medium", statusConfig.color)}>
-                                                                                            {percentToThreshold.toFixed(0)}%
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden flex">
-                                                                                        <svg width={`${Math.min(percentToThreshold, 100)}%`} height="100%" className="transition-all">
-                                                                                            <rect width="100%" height="100%" className={cn(statusConfig.bg.replace("bg-", "fill-"))} />
-                                                                                        </svg>
-                                                                                    </div>
-                                                                                    <div className="flex justify-between text-xs text-muted-foreground">
-                                                                                        <span>0</span>
-                                                                                        {meter.pmTriggerValue && (
-                                                                                            <span>PM: {formatNumber(meter.pmTriggerValue)}</span>
-                                                                                        )}
-                                                                                        <span>Max: {formatNumber(meter.highThreshold)}</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            )}
+                                                {/* Thresholds */}
+                                                {meter.highThreshold && (
+                                                    <div className="space-y-2">
+                                                        <div className="flex justify-between text-sm">
+                                                            <span className="text-muted-foreground">Threshold Progress</span>
+                                                            <span className={cn("font-medium", statusConfig.color)}>
+                                                                {percentToThreshold.toFixed(0)}%
+                                                            </span>
+                                                        </div>
+                                                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden flex">
+                                                            <svg width={`${Math.min(percentToThreshold, 100)}%`} height="100%" className="transition-all">
+                                                                <rect width="100%" height="100%" className={cn(statusConfig.bg.replace("bg-", "fill-"))} />
+                                                            </svg>
+                                                        </div>
+                                                        <div className="flex justify-between text-xs text-muted-foreground">
+                                                            <span>0</span>
+                                                            {meter.pmTriggerValue && (
+                                                                <span>PM: {formatNumber(meter.pmTriggerValue)}</span>
+                                                            )}
+                                                            <span>Max: {formatNumber(meter.highThreshold)}</span>
+                                                        </div>
+                                                    </div>
+                                                )}
 
-                                                                            {/* Last Reading */}
-                                                                            <div className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                                <Clock className="h-3 w-3" />
-                                                                                Last reading: {format(new Date(meter.lastReadingDate), "MMM dd, yyyy HH:mm")}
-                                                                            </div>
-                                                                        </div>
-                                                                    </CardContent>
-                                                                </Card>
+                                                {/* Last Reading */}
+                                                <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                                    <Clock className="h-3 w-3" />
+                                                    Last reading: {format(new Date(meter.lastReadingDate), "MMM dd, yyyy HH:mm")}
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
                                 </Button>
                             );
                         })}

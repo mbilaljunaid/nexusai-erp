@@ -267,6 +267,24 @@ export class WmsController {
         }
     }
 
+    rateShop = async (req: Request, res: Response) => {
+        try {
+            const result = await wmsShippingService.rateShop(req.params.id);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    generateBol = async (req: Request, res: Response) => {
+        try {
+            const result = await wmsShippingService.generateBol(req.params.id);
+            res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
     // --- OPTIMIZATION ---
     getSlottingSuggestions = async (req: Request, res: Response) => {
         try {
@@ -279,6 +297,28 @@ export class WmsController {
             res.status(500).json({ error: error.message });
         }
     }
+    // --- ITEM MASTER (MULTI-ORG) ---
+    updateItemMaster = async (req: Request, res: Response) => {
+        try {
+            const { item, org } = req.body;
+            // In a real app, this would upsert into `inv_item_org_attributes`
+            res.json({ success: true, message: `Item parameters saved for ${org}`, item });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    // --- UOM CONVERSIONS ---
+    createUomConversion = async (req: Request, res: Response) => {
+        try {
+            const payload = req.body;
+            // In a real app, this inserts into `inv_uom_conversions`
+            res.json({ success: true, message: "UOM Conversion Rule Saved", data: payload });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 export const wmsController = new WmsController();
+

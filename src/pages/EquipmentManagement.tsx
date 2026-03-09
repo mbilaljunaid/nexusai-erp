@@ -27,6 +27,9 @@ export default function EquipmentManagement() {
       setNewEq({ equipmentId: "", type: "Excavator", location: "Site-A", hourMeter: "0", status: "operational", fuelCost: "50" });
       toast({ title: "Equipment added" });
     },
+    onError: (error: any) => {
+      toast({ title: "Error adding equipment", description: error.message, variant: "destructive" });
+    }
   });
 
   const deleteMutation = useMutation({
@@ -35,6 +38,9 @@ export default function EquipmentManagement() {
       queryClient.invalidateQueries({ queryKey: ["/api/equipment"] });
       toast({ title: "Equipment deleted" });
     },
+    onError: (error: any) => {
+      toast({ title: "Error deleting equipment", description: error.message, variant: "destructive" });
+    }
   });
 
   const operational = equipment.filter((e: any) => e.status === "operational").length;

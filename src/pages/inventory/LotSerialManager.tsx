@@ -74,33 +74,69 @@ export function LotSerialManager() {
     });
 
     // Mutations
-    const handleSaveLots = (rows: any[]) => {
-        // Mock bulk save
-        rows.forEach(row => {
-            if (row.lotNumber && row.inventoryId && !row.id) {
-                api.inventory.lots.create({
-                    inventoryId: row.inventoryId,
-                    lotNumber: row.lotNumber,
-                    quantity: parseFloat(row.quantity) || 0
-                });
-            }
-        });
-        toast({ title: "Lots Updated", description: "Successfully saved bulk lots data." });
-        queryClient.invalidateQueries({ queryKey: ["/api/inventory/lots"] });
+    const handleSaveLots = async (rows: any[]) => {
+        try {
+            const promises = rows.map(row => {
+                if (row.lotNumber && row.inventoryId && !row.id?.toString().startsWith('temp-')) {
+                    // Ignore already saved
+                    return Promise.resolve();
+                }
+                if (row.lotNumber && row.inventoryId) {
+                    return fetch("/api/inventory/lots", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", ...scopeHeaders },
+                        body: JSON.stringify({
+                            inventoryId: row.inventoryId,
+                            lotNumber: row.lotNumber,
+                            quantity: parseFloat(row.quantity) || 0,
+                            status: row.status || "Active",
+                            expirationDate: row.expirationDate || null
+                        }),
+                    }).then(res => {
+                        if (!res.ok) throw new Error("Failed to save lot");
+                    });
+                }
+                return Promise.resolve();
+            });
+
+            await Promise.all(promises);
+            toast({ title: "Lots Updated", description: "Successfully saved bulk lots data." });
+            queryClient.invalidateQueries({ queryKey: ["/api/inventory/lots"] });
+        } catch (error: any) {
+            toast({ title: "Error Saving Lots", description: error.message, variant: "destructive" });
+        }
     };
 
-    const handleSaveSerials = (rows: any[]) => {
-        // Mock bulk save
-        rows.forEach(row => {
-            if (row.serialNumber && row.inventoryId && !row.id) {
-                api.inventory.serials.create({
-                    inventoryId: row.inventoryId,
-                    serialNumber: row.serialNumber
-                });
-            }
-        });
-        toast({ title: "Serials Updated", description: "Successfully saved bulk serials data." });
-        queryClient.invalidateQueries({ queryKey: ["/api/inventory/serials"] });
+    const handleSaveSerials = async (rows: any[]) => {
+        try {
+            const promises = rows.map(row => {
+                if (row.serialNumber && row.inventoryId && !row.id?.toString().startsWith('temp-')) {
+                    // Ignore already saved
+                    return Promise.resolve();
+                }
+                if (row.serialNumber && row.inventoryId) {
+                    return fetch("/api/inventory/serials", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", ...scopeHeaders },
+                        body: JSON.stringify({
+                            inventoryId: row.inventoryId,
+                            serialNumber: row.serialNumber,
+                            status: row.status || "Active",
+                            currentLocatorId: row.currentLocatorId || null
+                        }),
+                    }).then(res => {
+                        if (!res.ok) throw new Error("Failed to save serial");
+                    });
+                }
+                return Promise.resolve();
+            });
+
+            await Promise.all(promises);
+            toast({ title: "Serials Updated", description: "Successfully saved bulk serials data." });
+            queryClient.invalidateQueries({ queryKey: ["/api/inventory/serials"] });
+        } catch (error: any) {
+            toast({ title: "Error Saving Serials", description: error.message, variant: "destructive" });
+        }
     };
 
     const itemOptions = items.map((i: any) => ({ label: `${i.itemName} (${i.sku})`, value: i.id }));

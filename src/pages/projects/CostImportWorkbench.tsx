@@ -126,35 +126,32 @@ export default function CostImportWorkbench() {
         if (!csvFile) return;
 
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             const text = e.target?.result as string;
             const lines = text.split("\n").filter(l => l.trim());
             const dataLines = lines.slice(1); // Skip header
 
-            const validated: ImportRow[] = dataLines.map((line, idx) => {
-                const values = line.split(",").map(v => v.trim());
-                const row: any = { id: idx, rowNumber: idx + 2, status: "pending", errors: [] };
+            const rows = dataLines.map(line => ({ values: line.split(",").map(v => v.trim()) }));
 
-                fieldMappings.forEach((mapping, i) => {
-                    if (mapping.targetField && values[i]) {
-                        row[mapping.targetField] = values[i];
-                    }
+            try {
+                const res = await fetch("/api/ppm/costs/validate-import", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ rows, mappings: fieldMappings })
                 });
 
-                // Validation
-                if (!row.taskId) row.errors.push("Task ID is required");
-                if (!row.expenditureTypeId) row.errors.push("Expenditure Type is required");
-                if (!row.expenditureItemDate) row.errors.push("Date is required");
-                if (!row.quantity || isNaN(Number(row.quantity))) row.errors.push("Valid quantity is required");
-                if (!row.rawCost || isNaN(Number(row.rawCost))) row.errors.push("Valid cost is required");
-                if (!row.transactionSource) row.errors.push("Transaction source is required");
+                if (!res.ok) throw new Error("Validation failed");
+                const { validated } = await res.json();
 
-                row.status = row.errors.length === 0 ? "valid" : "error";
-                return row as ImportRow;
-            });
-
-            setPreviewData(validated);
-            setImportStep("validation");
+                setPreviewData(validated);
+                setImportStep("validation");
+            } catch (error: any) {
+                toast({
+                    title: "Validation Error",
+                    description: error.message,
+                    variant: "destructive"
+                });
+            }
         };
 
         reader.readAsText(csvFile);

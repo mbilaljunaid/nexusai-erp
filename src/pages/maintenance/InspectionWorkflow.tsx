@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { qualityService, type InspectionItem } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -56,6 +57,7 @@ interface InspectionResult {
 }
 
 export function InspectionWorkflow() {
+    const { toast } = useToast();
     const [templates, setTemplates] = useState<InspectionTemplate[]>([]);
     const [inspections, setInspections] = useState<Inspection[]>([]);
     const [selectedTemplate, setSelectedTemplate] = useState<InspectionTemplate | null>(null);
@@ -168,7 +170,11 @@ export function InspectionWorkflow() {
                 }))
             });
 
-            // TODO: Show success toast
+            // Show success toast
+            toast({
+                title: "Inspection Submitted",
+                description: "The inspection results have been successfully saved.",
+            });
 
             // Reset
             setCurrentInspection(null);
@@ -176,8 +182,13 @@ export function InspectionWorkflow() {
             setInspectionItems([]);
             setResults([]);
             await loadInspections();
-        } catch (error) {
-            // TODO: Show error toast
+        } catch (error: any) {
+            // Show error toast
+            toast({
+                title: "Submission Failed",
+                description: error.message || "An error occurred while submitting the inspection.",
+                variant: "destructive"
+            });
         }
     };
 

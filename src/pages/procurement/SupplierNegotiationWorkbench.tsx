@@ -36,7 +36,8 @@ const SEED_BIDS: Record<string, any[]> = {
 
 export default function SupplierNegotiationWorkbench() {
     const { toast } = useToast();
-    const [selected, setSelected] = useState<any>(SEED_NEGOTIATIONS[0]);
+    const [negotiations, setNegotiations] = useState<any[]>(SEED_NEGOTIATIONS);
+    const [selected, setSelected] = useState<any>(negotiations[0]);
     const [roundFilter, setRoundFilter] = useState<string>("All");
     const [isAwardOpen, setIsAwardOpen] = useState(false);
     const [awardSupplier, setAwardSupplier] = useState("");
@@ -44,19 +45,32 @@ export default function SupplierNegotiationWorkbench() {
 
     const awardMutation = useMutation({
         mutationFn: (d: any) => fetch(`/api/procurement/negotiations/${d.id}/award`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) }).then(r => r.json()),
-        onSuccess: () => { toast({ title: `Negotiation awarded to ${awardSupplier} — PO will be auto-generated` }); setIsAwardOpen(false); },
+        onSuccess: (data, variables) => {
+            setNegotiations(p => p.map(n => n.id === variables.id ? { ...n, status: "Awarded" } : n));
+            if (selected?.id === variables.id) setSelected((prev: any) => ({ ...prev, status: "Awarded" }));
+            toast({ title: `Negotiation awarded to ${awardSupplier} — PO will be auto-generated` });
+            setIsAwardOpen(false);
+        },
         onError: () => { toast({ title: "Award recorded (pending API)" }); setIsAwardOpen(false); },
     });
 
     const openRoundMutation = useMutation({
         mutationFn: (id: string) => fetch(`/api/procurement/negotiations/${id}/open-round`, { method: "POST" }).then(r => r.json()),
-        onSuccess: () => toast({ title: "Next bid round opened — suppliers notified" }),
+        onSuccess: (data, id) => {
+            setNegotiations(p => p.map(n => n.id === id ? { ...n, currentRound: n.currentRound + 1, status: `Active — Round ${n.currentRound + 1} Open` } : n));
+            if (selected?.id === id) setSelected((prev: any) => ({ ...prev, currentRound: prev.currentRound + 1, status: `Active — Round ${prev.currentRound + 1} Open` }));
+            toast({ title: "Next bid round opened — suppliers notified" });
+        },
         onError: () => toast({ title: "Round opened (pending API)" }),
     });
 
     const closeMutation = useMutation({
         mutationFn: (id: string) => fetch(`/api/procurement/negotiations/${id}/close`, { method: "POST" }).then(r => r.json()),
-        onSuccess: () => toast({ title: "Sealed bids locked — results revealed to evaluation team" }),
+        onSuccess: (data, id) => {
+            setNegotiations(p => p.map(n => n.id === id ? { ...n, sealed: false, status: "Evaluations Active" } : n));
+            if (selected?.id === id) setSelected((prev: any) => ({ ...prev, sealed: false, status: "Evaluations Active" }));
+            toast({ title: "Sealed bids locked — results revealed to evaluation team" });
+        },
         onError: () => toast({ title: "Bids closed and revealed (pending API)" }),
     });
 
@@ -94,13 +108,13 @@ export default function SupplierNegotiationWorkbench() {
         >
             <div className="grid grid-cols-3 gap-4 mb-6">
                 <Card><CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground">Active Negotiations</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold text-blue-600">{SEED_NEGOTIATIONS.filter(n => n.status !== "Awarded").length}</div></CardContent>
+                    <CardContent><div className="text-2xl font-bold text-blue-600">{negotiations.filter(n => n.status !== "Awarded").length}</div></CardContent>
                 </Card>
                 <Card className="border-green-200"><CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground flex gap-2 items-center"><TrendingDown className="h-4 w-4 text-green-600" />Total Savings Captured</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold text-green-700">${formatNumber(SEED_NEGOTIATIONS.filter(n => n.saving).reduce((s, n) => s + n.saving, 0))}</div></CardContent>
+                    <CardContent><div className="text-2xl font-bold text-green-700">${formatNumber(negotiations.filter(n => n.saving).reduce((s, n) => s + n.saving, 0))}</div></CardContent>
                 </Card>
                 <Card className="border-amber-200"><CardHeader className="pb-2"><CardTitle className="text-sm text-muted-foreground flex gap-2 items-center"><Lock className="h-4 w-4 text-amber-500" />Sealed Bids Active</CardTitle></CardHeader>
-                    <CardContent><div className="text-2xl font-bold text-amber-600">{SEED_NEGOTIATIONS.filter(n => n.sealed).length}</div></CardContent>
+                    <CardContent><div className="text-2xl font-bold text-amber-600">{negotiations.filter(n => n.sealed).length}</div></CardContent>
                 </Card>
             </div>
 
@@ -109,7 +123,7 @@ export default function SupplierNegotiationWorkbench() {
 
                 <TabsContent value="list">
                     <Card><CardHeader><CardTitle>Sourcing Negotiations</CardTitle></CardHeader>
-                        <CardContent className="p-0"><InteractiveSpreadsheet data={SEED_NEGOTIATIONS} columns={negCols} onChange={() => { }} containerHeight="380px" /></CardContent>
+                        <CardContent className="p-0"><InteractiveSpreadsheet data={negotiations} columns={negCols} onChange={() => { }} containerHeight="380px" /></CardContent>
                     </Card>
                 </TabsContent>
 

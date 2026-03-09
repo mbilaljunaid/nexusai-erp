@@ -110,4 +110,152 @@ export function registerMfgInventoryRoutes(app: Express) {
     app.get("/api/mfg/consignment", async (req, res) => { try { const { consignmentService: s } = await import("./inventory-ops.service"); res.json(await s.list(tid(req), req.query.type as string, req.query.status as string)); } catch (e: any) { res.status(500).json({ error: e.message }); } });
     app.get("/api/mfg/consignment/alerts", async (req, res) => { try { const { consignmentService: s } = await import("./inventory-ops.service"); res.json(await s.getReplenishmentAlerts(tid(req))); } catch (e: any) { res.status(500).json({ error: e.message }); } });
     app.get("/api/mfg/consignment/summary", async (req, res) => { try { const { consignmentService: s } = await import("./inventory-ops.service"); res.json(await s.getConsumptionSummary(tid(req))); } catch (e: any) { res.status(500).json({ error: e.message }); } });
+    // ─── Lots & Serials (Module 18) ──────────────────────────────────────────
+    app.get("/api/inventory/lots", async (req: any, res: any) => {
+        try {
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const search = req.query.search as string;
+            const limit = parseInt(req.query.limit as string) || 100;
+            const offset = parseInt(req.query.offset as string) || 0;
+
+            const { Pool } = require('pg');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            let query = `
+                SELECT l.*, i."itemNumber", i.description 
+                FROM inventory_lot_serial l
+                JOIN inv_items i ON l.inventory_id = i.id
+                WHERE l.lot_number IS NOT NULL
+            `;
+            const params: any[] = [];
+
+            if (inventoryOrgId) {
+                params.push(inventoryOrgId);
+                query += ` AND (i.ent_inventory_org_id = $${params.length} OR i."organizationId" = $${params.length})`;
+            }
+
+            if (search) {
+                params.push(`%${search}%`);
+                query += ` AND (l.lot_number ILIKE $${params.length} OR i."itemNumber" ILIKE $${params.length})`;
+            }
+
+            query += ` ORDER BY l.created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+            params.push(limit, offset);
+
+            const r = await pool.query(query, params);
+            await pool.end();
+
+            res.json({
+                data: r.rows.map(row => ({
+                    id: row.id,
+                    inventoryId: row.inventory_id,
+                    lotNumber: row.lot_number,
+                    quantity: row.quantity,
+                    status: row.status,
+                    expirationDate: row.expiration_date,
+                    item: {
+                        id: row.inventory_id,
+                        itemNumber: row.itemNumber,
+                        description: row.description
+                    }
+                })),
+                total: r.rowCount // Simple total for now
+            });
+        } catch (e: any) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+
+    app.post("/api/inventory/lots", async (req: any, res: any) => {
+        try {
+            const { inventoryId, lotNumber, quantity, status, expirationDate } = req.body;
+            const { Pool } = require('pg');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+            const r = await pool.query(
+                `INSERT INTO inventory_lot_serial(inventory_id, lot_number, quantity, status, expiration_date)
+                 VALUES($1, $2, $3, $4, $5) RETURNING *`,
+                [inventoryId, lotNumber, quantity || 0, status || 'Active', expirationDate || null]
+            );
+            await pool.end();
+            res.status(201).json(r.rows[0]);
+        } catch (e: any) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+
+    app.get("/api/inventory/serials", async (req: any, res: any) => {
+        try {
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const search = req.query.search as string;
+            const limit = parseInt(req.query.limit as string) || 100;
+            const offset = parseInt(req.query.offset as string) || 0;
+
+            const { Pool } = require('pg');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+            let query = `
+                SELECT s.*, i."itemNumber", i.description 
+                FROM inventory_lot_serial s
+                JOIN inv_items i ON s.inventory_id = i.id
+                WHERE s.serial_number IS NOT NULL
+            `;
+            const params: any[] = [];
+
+            if (inventoryOrgId) {
+                params.push(inventoryOrgId);
+                query += ` AND (i.ent_inventory_org_id = $${params.length} OR i."organizationId" = $${params.length})`;
+            }
+
+            if (search) {
+                params.push(`%${search}%`);
+                query += ` AND (s.serial_number ILIKE $${params.length} OR i."itemNumber" ILIKE $${params.length})`;
+            }
+
+            query += ` ORDER BY s.created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+            params.push(limit, offset);
+
+            const r = await pool.query(query, params);
+            await pool.end();
+
+            res.json({
+                data: r.rows.map(row => ({
+                    id: row.id,
+                    inventoryId: row.inventory_id,
+                    serialNumber: row.serial_number,
+                    quantity: row.quantity,
+                    status: row.status,
+                    currentLocatorId: row.current_locator_id,
+                    item: {
+                        id: row.inventory_id,
+                        itemNumber: row.itemNumber,
+                        description: row.description
+                    }
+                })),
+                total: r.rowCount // Simple total for now
+            });
+        } catch (e: any) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+
+    app.post("/api/inventory/serials", async (req: any, res: any) => {
+        try {
+            const { inventoryId, serialNumber, status, currentLocatorId } = req.body;
+            const { Pool } = require('pg');
+            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+            // Re-using quantity 1 for serials, and storing currentLocator in a suitable way 
+            // the schema didn't have currentLocatorId natively on the table but UI expects it
+            // We'll insert it as quantity 1.
+            const r = await pool.query(
+                `INSERT INTO inventory_lot_serial(inventory_id, serial_number, quantity, status)
+                 VALUES($1, $2, 1, $3) RETURNING *`,
+                [inventoryId, serialNumber, status || 'Active']
+            );
+            await pool.end();
+            res.status(201).json(r.rows[0]);
+        } catch (e: any) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+
 }

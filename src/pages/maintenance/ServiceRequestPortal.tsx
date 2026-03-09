@@ -6,6 +6,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Plus,
@@ -93,6 +94,7 @@ export function ServiceRequestPortal() {
     const [showForm, setShowForm] = useState(false);
     const [statusFilter, setStatusFilter] = useState<string>("all");
     const [searchTerm, setSearchTerm] = useState("");
+    const { toast } = useToast();
 
     // Form state
     const form = useForm<z.infer<typeof requestSchema>>({
@@ -141,8 +143,17 @@ export function ServiceRequestPortal() {
             setRequests([newRequest, ...requests]);
             setShowForm(false);
             form.reset();
-        } catch (error) {
-            // TODO: Show error toast to user
+
+            toast({
+                title: "Request Submitted",
+                description: `Service request ${newRequest.number} has been created.`
+            });
+        } catch (error: any) {
+            toast({
+                title: "Failed to Submit",
+                description: error.message || "An error occurred.",
+                variant: "destructive"
+            });
         }
     };
 
@@ -157,9 +168,16 @@ export function ServiceRequestPortal() {
                     : req
             ));
 
-            // TODO: Show success toast with WO number
-        } catch (error) {
-            // TODO: Show error toast to user
+            toast({
+                title: "Converted to Work Order",
+                description: `Successfully converted SR to work order ${result.woNumber}`
+            });
+        } catch (error: any) {
+            toast({
+                title: "Conversion Failed",
+                description: error.message || "An error occurred.",
+                variant: "destructive"
+            });
         }
     };
 

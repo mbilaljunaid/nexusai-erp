@@ -21,7 +21,7 @@ export default function CostDashboard() {
         'inventory-org': activeInvOrgId,
     });
 
-    const { data: apiMetrics, isLoading } = useQuery<any>({
+    const { data: metrics = [], isLoading } = useQuery<any>({
         queryKey: ["/api/manufacturing/costs/metrics", period, activeBuId, activeInvOrgId],
         queryFn: async () => {
             const res = await fetch(
@@ -29,19 +29,11 @@ export default function CostDashboard() {
                 { headers: { 'Content-Type': 'application/json', ...scopeHeaders } }
             );
             if (!res.ok) {
-                if (res.status === 404) return null; // Fallback to mock
                 throw new Error("Failed to fetch cost metrics");
             }
             return res.json();
         }
     });
-
-    const metrics = apiMetrics || [
-        { label: 'Total Inventory Value', value: '$12,450,000', change: '+5.2%', icon: DollarSign, color: "bg-blue-100 text-blue-700" },
-        { label: 'Gross Margin (MTD)', value: '32.4%', change: '+1.1%', icon: TrendingUp, color: "bg-green-100 text-green-700" },
-        { label: 'WIP Balance', value: '$850,000', change: '-2.5%', icon: Activity, color: "bg-orange-100 text-orange-700" },
-        { label: 'Uninvoiced Receipts', value: '$125,000', change: '+0.5%', icon: Package, color: "bg-purple-100 text-purple-700" },
-    ];
 
     const valuationChatData = [
         { name: 'Jan', value: 10500 },
@@ -75,24 +67,35 @@ export default function CostDashboard() {
         </div>
     );
 
+    // Map string from API to actual Lucide component
+    const IconMap: Record<string, any> = {
+        'DollarSign': DollarSign,
+        'TrendingUp': TrendingUp,
+        'Activity': Activity,
+        'Package': Package
+    };
+
     return (
         <StandardDashboard header={header}>
             {/* Metrics */}
-            {metrics.map((metric: any, i: number) => (
-                <DashboardWidget key={i} title={metric.label} colSpan={1}>
-                    <div className="flex items-center gap-4">
-                        <div className={cn(`p-3 rounded-full ${metric.color}`)}>
-                            <metric.icon className="h-6 w-6" />
+            {metrics.map((metric: any, i: number) => {
+                const IconComponent = IconMap[metric.icon] || DollarSign;
+                return (
+                    <DashboardWidget key={i} title={metric.label} colSpan={1}>
+                        <div className="flex items-center gap-4">
+                            <div className={cn(`p-3 rounded-full ${metric.color}`)}>
+                                <IconComponent className="h-6 w-6" />
+                            </div>
+                            <div>
+                                <div className="text-2xl font-bold">{metric.value}</div>
+                                <p className={cn(`text-xs ${metric.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`)}>
+                                    {metric.change} from last period
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <div className="text-2xl font-bold">{metric.value}</div>
-                            <p className={cn(`text-xs ${metric.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`)}>
-                                {metric.change} from last period
-                            </p>
-                        </div>
-                    </div>
-                </DashboardWidget>
-            ))}
+                    </DashboardWidget>
+                );
+            })}
 
             {/* Charts */}
             <DashboardWidget title="Inventory Valuation Trend" colSpan={2} className="min-h-80">
