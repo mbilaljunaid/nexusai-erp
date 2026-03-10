@@ -50,8 +50,9 @@ export default function CaseDashboard() {
         }
     });
 
-    const openCount = cases?.filter((c: any) => c.status !== 'Closed').length || 0;
-    const highPriorityCount = cases?.filter((c: any) => c.priority === 'High' && c.status !== 'Closed').length || 0;
+    const safeCases = Array.isArray(cases) ? cases : [];
+    const openCount = safeCases.filter((c: any) => c.status !== 'Closed').length;
+    const highPriorityCount = safeCases.filter((c: any) => c.priority === 'High' && c.status !== 'Closed').length;
 
     return (
         <StandardPage
@@ -110,10 +111,10 @@ export default function CaseDashboard() {
                         <TableBody>
                             {isLoading ? (
                                 <TableRow><TableCell colSpan={6} className="text-center py-4"><TableSkeleton rows={4} /></TableCell></TableRow>
-                            ) : cases?.length === 0 ? (
+                            ) : safeCases.length === 0 ? (
                                 <TableRow><TableCell colSpan={6} className="text-center py-8">No tickets found.</TableCell></TableRow>
                             ) : (
-                                cases?.map((c: any) => (
+                                safeCases.map((c: any) => (
                                     <TableRow key={c.id}>
                                         <TableCell className="font-medium">{c.subject}</TableCell>
                                         <TableCell>

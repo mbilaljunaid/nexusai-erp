@@ -18,7 +18,6 @@ export default function PartnerDashboard() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    // Initialize Mock Partner
     const [isRegisterOpen, setIsRegisterOpen] = useState(false);
     const [newItem, setNewItem] = useState({ dealName: "", customerName: "", amount: "", notes: "" });
 

@@ -7,13 +7,6 @@ import { useState } from "react";
 import { BarChart3, Mail, Share2, TrendingUp, Users, Settings, Zap, PieChart, Target, Activity } from "lucide-react";
 import { Link } from "wouter";
 
-function CampaignEntryForm() {
-  return (
-    <div className="border-2 rounded-xl bg-muted/10 border-dashed text-center p-8">
-      <p className="text-muted-foreground">Campaign Entry Form Placeholder</p>
-    </div>
-  );
-}
 
 export default function Marketing() {
   const [activeNav, setActiveNav] = useState("overview");
@@ -66,17 +59,29 @@ export default function Marketing() {
         </div>
       )}
 
-      {activeNav === "campaigns" && <div className="space-y-4"><CampaignEntryForm /></div>}
-
-      {activeNav === "email" && (
+      {activeNav === "campaigns" && (
         <div className="space-y-4">
-          <Card><CardHeader><CardTitle>Email Marketing</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Design and send targeted email campaigns</p><Button size="sm" className="mt-4">+ Create Email</Button></CardContent></Card>
+          <Card><CardHeader><CardTitle>Campaign Management</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Go to Campaign Automation to build sequences</p><Link href="/crm/marketing-automation"><Button size="sm" className="mt-4">Campaign Builder</Button></Link></CardContent></Card>
         </div>
       )}
 
-      {activeNav === "social" && <div className="space-y-4"><CampaignEntryForm /></div>}
+      {activeNav === "email" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Email Marketing</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Design and send targeted email campaigns</p><Link href="/crm/campaign-flow-builder"><Button size="sm" className="mt-4">Email Builder</Button></Link></CardContent></Card>
+        </div>
+      )}
 
-      {activeNav === "leads" && <div className="space-y-4"><CampaignEntryForm /></div>}
+      {activeNav === "social" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Social Media Campaigns</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Manage multi-channel social posts</p><Button size="sm" className="mt-4">+ Add Post</Button></CardContent></Card>
+        </div>
+      )}
+
+      {activeNav === "leads" && (
+        <div className="space-y-4">
+          <Card><CardHeader><CardTitle>Lead Scoring Rules</CardTitle></CardHeader><CardContent><p className="text-muted-foreground">Configure AI Predictive Lead Scoring</p><Link href="/crm/predictive-lead-scoring"><Button size="sm" className="mt-4">Configure Scoring</Button></Link></CardContent></Card>
+        </div>
+      )}
 
       {activeNav === "segments" && (
         <div className="space-y-4">

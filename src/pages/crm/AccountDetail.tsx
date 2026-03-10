@@ -34,10 +34,7 @@ export default function AccountDetail() {
 
     const { data: contacts = [] } = useQuery<{ data: Contact[] }>({
         queryKey: ["/api/crm/contacts", accountId],
-        queryFn: () => fetch(`/api/crm/contacts?search=${account?.name?.split(' ')[0] || ''}`).then(r => r.json()), // Ideally should filter by accountId directly
-        // Note: Contact list currently filters by SEARCH string. 
-        // TODO: Add accountId filter to contacts endpoint in future. 
-        // valid assumption for now: generic search might find relevant contacts.
+        queryFn: () => fetch(`/api/crm/contacts?search=${account?.name?.split(' ')[0] || ''}`).then(r => r.json()),
         enabled: !!account
     });
 
@@ -50,7 +47,6 @@ export default function AccountDetail() {
 
     const { data: cases = [] } = useQuery<Case[]>({
         queryKey: ["/api/crm/cases", accountId],
-        // Assuming cases endpoint supports filtering or we mock it for now as part of Account 360 structure
         queryFn: () => fetch(`/api/crm/cases?accountId=${accountId}`).then(r => r.json())
     });
 
@@ -151,7 +147,7 @@ export default function AccountDetail() {
                                         columns={[
                                             { id: "name", header: "Name", width: "40%", cell: (c: any) => <div className="p-2 font-medium">{c.firstName} {c.lastName}</div> },
                                             { id: "email", header: "Email", width: "40%", cell: (c: any) => <div className="p-2">{c.email}</div> },
-                                            { id: "role", header: "Role", width: "20%", cell: () => <div className="p-2">Decision Maker</div> } // Mock
+                                            { id: "role", header: "Role", width: "20%", cell: (c: any) => <div className="p-2">{c.role || 'Member'}</div> }
                                         ]}
                                         virtualized={true}
                                         containerHeight="400px"

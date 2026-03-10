@@ -23,7 +23,7 @@ export const crmMenu = [
             { title: "Leads", url: "/crm/leads", icon: Target },
             { title: "Accounts", url: "/crm/accounts", icon: Briefcase },
             { title: "Contacts", url: "/crm/contacts", icon: Users },
-            { title: "Opportunities", url: "/crm/leads", icon: Target },
+            { title: "Opportunities", url: "/crm/opportunities", icon: Target },
             { title: "Mobile Rep Sales", url: "/crm/sales/mobile", icon: Target },
             { title: "Activities", url: "/crm/activities", icon: BarChart3 },
         ],

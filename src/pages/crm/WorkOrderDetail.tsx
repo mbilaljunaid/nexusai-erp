@@ -116,7 +116,7 @@ export default function WorkOrderDetail() {
                         <CardTitle>Service Appointments</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {appointments?.length === 0 ? (
+                        {!appointments || appointments.length === 0 ? (
                             <p className="text-muted-foreground">No appointments scheduled.</p>
                         ) : (
                             <div className="space-y-4">

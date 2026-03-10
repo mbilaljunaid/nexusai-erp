@@ -17,7 +17,7 @@ export class OpportunityService {
         const conditions = [];
 
         if (filters?.tenantId) {
-            conditions.push(eq(opportunities.tenantId, filters.tenantId));
+            conditions.push(eq(opportunities.entBusinessUnitId, filters.tenantId));
         }
         if (filters?.stage) {
             conditions.push(eq(opportunities.stage, filters.stage));
@@ -134,7 +134,7 @@ export class OpportunityService {
         const conditions = [];
 
         if (filters?.tenantId) {
-            conditions.push(eq(opportunities.tenantId, filters.tenantId));
+            conditions.push(eq(opportunities.entBusinessUnitId, filters.tenantId));
         }
         if (filters?.owner) {
             conditions.push(eq(opportunities.ownerId, filters.owner));

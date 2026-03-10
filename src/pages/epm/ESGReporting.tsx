@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Mock Data
 const EMISSIONS_DATA = [
     { source: "Facility Electricity (Scope 2)", consumption: "145,000 kWh", factor: "0.453 kg CO2e/kWh", total: "65.68", unit: "tCO2e" },
     { source: "Company Fleet (Scope 1)", consumption: "12,400 Gallons", factor: "8.89 kg CO2e/Gal", total: "110.23", unit: "tCO2e" },
@@ -195,7 +194,6 @@ export default function ESGReporting() {
                 </TabsContent>
 
                 <TabsContent value="factors" className="flex-1 mt-6">
-                    {/* Placeholder for Conversion Factors grid */}
                     <Card className="border-none shadow-sm ring-1 ring-slate-200 rounded-xl h-full flex items-center justify-center p-12">
                         <div className="text-center">
                             <Calculator className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />

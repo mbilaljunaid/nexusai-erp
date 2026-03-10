@@ -41,7 +41,7 @@ export default function EmailTemplateBuilder() {
         const newBlock = { id: Date.now().toString(), type, content: {} };
         if (type === "text") newBlock.content = { text: "Add your text here" };
         if (type === "button") newBlock.content = { text: "Click Here", color: "#4f46e5" };
-        if (type === "image") newBlock.content = { src: "https://placehold.co/600x200?text=Placeholder+Image" };
+        if (type === "image") newBlock.content = { src: "", alt: "Click to upload image" };
 
         setBlocks([...blocks, newBlock]);
         setSelectedBlockId(newBlock.id);
@@ -66,12 +66,21 @@ export default function EmailTemplateBuilder() {
                 );
             case "image":
                 return (
-                    <img
-                        src={block.content.src}
-                        alt={block.content.alt || ""}
-                        className="max-w-full h-auto rounded-md object-cover w-full"
-                        style={{ maxHeight: block.content.height || "auto" }}
-                    />
+                    <div className={cn("relative rounded-md overflow-hidden bg-muted/20 flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/20", !block.content.src ? "min-h-[200px]" : "")} style={{ maxHeight: block.content.height || "auto" }}>
+                        {!block.content.src ? (
+                            <div className="text-center p-8 opacity-60 flex flex-col items-center">
+                                <ImageIcon className="h-12 w-12 mb-3 text-muted-foreground" />
+                                <p className="font-semibold text-sm">Upload Image</p>
+                                <p className="text-xs mt-1 text-muted-foreground max-w-[200px]">Click this block to configure image URL via properties panel</p>
+                            </div>
+                        ) : (
+                            <img
+                                src={block.content.src}
+                                alt={block.content.alt || ""}
+                                className="max-w-full h-auto object-cover w-full"
+                            />
+                        )}
+                    </div>
                 );
             case "button":
                 return (
@@ -248,7 +257,7 @@ export default function EmailTemplateBuilder() {
                                     <>
                                         <div className="space-y-2">
                                             <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Image URL</Label>
-                                            <Input value={selectedBlock.content.src} onChange={e => updateBlock(selectedBlock.id, { src: e.target.value })} className="font-medium" placeholder="https://" />
+                                            <Input value={selectedBlock.content.src || ""} onChange={e => updateBlock(selectedBlock.id, { src: e.target.value })} className="font-medium" placeholder="https://" />
                                         </div>
                                         <div className="space-y-2">
                                             <Label className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Alt Text</Label>

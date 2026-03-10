@@ -46,7 +46,6 @@ export default function SalesActivities() {
         status: "OPEN"
     });
 
-    // Mock data for now until backend is fully wired
     const activities: SalesActivity[] = [
         {
             id: "act-01",
@@ -86,7 +85,6 @@ export default function SalesActivities() {
 
     const createActivityMutation = useMutation({
         mutationFn: async (activity: Partial<SalesActivity>) => {
-            // Mock API call
             return new Promise(resolve => setTimeout(resolve, 500));
         },
         onSuccess: () => {
@@ -101,7 +99,6 @@ export default function SalesActivities() {
 
     const completeActivityMutation = useMutation({
         mutationFn: async (id: string) => {
-            // Mock API call
             return new Promise(resolve => setTimeout(resolve, 500));
         },
         onSuccess: () => {

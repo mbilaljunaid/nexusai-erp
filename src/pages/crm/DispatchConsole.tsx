@@ -11,23 +11,11 @@ import {
     Filter, Settings2, Clock, MapPin, Wrench
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
-// Mock Data
-const RESOURCES = [
-    { id: "r1", name: "Alex Jenkins", role: "Sr. Technician", status: "driving", avatar: "AJ" },
-    { id: "r2", name: "Sarah Chen", role: "Field Engineer", status: "working", avatar: "SC" },
-    { id: "r3", name: "Mike Ross", role: "Specialist", status: "available", avatar: "MR" },
-    { id: "r4", name: "Jessica Day", role: "Technician", status: "offline", avatar: "JD" },
-    { id: "r5", name: "David Kim", role: "Sr. Technician", status: "available", avatar: "DK" },
-];
+// Fetching resources via API
 
-const WORK_ORDERS = [
-    { id: "wo-101", title: "HVAC Installation", resourceId: "r1", start: 8, duration: 3, status: "completed", location: "Downtown HQ" },
-    { id: "wo-102", title: "Emergency Repair", resourceId: "r1", start: 12.5, duration: 2, status: "in_progress", location: "North Site" },
-    { id: "wo-103", title: "Quarterly Maintenance", resourceId: "r2", start: 9, duration: 4, status: "completed", location: "Westpark Center" },
-    { id: "wo-104", title: "System Diagnostic", resourceId: "r2", start: 14, duration: 2.5, status: "scheduled", location: "Tech Park" },
-    { id: "wo-105", title: "Parts Replacement", resourceId: "r3", start: 10, duration: 1.5, status: "scheduled", location: "South Mall" },
-];
 
 const TIME_SLOTS = Array.from({ length: 11 }, (_, i) => i + 8); // 8 AM to 6 PM
 
@@ -36,8 +24,9 @@ export default function DispatchConsole() {
     const [view, setView] = useState("timeline");
 
     const getStatusColor = (status: string) => {
-        switch (status) {
+        switch (status?.toLowerCase()) {
             case "completed": return "bg-emerald-500 border-emerald-600/20 text-white";
+            case "in progress":
             case "in_progress": return "bg-blue-500 border-blue-600/20 text-white shadow-md animate-pulse border-2";
             case "scheduled": return "bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200";
             default: return "bg-slate-100";
@@ -45,7 +34,7 @@ export default function DispatchConsole() {
     };
 
     const getResourceStatusColor = (status: string) => {
-        switch (status) {
+        switch (status?.toLowerCase()) {
             case "driving": return "bg-amber-500";
             case "working": return "bg-blue-500";
             case "available": return "bg-emerald-500";
@@ -53,6 +42,50 @@ export default function DispatchConsole() {
             default: return "bg-slate-300";
         }
     };
+
+    const { data: resourcesData, isLoading: isLoadingResources } = useQuery({
+        queryKey: ['/api/employees'],
+        queryFn: async () => {
+            const res = await fetch('/api/employees');
+            if (!res.ok) return [];
+            const data = await res.json();
+            // Map standard employees to visual dispatcher format
+            return data.map((emp: any) => ({
+                id: emp.id.toString(),
+                name: `${emp.firstName} ${emp.lastName}`,
+                role: emp.jobTitle || 'Technician',
+                status: 'available', // Default active
+                avatar: `${emp.firstName[0]}${emp.lastName[0]}`
+            }));
+        }
+    });
+
+    const { data: workOrdersData, isLoading: isLoadingWOs } = useQuery({
+        queryKey: ['/api/field-service/jobs'],
+        queryFn: async () => {
+            const res = await fetch('/api/field-service/jobs');
+            if (!res.ok) return [];
+            const data = await res.json();
+            // Map standard jobs to visual dispatch format
+            return data.map((job: any, index: number) => {
+                // Determine visual layout start based on sequence
+                const fakeStartOffset = 8 + (index * 1.5);
+                return {
+                    id: `wo-${job.id}`,
+                    title: job.jobTitle || 'Maintenance',
+                    resourceId: job.assignedToId?.toString() || (resourcesData ? resourcesData[index % resourcesData.length]?.id : null),
+                    start: fakeStartOffset > 17 ? 17 : fakeStartOffset,
+                    duration: 2,
+                    status: job.status || 'scheduled',
+                    location: job.location || 'Customer Site'
+                };
+            }).filter((job: any) => job.resourceId); // Only show ones assigned for Gantt render
+        },
+        enabled: !!resourcesData && resourcesData.length > 0
+    });
+
+    const RESOURCES = resourcesData || [];
+    const WORK_ORDERS = workOrdersData || [];
 
     return (
         <StandardPage
@@ -102,7 +135,9 @@ export default function DispatchConsole() {
                             <Users className="h-4 w-4 mr-2" /> Field Resources
                         </div>
                         <div className="flex-1 overflow-y-auto">
-                            {RESOURCES.map(res => (
+                            {isLoadingResources && <div className="p-4 flex justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary opacity-50" /></div>}
+                            {RESOURCES.length === 0 && !isLoadingResources && <div className="p-4 text-sm text-muted-foreground text-center">No resources found</div>}
+                            {RESOURCES.map((res: any) => (
                                 <div key={res.id} className="p-4 border-b hover:bg-slate-50 transition-colors flex items-center gap-3 h-24">
                                     <div className="relative">
                                         <Avatar className="h-10 w-10 border-2 border-white shadow-sm ring-1 ring-slate-100">
@@ -142,15 +177,17 @@ export default function DispatchConsole() {
                                 </div>
                             </div>
 
-                            {RESOURCES.map((res, i) => {
-                                const resourceWOs = WORK_ORDERS.filter(wo => wo.resourceId === res.id);
+                            {isLoadingWOs && <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm"><Loader2 className="h-8 w-8 animate-spin text-primary/50" /></div>}
+
+                            {RESOURCES.map((res: any, i: number) => {
+                                const resourceWOs = WORK_ORDERS.filter((wo: any) => wo.resourceId === res.id);
                                 return (
                                     <div key={res.id} className="relative h-24 border-b border-transparent group hover:bg-slate-100/50 transition-colors">
                                         {/* Grid borders applied via parent background to stay under blocks */}
                                         <div className="absolute inset-0 border-b border-slate-200" />
 
                                         {/* Render Work Orders as Blocks */}
-                                        {resourceWOs.map(wo => {
+                                        {resourceWOs.map((wo: any) => {
                                             const left = (wo.start - 8) * 192; // 8 AM is start (0px), 192px per hour
                                             const width = wo.duration * 192;
 
@@ -161,7 +198,7 @@ export default function DispatchConsole() {
                                                         "absolute h-[70px] top-[13px] rounded-lg border p-2 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-lg z-20 group/wo overflow-hidden",
                                                         getStatusColor(wo.status)
                                                     )}
-                                                    style={{ left: `${left}px`, width: `${width - 8}px` }} // -8 for gap
+                                                    style={{ left: `${left}px`, width: `${Math.max(width - 8, 40)}px` }} // -8 for gap, min width 40px
                                                 >
                                                     <div className="font-bold text-xs truncate drop-shadow-sm flex items-center justify-between">
                                                         <span>{wo.id}</span>

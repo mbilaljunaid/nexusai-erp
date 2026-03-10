@@ -19,7 +19,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
           <Home className="h-4 w-4" />
         </Button>
       </Link>
-      {items.map((item, index) => (
+      {(items || []).map((item, index) => (
         <div key={index} className="flex items-center gap-1">
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
           {index === items.length - 1 ? (

@@ -147,7 +147,6 @@ export default function CrmSettings() {
                                 />
                             </div>
                             <div className="col-span-2 text-right">
-                                {/* Delete placeholder */}
                             </div>
                         </div>
                     ))}

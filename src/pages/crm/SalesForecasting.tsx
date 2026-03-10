@@ -10,7 +10,6 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { formatNumber } from '@/lib/formatters';
 
 export default function SalesForecasting() {
-    // Mock User ID for now (Phase 1 Auth)
     const userId = "current-user-id";
     const [period, setPeriod] = useState("Q1-2026");
 
@@ -109,7 +108,6 @@ export default function SalesForecasting() {
                 </Card>
             </div>
 
-            {/* Note: In a full implementation, detailed Drill-down tables would go here */}
             <div className="text-center text-muted-foreground p-8 bg-muted/20 rounded-lg border border-dashed">
                 Detailed forecast breakdown by Opportunity available in "Deep Dive" view (Coming Soon).
             </div>

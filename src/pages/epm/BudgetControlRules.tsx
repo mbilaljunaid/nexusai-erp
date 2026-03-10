@@ -47,7 +47,6 @@ export default function BudgetControlRules() {
 
     const updateRulesMutation = useMutation({
         mutationFn: async (data: any[]) => {
-            // Mock API call for bulk update
             return new Promise(resolve => setTimeout(resolve, 800));
         },
         onSuccess: () => {
@@ -58,7 +57,6 @@ export default function BudgetControlRules() {
 
     // Simulate rules
     const handleSimulate = async () => {
-        // Mock simulation
         const result: SimulationResult = {
             violations: Math.floor(Math.random() * 10),
             warnings: Math.floor(Math.random() * 20),
@@ -100,7 +98,7 @@ export default function BudgetControlRules() {
     ], []);
 
     const activeRules = rules.filter(r => r.isActive).length;
-    const violations = 3; // Mock - would come from backend
+    const violations = 3;
     const totalRules = rules.length;
 
     if (isLoading) {

@@ -90,9 +90,10 @@ export default function BudgetReconciliation() {
         }
     });
 
-    const matchedCount = items.filter(i => i.status === "MATCHED").length;
-    const unmatchedCount = items.filter(i => i.status === "UNMATCHED").length;
-    const exceptionCount = items.filter(i => i.status === "EXCEPTION").length;
+    const safeItems = Array.isArray(items) ? items : [];
+    const matchedCount = safeItems.filter(i => i.status === "MATCHED").length;
+    const unmatchedCount = safeItems.filter(i => i.status === "UNMATCHED").length;
+    const exceptionCount = safeItems.filter(i => i.status === "EXCEPTION").length;
     const totalItems = items.length;
     const matchRate = totalItems > 0 ? ((matchedCount / totalItems) * 100).toFixed(0) : 0;
 
@@ -222,14 +223,14 @@ export default function BudgetReconciliation() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {items.length === 0 ? (
+                                {safeItems.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                                             No reconciliation items for selected period
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    items.map((item) => (
+                                    safeItems.map((item) => (
                                         <TableRow key={item.id}>
                                             <TableCell className="font-medium">{item.account}</TableCell>
                                             <TableCell className="text-right font-mono">${formatNumber(item.budgetAmount)}</TableCell>
@@ -282,7 +283,6 @@ export default function BudgetReconciliation() {
                             <p className="text-sm text-muted-foreground">
                                 Select the actual transaction to match with this budget line.
                             </p>
-                            {/* In a real implementation, this would show a list of candidates */}
                             <div className="p-4 border rounded-lg space-y-2">
                                 <div className="text-sm font-medium">Budget Line</div>
                                 <div className="text-xs text-muted-foreground">{selectedItem?.budgetLineId}</div>

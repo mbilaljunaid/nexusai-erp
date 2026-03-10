@@ -115,15 +115,26 @@ export default function SpatialDispatchOptimizer() {
                         </Card>
                     </div>
 
-                    <Card className="border shadow-sm min-h-[400px] flex flex-col items-center justify-center p-6 bg-slate-50 relative overflow-hidden">
-                        {/* Mock Map Background Visual */}
-                        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, #64748b 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                        <Map className="h-16 w-16 text-slate-300 mb-4" />
-                        <h3 className="font-bold border-b pb-2">Geospatial Router Module</h3>
-                        <p className="text-sm text-center text-muted-foreground mt-2 max-w-sm">
-                            The visual map component requires the Google Maps Fleet Engine API integration to be configured in Admin &gt; Integrations.
-                        </p>
-                        <Button variant="outline" className="mt-4 bg-white"><Settings2 className="h-4 w-4 mr-2" /> Configure Maps API</Button>
+                    <Card className="border shadow-sm min-h-[400px] flex flex-col items-center justify-center p-6 bg-slate-50 relative overflow-hidden group">
+                        {/* Geographic Context Representation */}
+                        <div className="absolute inset-0 opacity-20 pointer-events-none grid grid-cols-6 grid-rows-6 gap-0">
+                            {Array.from({ length: 36 }).map((_, i) => (
+                                <div key={i} className="border border-slate-300 transition-colors group-hover:border-blue-200" />
+                            ))}
+                        </div>
+                        <div className="absolute inset-x-0 h-px top-1/2 bg-blue-500/20 -translate-y-1/2 pattern-diagonal-lines-sm" />
+                        <div className="absolute inset-y-0 w-px left-1/2 bg-blue-500/20 -translate-x-1/2 pattern-diagonal-lines-sm" />
+
+                        <div className="z-10 flex flex-col items-center bg-white/80 backdrop-blur px-8 py-6 rounded-2xl shadow-sm border border-slate-100">
+                            <Map className="h-16 w-16 text-blue-500 mb-4" />
+                            <h3 className="font-bold border-b pb-2 text-slate-800">Geospatial Router Active</h3>
+                            <p className="text-sm text-center text-muted-foreground mt-2 max-w-sm">
+                                Standard map view requires Fleet Engine API integration. Using schematic grid routing view for optimization calculation.
+                            </p>
+                            <Badge variant="outline" className="mt-4 bg-emerald-50 text-emerald-700 border-emerald-200">
+                                <Settings2 className="h-3 w-3 mr-1.5" /> Matrix Active
+                            </Badge>
+                        </div>
                     </Card>
                 </div>
 

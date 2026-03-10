@@ -1,19 +1,19 @@
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { formatDate} from"@/lib/dateUtils";
-import { useState} from"react";
-import { useQuery} from"@tanstack/react-query";
-import { Card, CardContent} from"@/components/ui/card";
-import { Button} from"@/components/ui/button";
-import { Link} from"wouter";
-import { ArrowLeft, Search, Package, FileText, ChevronLeft, ChevronRight} from"lucide-react";
-import { Input} from"@/components/ui/input";
-import { Badge} from"@/components/ui/badge";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger} from"@/components/ui/sheet";
-import { ProductForm} from"@/components/forms/ProductForm";
-import type { Product} from"@/types/erp-types";
-import { Plus, CheckCircle2, XCircle, Info, Calendar} from"lucide-react";
-import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious} from"@/components/ui/pagination";
+import { formatDate } from "@/lib/dateUtils";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
+import { ArrowLeft, Search, Package, FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
+import { ProductForm } from "@/components/forms/ProductForm";
+import type { Product } from "@/types/erp-types";
+import { Plus, CheckCircle2, XCircle, Info, Calendar } from "lucide-react";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 export default function ProductsDetail() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -21,22 +21,22 @@ export default function ProductsDetail() {
     const [page, setPage] = useState(1);
     const limit = 10;
 
-    const { data, isLoading} = useQuery<{ data: Product[], pagination: any}>({
+    const { data, isLoading } = useQuery<{ data: Product[], pagination: any }>({
         queryKey: ["/api/crm/products", page, searchQuery],
         queryFn: async () => {
             const params = new URLSearchParams({
                 page: page.toString(),
                 limit: limit.toString(),
-                ...(searchQuery && { search: searchQuery})
-           }); // Correctly formatting params
+                ...(searchQuery && { search: searchQuery })
+            }); // Correctly formatting params
             const res = await fetch(`/api/crm/products?${params}`);
             if (!res.ok) throw new Error("Failed to fetch products");
             return res.json();
-       }
-   });
+        }
+    });
 
     const products = data?.data || [];
-    const pagination = data?.pagination || { page: 1, totalPages: 1};
+    const pagination = data?.pagination || { page: 1, totalPages: 1 };
 
     const activeCount = products.filter((p: any) => p.isActive === true || p.isActive === 1).length;
 
@@ -114,7 +114,7 @@ export default function ProductsDetail() {
                     <Input
                         placeholder="Search by name or product code..."
                         value={searchQuery}
-                        onChange={(e) => { setSearchQuery(e.target.value); setPage(1);}}
+                        onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
                         className="pl-10 h-10 border-muted-foreground/20 focus-visible:ring-primary transition-all shadow-sm"
                     />
                 </div>
@@ -133,7 +133,7 @@ export default function ProductsDetail() {
                         </div>
                         <h3 className="text-lg font-semibold">No products found</h3>
                         <p className="text-muted-foreground max-w-xs mt-2">
-                            {searchQuery ?`No products matching"${searchQuery}"` :"Your product catalog is currently empty. Get started by adding your first product."}
+                            {searchQuery ? `No products matching"${searchQuery}"` : "Your product catalog is currently empty. Get started by adding your first product."}
                         </p>
                     </div>
                 ) : (
@@ -141,39 +141,39 @@ export default function ProductsDetail() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {products.map((product) => (
                                 <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedProduct(product)}>
-                                <Card
-                                                                    key={product.id}
-                                                                    className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
-                                                                >
-                                                                    <div className={cn(`h-1.5 w-full ${product.isActive ?'bg-gradient-to-r from-blue-500 to-indigo-600' :'bg-muted'}`)} />
-                                                                    <CardContent className="p-5 flex flex-col flex-1">
-                                                                        <div className="flex justify-between items-start mb-4">
-                                                                            <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${product.isActive ?'bg-blue-500/10 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 group-hover:bg-blue-500/15' :'bg-muted text-muted-foreground'}`)}>
-                                                                                <Package className="h-6 w-6" />
-                                                                            </div>
-                                                                            <Badge variant={product.isActive ?"default" :"secondary"} className={cn(`${product.isActive ?'bg-green-500/10 text-green-600 border-green-500/20' :''} font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider`)}>
-                                                                                {product.isActive ?"Active" :"Inactive"}
-                                                                            </Badge>
-                                                                        </div>
+                                    <Card
+                                        key={product.id}
+                                        className="group shadow-sm hover:shadow-xl hover:-translate-y-1 border-muted-foreground/10 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full bg-card"
+                                    >
+                                        <div className={cn(`h-1.5 w-full ${product.isActive ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : 'bg-muted'}`)} />
+                                        <CardContent className="p-5 flex flex-col flex-1">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className={cn(`p-3 rounded-xl transition-colors duration-300 ${product.isActive ? 'bg-blue-500/10 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 group-hover:bg-blue-500/15' : 'bg-muted text-muted-foreground'}`)}>
+                                                    <Package className="h-6 w-6" />
+                                                </div>
+                                                <Badge variant={product.isActive ? "default" : "secondary"} className={cn(`${product.isActive ? 'bg-green-500/10 text-green-600 border-green-500/20' : ''} font-medium px-2 py-0.5 text-[10px] uppercase tracking-wider`)}>
+                                                    {product.isActive ? "Active" : "Inactive"}
+                                                </Badge>
+                                            </div>
 
-                                                                        <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{product.name}</h3>
-                                                                        <p className="text-xs text-muted-foreground mb-4 font-mono uppercase tracking-widest">{product.productCode ||'NO-CODE'}</p>
+                                            <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{product.name}</h3>
+                                            <p className="text-xs text-muted-foreground mb-4 font-mono uppercase tracking-widest">{product.productCode || 'NO-CODE'}</p>
 
-                                                                        <p className="text-sm text-muted-foreground line-clamp-2 mb-4 italic flex-1">
-                                                                            {product.description ||"No description provided."}
-                                                                        </p>
+                                            <p className="text-sm text-muted-foreground line-clamp-2 mb-4 italic flex-1">
+                                                {product.description || "No description provided."}
+                                            </p>
 
-                                                                        <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
-                                                                            <div className="flex items-center gap-1.5">
-                                                                                <Calendar className="h-3 w-3" />
-                                                                                {product.createdAt ? formatDate(product.createdAt) :'Unknown'}
-                                                                            </div>
-                                                                            <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                                View Details <ArrowLeft className="h-3 w-3 rotate-180" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </CardContent>
-                                                                </Card>
+                                            <div className="pt-4 border-t border-muted/20 flex items-center justify-between text-[11px] text-muted-foreground mt-auto">
+                                                <div className="flex items-center gap-1.5">
+                                                    <Calendar className="h-3 w-3" />
+                                                    {product.createdAt ? formatDate(product.createdAt) : 'Unknown'}
+                                                </div>
+                                                <div className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    View Details <ArrowLeft className="h-3 w-3 rotate-180" />
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
                                 </Button>
                             ))}
                         </div>
@@ -184,7 +184,7 @@ export default function ProductsDetail() {
                                 <PaginationItem>
                                     <PaginationPrevious
                                         onClick={() => setPage(p => Math.max(1, p - 1))}
-                                        className={page === 1 ?"pointer-events-none opacity-50" :"cursor-pointer"}
+                                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
                                     />
                                 </PaginationItem>
                                 <PaginationItem>
@@ -193,7 +193,7 @@ export default function ProductsDetail() {
                                 <PaginationItem>
                                     <PaginationNext
                                         onClick={() => setPage(p => p + 1)}
-                                        className={page === pagination.totalPages ?"pointer-events-none opacity-50" :"cursor-pointer"}
+                                        className={page === pagination.totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
                                     />
                                 </PaginationItem>
                             </PaginationContent>
@@ -226,7 +226,7 @@ export default function ProductsDetail() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Product Code</p>
-                                            <p className="font-mono text-sm">{selectedProduct.productCode ||'N/A'}</p>
+                                            <p className="font-mono text-sm">{selectedProduct.productCode || 'N/A'}</p>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -241,8 +241,8 @@ export default function ProductsDetail() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Status</p>
-                                            <Badge variant={selectedProduct.isActive ?"default" :"secondary"} className="h-5 px-1.5 py-0">
-                                                {selectedProduct.isActive ?"Active" :"Inactive"}
+                                            <Badge variant={selectedProduct.isActive ? "default" : "secondary"} className="h-5 px-1.5 py-0">
+                                                {selectedProduct.isActive ? "Active" : "Inactive"}
                                             </Badge>
                                         </div>
                                     </CardContent>
@@ -254,7 +254,7 @@ export default function ProductsDetail() {
                                         </div>
                                         <div>
                                             <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Created Date</p>
-                                            <p className="text-sm font-medium">{selectedProduct.createdAt ? formatDate(selectedProduct.createdAt) :'N/A'}</p>
+                                            <p className="text-sm font-medium">{selectedProduct.createdAt ? formatDate(selectedProduct.createdAt) : 'N/A'}</p>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -268,15 +268,19 @@ export default function ProductsDetail() {
                                 </h3>
                                 <div className="p-6 rounded-xl bg-card border shadow-sm min-h-28">
                                     <p className="text-sm leading-relaxed text-foreground/80 whitespace-pre-wrap italic">
-                                        {selectedProduct.description ||"No official description has been provided for this product yet. Please update the product records to include technical specifications and use cases."}
+                                        {selectedProduct.description || "No official description has been provided for this product yet. Please update the product records to include technical specifications and use cases."}
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Quick Actions (Placeholder for now) */}
                             <div className="pt-6 border-t flex gap-3">
-                                <Button variant="outline" className="flex-1">Edit Records</Button>
-                                <Button variant="outline" className="flex-1 text-destructive hover:bg-destructive/10">Archive Product</Button>
+                                <Button variant="outline" className="flex-1" onClick={() => {
+                                    // Normally hooks into edit form
+                                    alert("Feature coming soon");
+                                }}>Edit Records</Button>
+                                <Button variant="outline" className="flex-1 text-destructive hover:bg-destructive/10" onClick={() => {
+                                    alert("Feature coming soon");
+                                }}>Archive Product</Button>
                             </div>
                         </div>
                     )}

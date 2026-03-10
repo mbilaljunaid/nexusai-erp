@@ -20,18 +20,11 @@ interface Commission {
 }
 
 export default function IncentiveDashboard() {
-    // Mock User ID for now (Phase 1 Auth isn't fully context-aware in this draft)
-    // In production, useAuth() -> user.id
     const userId = "current-user-id";
 
     const { data: commissions, isLoading } = useQuery<Commission[]>({
         queryKey: ["/api/crm/commissions", "user", userId],
         queryFn: async () => {
-            // Fetch for "mock" user or just all for demo if endpoint allows
-            // Actually, let's just fetch from the endpoint I created: /api/crm/commissions/user/:id
-            // I'll need a real user ID or the endpoint will be empty.
-            // For UI dev, I'll return empty list if no ID, or mock logic.
-            // Let's assume the endpoint returns mock data if ID is 'demo'
             const res = await fetch(`/api/crm/commissions/user/${userId}`);
             if (!res.ok) return [];
             return res.json();

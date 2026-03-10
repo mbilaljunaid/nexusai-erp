@@ -173,8 +173,6 @@ export default function MobileTechnicianApp() {
                     </div>
                 </div>
             </div>
-            {/* Dummy icons to satisfy react requirement for the explanatory column */}
-            <CheckCircle className="hidden" />
         </div>
     );
 }

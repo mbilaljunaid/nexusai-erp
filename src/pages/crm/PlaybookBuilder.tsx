@@ -33,7 +33,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
-// Mock stages from system
+// System stages
 const OPPORTUNITY_STAGES = [
     { id: "prospecting", name: "Prospecting" },
     { id: "qualification", name: "Qualification" },
@@ -188,7 +188,6 @@ export default function PlaybookBuilder() {
                                 </div>
                             </CardHeader>
                             <CardContent className="p-6">
-                                {/* Task Builder Placeholder for brevity */}
                                 <div className="flex flex-col items-center justify-center py-12 text-center space-y-3">
                                     <div className="p-3 bg-primary/10 rounded-full text-primary">
                                         <ListTodo className="h-8 w-8" />

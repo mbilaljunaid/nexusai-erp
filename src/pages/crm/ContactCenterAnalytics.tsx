@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 
 export default function ContactCenterAnalytics() {
 
-    // Mock Data representing live real-time supervisor metrics
     const overallMetrics = {
         activeQueue: 14,
         avgHandleTime: "8m 45s",

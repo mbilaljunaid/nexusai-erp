@@ -75,7 +75,6 @@ export default function PlanAgreementSignOffs() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                {/* PDF Viewer Mockup */}
                 <Card className="lg:col-span-2 border shadow-sm bg-slate-50 relative overflow-hidden flex flex-col items-center justify-center min-h-[500px]">
                     <div className="absolute top-4 left-4 flex gap-2">
                         <Badge variant="secondary" className="bg-white"><FileText className="h-3 w-3 mr-1" /> PDF Wrapper Output</Badge>

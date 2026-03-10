@@ -16,14 +16,17 @@ export default function MarketingAttribution() {
     const [model, setModel] = useState<"FIRST_TOUCH" | "LAST_TOUCH" | "MULTI_TOUCH">("MULTI_TOUCH");
     const [timeframe, setTimeframe] = useState("Q3_2026");
 
-    // Mock Data for Attribution
-    const campaignData = [
-        { id: "C-001", name: "Q3 Tech Webinar", type: "Webinar", cost: 15000, firstTouch: 120000, lastTouch: 45000, multiTouch: 85000, leads: 450, wins: 12 },
-        { id: "C-002", name: "LinkedIn Ads - Retargeting", type: "Paid Social", cost: 8500, firstTouch: 15000, lastTouch: 95000, multiTouch: 55000, leads: 850, wins: 8 },
-        { id: "C-003", name: "Enterprise Case Study PDF", type: "Content", cost: 2000, firstTouch: 25000, lastTouch: 15000, multiTouch: 42000, leads: 210, wins: 5 },
-        { id: "C-004", name: "Q3 Newsletter", type: "Email", cost: 500, firstTouch: 5000, lastTouch: 12000, multiTouch: 18000, leads: 1200, wins: 3 },
-        { id: "C-005", name: "Annual Industry Conference", type: "Event", cost: 45000, firstTouch: 250000, lastTouch: 150000, multiTouch: 210000, leads: 150, wins: 22 },
-    ];
+    const { data: campaignData = [], isLoading } = useQuery({
+        queryKey: ['/api/crm/marketing/attribution', timeframe],
+        queryFn: async () => {
+            const params = new URLSearchParams({ timeframe });
+            const res = await fetch(`/api/crm/marketing/attribution?${params}`);
+            if (!res.ok) {
+                return [];
+            }
+            return res.json();
+        }
+    });
 
     const modelDescription = {
         FIRST_TOUCH: "Assigns 100% of revenue credit to the very first campaign a lead interacted with. Best for measuring brand awareness and lead generation.",
@@ -38,27 +41,28 @@ export default function MarketingAttribution() {
     ];
 
     const getAttributedRevenue = (campaign: any) => {
-        if (model === "FIRST_TOUCH") return campaign.firstTouch;
-        if (model === "LAST_TOUCH") return campaign.lastTouch;
-        return campaign.multiTouch;
+        if (model === "FIRST_TOUCH") return campaign.firstTouch || 0;
+        if (model === "LAST_TOUCH") return campaign.lastTouch || 0;
+        return campaign.multiTouch || 0;
     };
 
     const getROI = (campaign: any) => {
         const rev = getAttributedRevenue(campaign);
+        if (!campaign.cost || campaign.cost === 0) return "0.0";
         return ((rev - campaign.cost) / campaign.cost * 100).toFixed(1);
     };
 
-    const totalRevenue = campaignData.reduce((acc, c) => acc + getAttributedRevenue(c), 0);
-    const totalCost = campaignData.reduce((acc, c) => acc + c.cost, 0);
-    const overallROI = ((totalRevenue - totalCost) / totalCost * 100).toFixed(1);
+    const totalRevenue = campaignData.reduce((acc: number, c: any) => acc + getAttributedRevenue(c), 0);
+    const totalCost = campaignData.reduce((acc: number, c: any) => acc + (c.cost || 0), 0);
+    const overallROI = totalCost > 0 ? ((totalRevenue - totalCost) / totalCost * 100).toFixed(1) : "0.0";
 
     const channelData = [
-        { name: "Webinar", value: campaignData.filter(c => c.type === "Webinar").reduce((acc, c) => acc + getAttributedRevenue(c), 0) },
-        { name: "Paid Social", value: campaignData.filter(c => c.type === "Paid Social").reduce((acc, c) => acc + getAttributedRevenue(c), 0) },
-        { name: "Content", value: campaignData.filter(c => c.type === "Content").reduce((acc, c) => acc + getAttributedRevenue(c), 0) },
-        { name: "Email", value: campaignData.filter(c => c.type === "Email").reduce((acc, c) => acc + getAttributedRevenue(c), 0) },
-        { name: "Event", value: campaignData.filter(c => c.type === "Event").reduce((acc, c) => acc + getAttributedRevenue(c), 0) }
-    ];
+        { name: "Webinar", value: campaignData.filter((c: any) => c.type === "Webinar").reduce((acc: number, c: any) => acc + getAttributedRevenue(c), 0) },
+        { name: "Paid Social", value: campaignData.filter((c: any) => c.type === "Paid Social").reduce((acc: number, c: any) => acc + getAttributedRevenue(c), 0) },
+        { name: "Content", value: campaignData.filter((c: any) => c.type === "Content").reduce((acc: number, c: any) => acc + getAttributedRevenue(c), 0) },
+        { name: "Email", value: campaignData.filter((c: any) => c.type === "Email").reduce((acc: number, c: any) => acc + getAttributedRevenue(c), 0) },
+        { name: "Event", value: campaignData.filter((c: any) => c.type === "Event").reduce((acc: number, c: any) => acc + getAttributedRevenue(c), 0) }
+    ].filter(channel => channel.value > 0); // Only show channels with revenue
 
     return (
         <StandardPage

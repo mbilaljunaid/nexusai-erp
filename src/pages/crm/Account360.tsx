@@ -36,13 +36,11 @@ export default function Account360() {
         }
     });
 
-    // TODO: Add backend filters for these, currently fetching all might be inefficient if list is huge
     const { data: opportunities = [] } = useQuery<Opportunity[]>({
-        queryKey: [`/api/crm/opportunities`],
+        queryKey: [`/api/crm/opportunities`, { accountId: id }],
         select: (data) => data.filter(o => o.accountId === id)
     });
 
-    // Mock Orders for now until endpoint is ready
     const orders: Order[] = [];
 
     if (isLoadingAccount) return <PageSkeleton />;

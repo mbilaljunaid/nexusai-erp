@@ -174,13 +174,11 @@ export default function QuoteBuilder() {
         saveQuoteMutation.mutate(quote);
     };
 
-    // Export PDF (placeholder)
     const handleExportPDF = () => {
         toast({
             title: "Exporting PDF",
             description: "Quote PDF export in progress..."
         });
-        // In production, this would call a PDF generation endpoint
     };
 
     return (

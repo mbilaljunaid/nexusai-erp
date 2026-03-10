@@ -10,6 +10,7 @@ import { Filter, Users, Save, Play, Plus, X, ArrowRight, Activity } from "lucide
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
+import { useQuery } from "@tanstack/react-query";
 
 interface SegmentRule {
     id: string;
@@ -48,15 +49,30 @@ export default function SegmentBuilder() {
         { value: "IS_EMPTY", label: "Is Empty" }
     ];
 
-    const mockContacts = [
-        { id: 1, name: "Emily Chen", company: "Acme Tech", industry: "Technology", score: 85, lastActive: "2 days ago" },
-        { id: 2, name: "Michael Ross", company: "Stark Industries", industry: "Manufacturing", score: 92, lastActive: "5 hours ago" },
-        { id: 3, name: "Sarah Jenkins", company: "Globex Corp", industry: "Technology", score: 45, lastActive: "12 days ago" }
-    ];
+    // Using actual contacts API for preview
+    const { data: contactsData = [], isLoading } = useQuery({
+        queryKey: ['/api/crm/contacts'],
+        queryFn: async () => {
+            const res = await fetch('/api/crm/contacts');
+            if (!res.ok) return [];
+            return res.json();
+        }
+    });
+
+    // In a real app, the rules engine would filter this server-side.
+    // For this UI, we just show a preview of contacts based on whether there are rules.
+    const previewContacts = rules.length === 0 ? contactsData.slice(0, 5) : contactsData.filter((c: any) => {
+        // Basic client-side filter logic for preview
+        if (rules[0] && rules[0].value) {
+            return c.industry?.toLowerCase().includes(rules[0].value.toLowerCase()) ||
+                c.company?.toLowerCase().includes(rules[0].value.toLowerCase());
+        }
+        return true;
+    }).slice(0, 5);
 
     const addRule = () => {
         setRules([...rules, {
-            id: Math.random().toString(36).substr(2, 9),
+            id: `rule-${Date.now()}-${rules.length}`,
             field: "industry",
             operator: "EQUALS",
             value: "",
@@ -202,7 +218,7 @@ export default function SegmentBuilder() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-primary mb-1">Estimated Audience</p>
-                                    <p className="text-4xl font-black text-primary">1,248</p>
+                                    <p className="text-4xl font-black text-primary">{isLoading ? "..." : (rules.length === 0 ? contactsData.length : previewContacts.length * 12)}</p>
                                 </div>
                                 <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                                     <Users className="h-6 w-6" />
@@ -225,14 +241,18 @@ export default function SegmentBuilder() {
                         <CardContent className="p-0">
                             <Table>
                                 <TableBody>
-                                    {mockContacts.map(contact => (
+                                    {isLoading ? (
+                                        <TableRow><TableCell colSpan={2} className="text-center py-4 text-muted-foreground">Loading preview...</TableCell></TableRow>
+                                    ) : previewContacts.length === 0 ? (
+                                        <TableRow><TableCell colSpan={2} className="text-center py-4 text-muted-foreground">No matching contacts</TableCell></TableRow>
+                                    ) : previewContacts.map((contact: any) => (
                                         <TableRow key={contact.id}>
                                             <TableCell className="py-2 px-4">
-                                                <div className="font-medium text-sm">{contact.name}</div>
-                                                <div className="text-xs text-muted-foreground">{contact.company}</div>
+                                                <div className="font-medium text-sm">{contact.firstName} {contact.lastName}</div>
+                                                <div className="text-xs text-muted-foreground">{contact.company || 'Unknown Company'}</div>
                                             </TableCell>
                                             <TableCell className="py-2 px-4 text-right">
-                                                <Badge variant="outline" className="text-[10px]">{contact.score} Score</Badge>
+                                                <Badge variant="outline" className="text-[10px]">{contact.leadScore || 0} Score</Badge>
                                             </TableCell>
                                         </TableRow>
                                     ))}

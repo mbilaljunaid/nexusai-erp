@@ -113,13 +113,20 @@ export default function FieldServiceDashboard() {
                     </CardContent>
                 </Card>
 
-                {/* Technicians Map Placehodler */}
+                {/* Technicians Map */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2"><Map className="h-4 w-4" /> Technician Visualizer</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-[400px] bg-muted flex items-center justify-center rounded-md border text-muted-foreground">
-                        Map View Placeholder
+                    <CardContent className="h-[400px] bg-muted/30 p-0 overflow-hidden relative border rounded-md">
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                        <div className="absolute flex inset-0 items-center justify-center p-6 text-center text-muted-foreground bg-background/50 backdrop-blur-[2px]">
+                            <div className="flex flex-col items-center">
+                                <Map className="h-8 w-8 mb-2 opacity-50" />
+                                <span className="text-sm font-semibold">Map Requires Provider</span>
+                                <span className="text-xs max-w-[200px] mt-1">Configure your Google Maps API key in system settings to enable live routing.</span>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
             </div>

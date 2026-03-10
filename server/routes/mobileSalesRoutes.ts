@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "../db";
-import { activities, opportunities, contacts } from "@shared/schema/crm";
+import { interactions, opportunities, contacts } from "@shared/schema/crm";
 import { eq } from "drizzle-orm";
 
 export const mobileSalesRouter = Router();
@@ -48,17 +48,17 @@ mobileSalesRouter.post("/dictation", async (req, res) => {
         }
 
         // Attempt to save the dictation as a call logging activity
-        const [newActivity] = await db.insert(activities).values({
-            activityType: "Call", // Treat dictations primarily as call recaps
+        const [newActivity] = await db.insert(interactions).values({
+            type: "call", // Treat dictations primarily as call recaps
             subject: "Mobile Voice Dictation Note",
+            summary: text || "Dictation Note",
             description: text,
             status: "Completed",
             priority: "Normal",
-            activityDate: new Date(),
-            accountId: accountId || null,
-            contactId: contactId || null,
+            performedAt: new Date(),
+            entityType: accountId ? "account" : (contactId ? "contact" : "unknown"),
+            entityId: accountId || contactId || "00000000-0000-0000-0000-000000000000",
             createdAt: new Date(),
-            updatedAt: new Date(),
         }).returning();
 
         res.json({
