@@ -299,14 +299,14 @@ export default function MyTimeCard() {
                                         <div className="flex items-center gap-3">
                                             <div className={cn(
                                                 "w-1 h-8 rounded",
-                                                item.hrm_time_entries.timeType === 'SICK' ? "bg-red-500" : "bg-sky-500"
+                                                item.hrm_time_entries?.timeType === 'SICK' ? "bg-red-500" : "bg-sky-500"
                                             )} />
                                             <div>
-                                                <p className="text-sm font-medium">{item.hrm_time_entries.timeType}</p>
-                                                <p className="text-xs text-muted-foreground">{item.hrm_time_entries.date}</p>
+                                                <p className="text-sm font-medium">{item.hrm_time_entries?.timeType}</p>
+                                                <p className="text-xs text-muted-foreground">{item.hrm_time_entries?.date}</p>
                                             </div>
                                         </div>
-                                        <Badge variant="outline">{(item.hrm_time_entries.durationMinutes / 60).toFixed(1)}h</Badge>
+                                        <Badge variant="outline">{((item.hrm_time_entries?.durationMinutes || 0) / 60).toFixed(1)}h</Badge>
                                     </div>
                                 ))}
                                 {(!history || history.length === 0) && (

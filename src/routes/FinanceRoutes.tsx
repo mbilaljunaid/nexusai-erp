@@ -256,6 +256,12 @@ import BudgetReconciliation from "@/pages/epm/BudgetReconciliation";
 import ScenarioComparison from "@/pages/epm/ScenarioComparison";
 import BudgetWorkflow from "@/pages/epm/BudgetWorkflow";
 import BudgetAllocationWorkbench from "@/pages/epm/BudgetAllocationWorkbench";
+import SmartViewIntegration from "@/pages/epm/SmartViewIntegration";
+import ESGReporting from "@/pages/epm/ESGReporting";
+
+// EPM Phase 6 Gap Components
+import SupplierEmissionSurveys from "@/pages/epm/SupplierEmissionSurveys";
+import SustainabilityPublicDashboard from "@/pages/epm/SustainabilityPublicDashboard";
 
 import ModuleLayout from "@/components/layouts/ModuleLayout";
 import { FinanceSidebar } from "@/components/nav/FinanceSidebar";
@@ -416,6 +422,11 @@ export default function FinanceRoutes() {
                 <Route path="/finance/epm/scenarios" component={ScenarioComparison} />
                 <Route path="/finance/epm/workflow" component={BudgetWorkflow} />
                 <Route path="/finance/epm/allocations" component={BudgetAllocationWorkbench} />
+                <Route path="/finance/epm/smartview" component={SmartViewIntegration} />
+                <Route path="/finance/epm/esg" component={ESGReporting} />
+                <Route path="/finance/epm/esg/supplier-surveys" component={SupplierEmissionSurveys} />
+                <Route path="/finance/epm/esg/public-dashboard" component={SustainabilityPublicDashboard} />
+
                 <Route path="/finance/gl/consolidation/rules" component={EliminationRuleBuilder} />
                 <Route path="/finance/gl/consolidation/results/:runId">{(params: { runId: string }) => <ConsolidationResultsViewer />}</Route>
                 <Route path="/finance/gl/consolidation/journals" component={EliminationJournalReview} />

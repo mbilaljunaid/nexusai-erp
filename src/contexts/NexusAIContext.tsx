@@ -118,7 +118,7 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
   // Fetch Nudges (HR/Global)
   const { data: nudges = [] } = useQuery<any[]>({
     queryKey: ["/api/hr-self-service/me/ai/nudges"],
-    enabled: currentModule === "Human Resources" || additionalContextModules.includes("Human Resources"),
+    enabled: currentModule === "Human Resources" || (additionalContextModules || []).includes("Human Resources"),
     staleTime: 60_000,
   });
 

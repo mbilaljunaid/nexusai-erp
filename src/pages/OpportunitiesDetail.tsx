@@ -16,6 +16,21 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Search,
   ArrowLeft,
   LayoutGrid,
@@ -44,6 +59,7 @@ import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/Inter
 import { Progress } from "@/components/ui/progress";
 import { CompetitorList } from "@/components/crm/CompetitorList";
 import { useNexusAI } from "@/contexts/NexusAIContext";
+import { SalesPlaybookWidget } from "@/components/crm/SalesPlaybookWidget";
 
 // AI Insights Component
 function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
@@ -143,6 +159,21 @@ export default function OpportunitiesDetail() {
   const queryClient = useQueryClient();
   const [draggedOpp, setDraggedOpp] = useState<Opportunity | null>(null);
 
+  // Win/Loss Reason State
+  const [winLossDialogOpen, setWinLossDialogOpen] = useState(false);
+  const [winLossReason, setWinLossReason] = useState("");
+  const [pendingDropStage, setPendingDropStage] = useState<string | null>(null);
+
+  const winLossReasons = [
+    "Price",
+    "Competitor",
+    "Feature Gap",
+    "Timeline",
+    "Budget",
+    "Relationship",
+    "Other"
+  ];
+
   const handleDragStart = (e: React.DragEvent, opp: Opportunity) => {
     setDraggedOpp(opp);
     e.dataTransfer.effectAllowed = "move";
@@ -158,8 +189,18 @@ export default function OpportunitiesDetail() {
     e.preventDefault();
     if (!draggedOpp || draggedOpp.stage === targetStageId) return;
 
-    const previousOpp = { ...draggedOpp };
-    const newStage = targetStageId;
+    if (targetStageId === "closed_won" || targetStageId === "closed_lost") {
+      setPendingDropStage(targetStageId);
+      setWinLossReason("");
+      setWinLossDialogOpen(true);
+      return;
+    }
+
+    await executeStageUpdate(draggedOpp, targetStageId);
+  };
+
+  const executeStageUpdate = async (opp: Opportunity, newStage: string, reason?: string) => {
+    const previousOpp = { ...opp };
 
     // Optimistic Update
     queryClient.setQueryData(["/api/crm/opportunities", "limit=100"], (old: any) => {
@@ -167,16 +208,30 @@ export default function OpportunitiesDetail() {
       return {
         ...old,
         data: old.data.map((o: Opportunity) =>
-          o.id === draggedOpp.id ? { ...o, stage: newStage } : o
+          o.id === opp.id ? { ...o, stage: newStage, winLossReason: reason || o.winLossReason } : o
         )
       };
     });
 
     try {
-      const res = await fetch(`/api/crm/opportunities/${draggedOpp.id}`, {
-        method: "PATCH",
+      let endpoint = `/api/crm/opportunities/${opp.id}/stage`;
+      let method = "PATCH";
+      let payload: any = { stage: newStage };
+
+      if (newStage === "closed_won") {
+        endpoint = `/api/crm/opportunities/${opp.id}/close-won`;
+        method = "POST";
+        payload = { winLossReason: reason };
+      } else if (newStage === "closed_lost") {
+        endpoint = `/api/crm/opportunities/${opp.id}/close-lost`;
+        method = "POST";
+        payload = { winLossReason: reason };
+      }
+
+      const res = await fetch(endpoint, {
+        method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ stage: newStage })
+        body: JSON.stringify(payload)
       });
 
       if (!res.ok) throw new Error("Failed to update stage");
@@ -196,10 +251,11 @@ export default function OpportunitiesDetail() {
       });
     } finally {
       setDraggedOpp(null);
+      setWinLossDialogOpen(false);
+      setPendingDropStage(null);
       queryClient.invalidateQueries({ queryKey: ["/api/crm/opportunities"] });
     }
   };
-
 
   return (
     <div className="space-y-8 pb-10 flex flex-col flex-1 overflow-y-auto">
@@ -396,29 +452,29 @@ export default function OpportunitiesDetail() {
                         className="cursor-grab active:cursor-grabbing"
                       >
                         <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedOpp(opp)}>
-                            <Card
-                                                      className={cn(`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`)}
-                                                    >
-                                                      <CardContent className="p-4">
-                                                        <div className="mb-4">
-                                                          <p className="font-bold leading-tight group-hover:text-primary transition-colors text-[15px]">{opp.name}</p>
-                                                          <p className="text-xs text-muted-foreground mt-1.5 font-medium flex items-center gap-1.5 italic">
-                                                            <span className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-                                                            {getAccountName(opp.accountId)}
-                                                          </p>
-                                                        </div>
-                                                        <div className="flex justify-between items-center bg-muted/30 p-2.5 rounded-lg border border-transparent group-hover:border-primary/10 transition-colors">
-                                                          <div className="flex items-center gap-1.5">
-                                                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-none bg-background/50 font-bold">
-                                                              {opp.probability}%
-                                                            </Badge>
-                                                          </div>
-                                                          <span className="text-[15px] font-black">{formatCurrency(opp.amount)}</span>
-                                                        </div>
-                                                      </CardContent>
-                                                    </Card>
-                            </Button>
+                          <Card
+                            className={cn(`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`)}
+                          >
+                            <CardContent className="p-4">
+                              <div className="mb-4">
+                                <p className="font-bold leading-tight group-hover:text-primary transition-colors text-[15px]">{opp.name}</p>
+                                <p className="text-xs text-muted-foreground mt-1.5 font-medium flex items-center gap-1.5 italic">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+                                  {getAccountName(opp.accountId)}
+                                </p>
+                              </div>
+                              <div className="flex justify-between items-center bg-muted/30 p-2.5 rounded-lg border border-transparent group-hover:border-primary/10 transition-colors">
+                                <div className="flex items-center gap-1.5">
+                                  <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-none bg-background/50 font-bold">
+                                    {opp.probability}%
+                                  </Badge>
+                                </div>
+                                <span className="text-[15px] font-black">{formatCurrency(opp.amount)}</span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Button>
                       </div>
                     ))}
                     {stageOpps.length === 0 && (
@@ -460,8 +516,8 @@ export default function OpportunitiesDetail() {
               </TabsList>
               <div className="flex-1 overflow-y-auto pt-4 pr-1">
                 <TabsContent value="details">
-                  {/* ... details content ... */}
                   <div className="space-y-4">
+                    <SalesPlaybookWidget stage={selectedOpp.stage} />
                     <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-4 rounded-lg">
                       <div>
                         <p className="text-muted-foreground">Stage</p>
@@ -472,12 +528,34 @@ export default function OpportunitiesDetail() {
                         <p className="font-medium">{selectedOpp.probability}%</p>
                       </div>
                       <div>
+                        <p className="text-muted-foreground">Forecast Category</p>
+                        <p className="font-medium">{selectedOpp.forecastCategory || 'Pipeline'}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Territory</p>
+                        <p className="font-medium">{selectedOpp.territoryId ? `Territory ${selectedOpp.territoryId.substring(0, 6)}` : 'Unassigned'}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Primary Competitor</p>
+                        <p className="font-medium flex items-center gap-2">
+                          See Competitors Tab <ArrowLeft className="w-3 h-3 rotate-180 text-muted-foreground" />
+                        </p>
+                      </div>
+                      <div>
                         <p className="text-muted-foreground">Close Date</p>
                         <p className="font-medium">{selectedOpp.closeDate ? formatDate(selectedOpp.closeDate) : 'None'}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground">Owner</p>
                         <p className="font-medium">{selectedOpp.ownerId || 'Unassigned'}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Overlay Sales Reps</p>
+                        <p className="font-medium">{selectedOpp.overlayReps || 'None'}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="text-muted-foreground">Next Step</p>
+                        <p className="font-medium">{selectedOpp.nextStep || 'Not specified'}</p>
                       </div>
                     </div>
                   </div>
@@ -507,6 +585,48 @@ export default function OpportunitiesDetail() {
           )}
         </SheetContent>
       </Sheet>
+
+      {/* Win/Loss Reason Dialog */}
+      <Dialog open={winLossDialogOpen} onOpenChange={setWinLossDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{pendingDropStage === 'closed_won' ? 'Close as Won' : 'Close as Lost'}</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for closing this opportunity.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Win/Loss Reason</label>
+              <Select value={winLossReason} onValueChange={setWinLossReason}>
+                <SelectTrigger aria-label="Win/Loss Reason">
+                  <SelectValue placeholder="Select a reason..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {winLossReasons.map((reason) => (
+                    <SelectItem key={reason} value={reason}>
+                      {reason}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setWinLossDialogOpen(false)}>Cancel</Button>
+            <Button
+              disabled={!winLossReason}
+              onClick={() => {
+                if (draggedOpp && pendingDropStage) {
+                  executeStageUpdate(draggedOpp, pendingDropStage, winLossReason);
+                }
+              }}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

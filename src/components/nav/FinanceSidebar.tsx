@@ -159,6 +159,20 @@ export const financeMenu = [
         ]
     },
     {
+        label: "Enterprise Performance (EPM)",
+        items: [
+            { title: "Smart View", url: "/finance/epm/smartview", icon: Layers },
+            { title: "Strategic Modeling", url: "/epm/strategic-modeling", icon: TrendingUp },
+            { title: "CapEx Planning", url: "/epm/capex-planning", icon: Briefcase },
+            { title: "Budget Control Rules", url: "/finance/epm/budget-controls", icon: CheckSquare },
+            { title: "Variance Analysis", url: "/finance/epm/variance-analysis", icon: BarChart3 },
+            { title: "Scenario Comparison", url: "/finance/epm/scenarios", icon: Layers },
+            { title: "ESG & Sustainability", url: "/epm/esg", icon: TrendingUp },
+            { title: "ESG Supplier Surveys", url: "/finance/epm/esg/supplier-surveys", icon: CheckSquare },
+            { title: "ESG Public Dashboard", url: "/finance/epm/esg/public-dashboard", icon: BarChart3 },
+        ]
+    },
+    {
         label: "Contracts (CLM)",
         items: [
             { title: "Contract List", url: "/finance/contracts", icon: FileText },

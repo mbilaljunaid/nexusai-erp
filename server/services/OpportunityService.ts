@@ -90,7 +90,7 @@ export class OpportunityService {
     /**
      * Move opportunity to different stage
      */
-    async updateStage(id: string, newStage: string, probability?: number): Promise<Opportunity> {
+    async updateStage(id: string, newStage: string, probability?: number, winLossReason?: string): Promise<Opportunity> {
         const updateData: any = {
             stage: newStage,
             updatedAt: new Date()
@@ -98,6 +98,10 @@ export class OpportunityService {
 
         if (probability !== undefined) {
             updateData.probability = probability;
+        }
+
+        if (winLossReason !== undefined) {
+            updateData.winLossReason = winLossReason;
         }
 
         const [opportunity] = await db
@@ -112,15 +116,15 @@ export class OpportunityService {
     /**
      * Close opportunity as won
      */
-    async closeAsWon(id: string): Promise<Opportunity> {
-        return this.updateStage(id, 'CLOSED_WON', 100);
+    async closeAsWon(id: string, winLossReason?: string): Promise<Opportunity> {
+        return this.updateStage(id, 'CLOSED_WON', 100, winLossReason);
     }
 
     /**
      * Close opportunity as lost
      */
-    async closeAsLost(id: string): Promise<Opportunity> {
-        return this.updateStage(id, 'CLOSED_LOST', 0);
+    async closeAsLost(id: string, winLossReason?: string): Promise<Opportunity> {
+        return this.updateStage(id, 'CLOSED_LOST', 0, winLossReason);
     }
 
     /**

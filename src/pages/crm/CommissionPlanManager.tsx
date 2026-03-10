@@ -79,12 +79,17 @@ export default function CommissionPlanManager() {
             type: "select" as const,
             options: [
                 { value: "percentage_deal_value", label: "% of Deal Value" },
-                { value: "flat_rate", label: "Flat Rate per Deal" }
+                { value: "flat_rate", label: "Flat Rate per Deal" },
+                { value: "tiered_accelerator", label: "Multi-Tiered Accelerator" }
             ],
             required: true,
             defaultValue: "percentage_deal_value"
         },
-        { id: "rate", label: "Rate (%) / Amount ($)", type: "text" as const, required: true },
+        { id: "rate", label: "Base Rate (%) / Amount ($)", type: "text" as const, required: true },
+        { id: "tier1Threshold", label: "Tier 1 Over ($)", type: "text" as const },
+        { id: "tier1Rate", label: "Tier 1 Rate (%)", type: "text" as const },
+        { id: "tier2Threshold", label: "Tier 2 Over ($)", type: "text" as const },
+        { id: "tier2Rate", label: "Tier 2 Rate (%)", type: "text" as const },
         { id: "isActive", label: "Active Status", type: "boolean" as const, defaultValue: true }
     ], []);
 

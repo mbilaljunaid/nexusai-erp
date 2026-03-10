@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, numeric, boolean, jsonb, integer, date } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, numeric, boolean, jsonb, integer, date, uuid } from "drizzle-orm/pg-core";
 import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -175,6 +175,78 @@ export const epmAudits = pgTable("epm_audits", {
     changes: jsonb("changes"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
+
+// 14. EPM Supplier Emission Surveys (Phase 34)
+export const epmSupplierEmissionSurveys = pgTable("epm_supplier_emission_surveys", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    title: varchar("title").notNull(),
+    year: integer("year").notNull(),
+    status: varchar("status").default("Draft"), // Draft, Active, Closed
+    dueDate: timestamp("due_date"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const epmSurveyResponses = pgTable("epm_survey_responses", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    surveyId: varchar("survey_id").references(() => epmSupplierEmissionSurveys.id).notNull(),
+    supplierId: varchar("supplier_id").notNull(), // Should link to TCA Organizations
+    supplierName: varchar("supplier_name").notNull(),
+    status: varchar("status").default("Pending"), // Pending, In Progress, Submitted
+
+    // Core Emission Data (Scope 1 & 2 of the supplier roll up to our Scope 3)
+    scope1Emissions: numeric("scope_1_emissions", { precision: 18, scale: 4 }).default("0"),
+    scope2Emissions: numeric("scope_2_emissions", { precision: 18, scale: 4 }).default("0"),
+    totalEmissions: numeric("total_emissions", { precision: 18, scale: 4 }).default("0"), // Calculated
+
+    // Additional disclosures
+    hasReductionTarget: boolean("has_reduction_target").default(false),
+    targetYear: integer("target_year"),
+    reductionPercentage: numeric("reduction_percentage", { precision: 5, scale: 2 }),
+
+    submittedAt: timestamp("submitted_at"),
+});
+
+// ============================================
+// PHASE 7 GAP: STRATEGIC & CAPEX MODELING
+// ============================================
+
+export const epmStrategicModels = pgTable("epm_strategic_models", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    entBusinessUnitId: uuid("ent_business_unit_id"),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description"),
+    timeHorizonYears: integer("time_horizon_years").default(5),
+    baseYear: integer("base_year").notNull(),
+    status: varchar("status", { length: 50 }).notNull().default('Draft'), // Draft, Active, Archived
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const epmCapexAssets = pgTable("epm_capex_assets", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    modelId: uuid("model_id").references(() => epmStrategicModels.id),
+    assetName: varchar("asset_name", { length: 255 }).notNull(),
+    assetCategory: varchar("asset_category", { length: 100 }).notNull(), // e.g., IT Equipment, Machinery, Buildings
+    purchasePrice: numeric("purchase_price", { precision: 15, scale: 2 }).notNull(),
+    usefulLifeYears: integer("useful_life_years").notNull(),
+    salvageValue: numeric("salvage_value", { precision: 15, scale: 2 }).default("0"),
+    purchaseDate: timestamp("purchase_date").notNull(),
+    depreciationMethod: varchar("depreciation_method", { length: 50 }).default('Straight Line'), // Straight Line, Declining Balance
+    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertEpmSupplierEmissionSurveySchema = createInsertSchema(epmSupplierEmissionSurveys);
+export const insertEpmSurveyResponseSchema = createInsertSchema(epmSurveyResponses).extend({
+    scope1Emissions: z.number().or(z.string().transform(v => Number(v))).optional(),
+    scope2Emissions: z.number().or(z.string().transform(v => Number(v))).optional(),
+    reductionPercentage: z.number().or(z.string().transform(v => Number(v))).optional(),
+});
+
+export type EpmSupplierEmissionSurvey = typeof epmSupplierEmissionSurveys.$inferSelect;
+export type InsertEpmSupplierEmissionSurvey = z.infer<typeof insertEpmSupplierEmissionSurveySchema>;
+
+export type EpmSurveyResponse = typeof epmSurveyResponses.$inferSelect;
+export type InsertEpmSurveyResponse = z.infer<typeof insertEpmSurveyResponseSchema>;
 
 // ========== RELATIONS ==========
 

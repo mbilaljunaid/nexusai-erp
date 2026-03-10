@@ -19,6 +19,8 @@ const epmModules = [
   { title: "Budget Workflow", description: "Submit and approve budgets", href: "/finance/epm/workflow", icon: GitBranch },
   { title: "Budget Allocation", description: "Allocate budgets across cost centers", href: "/finance/epm/allocations", icon: PieChart },
   { title: "ESG & Sustainability", description: "Environmental, social, and governance metrics", href: "/epm/esg", icon: TrendingUp },
+  { title: "Strategic Modeling", description: "Multi-year macro forecasting", href: "/epm/strategic-modeling", icon: TrendingUp },
+  { title: "CapEx Planning", description: "Automated depreciation grids", href: "/epm/capex-planning", icon: DollarSign },
 ];
 
 export default function EPMPage() {

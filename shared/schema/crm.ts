@@ -196,6 +196,71 @@ export const insertCampaignMemberSchema = createInsertSchema(campaignMembers).ex
     status: z.string().optional(),
 });
 
+// --- Marketing UTM & Analytics (Phase 28) ---
+export const utmCampaigns = pgTable("crm_utm_campaigns", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    campaignId: varchar("campaign_id").references(() => campaigns.id),
+    utmSource: varchar("utm_source").notNull(),
+    utmMedium: varchar("utm_medium").notNull(),
+    utmCampaignText: varchar("utm_campaign_text").notNull(),
+    utmTerm: varchar("utm_term"),
+    utmContent: varchar("utm_content"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const pageVisits = pgTable("crm_page_visits", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    visitorId: varchar("visitor_id"), // Anonymous tracking cookie id
+    leadId: varchar("lead_id").references(() => leads.id),
+    contactId: varchar("contact_id").references(() => contacts.id),
+    url: text("url").notNull(),
+    referrer: text("referrer"),
+    utmCampaignId: varchar("utm_campaign_id").references(() => utmCampaigns.id),
+    visitedAt: timestamp("visited_at").default(sql`now()`),
+});
+
+export const abTests = pgTable("crm_ab_tests", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    campaignId: varchar("campaign_id").references(() => campaigns.id),
+    status: varchar("status").default("Draft"), // Draft, Live, Completed
+    startDate: timestamp("start_date"),
+    endDate: timestamp("end_date"),
+    winningVariantId: varchar("winning_variant_id"), // FK added later in app logic
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const abTestVariants = pgTable("crm_ab_test_variants", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    abTestId: varchar("ab_test_id").references(() => abTests.id).notNull(),
+    name: varchar("name").notNull(), // e.g. "Control", "Variant A"
+    subjectLine: text("subject_line"),
+    bodyContent: text("body_content"),
+    weight: integer("weight").default(50), // Percentage of traffic
+    sends: integer("sends").default(0),
+    opens: integer("opens").default(0),
+    clicks: integer("clicks").default(0),
+});
+
+export const insertUtmCampaignSchema = createInsertSchema(utmCampaigns);
+export const insertPageVisitSchema = createInsertSchema(pageVisits);
+export const insertAbTestSchema = createInsertSchema(abTests).extend({
+    name: z.string().min(1, "A/B Test Name is required"),
+});
+export const insertAbTestVariantSchema = createInsertSchema(abTestVariants);
+
+export type UtmCampaign = typeof utmCampaigns.$inferSelect;
+export type InsertUtmCampaign = z.infer<typeof insertUtmCampaignSchema>;
+
+export type PageVisit = typeof pageVisits.$inferSelect;
+export type InsertPageVisit = z.infer<typeof insertPageVisitSchema>;
+
+export type AbTest = typeof abTests.$inferSelect;
+export type InsertAbTest = z.infer<typeof insertAbTestSchema>;
+
+export type AbTestVariant = typeof abTestVariants.$inferSelect;
+export type InsertAbTestVariant = z.infer<typeof insertAbTestVariantSchema>;
+
 // --- Opportunities (Deals) ---
 export const opportunities = pgTable("opportunities", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -221,6 +286,7 @@ export const opportunities = pgTable("opportunities", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
     ownerId: varchar("owner_id"),
     entBusinessUnitId: varchar("ent_business_unit_id"),
+    winLossReason: varchar("win_loss_reason"),
 });
 
 export const insertOpportunitySchema = createInsertSchema(opportunities).extend({
@@ -229,6 +295,7 @@ export const insertOpportunitySchema = createInsertSchema(opportunities).extend(
     probability: z.number().or(z.string().transform(v => Number(v))).optional().nullable(),
     closeDate: z.coerce.date().optional().nullable(),
     priceBookId: z.string().optional().nullable(),
+    winLossReason: z.string().optional().nullable(),
 });
 
 // --- Interactions (Activities) ---
@@ -386,6 +453,56 @@ export const caseComments = pgTable('crm_case_comments', {
     createdById: text('created_by_id'), // User ID
     createdAt: timestamp('created_at').default(sql`now()`),
 });
+
+// --- Service Cloud Advanced (Phase 30) ---
+export const emailToCaseRoutingRules = pgTable("crm_email_to_case_routing_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    supportAlias: varchar("support_alias").notNull(), // e.g. support@nexusai.com
+    priority: integer("priority").default(1),
+    routingQueue: varchar("routing_queue").notNull(), // e.g. "Tier 1 Support"
+    keywordTriggers: text("keyword_triggers").array(), // e.g. ["urgent", "escalate"]
+    autoResponseTemplateId: varchar("auto_response_template_id"), // FK to email templates if implemented
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const csatSurveys = pgTable("crm_csat_surveys", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    triggerEvent: varchar("trigger_event").default("Case Closed"), // Only event for now
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const csatResponses = pgTable("crm_csat_responses", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    surveyId: varchar("survey_id").references(() => csatSurveys.id).notNull(),
+    caseId: varchar("case_id").references(() => cases.id),
+    contactId: varchar("contact_id").references(() => contacts.id),
+    score: integer("score").notNull(), // e.g. 1-5
+    feedback: text("feedback"),
+    submittedAt: timestamp("submitted_at").default(sql`now()`),
+});
+
+export const insertEmailToCaseRoutingRuleSchema = createInsertSchema(emailToCaseRoutingRules).extend({
+    supportAlias: z.string().email("Must be a valid email alias"),
+});
+export const insertCsatSurveySchema = createInsertSchema(csatSurveys).extend({
+    name: z.string().min(1, "Survey Name is required"),
+});
+export const insertCsatResponseSchema = createInsertSchema(csatResponses).extend({
+    score: z.number().min(1).max(5),
+});
+
+export type EmailToCaseRoutingRule = typeof emailToCaseRoutingRules.$inferSelect;
+export type InsertEmailToCaseRoutingRule = z.infer<typeof insertEmailToCaseRoutingRuleSchema>;
+
+export type CsatSurvey = typeof csatSurveys.$inferSelect;
+export type InsertCsatSurvey = z.infer<typeof insertCsatSurveySchema>;
+
+export type CsatResponse = typeof csatResponses.$inferSelect;
+export type InsertCsatResponse = z.infer<typeof insertCsatResponseSchema>;
 
 // Field Service (Phase 26)
 export const serviceWorkOrders = pgTable('crm_service_work_orders', {
@@ -558,6 +675,8 @@ export type ApprovalRequest = typeof approvalRequests.$inferSelect;
 export const salesQuotas = pgTable("crm_quotas", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     userId: varchar("user_id").notNull(), // Assigned Rep
+    territoryId: varchar("territory_id").references(() => territories.id), // Added for alignment
+    productId: varchar("product_id").references(() => products.id), // Added for product-specific quotas
     periodName: varchar("period_name").notNull(), // e.g. "Q1-2026", "Jan-2026"
     quotaAmount: numeric("quota_amount").notNull().default("0"),
     currencyCode: varchar("currency_code").default("USD"),
@@ -640,6 +759,81 @@ export type Territory = typeof territories.$inferSelect;
 export type InsertTerritory = z.infer<typeof insertTerritorySchema>;
 
 
+// --- CPQ Product Rules (Phase 29) ---
+export const cpqRules = pgTable("crm_cpq_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    baseProductId: varchar("base_product_id").references(() => products.id).notNull(),
+    targetProductId: varchar("target_product_id").references(() => products.id).notNull(),
+    ruleType: varchar("rule_type").notNull().default("REQUIRE"), // REQUIRE, EXCLUDE, RECOMMEND
+    conditionField: varchar("condition_field"), // Optional: field on the quote/opportunity that needs to match
+    conditionValue: varchar("condition_value"),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCpqRuleSchema = createInsertSchema(cpqRules).extend({
+    name: z.string().min(1, "Rule Name is required"),
+});
+
+export type CpqRule = typeof cpqRules.$inferSelect;
+export type InsertCpqRule = z.infer<typeof insertCpqRuleSchema>;
+
+// --- Guided Selling (Phase 29) ---
+export const guidedSellingQuestions = pgTable("crm_guided_selling_questions", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    questionText: text("question_text").notNull(),
+    questionType: varchar("question_type").default("single_choice"), // single_choice, multi_choice, text
+    sequenceIndex: integer("sequence_index").default(0),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const guidedSellingOptions = pgTable("crm_guided_selling_options", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    questionId: varchar("question_id").references(() => guidedSellingQuestions.id).notNull(),
+    optionText: text("option_text").notNull(),
+    recommendedProductId: varchar("recommended_product_id").references(() => products.id),
+    scoreImpact: integer("score_impact").default(0),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertGuidedSellingQuestionSchema = createInsertSchema(guidedSellingQuestions).extend({
+    questionText: z.string().min(1, "Question Text is required"),
+});
+export const insertGuidedSellingOptionSchema = createInsertSchema(guidedSellingOptions).extend({
+    optionText: z.string().min(1, "Option Text is required"),
+});
+
+export type GuidedSellingQuestion = typeof guidedSellingQuestions.$inferSelect;
+export type InsertGuidedSellingQuestion = z.infer<typeof insertGuidedSellingQuestionSchema>;
+
+export type GuidedSellingOption = typeof guidedSellingOptions.$inferSelect;
+export type InsertGuidedSellingOption = z.infer<typeof insertGuidedSellingOptionSchema>;
+
+// --- Complex Approval Rules (Phase 29) ---
+export const crmApprovalRules = pgTable("crm_approval_rules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    entityType: varchar("entity_type").notNull().default("QUOTE"), // QUOTE, OPPORTUNITY
+    conditionField: varchar("condition_field").notNull(), // e.g. "discountPercentage"
+    operator: varchar("operator").notNull(), // ">", ">=", "<"
+    thresholdValue: numeric("threshold_value").notNull(), // e.g. 20 (for 20%)
+    approverRoleId: varchar("approver_role_id"), // E.g., VP of Sales
+    approverUserId: varchar("approver_user_id"), // Specific user override
+    priority: integer("priority").default(1),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCrmApprovalRuleSchema = createInsertSchema(crmApprovalRules).extend({
+    name: z.string().min(1, "Rule Name is required"),
+});
+
+export type CrmApprovalRule = typeof crmApprovalRules.$inferSelect;
+export type InsertCrmApprovalRule = z.infer<typeof insertCrmApprovalRuleSchema>;
+
 // --- Incentive Compensation (Phase 22) ---
 
 export const commissionPlans = pgTable("crm_commission_plans", {
@@ -687,3 +881,119 @@ export type CommissionPlan = typeof commissionPlans.$inferSelect;
 export type CommissionAssignment = typeof commissionAssignments.$inferSelect;
 export type Commission = typeof commissions.$inferSelect;
 
+// --- Advanced Incentive Compensation (Phase 32) ---
+export const commissionClawbacks = pgTable("crm_commission_clawbacks", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    commissionId: varchar("commission_id").references(() => commissions.id).notNull(),
+    userId: varchar("user_id").notNull(),
+    clawbackAmount: numeric("clawback_amount").notNull(),
+    reason: text("reason").notNull(), // e.g. "Refund", "Cancellation"
+    status: varchar("status").default("pending"), // pending, applied
+    appliedAt: timestamp("applied_at"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const commissionPlanAgreements = pgTable("crm_commission_plan_agreements", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id").notNull(),
+    planId: varchar("plan_id").references(() => commissionPlans.id).notNull(),
+    status: varchar("status").default("Pending Signature"), // Pending Signature, Signed, Rejected
+    signedAt: timestamp("signed_at"),
+    ipAddress: varchar("ip_address"),
+    documentHash: varchar("document_hash"), // Verifiable signature tracking
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCommissionClawbackSchema = createInsertSchema(commissionClawbacks).extend({
+    clawbackAmount: z.number().or(z.string().transform(v => Number(v))),
+});
+export const insertCommissionPlanAgreementSchema = createInsertSchema(commissionPlanAgreements);
+
+export type CommissionClawback = typeof commissionClawbacks.$inferSelect;
+export type InsertCommissionClawback = z.infer<typeof insertCommissionClawbackSchema>;
+
+export type CommissionPlanAgreement = typeof commissionPlanAgreements.$inferSelect;
+export type InsertCommissionPlanAgreement = z.infer<typeof insertCommissionPlanAgreementSchema>;
+
+// --- Sales Forecasting (Phase 27.5) ---
+export const forecasts = pgTable("crm_forecasts", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id").notNull(), // The sales rep or manager
+    periodName: varchar("period_name").notNull(), // e.g., "Q1-2026"
+    amount: numeric("amount").notNull().default("0"), // The rolled-up/calculated amount
+    category: varchar("category").notNull().default("Commit"), // Pipeline, Best Case, Commit, Closed
+    status: varchar("status").default("Draft"), // Draft, Submitted, Approved
+    notes: text("notes"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+});
+
+export const forecastAdjustments = pgTable("crm_forecast_adjustments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    forecastId: varchar("forecast_id").references(() => forecasts.id).notNull(),
+    managerId: varchar("manager_id").notNull(), // The manager making the adjustment
+    adjustedAmount: numeric("adjusted_amount").notNull(), // The new amount
+    adjustmentReason: text("adjustment_reason"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertForecastSchema = createInsertSchema(forecasts).extend({
+    amount: z.number().or(z.string().transform(v => Number(v))),
+});
+
+export const insertForecastAdjustmentSchema = createInsertSchema(forecastAdjustments).extend({
+    adjustedAmount: z.number().or(z.string().transform(v => Number(v))),
+});
+
+export type Forecast = typeof forecasts.$inferSelect;
+export type InsertForecast = z.infer<typeof insertForecastSchema>;
+
+export type ForecastAdjustment = typeof forecastAdjustments.$inferSelect;
+export type InsertForecastAdjustment = z.infer<typeof insertForecastAdjustmentSchema>;
+
+// === Deep Granular Parity Additions (Phase 7) ===
+
+// --- Sales Methodologies & Playbooks ---
+export const crmSalesPlaybooks = pgTable("crm_sales_playbooks", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name").notNull(),
+    description: text("description"),
+    stageRule: varchar("stage_rule").notNull(), // e.g. "qualification", "negotiation"
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const crmPlaybookTasks = pgTable("crm_playbook_tasks", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    playbookId: varchar("playbook_id").references(() => crmSalesPlaybooks.id).notNull(),
+    taskName: varchar("task_name").notNull(),
+    isRequired: boolean("is_required").default(true),
+    orderIndex: integer("order_index").default(0),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCrmSalesPlaybookSchema = createInsertSchema(crmSalesPlaybooks);
+export const insertCrmPlaybookTaskSchema = createInsertSchema(crmPlaybookTasks);
+
+export type CrmSalesPlaybook = typeof crmSalesPlaybooks.$inferSelect;
+export type InsertCrmSalesPlaybook = z.infer<typeof insertCrmSalesPlaybookSchema>;
+export type CrmPlaybookTask = typeof crmPlaybookTasks.$inferSelect;
+export type InsertCrmPlaybookTask = z.infer<typeof insertCrmPlaybookTaskSchema>;
+
+// --- Service Entitlements & Warranties ---
+export const crmServiceEntitlements = pgTable("crm_service_entitlements", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    accountId: varchar("account_id").references(() => accounts.id).notNull(),
+    contractNumber: varchar("contract_number").notNull(),
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    slaLevel: varchar("sla_level").notNull(), // Gold, Silver, Bronze
+    status: varchar("status").default("active"),
+    coverageDetails: text("coverage_details"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertCrmServiceEntitlementSchema = createInsertSchema(crmServiceEntitlements);
+export type CrmServiceEntitlement = typeof crmServiceEntitlements.$inferSelect;
+export type InsertCrmServiceEntitlement = z.infer<typeof insertCrmServiceEntitlementSchema>;

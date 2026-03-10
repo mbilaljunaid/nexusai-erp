@@ -62,6 +62,8 @@ import arAiRouter from "./routes/ar-ai";
 import arRouter from "./routes/ar";
 import arReportRouter from "./routes/ar-reports";
 import { fixedAssetsRouter } from "./routes/fixedAssets";
+import fieldServiceRouter from "./routes/fieldServiceRoutes";
+import { mobileSalesRouter } from "./routes/mobileSalesRoutes";
 import talentRouter from "./routes/talent";
 import successionRouter from "./routes/talent_succession";
 import learningRouter from "./routes/talent_learning";
@@ -354,6 +356,7 @@ export async function registerRoutes(
   app.use("/api/portal", portalRouter); // Generic Portal (Customer)
   app.use("/api/fa", fixedAssetsRouter);
   app.use("/api/maintenance", maintenanceRouter);
+  app.use("/api/field-service", fieldServiceRouter);
   app.use("/api/ppm", ppmRouter);
   app.use("/api/construction", constructionRouter);
   app.use("/api/lcm", lcmRouter);
@@ -575,6 +578,7 @@ export async function registerRoutes(
 
   // CRM Module (Mounted)
   app.use("/api/crm", crmRouter);
+  app.use("/api/mobile/sales", mobileSalesRouter);
 
   return httpServer;
 }

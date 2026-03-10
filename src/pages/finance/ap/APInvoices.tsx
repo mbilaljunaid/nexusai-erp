@@ -18,18 +18,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
 import { DatePicker } from '@/components/ui/DatePicker';
-
-function useActiveBu() {
-  return useMemo(() => ({
-    id: localStorage.getItem("nexus_active_bu") || null,
-    name: localStorage.getItem("nexus_active_bu_name") || localStorage.getItem("nexus_active_bu") || "All Business Units"
-  }), []);
-}
+import { useEnterpriseStore } from "@/lib/enterpriseStore";
 
 export default function APInvoices() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
-  const activeBu = useActiveBu();
+  const { businessUnitId: activeBuId } = useEnterpriseStore();
   const [page, setPage] = useState(1);
   const pageSize = 20;
   const [statusFilter, setStatusFilter] = useState("all");
@@ -50,7 +44,7 @@ export default function APInvoices() {
   const [savedSearch, setSavedSearch] = useState<string>("none");
 
   const { data, isLoading } = useQuery<{ data: any[], total: number }>({
-    queryKey: ["/api/ap/invoices", page, pageSize, statusFilter, validationFilter, filters],
+    queryKey: ["/api/ap/invoices", page, pageSize, statusFilter, validationFilter, filters, activeBuId],
     queryFn: () => {
       const qs = new URLSearchParams({
         limit: pageSize.toString(),
@@ -61,7 +55,10 @@ export default function APInvoices() {
       Object.entries(filters).forEach(([k, v]) => {
         if (v) qs.append(k, v.toString());
       });
-      return fetch(`/api/ap/invoices?${qs.toString()}`).then(r => r.json());
+      const headers: Record<string, string> = {};
+      if (activeBuId) headers["x-business-unit-id"] = activeBuId;
+
+      return fetch(`/api/ap/invoices?${qs.toString()}`, { headers }).then(r => r.json());
     }
   });
 
@@ -327,9 +324,9 @@ export default function APInvoices() {
           <Building2 className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Active BU:</span>
           <Badge variant="secondary" className="font-mono text-xs">
-            {activeBu.id ? activeBu.name : "All Business Units"}
+            {activeBuId ? `BU: ${activeBuId}` : "All Business Units"}
           </Badge>
-          {!activeBu.id && (
+          {!activeBuId && (
             <span className="text-xs text-amber-600">(No BU selected — showing all data)</span>
           )}
         </div>
@@ -380,10 +377,10 @@ export default function APInvoices() {
               <p className="text-xs text-green-600 mt-1">Eligible for PPR</p>
             </CardContent>
           </Card>
-        </div>
+        </div >
 
         {/* Filters and Advanced Search */}
-        <div className="flex flex-col gap-4">
+        < div className="flex flex-col gap-4" >
           <div className="flex gap-4">
             <div className="flex-1 max-w-xs">
               <Select value={savedSearch} onValueChange={setSavedSearch}>
@@ -434,71 +431,75 @@ export default function APInvoices() {
             </Button>
           </div>
 
-          {advancedSearchOpen && (
-            <Card className="border-muted bg-slate-500/10">
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="space-y-2">
-                    <Label>Business Unit</Label>
-                    <Select value={filters.businessUnitId || "all"} onValueChange={(v) => setFilters(f => ({ ...f, businessUnitId: v === "all" ? undefined : v }))}>
-                      <SelectTrigger><SelectValue placeholder="All BUs" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All BUs</SelectItem>
-                        <SelectItem value="BU_US">US Operations</SelectItem>
-                        <SelectItem value="BU_EU">EU Operations</SelectItem>
-                      </SelectContent>
-                    </Select>
+          {
+            advancedSearchOpen && (
+              <Card className="border-muted bg-slate-500/10">
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label>Business Unit</Label>
+                      <Select value={filters.businessUnitId || "all"} onValueChange={(v) => setFilters(f => ({ ...f, businessUnitId: v === "all" ? undefined : v }))}>
+                        <SelectTrigger><SelectValue placeholder="All BUs" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All BUs</SelectItem>
+                          <SelectItem value="BU_US">US Operations</SelectItem>
+                          <SelectItem value="BU_EU">EU Operations</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Invoice Number</Label>
+                      <Input
+                        placeholder="Search invoice #..."
+                        value={filters.invoiceNumber || ""}
+                        onChange={(e) => setFilters(f => ({ ...f, invoiceNumber: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Supplier ID</Label>
+                      <Input
+                        placeholder="Supplier UUID..."
+                        value={filters.supplierId || ""}
+                        onChange={(e) => setFilters(f => ({ ...f, supplierId: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>From Date</Label>
+                      <DatePicker value={filters.fromDate || ""} onChange={(v) => setFilters(f => ({ ...f, fromDate: v }))} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>To Date</Label>
+                      <DatePicker value={filters.toDate || ""} onChange={(v) => setFilters(f => ({ ...f, toDate: v }))} />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Invoice Number</Label>
-                    <Input
-                      placeholder="Search invoice #..."
-                      value={filters.invoiceNumber || ""}
-                      onChange={(e) => setFilters(f => ({ ...f, invoiceNumber: e.target.value }))}
-                    />
+                  <div className="flex justify-end gap-2 mt-4">
+                    <Button variant="ghost" onClick={() => { setFilters({}); setPage(1); }}>Clear Filters</Button>
+                    <Button onClick={() => setPage(1)}>Apply Search</Button>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Supplier ID</Label>
-                    <Input
-                      placeholder="Supplier UUID..."
-                      value={filters.supplierId || ""}
-                      onChange={(e) => setFilters(f => ({ ...f, supplierId: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>From Date</Label>
-                    <DatePicker value={filters.fromDate || ""} onChange={(v) => setFilters(f => ({ ...f, fromDate: v }))} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>To Date</Label>
-                    <DatePicker value={filters.toDate || ""} onChange={(v) => setFilters(f => ({ ...f, toDate: v }))} />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button variant="ghost" onClick={() => { setFilters({}); setPage(1); }}>Clear Filters</Button>
-                  <Button onClick={() => setPage(1)}>Apply Search</Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                </CardContent>
+              </Card>
+            )
+          }
 
-          {selectedIds.size > 0 && (
-            <div className="bg-muted p-3 rounded-md flex items-center justify-between border shadow-sm">
-              <span className="text-sm font-medium ml-2 text-foreground/90">{selectedIds.size} invoices selected for bulk action</span>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={() => bulkValidateMutation.mutate(Array.from(selectedIds))}>Validate Selected</Button>
-                <Button size="sm" onClick={() => bulkApproveMutation.mutate(Array.from(selectedIds))}>Approve Selected</Button>
-                <Button size="sm" variant="destructive" onClick={() => bulkCancelMutation.mutate(Array.from(selectedIds))}>Cancel Selected</Button>
+          {
+            selectedIds.size > 0 && (
+              <div className="bg-muted p-3 rounded-md flex items-center justify-between border shadow-sm">
+                <span className="text-sm font-medium ml-2 text-foreground/90">{selectedIds.size} invoices selected for bulk action</span>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => bulkValidateMutation.mutate(Array.from(selectedIds))}>Validate Selected</Button>
+                  <Button size="sm" onClick={() => bulkApproveMutation.mutate(Array.from(selectedIds))}>Approve Selected</Button>
+                  <Button size="sm" variant="destructive" onClick={() => bulkCancelMutation.mutate(Array.from(selectedIds))}>Cancel Selected</Button>
+                </div>
               </div>
-            </div>
-          )}
+            )
+          }
 
           <InteractiveSpreadsheet
             data={filteredData}
             columns={columns}
             isLoading={isLoading}
             onRowClick={(item) => setLocation(`/finance/ap/invoices/${item.id}`)}
-           onChange={() => {}} containerHeight="600px" />
+            onChange={() => { }} containerHeight="600px" />
         </div >
 
         <ViewAccountingModal

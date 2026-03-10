@@ -23,6 +23,8 @@ export function OpportunityForm() {
     amount: "",
     closeDate: "",
     description: "",
+    overlayReps: "",
+    nextStep: "",
   });
 
   // Fetch real accounts
@@ -59,6 +61,8 @@ export function OpportunityForm() {
         amount: amount,
         closeDate: formData.closeDate ? new Date(formData.closeDate).toISOString() : null,
         description: formData.description,
+        overlayReps: formData.overlayReps,
+        nextStep: formData.nextStep,
       });
     },
     onSuccess: () => {
@@ -72,6 +76,8 @@ export function OpportunityForm() {
         amount: "",
         closeDate: "",
         description: "",
+        overlayReps: "",
+        nextStep: "",
       });
     },
     onError: (err) => {
@@ -170,6 +176,25 @@ export function OpportunityForm() {
               <Label htmlFor="close">Close Date</Label>
               <DatePicker value={formData.closeDate} onChange={(v) => handleChange("closeDate", v)} />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="overlayReps">Overlay Sales Reps</Label>
+              <Input
+                id="overlayReps"
+                placeholder="e.g., Sarah Jenkins, Mike Ross"
+                value={formData.overlayReps}
+                onChange={(e) => handleChange("overlayReps", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="nextStep">Next Step</Label>
+            <Input
+              id="nextStep"
+              placeholder="e.g., Schedule technical demo"
+              value={formData.nextStep}
+              onChange={(e) => handleChange("nextStep", e.target.value)}
+            />
           </div>
 
           <div className="space-y-2">

@@ -80,8 +80,8 @@ crmRouter.patch("/opportunities/:id", async (req, res) => {
 // Move opportunity stage
 crmRouter.patch("/opportunities/:id/stage", async (req, res) => {
     try {
-        const { stage, probability } = req.body;
-        const opportunity = await opportunityService.updateStage(req.params.id, stage, probability);
+        const { stage, probability, winLossReason } = req.body;
+        const opportunity = await opportunityService.updateStage(req.params.id, stage, probability, winLossReason);
         res.json(opportunity);
     } catch (error) {
         console.error("Error updating stage:", error);
@@ -92,7 +92,8 @@ crmRouter.patch("/opportunities/:id/stage", async (req, res) => {
 // Close opportunity as won
 crmRouter.post("/opportunities/:id/close-won", async (req, res) => {
     try {
-        const opportunity = await opportunityService.closeAsWon(req.params.id);
+        const { winLossReason } = req.body;
+        const opportunity = await opportunityService.closeAsWon(req.params.id, winLossReason);
         res.json(opportunity);
     } catch (error) {
         console.error("Error closing opportunity:", error);
@@ -103,7 +104,8 @@ crmRouter.post("/opportunities/:id/close-won", async (req, res) => {
 // Close opportunity as lost
 crmRouter.post("/opportunities/:id/close-lost", async (req, res) => {
     try {
-        const opportunity = await opportunityService.closeAsLost(req.params.id);
+        const { winLossReason } = req.body;
+        const opportunity = await opportunityService.closeAsLost(req.params.id, winLossReason);
         res.json(opportunity);
     } catch (error) {
         console.error("Error closing opportunity:", error);
@@ -434,6 +436,164 @@ crmRouter.post("/leads/calculate-score", async (req, res) => {
     } catch (error) {
         console.error("Error calculating lead score:", error);
         res.status(500).json({ error: "Failed to calculate lead score" });
+    }
+});
+
+// ============================================
+// PHASE 27.5 - SALES FORECASTING
+// ============================================
+
+crmRouter.get("/forecasts", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { forecasts } = await import("../../shared/schema/crm");
+        const { eq, and } = await import("drizzle-orm");
+
+        const tenantId = req.user?.tenantId;
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
+
+        let conditions = [];
+        if (buId) conditions.push(eq(forecasts.entBusinessUnitId, buId));
+
+        const data = await db.select().from(forecasts).where(conditions.length ? and(...conditions) : undefined);
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching forecasts:", error);
+        res.status(500).json({ error: "Failed to fetch forecasts" });
+    }
+});
+
+crmRouter.post("/forecasts", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { forecasts } = await import("../../shared/schema/crm");
+        const buId = req.headers["x-business-unit-id"] as string | undefined;
+
+        const payload = { ...req.body };
+        if (buId) payload.entBusinessUnitId = buId;
+
+        const [data] = await db.insert(forecasts).values(payload).returning();
+        res.status(201).json(data);
+    } catch (error) {
+        console.error("Error creating forecast:", error);
+        res.status(500).json({ error: "Failed to create forecast" });
+    }
+});
+
+// ============================================
+// PHASE 28 - MARKETING & A/B TESTING
+// ============================================
+
+crmRouter.get("/ab-tests", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { abTests } = await import("../../shared/schema/crm");
+        const data = await db.select().from(abTests);
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching AB tests:", error);
+        res.status(500).json({ error: "Failed to fetch AB tests" });
+    }
+});
+
+crmRouter.post("/ab-tests", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { abTests } = await import("../../shared/schema/crm");
+        const [data] = await db.insert(abTests).values(req.body).returning();
+        res.status(201).json(data);
+    } catch (error) {
+        console.error("Error creating AB test:", error);
+        res.status(500).json({ error: "Failed to create AB test" });
+    }
+});
+
+// ============================================
+// PHASE 30 - SERVICE CLOUD (CSAT)
+// ============================================
+
+crmRouter.get("/csat-surveys", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { csatSurveys } = await import("../../shared/schema/crm");
+        const data = await db.select().from(csatSurveys);
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching CSAT surveys:", error);
+        res.status(500).json({ error: "Failed to fetch CSAT surveys" });
+    }
+});
+
+crmRouter.post("/csat-surveys", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { csatSurveys } = await import("../../shared/schema/crm");
+        const [data] = await db.insert(csatSurveys).values(req.body).returning();
+        res.status(201).json(data);
+    } catch (error) {
+        console.error("Error creating CSAT survey:", error);
+        res.status(500).json({ error: "Failed to create CSAT survey" });
+    }
+});
+
+
+// ============================================
+// PHASE 7 GAP: SALES PLAYBOOKS
+// ============================================
+
+crmRouter.get("/playbooks", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { crmSalesPlaybooks } = await import("../../shared/schema/crm");
+        const data = await db.select().from(crmSalesPlaybooks);
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching playbooks:", error);
+        res.status(500).json({ error: "Failed to fetch playbooks" });
+    }
+});
+
+crmRouter.post("/playbooks", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { crmSalesPlaybooks } = await import("../../shared/schema/crm");
+        const [data] = await db.insert(crmSalesPlaybooks).values(req.body).returning();
+        res.status(201).json(data);
+    } catch (error) {
+        console.error("Error creating playbook:", error);
+        res.status(500).json({ error: "Failed to create playbook" });
+    }
+});
+
+// ============================================
+// PHASE 7 GAP: SERVICE ENTITLEMENTS
+// ============================================
+
+crmRouter.get("/service-entitlements", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { crmServiceEntitlements } = await import("../../shared/schema/crm");
+        const data = await db.select().from(crmServiceEntitlements);
+        res.json(data);
+    } catch (error) {
+        console.error("Error fetching entitlements:", error);
+        res.status(500).json({ error: "Failed to fetch entitlements" });
+    }
+});
+
+crmRouter.post("/service-entitlements", async (req, res) => {
+    try {
+        const { db } = await import("../db");
+        const { crmServiceEntitlements } = await import("../../shared/schema/crm");
+        const [data] = await db.insert(crmServiceEntitlements).values({
+            ...req.body,
+            startDate: new Date(req.body.startDate),
+            endDate: new Date(req.body.endDate)
+        }).returning();
+        res.status(201).json(data);
+    } catch (error) {
+        console.error("Error creating entitlement:", error);
+        res.status(500).json({ error: "Failed to create entitlement" });
     }
 });
 

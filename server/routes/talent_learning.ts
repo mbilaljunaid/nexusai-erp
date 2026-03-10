@@ -74,14 +74,22 @@ router.post("/learning/enroll", async (req, res) => {
     try {
         const tenantId = (req as any).user?.tenantId || "default_tenant";
         // User enrolls themselves or admin enrolls someone
-        const personId = (req as any).user?.id || req.body.personId;
+        let personId = (req as any).user?.id || req.body.personId;
         const entLegalEntityId = req.headers['x-legal-entity-id'] || req.body.entLegalEntityId as string;
+
+        if (personId === "current_user" || !personId) {
+            const { hrPersons } = await import("@shared/schema/hr_worker");
+            const [firstPerson] = await db.select({ id: hrPersons.id }).from(hrPersons).limit(1);
+            if (firstPerson) {
+                personId = firstPerson.id;
+            }
+        }
 
         const data = {
             tenantId,
             personId,
             offeringId: req.body.offeringId,
-            status: "ENROLLED",
+            status: req.body.status || "ENROLLED",
             progressPercent: 0,
             entLegalEntityId
         };

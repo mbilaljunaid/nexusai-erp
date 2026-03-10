@@ -8,12 +8,13 @@ import { hrmSalaryBases, hrmWorkerSalaries } from "@shared/schema/rewards_compen
 export class RecruitmentService {
 
     // REQUISITIONS
-    static async getRequisitions(tenantId: string, options: { limit?: number; offset?: number; entLegalEntityId?: string } = {}) {
-        const { limit = 50, offset = 0, entLegalEntityId } = options;
+    static async getRequisitions(tenantId: string, options: { limit?: number; offset?: number; entLegalEntityId?: string; entBusinessUnitId?: string } = {}) {
+        const { limit = 50, offset = 0, entLegalEntityId, entBusinessUnitId } = options;
         return await db.select().from(hrmRecRequisitions)
             .where(and(
                 eq(hrmRecRequisitions.tenantId, tenantId),
-                entLegalEntityId ? eq(hrmRecRequisitions.entLegalEntityId, entLegalEntityId) : sql`true`
+                entLegalEntityId ? eq(hrmRecRequisitions.entLegalEntityId, entLegalEntityId) : sql`true`,
+                entBusinessUnitId ? eq(hrmRecRequisitions.entBusinessUnitId, entBusinessUnitId) : sql`true`
             ))
             .orderBy(desc(hrmRecRequisitions.createdAt))
             .limit(limit)
@@ -57,15 +58,16 @@ export class RecruitmentService {
     }
 
     // CANDIDATES
-    static async getCandidates(tenantId: string, options: { limit?: number; offset?: number; maskPII?: boolean; entLegalEntityId?: string } = {}) {
-        const { limit = 50, offset = 0, maskPII = true, entLegalEntityId } = options;
+    static async getCandidates(tenantId: string, options: { limit?: number; offset?: number; maskPII?: boolean; entLegalEntityId?: string; entBusinessUnitId?: string } = {}) {
+        const { limit = 50, offset = 0, maskPII = true, entLegalEntityId, entBusinessUnitId } = options;
         const candidates = await db.select().from(hrmRecCandidates)
             .where(and(
                 eq(hrmRecCandidates.tenantId, tenantId),
                 // Candidates are technically global, but if we need to scope them by who they applied for:
                 // We'd join applications. For now, we'll return all tenant candidates unless scoping added to schema.
                 // Assuming candidates remain tenant-global for CRM purposes.
-                sql`true`
+                entLegalEntityId ? eq(hrmRecCandidates.entLegalEntityId, entLegalEntityId) : sql`true`,
+                entBusinessUnitId ? eq(hrmRecCandidates.entBusinessUnitId, entBusinessUnitId) : sql`true`
             ))
             .orderBy(desc(hrmRecCandidates.createdAt))
             .limit(limit)

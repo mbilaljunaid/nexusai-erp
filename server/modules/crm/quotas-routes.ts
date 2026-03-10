@@ -36,11 +36,15 @@ quotaRoutes.post("/", async (req, res) => {
     try {
         const data = insertSalesQuotaSchema.parse(req.body);
         // Check if quota exists for user+period, if so update, else insert
+        const conditions = [
+            eq(salesQuotas.userId, data.userId),
+            eq(salesQuotas.periodName, data.periodName)
+        ];
+        if (data.territoryId) conditions.push(eq(salesQuotas.territoryId, data.territoryId));
+        if (data.productId) conditions.push(eq(salesQuotas.productId, data.productId));
+
         const existing = await db.select().from(salesQuotas)
-            .where(and(
-                eq(salesQuotas.userId, data.userId),
-                eq(salesQuotas.periodName, data.periodName)
-            ));
+            .where(and(...conditions));
 
         if (existing.length > 0) {
             const [updated] = await db.update(salesQuotas)

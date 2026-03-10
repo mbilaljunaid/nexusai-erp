@@ -92,9 +92,10 @@ export default function PayrollWorkbench() {
             fetch('/api/hr/payroll/payment-files', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ runId: id, format }) }).then(r => r.json()),
     });
 
-    const totalGross = runs.reduce((s, r) => s + Number(r.gross_total ?? 0), 0);
-    const totalNet = runs.reduce((s, r) => s + Number(r.net_total ?? 0), 0);
-    const totalEmp = runs.reduce((s, r) => s + Number(r.employee_count ?? 0), 0);
+    const safeRuns = Array.isArray(runs) ? runs : [];
+    const totalGross = safeRuns.reduce((s, r) => s + Number(r.gross_total ?? 0), 0);
+    const totalNet = safeRuns.reduce((s, r) => s + Number(r.net_total ?? 0), 0);
+    const totalEmp = safeRuns.reduce((s, r) => s + Number(r.employee_count ?? 0), 0);
 
     const runColumns: SpreadsheetColumn<any>[] = [
         { id: "payroll_name", header: "Run Name", width: "200px", cell: (row) => <span className="run-name">{row.payroll_name}</span> },

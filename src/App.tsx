@@ -143,6 +143,8 @@ function Router() {
         <Route path="/epm/esg/analytics" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/EmissionsAnalytics")); return <C />; }} />
         <Route path="/epm/esg/targets" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/GlobalTargets")); return <C />; }} />
         <Route path="/epm/esg/risks" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/esg/ESGRiskIncidents")); return <C />; }} />
+        <Route path="/epm/strategic-modeling" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/StrategicModeling")); return <C />; }} />
+        <Route path="/epm/capex-planning" component={() => { const C = lazyWithRetry(() => import("@/pages/epm/CapExPlanning")); return <C />; }} />
         <Route path="/epm/*" component={EPMPage} />
 
         {/* Analytics & Compliance */}

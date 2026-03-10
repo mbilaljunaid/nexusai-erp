@@ -15,10 +15,12 @@ export default function EmployeeDirectory() {
   const { legalEntityId } = useEnterpriseStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [filtered, setFiltered] = useState<any[]>([]);
-  const { data: employees = [] } = useQuery<any[]>({
-    queryKey: ["/api/hr/employees", legalEntityId],
-    queryFn: () => fetch("/api/hr/employees", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json())
+  const { data: responseData } = useQuery<any>({
+    queryKey: ["/api/hr/persons", legalEntityId],
+    queryFn: () => fetch("/api/hr/persons", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json())
   });
+
+  const employees = responseData?.data || [];
   const formMetadata = getFormMetadata("employee");
 
   return (
@@ -38,14 +40,14 @@ export default function EmployeeDirectory() {
         {filtered.length > 0 ? filtered.map((emp: any) => (
           <Card key={emp.id} className="hover:shadow-lg transition">
             <CardContent className="pt-6">
-              <h3 className="font-semibold text-lg">{emp.name}</h3>
-              <p className="text-sm text-muted-foreground">{emp.role}</p>
-              <p className="text-xs text-muted-foreground">{emp.department}</p>
+              <h3 className="font-semibold text-lg">{emp.firstName} {emp.lastName}</h3>
+              <p className="text-sm text-muted-foreground">{emp.job || 'No Job Assigned'}</p>
+              <p className="text-xs text-muted-foreground">{emp.department || 'No Department'}</p>
               <div className="mt-3 space-y-1 text-sm">
                 <div className="flex items-center gap-2"><Mail className="h-4 w-4" />{emp.email || 'N/A'}</div>
                 <div className="flex items-center gap-2"><Phone className="h-4 w-4" />{emp.phone || 'N/A'}</div>
               </div>
-              <Badge className="mt-3">Active</Badge>
+              <Badge className="mt-3">{emp.assignmentStatus || 'ACTIVE'}</Badge>
             </CardContent>
           </Card>
         )) : <Card><CardContent className="p-4"><p className="text-muted-foreground">No employees found</p></CardContent></Card>}

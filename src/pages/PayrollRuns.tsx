@@ -13,8 +13,9 @@ export default function PayrollRuns() {
     queryFn: () => fetch("/api/hr/payroll-runs", { headers: legalEntityId ? { "x-legal-entity-id": legalEntityId } : undefined }).then(r => r.json())
   });
 
-  const totalAmount = payrollRuns.reduce((sum, r: any) => sum + parseFloat(r.totalAmount || 0), 0);
-  const processedCount = payrollRuns.filter((r: any) => r.status === "processed").length;
+  const safeRuns = Array.isArray(payrollRuns) ? payrollRuns : [];
+  const totalAmount = safeRuns.reduce((sum, r: any) => sum + parseFloat(r.totalAmount || 0), 0);
+  const processedCount = safeRuns.filter((r: any) => r.status === "processed").length;
 
   return (
     <StandardPage
