@@ -1,0 +1,127 @@
+import { cn } from "@/lib/utils";
+import React, { useState } from 'react';
+import { StandardDashboard, DashboardWidget } from '@/components/layout/StandardDashboard';
+import { FolderKanban, DollarSign, BarChart3, TrendingUp, ChevronRight, Kanban, Timer, Users, CalendarDays, Settings, FileText } from 'lucide-react';
+import { Link } from 'wouter';
+import { AnalyticsChart } from '@/components/AnalyticsChart';
+import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { Badge } from '@/components/ui/badge';
+import { EnterpriseContextSwitcher, buildScopeHeaders } from '@/components/enterprise/EnterpriseContextSwitcher';
+import { formatNumber } from '@/lib/formatters';
+
+export default function ProjectsDashboard() {
+    const [buId, setBuId] = useState<string | undefined>();
+
+    const { data: summary, isLoading } = useQuery<any>({
+        queryKey: ['/api/ppm/summary', buId],
+        queryFn: () =>
+            fetch('/api/ppm/summary', { headers: buildScopeHeaders({ 'business-unit': buId }) })
+                .then(r => r.json()),
+    });
+
+    const metrics = [
+        { label: 'Total Projects', value: summary?.totalProjects ?? summary?.projectCount ?? '0', change: '+2', icon: FolderKanban, color: "bg-blue-100 text-blue-700" },
+        { label: 'Total Budgeted', value: `$${formatNumber(parseFloat(summary?.totalBudget || "0"))}`, change: '0', icon: DollarSign, color: "bg-green-100 text-green-700" },
+        { label: 'Active Projects', value: summary?.activeProjects ?? '0', change: 'Real-time', icon: BarChart3, color: "bg-purple-100 text-purple-700" },
+        { label: 'Avg % Complete', value: `${summary?.avgPercentComplete ?? 0}%`, change: 'Real-time', icon: TrendingUp, color: "bg-orange-100 text-orange-700" },
+    ];
+
+    const burndownData = [
+        { name: 'Planned Value', value: 100 },
+        { name: 'Earned Value', value: 85 },
+        { name: 'Actual Cost', value: 90 },
+    ];
+
+    const header = (
+        <div className="flex justify-between items-center w-full">
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Project Portfolio Management</h1>
+                <p className="text-muted-foreground">Financial summary and performance metrics across the portfolio</p>
+            </div>
+            <div className="flex items-center gap-3">
+                <EnterpriseContextSwitcher
+                    type="business-unit"
+                    value={buId}
+                    onChange={setBuId}
+                />
+                <Button>Create Project</Button>
+            </div>
+        </div>
+    );
+
+    return (
+        <StandardDashboard header={header}>
+            {/* Metrics */}
+            {metrics.map((metric, i) => (
+                <DashboardWidget key={i} title={metric.label} colSpan={1}>
+                    <div className="flex items-center gap-4">
+                        <div className={cn(`p-3 rounded-full ${metric.color}`)}>
+                            <metric.icon className="h-6 w-6" />
+                        </div>
+                        <div>
+                            <div className="text-xl font-bold">{metric.value}</div>
+                            <p className="text-[10px] text-muted-foreground">
+                                {metric.change}
+                            </p>
+                        </div>
+                    </div>
+                </DashboardWidget>
+            ))}
+
+            {/* Performance Indices */}
+            <DashboardWidget title="EVM Performance Indices" colSpan={2} className="min-h-64">
+                <div className="grid grid-cols-2 gap-4 p-4">
+                    <div className="flex flex-col items-center justify-center p-6 border rounded-lg bg-blue-50/30">
+                        <span className="text-sm text-muted-foreground mb-1">Portfolio CPI</span>
+                        <span className="text-4xl font-bold text-blue-600">1.04</span>
+                        <Badge className="mt-2" variant="default">Under Budget</Badge>
+                    </div>
+                    <div className="flex flex-col items-center justify-center p-6 border rounded-lg bg-purple-50/30">
+                        <span className="text-sm text-muted-foreground mb-1">Portfolio SPI</span>
+                        <span className="text-4xl font-bold text-purple-600">0.98</span>
+                        <Badge className="mt-2" variant="destructive">Behind Schedule</Badge>
+                    </div>
+                </div>
+            </DashboardWidget>
+
+            {/* Charts */}
+            <DashboardWidget title="EVM Comparison" colSpan={2} className="min-h-80">
+                <div className="h-72 w-full mt-4">
+                    <AnalyticsChart
+                        title=""
+                        data={burndownData}
+                        type="bar"
+                        dataKey="value"
+                    />
+                </div>
+            </DashboardWidget>
+
+            {/* Quick Access Navigation Cards */}
+            <DashboardWidget title="Project Functions" colSpan={4} className="min-h-0">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 mt-2">
+                    {[
+                        { title: "Analytics", desc: "Portfolio performance analytics", href: "/projects/analytics", icon: BarChart3 },
+                        { title: "Kanban Board", desc: "Task board and sprint view", href: "/projects/kanban", icon: Kanban },
+                        { title: "Timeline", desc: "Gantt chart and scheduling", href: "/projects/timeline", icon: CalendarDays },
+                        { title: "Resources", desc: "Resource planning and allocation", href: "/projects/resources", icon: Users },
+                        { title: "Sprints", desc: "Agile sprint management", href: "/projects/sprints", icon: Timer },
+                        { title: "Settings", desc: "Project configuration and setup", href: "/projects/settings", icon: Settings },
+                        { title: "Contracts", desc: "Contract and billing setup", href: "/contracts", icon: FileText },
+                    ].map((mod) => (
+                        <Link key={mod.href} to={mod.href}>
+                            <div className="cursor-pointer border rounded-lg p-3 hover:shadow-md hover:border-primary/50 transition-all h-full flex flex-col gap-1">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-semibold">{mod.title}</span>
+                                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                                </div>
+                                <mod.icon className="h-4 w-4 text-muted-foreground" />
+                                <p className="text-[10px] text-muted-foreground">{mod.desc}</p>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </DashboardWidget>
+        </StandardDashboard>
+    );
+}

@@ -1,72 +1,36 @@
-# Implementation Plan: Maintenance GL Integration (Phase D)
+# EPM Planning Phase 6: Hyper-Scalability & Advanced AI
 
-## Phase 1-4: Foundation & AI (✅ Complete)
-- [x] Schema Core, Contracts UI, Billing, AI Risk.
+# Goal Description
+Address the "Future Enhancements" identified in the Tier-1 Gap Analysis to ensure the system can handle Year-2 scaling (>100M rows) and provide Fortune-500 grade predictive analytics.
 
-## Phase 5: Deep Enterprise Controls (✅ Complete)
-- [x] Construction Setup, Multi-stage certification, WIP Accounting, Bulk Import.
+## User Review Required
+> [!IMPORTANT]
+> **Architecture Change (DB)**: Moving `PlanUnit` to a specialized Time-Series database (TimescaleDB) or identifying it as a Hyper-Table. For now, we will Implement **Postgres Partitioning** as the immediate step to support 100M+ rows without introducing a new infrastructure component (ClickHouse) immediately.
+> **Architecture Change (AI)**: Introducing a Python Bridge. We will use a Sidecar pattern (FastAPI service) or local execution via `python-shell` if deployment complexity must be kept low. **Recommendation: Local Python Shell for simplicity in Monolith.**
 
-## Phase 6: Field Operations & Compliance (✅ Complete)
-- [x] Site Management (Logs/RFIs), Compliance Payment Gate.
+## Proposed Changes
 
-## Phase 7: Master Data & UI Perfection (Level-7, Level-9)
-### Goal
-Closing UI/UX consistency gaps and establishing reusable master data libraries.
+### 1. Advanced AI (Python Integration)
+- **Objective**: Move beyond Linear Regression (JS) to ARIMA/Prophet (Python).
+- **Implementation**:
+    - Create `ml/forecast.py`: Python script accepting JSON input (History) and outputting Forecast.
+    - Update `PredictiveForecastingService`: Use `child_process` to spawn python script and parse results.
 
-### Changes
-#### [NEW] shared/schema/construction_master.ts
-- `construction_cost_codes`: Global CSI MasterFormat / Standard library support.
-#### [NEW] client/src/components/construction/ConstructionCostCodeLibrary.tsx
-- Centralized management of standard costing categories.
-#### [MODIFY] Construction Workbenches
-- Upgrade `ConstructionContractWorkbench.tsx`, `ConstructionBillingWorkbench.tsx`, and `ConstructionSiteManagement.tsx` to the `StandardTable` grid pattern for L15 scalability (server-side sorting/filtering).
+**Files:**
+#### [NEW] [backend/src/scripts/forecast.py](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/scripts/forecast.py)
+#### [MODIFY] [predictive-forecasting.service.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/modules/epm/predictive-forecasting.service.ts)
 
-## Phase 8: Strategic Claims & Project Control (Level-11 to Level-15)
-### Goal
-Achieve full Oracle Fusion parity for complex dispute management and localized project rules.
+### 2. Hyper-Scalability (Data Layout)
+- **Objective**: Optimize `PlanUnit` for massive scale.
+- **Implementation**:
+    - Implement **Table Partitioning** by `Year` (Period).
+    - Add Database Indexes for common query patterns (Entity + Account).
 
-### Changes
-#### [NEW] `construction_claims` Schema
-- Dispute tracking, claim impact assessment, and formal settlement workflow.
-#### [MODIFY] ConstructionSetup.tsx
-- Implement "Site-Level Regulatory Overrides" (Localization support for tax/regional rules).
-#### [AI] Variation Impact Simulator (L13)
-- Predictive simulation of change order impact on schedule vs. cost trade-offs.
-*   In the **Costs** tab, add a column or indicator for "Accounting Status" (Draft vs Accounted).
-*   Add a "View Journals" button (optional drill-down).
+**Files:**
+#### [NEW] [backend/src/migrations/1700000000000-PartitionPlanUnit.ts](file:///Users/mbjunaid/My Projects/nexusai-erp-2/backend/src/migrations/1700000000000-PartitionPlanUnit.ts)
 
-## Accounting Logic (Standard Pattern)
+## Verification Plan
 
-| Transaction | Debit (Dr) | Credit (Cr) |
-| :--- | :--- | :--- |
-| **Material Issue** | Maintenance Expense (Asset Context) | Inventory Valuation (Item Context) |
-| **Labor Booking** | Maintenance Labor Expense | Labor Absorption / Payroll Clearing |
-
-## Verification
-*   **Script**: `scripts/verify_maintenance_accounting.ts`
-    1.  Create Cost (Issue Material).
-    2.  Verify `sla_journal_headers` created.
-    3.  Verify Debits = Credits.
-    4.  Verify Links to GL Ledgers.
-
-## Phase 11: Period Close & Reporting
-### Goal
-Implement Period Close controls (Sweep, Validation) and Account Analysis reporting to ensure data integrity and auditability.
-
-### Changes
-#### [NEW] server/modules/sla/period-close.service.ts
-- `closePeriod`: Validates all events are accounted.
-- `sweepUnaccountedEvents`: Moves unaccounted events to the next open period.
-- `validateEventDate`: Prevents accounting in closed periods.
-
-#### [NEW] server/modules/sla/reporting.service.ts
-- `getAccountAnalysisReport`: Generates detailed transaction listing by Account, Period, Source.
-
-#### [NEW] scripts/verify_period_close.ts
-- Test strict period close validation.
-- Test sweep mechanism.
-- Test accounting date validation.
-
-### Schema
-- `sla_period_statuses` (Already Exists in shared/schema/sla).
-- `gl_periods` (Already Exists in shared/schema/finance).
+### Automated Tests
+- **AI**: Verify Python script returns a Prophet-like curve (Seasonality check).
+- **DB**: Verify Partition creation and Insert routing.

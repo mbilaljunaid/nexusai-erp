@@ -8,6 +8,8 @@ import {
     ArCustomerSite,
     InsertArInvoice,
     ArInvoice,
+    ArInvoiceLine,
+    InsertArInvoiceLine,
     ArReceipt,
     InsertArReceipt,
     InsertArReceiptApplication,
@@ -26,9 +28,36 @@ import {
     ArAdjustment,
     InsertArSystemOptions,
     ArSystemOptions,
-    arReceiptApplications
+    arReceiptApplications,
+    InsertArTransactionType,
+    ArTransactionType,
+    InsertArBatchSource,
+    ArBatchSource,
+    InsertArReceiptMethod,
+    ArReceiptMethod,
+    InsertArAutoAccountingRule,
+    ArAutoAccountingRule,
+    InsertArCustomerProfile,
+    ArCustomerProfile,
+    arCustomerBankAccounts,
+    ArCustomerBankAccount,
+    arInvoices,
+    arLockboxItems,
+    arPaymentSchedules,
+    arRecurringInvoices,
+    arConsolidatedStatements,
+    arReceipts,
+    arDisputes,
+    ArDispute,
+    InsertArDispute,
+    arRemittanceBatches,
+    ArRemittanceBatch,
+    InsertArRemittanceBatch,
+    arPromisesToPay,
+    ArPromiseToPay,
+    InsertArPromiseToPay
 } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, ne, sql } from "drizzle-orm";
 import { financeService } from "./finance";
 import { db } from "../db";
 import { glLedgers } from "@shared/schema";
@@ -53,6 +82,143 @@ export class ArService {
 
     async updateCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
         return await storage.updateArCustomer(id, data);
+    }
+
+    // TCA Depth: Customer Profiles
+    async listCustomerProfiles(): Promise<ArCustomerProfile[]> {
+        return await storage.listArCustomerProfiles();
+    }
+    async getCustomerProfile(id: string): Promise<ArCustomerProfile | undefined> {
+        return await storage.getArCustomerProfile(id);
+    }
+    async createCustomerProfile(data: InsertArCustomerProfile): Promise<ArCustomerProfile> {
+        return await storage.createArCustomerProfile(data);
+    }
+
+    // TCA Depth: Customer Bank Accounts
+    async listCustomerBankAccounts(customerId?: string): Promise<ArCustomerBankAccount[]> {
+        return await storage.listArCustomerBankAccounts(customerId);
+    }
+    async getCustomerBankAccount(id: string): Promise<ArCustomerBankAccount | undefined> {
+        return await storage.getArCustomerBankAccount(id);
+    }
+    async createCustomerBankAccount(data: InsertArCustomerBankAccount): Promise<ArCustomerBankAccount> {
+        return await storage.createArCustomerBankAccount(data);
+    }
+
+
+    // Configuration Entities
+
+    // Transaction Types
+    async listTransactionTypes(): Promise<ArTransactionType[]> {
+        return await storage.listArTransactionTypes();
+    }
+    async getTransactionType(id: string): Promise<ArTransactionType | undefined> {
+        return await storage.getArTransactionType(id);
+    }
+    async createTransactionType(data: InsertArTransactionType): Promise<ArTransactionType> {
+        return await storage.createArTransactionType(data);
+    }
+
+    // Batch Sources
+    async listBatchSources(): Promise<ArBatchSource[]> {
+        return await storage.listArBatchSources();
+    }
+    async getBatchSource(id: string): Promise<ArBatchSource | undefined> {
+        return await storage.getArBatchSource(id);
+    }
+    async createBatchSource(data: InsertArBatchSource): Promise<ArBatchSource> {
+        return await storage.createArBatchSource(data);
+    }
+
+    // Receipt Methods
+    async listReceiptMethods(): Promise<ArReceiptMethod[]> {
+        return await storage.listArReceiptMethods();
+    }
+    async getReceiptMethod(id: string): Promise<ArReceiptMethod | undefined> {
+        return await storage.getArReceiptMethod(id);
+    }
+    async createReceiptMethod(data: InsertArReceiptMethod): Promise<ArReceiptMethod> {
+        return await storage.createArReceiptMethod(data);
+    }
+
+    // AutoAccounting Rules
+    async listAutoAccountingRules(): Promise<ArAutoAccountingRule[]> {
+        return await storage.listArAutoAccountingRules();
+    }
+    async getAutoAccountingRule(id: string): Promise<ArAutoAccountingRule | undefined> {
+        return await storage.getArAutoAccountingRule(id);
+    }
+    async createAutoAccountingRule(data: InsertArAutoAccountingRule): Promise<ArAutoAccountingRule> {
+        return await storage.createArAutoAccountingRule(data);
+    }
+
+    /**
+     * Advanced AutoAccounting Derivation Engine
+     * Constructs a GL Account string (e.g., "01-100-4000-0000") by evaluating all active
+     * AutoAccounting rules for a specific accountType (e.g., "Revenue", "Receivable").
+     */
+    async deriveAutoAccounting(
+        accountType: string,
+        context: {
+            transactionTypeId?: string | null;
+            salespersonId?: string | null;
+            memoLineId?: string | null;
+            standardLineAccountId?: string | null; // Account string from standard line
+            transactionTypeAccountId?: string | null; // e.g., defaultRevenueAccount
+            customerSiteAccountId?: string | null;
+        }
+    ): Promise<string> {
+        const rules = await this.listAutoAccountingRules();
+
+        // Filter rules by the target accountType (e.g., "Revenue")
+        const activeRules = rules.filter(r => r.status === "Active" && r.accountType === accountType);
+
+        if (activeRules.length === 0) {
+            // Fallback to transaction type defaults if no rules found
+            return context.transactionTypeAccountId || "00-000-0000-0000";
+        }
+
+        // Suppose typical GL string has 4 segments for this ERP context: Company-Department-Account-SubAccount
+        // In a real system the segment structure is obtained from `glCoaStructures`.
+        // We will mock the derivation of a 4-segment string based on exact segment names or index.
+        const segmentNames = ["Company", "Department", "Account", "SubAccount"];
+        const derivedSegments: string[] = ["00", "000", "0000", "0000"];
+
+        for (let i = 0; i < segmentNames.length; i++) {
+            const segName = segmentNames[i];
+            const rule = activeRules.find(r => r.segmentName === segName);
+
+            if (rule) {
+                switch (rule.sourceType) {
+                    case "Constant":
+                        derivedSegments[i] = rule.constantValue || derivedSegments[i];
+                        break;
+                    case "Transaction Type":
+                        // Extract the i-th segment from the default strings
+                        if (context.transactionTypeAccountId) {
+                            const parts = context.transactionTypeAccountId.split("-");
+                            if (parts.length > i) derivedSegments[i] = parts[i];
+                        }
+                        break;
+                    case "Standard Line":
+                        if (context.standardLineAccountId) {
+                            const parts = context.standardLineAccountId.split("-");
+                            if (parts.length > i) derivedSegments[i] = parts[i];
+                        }
+                        break;
+                    case "Customer Site":
+                        if (context.customerSiteAccountId) {
+                            const parts = context.customerSiteAccountId.split("-");
+                            if (parts.length > i) derivedSegments[i] = parts[i];
+                        }
+                        break;
+                    // Additional sources like Salesperson, Taxes go here
+                }
+            }
+        }
+
+        return derivedSegments.join("-");
     }
 
     // System Options
@@ -90,13 +256,174 @@ export class ArService {
         return await storage.getArCustomerSite(id);
     }
 
-    // Invoices
-    async listInvoices(limit?: number, offset?: number): Promise<ArInvoice[]> {
-        return await storage.listArInvoices(limit, offset);
+    // Contacts
+    async listContacts(customerId: string): Promise<ArCustomerContact[]> {
+        return await storage.listArCustomerContacts(customerId);
     }
 
-    async getInvoicesCount(): Promise<number> {
-        return await storage.getArInvoicesCount();
+    async createContact(data: InsertArCustomerContact): Promise<ArCustomerContact> {
+        return await storage.createArCustomerContact(data);
+    }
+
+    async getContact(id: string): Promise<ArCustomerContact | undefined> {
+        return await storage.getArCustomerContact(id);
+    }
+
+    async updateContact(id: string, data: Partial<InsertArCustomerContact>): Promise<ArCustomerContact | undefined> {
+        return await storage.updateArCustomerContact(id, data);
+    }
+
+    async deleteContact(id: string): Promise<boolean> {
+        return await storage.deleteArCustomerContact(id);
+    }
+
+    // ==========================================
+    // PHASE 2 & ADVANCED AR BILLING SCHEMA
+    // ==========================================
+
+    // AutoInvoice Staging
+    async listAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]> {
+        return await storage.listArAutoInvoiceStaging(status);
+    }
+
+    async getAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined> {
+        return await storage.getArAutoInvoiceStaging(id);
+    }
+
+    async createAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging> {
+        return await storage.createArAutoInvoiceStaging(data);
+    }
+
+    async updateAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined> {
+        return await storage.updateArAutoInvoiceStaging(id, data);
+    }
+
+    async deleteAutoInvoiceStaging(id: string): Promise<boolean> {
+        return await storage.deleteArAutoInvoiceStaging(id);
+    }
+
+    // AutoInvoice Errors
+    async listAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]> {
+        return await storage.listArAutoInvoiceErrors(stagingId);
+    }
+
+    async createAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError> {
+        return await storage.createArAutoInvoiceError(data);
+    }
+
+    async deleteAutoInvoiceErrors(stagingId: string): Promise<boolean> {
+        return await storage.deleteArAutoInvoiceErrors(stagingId);
+    }
+
+    // Sales Credits
+    async listSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]> {
+        return await storage.listArSalesCredits(invoiceLineId);
+    }
+
+    async createSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit> {
+        return await storage.createArSalesCredit(data);
+    }
+
+    async updateSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined> {
+        return await storage.updateArSalesCredit(id, data);
+    }
+
+    async deleteSalesCredit(id: string): Promise<boolean> {
+        return await storage.deleteArSalesCredit(id);
+    }
+
+    // AutoInvoice Import Batch Logic
+    async importAutoInvoiceBatch(): Promise<{ processed: number; errors: number }> {
+        // Fetch all lines in "NEW" or "ERROR" status
+        const stagingLines = await storage.listArAutoInvoiceStaging();
+        const pendingLines = stagingLines.filter(line => line.status === 'NEW' || line.status === 'ERROR');
+
+        let processedCount = 0;
+        let errorCount = 0;
+
+        // In a real Oracle Parity system, this handles Grouping Rules (into Headers) based on specific attributes.
+        // Simplified Grouping: Create 1 Invoice per Staging Line for this implementation
+        for (const line of pendingLines) {
+            // Clear previous errors for this line
+            await storage.deleteArAutoInvoiceErrors(line.id);
+
+            const errors: string[] = [];
+
+            // 1. Validation Logic
+            const customer = await storage.getArCustomer(line.customerId);
+            if (!customer) errors.push(`Customer ID ${line.customerId} is invalid or missing.`);
+
+            const txType = await storage.getArTransactionType(line.transactionTypeId);
+            if (!txType) errors.push(`Transaction Type ID ${line.transactionTypeId} is invalid or missing.`);
+
+            const batchSource = await storage.getArBatchSource(line.batchSourceId);
+            if (!batchSource) errors.push(`Batch Source ID ${line.batchSourceId} is invalid or missing.`);
+
+            if (Number(line.amount) <= 0) errors.push(`Line amount must be greater than 0.`);
+
+            // 2. Action based on Validation
+            if (errors.length > 0) {
+                errorCount++;
+                // Log Errors
+                for (const err of errors) {
+                    await storage.createArAutoInvoiceError({ stagingId: line.id, errorMessage: err, invalidValue: "MULTIPLE" });
+                }
+                // Mark Staging Line as Error
+                await storage.updateArAutoInvoiceStaging(line.id, { status: 'ERROR', processDate: new Date() });
+            } else {
+                try {
+                    // Create the Invoice Header
+                    const invoice = await this.createInvoice({
+                        businessUnitId: customer?.businessUnitId || "1",
+                        customerId: line.customerId,
+                        accountId: null, // Depending on grouping rules, might be derived
+                        siteId: null, // Usually derived from AutoInvoice grouping attributes
+                        invoiceNumber: `AUTOINV-${line.id.substring(0, 8).toUpperCase()}`,
+                        amount: line.amount,
+                        taxAmount: "0.00", // Would be computed normally
+                        totalAmount: line.amount,
+                        currency: line.currency || "USD",
+                        transactionTypeId: line.transactionTypeId,
+                        batchSourceId: line.batchSourceId,
+                        description: line.description,
+                        status: "Draft",
+                        glDate: new Date(),
+                        glStatus: "Unprocessed",
+                        transactionClass: "INV"
+                    });
+
+                    // Create the Invoice Line
+                    await this.createInvoiceLine({
+                        invoiceId: invoice.id,
+                        lineNumber: 1,
+                        lineType: line.lineType || "LINE",
+                        description: line.description,
+                        amount: line.amount,
+                        quantity: "1",
+                        unitPrice: line.amount
+                    });
+
+                    // Mark Staging Line as Processed
+                    await storage.updateArAutoInvoiceStaging(line.id, { status: 'PROCESSED', processDate: new Date() });
+                    processedCount++;
+                } catch (e: any) {
+                    errorCount++;
+                    await storage.createArAutoInvoiceError({ stagingId: line.id, errorMessage: `System error creating invoice: ${e.message}`, invalidValue: "SYSTEM" });
+                    await storage.updateArAutoInvoiceStaging(line.id, { status: 'ERROR', processDate: new Date() });
+                }
+            }
+        }
+
+        return { processed: processedCount, errors: errorCount };
+    }
+
+    // Invoices
+    async listInvoices(limit?: number, offset?: number, entBusinessUnitId?: string): Promise<ArInvoice[]> {
+        return await storage.listArInvoices(limit, offset, entBusinessUnitId);
+    }
+
+    async getInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+        return await storage.getArInvoicesCount(entBusinessUnitId);
     }
 
     async createInvoice(data: InsertArInvoice): Promise<ArInvoice> {
@@ -120,6 +447,45 @@ export class ArService {
         }
 
         const invoice = await storage.createArInvoice(data);
+
+        // 1a. Multi-Installment Payment Schedules Generation (Phase 4)
+        if (data.paymentTerms && data.paymentTerms.includes("/")) {
+            // Example Format: "50/50 30/60 Days"
+            // Simple MVP parser: splits percentage "50/50" and days "30/60"
+            try {
+                const parts = data.paymentTerms.split(" ");
+                if (parts.length >= 2) {
+                    const percentages = parts[0].split("/").map(Number);
+                    const days = parts[1].split("/").map(Number);
+
+                    if (percentages.length === days.length) {
+                        const totalAmount = Number(invoice.totalAmount);
+                        const baseDate = invoice.glDate || new Date();
+
+                        const schedules: Array<any> = [];
+                        for (let i = 0; i < percentages.length; i++) {
+                            const pct = percentages[i] / 100;
+                            const amountDue = totalAmount * pct;
+
+                            const dueDate = new Date(baseDate);
+                            dueDate.setDate(dueDate.getDate() + days[i]);
+
+                            schedules.push({
+                                invoiceId: invoice.id,
+                                installmentNumber: i + 1,
+                                dueDate: dueDate,
+                                amountDue: String(amountDue.toFixed(2)),
+                                amountApplied: "0",
+                                status: "Open"
+                            });
+                        }
+                        await storage.createArPaymentSchedulesBulk(schedules);
+                    }
+                }
+            } catch (err) {
+                console.warn("[AR] Failed to parse multi-installment terms:", err);
+            }
+        }
 
         // 1b. Revenue Recognition Schedule Generation
         if (data.revenueRuleId) {
@@ -190,6 +556,65 @@ export class ArService {
         }
 
         return invoice;
+    }
+
+    async createInvoiceLine(data: InsertArInvoiceLine): Promise<ArInvoiceLine> {
+        const invoice = await storage.getArInvoice(data.invoiceId);
+        if (!invoice) throw new Error("Invoice not found");
+
+        // 1. DYNAMIC CVR & AUTOACCOUNTING
+        if (!data.ccid) {
+            let accountClass: "Revenue" | "Receivable" | "Freight" | "Tax" = "Revenue";
+            if (data.lineType === "TAX") accountClass = "Tax";
+            if (data.lineType === "FREIGHT") accountClass = "Freight";
+
+            data.ccid = await this.deriveAutoAccounting(invoice, accountClass);
+        }
+
+        // 2. CROSS-VALIDATION RULES (CVR) EVALUATION ON SAVE
+        if (data.ccid) {
+            try {
+                const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+                const ledgerId = ledger?.id || "PRIMARY";
+
+                // Fetch Rules
+                const crossValidationRules = await storage.listCrossValidationRules(ledgerId);
+                const segments = data.ccid.split("-");
+
+                // Evaluate Each Rule
+                for (const rule of crossValidationRules) {
+                    if (!rule.isEnabled) continue;
+
+                    // Simple parsing for "SegmentN=Value"
+                    const evaluateFilter = (filter: string) => {
+                        const match = filter.match(/Segment(\d+)=(.+)/i);
+                        if (!match) return false;
+                        const index = parseInt(match[1]) - 1;
+                        const value = match[2].trim();
+                        return segments[index] === value;
+                    };
+
+                    if (rule.conditionFilter && evaluateFilter(rule.conditionFilter)) {
+                        if (rule.validationFilter && !evaluateFilter(rule.validationFilter)) {
+                            // CVR Violated!
+                            const message = rule.errorMessage || `Cross-Validation Failed: ${rule.name}`;
+                            if (rule.errorAction === "Error") throw new Error(message);
+                            else console.warn(`[AR] CVR Warning: ${message}`);
+                        }
+                    }
+                }
+            } catch (err: any) {
+                console.error("[AR] CVR validation failed:", err);
+                // Propagate Error up to block save
+                if (err.message.includes("Cross-Validation")) throw err;
+            }
+        }
+
+        return await storage.createArInvoiceLine(data);
+    }
+
+    async listInvoiceLines(invoiceId: string): Promise<ArInvoiceLine[]> {
+        return await storage.listArInvoiceLines(invoiceId);
     }
 
     async createCreditMemo(sourceInvoiceId: string, amount: number, reason: string): Promise<ArInvoice> {
@@ -310,45 +735,59 @@ export class ArService {
     }
 
     // Receipts
-    async listReceipts(): Promise<ArReceipt[]> {
-        return await storage.listArReceipts();
+    async listReceipts(entBusinessUnitId?: string): Promise<ArReceipt[]> {
+        return await storage.listArReceipts(entBusinessUnitId);
     }
 
     async createReceipt(data: InsertArReceipt): Promise<ArReceipt> {
+        // Handle explicit statuses or derive them
+        let status = data.status || "Unapplied";
+        if (data.invoiceId) {
+            status = "Applied";
+        } else if (!data.customerId) {
+            status = "Unidentified";
+        }
+
         // Initialize unappliedAmount to total amount if not set
         const receiptData = {
             ...data,
             unappliedAmount: data.unappliedAmount || data.amount,
-            status: data.invoiceId ? "Applied" : "Unapplied"
+            status: status
         };
         const receipt = await storage.createArReceipt(receiptData);
 
         // If receipt is applied to an invoice, update invoice status and create application record
         if (receipt.invoiceId) {
-            await this.applyReceipt(receipt.id, receipt.invoiceId, Number(receipt.amount));
+            await this.applyReceipt(receipt.id, receipt.invoiceId, Number(receipt.amount), { glDate: receipt.glDate || new Date(), eventDate: receipt.receiptDate || new Date() });
         }
 
-        // 2. Trigger SLA Accounting (for the receipt creation itself - Cash DR, Unapplied CR)
+        // 2. Trigger SLA Accounting (for the receipt creation itself - Cash DR, Unapplied/Unidentified CR)
         try {
             const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
             const ledgerId = ledger?.id || "PRIMARY";
+
+            // If cross-currency, SLA needs the accounted amount
+            const exchangeRate = Number(receipt.exchangeRate) || 1;
+            const accountedAmount = Number(receipt.amount) * exchangeRate;
 
             await slaEngine.createAccounting({
                 eventClassId: "AR_RECEIPT",
                 eventTypeId: "AR_RECEIPT_CREATED",
                 entityId: receipt.id,
                 entityTable: "ar_receipts",
-                description: `Customer Receipt: ${receipt.id.slice(0, 8)}`,
-                amount: Number(receipt.amount),
-                currencyCode: "USD", // Should ideally from receipt
-                eventDate: new Date(),
-                glDate: new Date(),
+                description: `Customer Receipt: ${receipt.id.slice(0, 8)} - ${status}`,
+                amount: accountedAmount, // Ensure SLA gets the base currency amount
+                currencyCode: ledger?.currency || "USD", // SLA entries are in ledger currency usually unless multi-curr SLA is implemented fully
+                eventDate: receipt.receiptDate || new Date(),
+                glDate: receipt.glDate || new Date(),
                 ledgerId,
                 sourceData: {
                     receiptNumber: receipt.id.slice(0, 8), // or real number field
                     accountId: receipt.accountId,
                     customerId: receipt.customerId,
-                    amount: receipt.amount
+                    amount: receipt.amount,
+                    currency: receipt.currency,
+                    exchangeRate
                 }
             });
         } catch (err) {
@@ -358,36 +797,99 @@ export class ArService {
         return receipt;
     }
 
-    async applyReceipt(receiptId: string, invoiceId: string, amount: number): Promise<ArReceiptApplication> {
+    async applyReceipt(receiptId: string, invoiceId: string, amount: number, options?: { glDate?: Date, eventDate?: Date, earnedDiscountAmount?: number, unearnedDiscountAmount?: number }): Promise<ArReceiptApplication> {
         const receipt = await storage.getArReceipt(receiptId);
         if (!receipt) throw new Error("Receipt not found");
 
         const invoice = await storage.getArInvoice(invoiceId);
         if (!invoice) throw new Error("Invoice not found");
 
-        if (Number(receipt.unappliedAmount) < amount) {
-            throw new Error(`Insufficient unapplied amount on receipt. Available: ${receipt.unappliedAmount}`);
+        // 1. Cross-Currency Calculation (Simplified)
+        let allocatedReceiptAmount = amount; // Assume same currency by default
+        let fxGainLoss = 0;
+
+        if (receipt.currency !== invoice.currency) {
+            // In a real system, you'd lookup daily rates if not provided on the receipt
+            // Here we use the exchange rate stamped on the receipt as a proxy,
+            // or just a mock calculation for parity demonstration
+            const receiptRate = Number(receipt.exchangeRate) || 1.0;
+            // Assume invoice is in USD (1.0) and receipt is in EUR (1.1)
+            // Amount applied is in INVOICE currency (USD).
+            // We need to know how much of the RECEIPT currency (EUR) that consumed.
+            allocatedReceiptAmount = amount / receiptRate;
+
+            // Very simplified FX Gain/Loss (just an illustration, real math requires inverse/direct rate understanding)
+            // If they paid less EUR to clear the USD invoice than expected = Gain
+            fxGainLoss = (amount * 1.0) - (allocatedReceiptAmount * receiptRate);
         }
 
-        // 1. Create Application Record
+        if (Number(receipt.unappliedAmount) < allocatedReceiptAmount) {
+            throw new Error(`Insufficient unapplied amount on receipt. Available: ${receipt.unappliedAmount}, Required: ${allocatedReceiptAmount}`);
+        }
+
+        // 2. Create Application Record
+        const earnedDiscount = options?.earnedDiscountAmount || 0;
+        const unearnedDiscount = options?.unearnedDiscountAmount || 0;
+
         const application = await storage.createArReceiptApplication({
             receiptId,
             invoiceId,
             amountApplied: String(amount),
+            allocatedReceiptAmount: String(allocatedReceiptAmount),
+            fxGainLoss: String(fxGainLoss),
+            earnedDiscountAmount: String(earnedDiscount),
+            unearnedDiscountAmount: String(unearnedDiscount),
             status: "Applied",
         });
 
-        // 2. Update Receipt Unapplied Balance
-        const newUnapplied = Number(receipt.unappliedAmount) - amount;
+        // 3. Update Receipt Unapplied Balance
+        // We deduct the allocatedReceiptAmount (in receipt currency) from the unapplied pool
+        let newUnapplied = Number(receipt.unappliedAmount) - allocatedReceiptAmount;
+        let pStatus = newUnapplied <= 0 ? "Applied" : "Unapplied";
+
+        // Advanced Cash App: Automatic Write-Off for small remaining unapplied amounts (e.g., < $1.00)
+        // In a real system, this threshold is controlled by System Options / Receipt Method limits.
+        const WRITE_OFF_THRESHOLD = 1.00;
+        if (newUnapplied > 0 && newUnapplied <= WRITE_OFF_THRESHOLD) {
+            // Create a small adjustment to clear the invoice balance if needed, or just write off the receipt
+            // Since this is receipt write-off, we typically create an adjustment on the applied invoice,
+            // or a dedicated Miscellaneous Receipt line. Let's do an Invoice Adjustment to close it.
+            try {
+                await this.createAdjustment({
+                    invoiceId: invoiceId,
+                    adjustmentType: "WriteOff",
+                    amount: String(-newUnapplied), // Credit adjustment to close invoice if it was under-paid
+                    reason: `Auto Receipt Write-Off for ${receipt.id.slice(0, 8)}`,
+                    status: "Approved",
+                    glAccountId: "Auto-Write-Off-Account", // Should come from System Options
+                    createdBy: "SYSTEM"
+                });
+
+                // Ensure we also consume the rest of the receipt so it doesn't hover unapplied
+                await storage.createArReceiptApplication({
+                    receiptId,
+                    invoiceId,
+                    amountApplied: String(newUnapplied * Number(receipt.exchangeRate || 1)), // Re-convert back to invoice curr if applying to invoice
+                    allocatedReceiptAmount: String(newUnapplied),
+                    status: "Applied",
+                });
+
+                newUnapplied = 0;
+                pStatus = "Applied";
+            } catch (woErr) {
+                console.warn("[AR] Auto write-off failed, leaving unapplied balance", woErr);
+            }
+        }
+
         await storage.updateArReceipt(receiptId, {
             unappliedAmount: String(newUnapplied),
-            status: newUnapplied === 0 ? "Applied" : "Unapplied"
+            status: pStatus
         });
 
         // 3. Update Invoice Status
-        // Calculate total applied to this invoice
+        // Calculate total applied to this invoice (including discounts)
         const apps = await storage.listArReceiptApplications(undefined, invoiceId);
-        const totalApplied = apps.reduce((sum, a) => sum + Number(a.amountApplied), 0);
+        const totalApplied = apps.reduce((sum, a) => sum + Number(a.amountApplied) + Number(a.earnedDiscountAmount || 0) + Number(a.unearnedDiscountAmount || 0), 0);
         const newStatus = totalApplied >= Number(invoice.totalAmount) ? "Paid" : "PartiallyPaid";
         await storage.updateArInvoiceStatus(invoiceId, newStatus);
 
@@ -404,13 +906,13 @@ export class ArService {
                 description: `Receipt Application: ${amount} to ${invoice.invoiceNumber}`,
                 amount: Number(amount),
                 currencyCode: invoice.currency || "USD",
-                eventDate: new Date(),
-                glDate: new Date(),
+                eventDate: options?.eventDate || new Date(),
+                glDate: options?.glDate || new Date(),
                 ledgerId,
                 sourceData: {
                     receiptNumber: receipt.id.slice(0, 8),
-                    receiptId,
-                    invoiceId,
+                    receiptId: receipt.id,
+                    invoiceId: invoice.id,
                     invoiceNumber: invoice.invoiceNumber,
                     accountId: receipt.accountId,
                     amount: amount
@@ -483,8 +985,8 @@ export class ArService {
                 ledgerId,
                 sourceData: {
                     receiptNumber: receipt.id.slice(0, 8),
-                    receiptId,
-                    invoiceId,
+                    receiptId: receipt.id,
+                    invoiceId: invoice.id,
                     invoiceNumber: invoice.invoiceNumber,
                     accountId: receipt.accountId,
                     amount: amountToUnapply
@@ -573,15 +1075,25 @@ export class ArService {
         const receipts = await storage.listArReceipts();
 
         const accountInvoices = invoices.filter(i => i.accountId === accountId && i.status !== "Cancelled");
-        const accountReceipts = receipts.filter(r => r.accountId === accountId);
+        const accountReceipts = receipts.filter(r => r.accountId === accountId && r.status !== "Reversed");
 
+        // Outstanding Invoices
         const totalInvoiced = accountInvoices.reduce((sum, i) => sum + Number(i.totalAmount), 0);
-        const totalPaid = accountReceipts.reduce((sum, r) => sum + Number(r.amount), 0);
+
+        // Receipts applied or available
+        const totalPaid = accountReceipts.reduce((sum, r) => sum + (Number(r.amount) - Number(r.unappliedAmount)), 0);
+
+        // Unapplied / On Account (Customer's money we hold)
+        const totalUnapplied = accountReceipts
+            .filter(r => r.status === "Unapplied" || r.status === "OnAccount")
+            .reduce((sum, r) => sum + Number(r.unappliedAmount), 0);
 
         return {
             totalInvoiced,
             totalPaid,
-            outstanding: totalInvoiced - totalPaid
+            totalUnapplied,
+            outstanding: totalInvoiced - totalPaid,
+            netBalance: (totalInvoiced - totalPaid) - totalUnapplied // What they actually owe us right now
         };
     }
 
@@ -656,7 +1168,263 @@ export class ArService {
         return await storage.getArDunningTemplate(id);
     }
 
+    // Lockbox Integration
+    async listLockboxBatches(): Promise<ArLockboxBatch[]> {
+        return await storage.listArLockboxBatches();
+    }
 
+    async listLockboxItems(batchId: string, matchStatus?: string): Promise<ArLockboxItem[]> {
+        const items = await storage.listArLockboxItems(batchId);
+        if (matchStatus) {
+            return items.filter(item => item.matchStatus === matchStatus);
+        }
+        return items;
+    }
+
+    async getLockboxSummary(): Promise<{ totalProcessed: number; totalMatched: number; totalUnapplied: number }> {
+        const batches = await storage.listArLockboxBatches();
+        const summary = {
+            totalProcessed: 0,
+            totalMatched: 0,
+            totalUnapplied: 0
+        };
+
+        for (const batch of batches) {
+            summary.totalProcessed += Number(batch.totalAmount || 0);
+
+            const items = await storage.listArLockboxItems(batch.id);
+            for (const item of items) {
+                if (item.matchStatus === "Matched") {
+                    summary.totalMatched += Number(item.amount || 0);
+                } else if (item.matchStatus === "Partial") {
+                    const matchedAmt = Number(item.amount || 0) - Number(item.unappliedAmount || 0);
+                    summary.totalMatched += matchedAmt;
+                    summary.totalUnapplied += Number(item.unappliedAmount || 0);
+                } else {
+                    summary.totalUnapplied += Number(item.amount || 0);
+                }
+            }
+        }
+
+        return summary;
+    }
+
+    async processLockboxBatch(
+        batchData: Omit<InsertArLockboxBatch, "id" | "createdAt" | "updatedAt">,
+        itemsData: Omit<InsertArLockboxItem, "id" | "batchId" | "createdAt" | "updatedAt" | "matchStatus" | "unappliedAmount" | "matchedInvoiceId">[]
+    ): Promise<ArLockboxBatch> {
+        // 1. Create the Batch Header
+        const batch = await storage.createArLockboxBatch({
+            ...batchData,
+            batchDate: new Date(batchData.batchDate), // Parse incoming ISO string
+            status: "Processing",
+            importedAt: new Date(),
+        });
+
+        // 2. Fetch some default context needed for receipts
+        const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+        const ledgerId = ledger?.id || "PRIMARY";
+
+        // Find a default receipt method for Lockbox (or just pick the first one)
+        // const receiptMethods = await storage.listArReceiptMethods();
+        // const defaultMethod = receiptMethods.find(rm => rm.name.toLowerCase().includes("lockbox")) || receiptMethods[0];
+        const defaultMethod = { id: "mock-rm-123", name: "Mock Lockbox" };
+
+        if (!defaultMethod) {
+            throw new Error("No Receipt Method configured for Lockbox processing.");
+        }
+
+        // We need a bank account for the receipts, usually linked to the receipt method or passed in batch.
+        // Assuming we look it up or dummy it for demo.
+        // const bankAccounts = await storage.listCashBankAccounts();
+        // const bankAccount = bankAccounts.find(ba => ba.id === batch.bankAccountId) || bankAccounts[0];
+        const bankAccount = { id: batch.bankAccountId || "mock-bank-123" };
+
+        if (!bankAccount) {
+            throw new Error("No Cash Bank Account found matching the Lockbox Batch.");
+        }
+
+        let matchedCount = 0;
+        let partialCount = 0;
+        let unmatchedCount = 0;
+
+        // 3. Process Each Item & Run Auto-Matching Engine
+        for (const itemData of itemsData) {
+            let matchStatus = "Unmatched";
+            let unappliedAmount = String(itemData.amount);
+            let matchedInvoiceId = null;
+
+            // a. Find open invoice by Remittance Reference (Invoice Number)
+            const openInvoices = await db.select()
+                .from(arInvoices)
+                .where(
+                    and(
+                        eq(arInvoices.invoiceNumber, itemData.remittanceRef),
+                        ne(arInvoices.status, "Paid"),
+                        ne(arInvoices.status, "Cancelled")
+                    )
+                );
+
+            const matchedInvoice = openInvoices[0];
+
+            if (matchedInvoice) {
+                matchedInvoiceId = matchedInvoice.id;
+                const outstandingBalance = await this.getInvoiceOutstandingBalance(matchedInvoice.id);
+
+                // b. Create the Receipt automatically
+                const receiptAmountNum = Number(itemData.amount);
+
+                const newReceipt = await this.createReceipt({
+                    receiptNumber: `LBX-${batch.id.slice(0, 4)}-${itemData.checkNumber}`,
+                    amount: itemData.amount,
+                    currency: itemData.currencyCode || batch.currencyCode || "USD",
+                    receiptDate: new Date(itemData.itemDate || new Date()),
+                    glDate: new Date(),
+                    receiptMethodId: defaultMethod.id,
+                    bankAccountId: bankAccount.id,
+                    customerId: matchedInvoice.customerId,
+                    accountId: matchedInvoice.accountId,
+                    siteId: matchedInvoice.siteId,
+                    status: "Unapplied",
+                    unappliedAmount: itemData.amount,
+                });
+
+                // c. Attempt Application
+                if (receiptAmountNum > 0) {
+                    const appliedAmt = Math.min(receiptAmountNum, outstandingBalance);
+
+                    try {
+                        await this.applyReceipt(
+                            newReceipt.id,
+                            matchedInvoice.id,
+                            appliedAmt,
+                            { glDate: new Date() }
+                        );
+
+                        unappliedAmount = String(receiptAmountNum - appliedAmt);
+
+                        if (appliedAmt >= outstandingBalance && appliedAmt >= receiptAmountNum) {
+                            matchStatus = "Matched";
+                            matchedCount++;
+                        } else if (appliedAmt > 0) {
+                            matchStatus = "Partial";
+                            partialCount++;
+                        } else {
+                            unmatchedCount++;
+                        }
+                    } catch (err) {
+                        console.error(`[AR] Lockbox auto-apply failed for item ${itemData.checkNumber}:`, err);
+                        unmatchedCount++;
+                    }
+                } else {
+                    unmatchedCount++;
+                }
+            } else {
+                // If we don't find the invoice, we can optionally still create an "On Account" or "Unapplied" receipt
+                // if we have enough customer info (e.g. from MICR or payer name mapping).
+                // For simplicity in this engine version, if no invoice matches, we just log it as an unmatched line 
+                // and require manual intervention in the workbench.
+                unmatchedCount++;
+            }
+
+            await storage.createArLockboxItem({
+                ...itemData,
+                itemDate: new Date(itemData.itemDate), // Parse incoming ISO string
+                batchId: batch.id,
+                matchStatus,
+                unappliedAmount,
+                matchedInvoiceId
+            });
+        }
+
+        // 4. Update Batch Status
+        const finalStatus = (unmatchedCount === 0 && partialCount === 0) ? "Processed" : "Exceptions";
+
+        await storage.updateArLockboxBatch(batch.id, {
+            status: finalStatus,
+            itemCount: itemsData.length
+        });
+
+        return await storage.getArLockboxBatch(batch.id) as ArLockboxBatch;
+    }
+
+    async manuallyMatchLockboxItem(itemId: string, invoiceId: string): Promise<ArLockboxItem> {
+        // 1. Fetch Item & Batch
+        const [item] = await db.select().from(arLockboxItems).where(eq(arLockboxItems.id, itemId));
+        if (!item) throw new Error("Lockbox item not found");
+        if (item.matchStatus === "Matched") throw new Error("Item is already fully matched");
+
+        const batch = await storage.getArLockboxBatch(item.batchId);
+        if (!batch) throw new Error("Parent lockbox batch not found");
+
+        // 2. Fetch Target Invoice
+        const invoice = await storage.getArInvoice(invoiceId);
+        if (!invoice) throw new Error("Target invoice not found");
+
+        const unappliedNum = Number(item.unappliedAmount);
+        if (unappliedNum <= 0) throw new Error("No unapplied amount available on this item");
+
+        // 3. Create Receipt Context (mocking defaults normally tied to profiles)
+        const [ledger] = await db.select({ id: glLedgers.id }).from(glLedgers).orderBy(glLedgers.createdAt).limit(1);
+        const defaultMethod = { id: "mock-rm-123", name: "Mock Lockbox" };
+        const bankAccount = { id: batch.bankAccountId || "mock-bank-123" };
+        const outstandingBalance = await this.getInvoiceOutstandingBalance(invoice.id);
+
+        // 4. Create proper receipt for the exceptional item
+        const newReceipt = await this.createReceipt({
+            receiptNumber: `LBXM-${batch.id.slice(0, 4)}-${item.checkNumber}-${Date.now().toString().slice(-4)}`,
+            amount: String(unappliedNum),
+            currency: item.currencyCode || batch.currencyCode || "USD",
+            receiptDate: new Date(item.itemDate || new Date()),
+            glDate: new Date(item.itemDate || new Date()),
+            receiptMethodId: defaultMethod.id,
+            bankAccountId: bankAccount.id,
+            customerId: invoice.customerId,
+            accountId: invoice.accountId,
+            siteId: invoice.siteId,
+            status: "Unapplied",
+            unappliedAmount: String(unappliedNum),
+        });
+
+        // 5. Apply Receipt to targeted invoice
+        const appliedAmt = Math.min(unappliedNum, outstandingBalance);
+        let newMatchStatus = item.matchStatus;
+        let finalUnapplied = unappliedNum;
+
+        if (appliedAmt > 0) {
+            await this.applyReceipt(
+                newReceipt.id,
+                invoice.id,
+                appliedAmt,
+                { glDate: new Date(item.itemDate || new Date()), eventDate: new Date(item.itemDate || new Date()) }
+            );
+
+            finalUnapplied = unappliedNum - appliedAmt;
+            if (appliedAmt >= outstandingBalance && appliedAmt >= unappliedNum) {
+                newMatchStatus = "Matched";
+            } else {
+                newMatchStatus = "Partial";
+            }
+        } else {
+            throw new Error("Target invoice has no outstanding balance to apply against.");
+        }
+
+        // 6. Update Lockbox Item
+        await storage.updateArLockboxItem(itemId, {
+            matchStatus: newMatchStatus,
+            unappliedAmount: String(finalUnapplied),
+            matchedInvoiceId: invoice.id
+        });
+
+        // 7. Re-evaluate Batch Status
+        const siblingItems = await storage.listArLockboxItems(batch.id);
+        const hasExceptions = siblingItems.some(i => i.matchStatus !== "Matched" && i.matchStatus !== "Processed");
+        if (!hasExceptions && siblingItems.length > 0) {
+            await storage.updateArLockboxBatch(batch.id, { status: "Processed" });
+        }
+
+        return (await db.select().from(arLockboxItems).where(eq(arLockboxItems.id, itemId)))[0] as ArLockboxItem;
+    }
 
     async createDunningRun(): Promise<{ run: ArDunningRun; tasks: number }> {
         // 1. Create Run Record (Status: New)
@@ -681,6 +1449,19 @@ export class ArService {
 
     async updateCollectorTask(id: string, data: Partial<InsertArCollectorTask>): Promise<ArCollectorTask | undefined> {
         return await storage.updateArCollectorTask(id, data);
+    }
+
+    async getInvoiceOutstandingBalance(invoiceId: string): Promise<number> {
+        const invoice = await storage.getArInvoice(invoiceId);
+        if (!invoice) return 0;
+
+        const applications = await storage.listArReceiptApplications(undefined, invoice.id);
+        const adjustments = await storage.listArAdjustments(invoice.id);
+
+        const appliedTotal = applications.reduce((sum, app) => sum + Number(app.amountApplied), 0);
+        const adjustedTotal = adjustments.reduce((sum, adj) => sum + Number(adj.amount), 0); // adjustments are typically negative to reduce balance
+
+        return Number(invoice.totalAmount) - appliedTotal + adjustedTotal;
     }
 
     // AR Adjustments
@@ -819,6 +1600,215 @@ export class ArService {
         // (Optional integration)
 
         return { success: true, errors: exceptions };
+    }
+
+    // ==========================================
+    // PHASE 4: BILLING EXPANSION SERVICES
+    // ==========================================
+
+    async getPaymentSchedules(invoiceId: string) {
+        return await db.select().from(arPaymentSchedules).where(eq(arPaymentSchedules.invoiceId, invoiceId)).orderBy(arPaymentSchedules.installmentNumber);
+    }
+
+    async generateBalanceForwardStatements(customerId: string, billingCycle: string = "Monthly"): Promise<any> {
+        // 1. Fetch un-closed invoices for the customer
+        const unclosedInvoices = await db.select().from(arInvoices)
+            .where(and(eq(arInvoices.customerId, customerId), ne(arInvoices.status, "Paid")));
+
+        let totalDue = 0;
+        let balanceForwardAmount = 0;
+        let currentPeriodAmount = 0;
+
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        for (const inv of unclosedInvoices) {
+            const outstanding = await this.getInvoiceOutstandingBalance(inv.id);
+            totalDue += outstanding;
+
+            if (inv.createdAt && new Date(inv.createdAt) < startOfMonth) {
+                balanceForwardAmount += outstanding;
+            } else {
+                currentPeriodAmount += outstanding;
+            }
+        }
+
+        if (totalDue > 0) {
+            const [statement] = await db.insert(arConsolidatedStatements).values({
+                customerId,
+                statementDate: new Date(),
+                billingCycle,
+                balanceForwardAmount: String(balanceForwardAmount.toFixed(2)),
+                currentPeriodAmount: String(currentPeriodAmount.toFixed(2)),
+                totalDue: String(totalDue.toFixed(2)),
+                dueDate: new Date(now.setDate(now.getDate() + 15)), // Default NET 15 for statements
+                status: "Draft"
+            }).returning();
+
+            return statement;
+        }
+
+        return null;
+    }
+
+    async processRecurringInvoices(): Promise<{ processed: number; errors: number }> {
+        const today = new Date();
+
+        // 1. Fetch active recurring invoices where nextRunDate is today or earlier
+        const dueRecurring = await db.select().from(arRecurringInvoices)
+            .where(and(
+                eq(arRecurringInvoices.status, "Active"),
+                sql`${arRecurringInvoices.nextRunDate} <= ${today.toISOString()}`
+            ));
+
+        let processedCount = 0;
+        let errorCount = 0;
+
+        for (const recurring of dueRecurring) {
+            try {
+                // 2. Create the real invoice based on the template
+                const invData: InsertArInvoice = {
+                    customerId: recurring.customerId,
+                    invoiceNumber: `REC-${recurring.id.substring(0, 8).toUpperCase()}-${Date.now().toString().slice(-4)}`,
+                    amount: recurring.templateAmount,
+                    taxAmount: "0.00",
+                    totalAmount: recurring.templateAmount,
+                    currency: recurring.templateCurrency || "USD",
+                    dueDate: new Date(new Date().setDate(today.getDate() + 30)), // NET 30
+                    status: "Draft",
+                    description: `Recurring Invoice: ${recurring.templateName}`,
+                    glDate: today,
+                    transactionClass: "INV"
+                };
+
+                const newInv = await this.createInvoice(invData);
+
+                // Add a single line
+                await this.createInvoiceLine({
+                    invoiceId: newInv.id,
+                    lineNumber: 1,
+                    description: recurring.templateName,
+                    amount: recurring.templateAmount,
+                    quantity: "1",
+                    unitPrice: recurring.templateAmount
+                });
+
+                // 3. Update the recurring schedule
+                let nextRun = new Date(recurring.nextRunDate);
+                switch (recurring.frequency) {
+                    case "Weekly": nextRun.setDate(nextRun.getDate() + 7); break;
+                    case "Monthly": nextRun.setMonth(nextRun.getMonth() + 1); break;
+                    case "Quarterly": nextRun.setMonth(nextRun.getMonth() + 3); break;
+                    case "Yearly": nextRun.setFullYear(nextRun.getFullYear() + 1); break;
+                }
+
+                let newStatus = "Active";
+                if (recurring.endDate && nextRun > new Date(recurring.endDate)) {
+                    newStatus = "Completed";
+                }
+
+                await db.update(arRecurringInvoices)
+                    .set({ lastRunDate: today, nextRunDate: nextRun, status: newStatus })
+                    .where(eq(arRecurringInvoices.id, recurring.id));
+
+                processedCount++;
+            } catch (err) {
+                console.error(`[AR] Failed to process recurring invoice ${recurring.id}`, err);
+                errorCount++;
+            }
+        }
+
+        return { processed: processedCount, errors: errorCount };
+    }
+
+    // ==========================================
+    // PHASE 5: CASH & COLLECTIONS EXPANSION
+    // ==========================================
+
+    async createRemittanceBatch(batchData: InsertArRemittanceBatch, receiptIds: string[]): Promise<ArRemittanceBatch> {
+        const [batch] = await db.insert(arRemittanceBatches).values({
+            ...batchData,
+            batchDate: new Date(batchData.batchDate),
+            itemCount: receiptIds.length,
+            status: "Pending"
+        }).returning();
+
+        for (const rId of receiptIds) {
+            await db.update(arReceipts).set({ remittanceBatchId: batch.id }).where(eq(arReceipts.id, rId));
+        }
+
+        return batch;
+    }
+
+    async listRemittanceBatches(): Promise<ArRemittanceBatch[]> {
+        return await db.select().from(arRemittanceBatches).orderBy(arRemittanceBatches.createdAt);
+    }
+
+    async clearRemittanceBatch(batchId: string): Promise<ArRemittanceBatch> {
+        const [batch] = await db.update(arRemittanceBatches)
+            .set({ status: "Cleared" })
+            .where(eq(arRemittanceBatches.id, batchId))
+            .returning();
+
+        await db.update(arReceipts)
+            .set({ status: "Cleared" })
+            .where(eq(arReceipts.remittanceBatchId, batchId));
+
+        return batch;
+    }
+
+    async createPromiseToPay(data: InsertArPromiseToPay): Promise<ArPromiseToPay> {
+        const [ptp] = await db.insert(arPromisesToPay).values({
+            ...data,
+            promisedDate: new Date(data.promisedDate)
+        }).returning();
+        return ptp;
+    }
+
+    async listPromisesToPay(customerId?: string): Promise<ArPromiseToPay[]> {
+        if (customerId) {
+            return await db.select().from(arPromisesToPay).where(eq(arPromisesToPay.customerId, customerId));
+        }
+        return await db.select().from(arPromisesToPay);
+    }
+
+    async evaluatePromisesToPay(): Promise<{ kept: number; broken: number }> {
+        const openPtps = await db.select().from(arPromisesToPay).where(eq(arPromisesToPay.status, "Open"));
+        let kept = 0;
+        let broken = 0;
+        const today = new Date();
+
+        for (const ptp of openPtps) {
+            const [invoice] = await db.select().from(arInvoices).where(eq(arInvoices.id, ptp.invoiceId));
+            if (invoice && invoice.status === "Paid") {
+                await db.update(arPromisesToPay).set({ status: "Kept" }).where(eq(arPromisesToPay.id, ptp.id));
+                kept++;
+            } else if (new Date(ptp.promisedDate) < today) {
+                await db.update(arPromisesToPay).set({ status: "Broken" }).where(eq(arPromisesToPay.id, ptp.id));
+                broken++;
+            }
+        }
+        return { kept, broken };
+    }
+
+    async resolveDispute(disputeId: string, resolution: "Approved" | "Rejected", creditAmount: number = 0, resolvedBy: string = "SYSTEM"): Promise<ArDispute> {
+        const [dispute] = await db.update(arDisputes)
+            .set({
+                status: resolution === "Approved" ? "Resolved" : "Rejected",
+                resolvedAt: new Date(),
+                resolvedBy: resolvedBy
+            })
+            .where(eq(arDisputes.id, disputeId))
+            .returning();
+
+        if (!dispute) throw new Error("Dispute not found");
+
+        if (resolution === "Approved" && creditAmount > 0) {
+            const cm = await this.createCreditMemo(dispute.invoiceId, creditAmount, `Dispute Resolution: ${dispute.disputeReason}`);
+            await this.applyCreditMemo(cm.id, dispute.invoiceId, creditAmount);
+        }
+
+        return dispute;
     }
 }
 

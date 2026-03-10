@@ -3,7 +3,7 @@ import { db } from "../server/db";
 import { maintWorkCenters, maintWorkOrders, maintWorkOrderOperations, faAssets } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
 import { maintenancePlanningService } from "../server/services/MaintenancePlanningService";
-import { maintenanceService } from "../server/services/MaintenanceService";
+import { maintenanceService } from "../server/modules/maintenance/services/MaintenanceService";
 
 async function verifyPlanningFlow() {
     console.log("🛠️ Verifying Maintenance Planning Flow...");

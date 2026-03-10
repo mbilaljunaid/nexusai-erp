@@ -1,0 +1,274 @@
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, Trash2, Copy, Check, AlertCircle } from "lucide-react";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { ColumnDef } from "@tanstack/react-table";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
+
+interface EnvironmentVariable {
+  id: string;
+  key: string;
+  value: string;
+  environment: "development" | "staging" | "production";
+  isSecret: boolean;
+  createdAt: string;
+}
+
+export default function EnvironmentManagement() {
+  const [envVars, setEnvVars] = useState<EnvironmentVariable[]>([]);
+  const [selectedEnv, setSelectedEnv] = useState<"development" | "staging" | "production">("production");
+  const [newKey, setNewKey] = useState("");
+  const [newValue, setNewValue] = useState("");
+  const [isSecret, setIsSecret] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [deletingVarId, setDeletingVarId] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.title = "Environment Management | NexusAIFirst";
+    loadEnvVars();
+  }, []);
+
+  const loadEnvVars = async () => {
+    try {
+      const res = await fetch("/api/environment-vars");
+      if (res.ok) {
+        setEnvVars(await res.json());
+      }
+    } catch (e) {
+    }
+  };
+
+  const handleAddVariable = async () => {
+    if (!newKey || !newValue) return;
+
+    setLoading(true);
+    try {
+      const newVar: EnvironmentVariable = {
+        id: `var-${Date.now()}`,
+        key: newKey,
+        value: isSecret ? "•••••••" : newValue,
+        environment: selectedEnv,
+        isSecret,
+        createdAt: new Date().toISOString(),
+      };
+
+      const res = await fetch("/api/environment-vars", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newVar),
+      });
+
+      if (res.ok) {
+        setEnvVars([...envVars, newVar]);
+        setNewKey("");
+        setNewValue("");
+        setIsSecret(false);
+      }
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteVariable = async (id: string) => {
+    setDeletingVarId(id);
+  };
+
+  const performDeleteVariable = async () => {
+    if (!deletingVarId) return;
+
+    try {
+      await fetch(`/api/environment-vars/${deletingVarId}`, { method: "DELETE" });
+      setEnvVars(envVars.filter((v) => v.id !== deletingVarId));
+    } catch (e) {
+    }
+    setDeletingVarId(null);
+  };
+
+  const handleCopy = (value: string, id: string) => {
+    navigator.clipboard.writeText(value);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
+  const filtered = envVars.filter((v) => v.environment === selectedEnv);
+
+  const columns: any[] = [
+    {
+      header: "Key",
+      id: "key", width: "150px",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <code className="font-mono font-semibold">{row.original.key}</code>
+          {row.original.isSecret && (
+            <Badge variant="secondary" className="text-xs">Secret</Badge>
+          )}
+        </div>
+      )
+    },
+    {
+      header: "Value",
+      id: "value", width: "150px",
+      cell: ({ row }) => (
+        <code className="text-xs text-muted-foreground">
+          {row.original.isSecret ? "••••••••••" : row.original.value}
+        </code>
+      )
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <div className="flex gap-2 justify-end">
+          <Button variant="ghost" size="icon" onClick={() => handleCopy(row.original.value, row.original.id)} aria-label="Copy value">
+            {copied === row.original.id ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+          </Button>
+          <Button variant="ghost" size="icon" className="text-red-600 hover:text-red-700 hover:bg-red-500/10" onClick={() => handleDeleteVariable(row.original.id)} aria-label="Delete">
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      )
+    }
+  ];
+
+  return (
+    <StandardPage
+      title="Environment Management"
+      description="Manage environment variables across development, staging, and production"
+    >
+      <div className="space-y-6">
+        {/* Environment Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="p-4">
+            <p className="text-sm text-muted-foreground">Development Vars</p>
+            <p className="text-2xl font-bold">
+              {envVars.filter((v) => v.environment === "development").length}
+            </p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-sm text-muted-foreground">Staging Vars</p>
+            <p className="text-2xl font-bold">
+              {envVars.filter((v) => v.environment === "staging").length}
+            </p>
+          </Card>
+          <Card className="p-4">
+            <p className="text-sm text-muted-foreground">Production Vars</p>
+            <p className="text-2xl font-bold text-orange-600">
+              {envVars.filter((v) => v.environment === "production").length}
+            </p>
+          </Card>
+        </div>
+
+        {/* Add Variable Panel */}
+        <Card className="p-6 space-y-4">
+          <h2 className="text-xl font-semibold">Add Environment Variable</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <Label className="block text-sm font-medium mb-2">Environment</Label>
+              <Select value={selectedEnv} onValueChange={(v: any) => setSelectedEnv(v)}>
+                <SelectTrigger data-testid="select-environment">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="development">Development</SelectItem>
+                  <SelectItem value="staging">Staging</SelectItem>
+                  <SelectItem value="production">Production</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="block text-sm font-medium mb-2">Variable Name</Label>
+              <Input
+                type="text"
+                value={newKey}
+                onChange={(e) => setNewKey(e.target.value)}
+                placeholder="DATABASE_URL"
+                data-testid="input-env-key"
+              />
+            </div>
+            <div>
+              <Label className="block text-sm font-medium mb-2">Value</Label>
+              <Input
+                type={isSecret ? "password" : "text"}
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                placeholder="Enter value..."
+                data-testid="input-env-value"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="flex items-center gap-2 text-sm pt-8">
+                <Checkbox
+                  checked={isSecret}
+                  onCheckedChange={(checked: boolean) => setIsSecret(checked)}
+                  data-testid="checkbox-is-secret"
+                />
+                <span>Secret/Sensitive</span>
+              </Label>
+              <Button
+                onClick={handleAddVariable}
+                disabled={!newKey || !newValue || loading}
+                data-testid="button-add-env-var"
+                className="w-full"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Variables List */}
+        <InteractiveSpreadsheet
+          data={filtered}
+          columns={columns}
+          filterPlaceholder={`Search ${selectedEnv} variables...`}
+          onChange={() => { }} containerHeight="600px" />
+
+        {/* Security Warning */}
+        <Card className="p-4 bg-orange-500/10 dark:bg-orange-900/20 border-orange-200 dark:border-orange-900">
+          <div className="flex gap-3">
+            <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-orange-900 dark:text-orange-100">Security Notice</p>
+              <p className="text-sm text-orange-800 dark:text-orange-200 mt-1">
+                Never commit environment variables or secrets to version control. Always use this management interface for sensitive data.
+              </p>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <AlertDialog open={!!deletingVarId} onOpenChange={(open) => !open && setDeletingVarId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Environment Variable</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this environment variable?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={performDeleteVariable} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </StandardPage>
+  );
+}

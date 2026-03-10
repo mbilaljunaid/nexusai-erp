@@ -7,7 +7,14 @@ import { createServer } from "http";
 import { requestIdMiddleware, securityHeaders } from "./security";
 import { errorHandler } from "./middleware/error";
 import { auditMiddleware } from "./middleware/audit";
+import { rlsMiddleware } from "./middleware/rls";
 import { initCronJobs } from "./cron/sweeper";
+import { JobRunnerService } from "./services/JobRunnerService";
+import { startAPPaymentWorker } from "./queue/ap-payment.queue";
+import { startARLockboxWorker } from "./queue/ar-lockbox.queue";
+import { startGLPostingWorker } from "./queue/gl-posting.queue";
+import { startAccountingCloseQueue } from "./queue/accounting-close.queue";
+import { startFxRateFeedCron } from "./cron/fx-rate-feed";
 
 const app = express();
 const httpServer = createServer(app);
@@ -84,8 +91,21 @@ app.use(tenantContext);
 // Audit logging for mutations
 app.use(auditMiddleware);
 
+// RLS / Security Context (Mock Auth)
+app.use(rlsMiddleware);
+
 // Initialize Cron Jobs (Autonomous Background Tasks)
-initCronJobs();
+// initCronJobs();
+// JobRunnerService.start();
+
+// Cross-Cutting P1: BullMQ Workers (no-op if REDIS_URL is not set)
+startAPPaymentWorker();
+startARLockboxWorker();
+startGLPostingWorker();
+startAccountingCloseQueue();
+
+// Cross-Cutting P1: FX Rate Feed — fetch daily rates at 06:00 UTC
+startFxRateFeedCron();
 
 console.log("DEBUG: NODE_ENV =", process.env.NODE_ENV);
 
@@ -104,27 +124,41 @@ app.use((req, res, next) => {
 // Centralized Error Handling
 app.use(errorHandler);
 
-// START: NestJS Bridge
 try {
-  const { NestFactory } = await import('@nestjs/core');
-  const { ExpressAdapter } = await import('@nestjs/platform-express');
-  const { AppModule } = await import('../backend/src/app.module');
+  log('Starting NestJS Bridge...');
+  const esbuild = await import('esbuild');
+  const path = await import('path');
 
-  // Create standalone NestJS app (Sub-App Strategy)
-  // We disable bodyParser because the main app already handles it, 
-  // but NestJS might need its own if mounted? Actually, mounted apps usually inherit?
-  // Use bodyParser: true for safety, verify later.
+  const backendEntry = path.resolve('backend/src/app.module.ts');
+  const outfile = path.resolve('.nestjs-bridge-bundle.mjs');
+
+  await esbuild.build({
+    entryPoints: [backendEntry],
+    bundle: true,
+    outfile,
+    format: 'esm',
+    platform: 'node',
+    target: 'es2021',
+    packages: 'external',
+    tsconfigRaw: JSON.stringify({
+      compilerOptions: {
+        experimentalDecorators: true,
+        emitDecoratorMetadata: true,
+      },
+    }),
+  });
+
+  const { NestFactory } = await import('@nestjs/core');
+  const { AppModule } = await import(outfile);
+
   const nestApp = await NestFactory.create(
     AppModule,
-    { logger: ['error', 'warn'] }
+    { logger: ['error', 'warn', 'log', 'debug', 'verbose'] }
   );
 
-  // Initialize NestJS (starts the container, resolves dependencies)
+  log('Initializing NestJS container...');
   await nestApp.init();
 
-  // Mount the NestJS Express instance into the main app
-  // This allows NestJS to handle its routes while sharing the port.
-  // We wrap it to only handle /api requests so it doesn't 404 frontend routes.
   const nestHandler = nestApp.getHttpAdapter().getInstance();
   app.use((req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
@@ -134,11 +168,6 @@ try {
     }
   });
 
-  // Enable Global Prefix if needed, but CostController has explicit route
-  // await nestApp.setGlobalPrefix('api'); 
-
-  // Initialize (Registers routes) but DOES NOT Listen (we use httpServer below)
-  await nestApp.init();
   log('NestJS Bridge Initialized');
 } catch (err) {
   console.error('Failed to initialize NestJS Bridge:', err);
@@ -151,15 +180,17 @@ try {
 if (process.env.NODE_ENV === "production") {
   serveStatic(app);
 } else {
+  log('Starting Vite setup...');
   const { setupVite } = await import("./vite");
   await setupVite(httpServer, app);
+  log('Vite setup completed');
 }
 
 // ALWAYS serve the app on the port specified in the environment variable PORT
 // Other ports are firewalled. Default to 5000 if not specified.
 // this serves both the API and the client.
 // It is the only port that is not firewalled.
-const port = parseInt(process.env.PORT || "5001", 10);
+const port = parseInt(process.env.PORT || "5000", 10);
 httpServer.listen(
   {
     port,

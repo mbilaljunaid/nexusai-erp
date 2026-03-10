@@ -7,8 +7,13 @@ const router = Router();
 
 // Tax Codes
 router.get("/codes", async (req, res) => {
-    const codes = await storage.listTaxCodes();
-    res.json(codes);
+    try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const codes = await storage.listTaxCodes(legalEntityId);
+        res.json(codes);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list tax codes" });
+    }
 });
 
 router.post("/codes", async (req, res) => {
@@ -29,8 +34,13 @@ router.get("/codes/:id", async (req, res) => {
 
 // Tax Jurisdictions
 router.get("/jurisdictions", async (req, res) => {
-    const jurisdictions = await storage.listTaxJurisdictions();
-    res.json(jurisdictions);
+    try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const jurisdictions = await storage.listTaxJurisdictions(legalEntityId);
+        res.json(jurisdictions);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list tax jurisdictions" });
+    }
 });
 
 router.post("/jurisdictions", async (req, res) => {
@@ -51,8 +61,13 @@ router.get("/jurisdictions/:id", async (req, res) => {
 
 // Tax Exemptions
 router.get("/exemptions", async (req, res) => {
-    const items = await storage.listTaxExemptions();
-    res.json(items);
+    try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const items = await storage.listTaxExemptions(legalEntityId);
+        res.json(items);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to list tax exemptions" });
+    }
 });
 
 router.post("/exemptions", async (req, res) => {
@@ -62,6 +77,22 @@ router.post("/exemptions", async (req, res) => {
         res.json(item);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
+    }
+});
+
+// Tax Simulation (Preview)
+router.post("/simulate", async (req, res) => {
+    try {
+        const { customerId, siteId, amount } = req.body;
+
+        if (!customerId || !siteId || !amount) {
+            return res.status(400).json({ error: "Missing required fields: customerId, siteId, amount" });
+        }
+
+        const result = await taxService.simulateTaxCalculation(customerId, siteId, Number(amount));
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
     }
 });
 

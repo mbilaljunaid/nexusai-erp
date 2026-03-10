@@ -3,5 +3,6 @@ export class CreateBudgetDto {
   year!: number;
   quarter!: number;
   allocatedAmount!: number;
+  status?: string;
   notes?: string;
 }

@@ -91,8 +91,8 @@ export class RevenueService {
         await this.allocateRevenue(contractId);
 
         // 6. Generate/Update Schedules (Step 5 of ASC 606)
-        // Only if eventType is capable of satisfying a POB or creating a schedule
-        if (eventData.eventType === 'Booking' || eventData.eventType === 'SubscriptionStart') {
+        // Trigger schedule generation for time-based and series-typed events
+        if (eventData.eventType === 'Booking' || eventData.eventType === 'SubscriptionStart' || eventData.eventType === 'Series') {
             await this.generateInitialSchedules(pobId, eventData);
         }
 
@@ -175,6 +175,7 @@ export class RevenueService {
         let pobName = `POB for ${eventData.sourceId}`;
         let satisfactionMethod = "Ratable";
         let duration = 12;
+        let itemType = "Service";
 
         // 2. Evaluate Rules
         for (const rule of rules) {
@@ -185,6 +186,23 @@ export class RevenueService {
                 duration = rule.defaultDurationMonths || 12;
                 break; // First match wins
             }
+        }
+
+        // Gap R-3: Determine itemType from eventType
+        // ASC 606-10-25-14B: Series of distinct goods/services that are substantially the same
+        // and have the same pattern of transfer are treated as a single POB.
+        if (eventData.eventType === 'Series' || satisfactionMethod === 'Series') {
+            itemType = 'Series';
+            satisfactionMethod = 'Series';
+        } else if (eventData.eventType === 'Booking' || eventData.eventType === 'Sale') {
+            itemType = 'Goods';
+            satisfactionMethod = 'PointInTime';
+        } else if (eventData.eventType === 'SubscriptionStart' || eventData.eventType === 'SubscriptionRenewal') {
+            itemType = 'Subscription';
+            satisfactionMethod = 'Ratable';
+        } else if (eventData.eventType === 'License') {
+            itemType = 'License';
+            satisfactionMethod = 'PointInTime';
         }
 
         // 3. Get SSP
@@ -202,7 +220,7 @@ export class RevenueService {
         const [pob] = await db.insert(performanceObligations).values({
             contractId,
             name: pobName,
-            itemType: "Service", // Could also come from rule
+            itemType,
             transactionPrice: eventData.amount.toString(),
             sspPrice: ssp.toString(),
             allocatedPrice: "0", // Will be calculated in Step 4
@@ -286,9 +304,12 @@ export class RevenueService {
      * Step 5: Generate Schedules
      */
     private async generateInitialSchedules(pobId: string, eventData: any) {
-        // Simple Ratable Logic (12 Months)
-        const amount = parseFloat(eventData.amount.toString()); // Note: Should use Allocated Price in real world
+        // Ratable and Series both use monthly recognition pattern
+        // Series: ASC 606-10-25-14B — each delivery increment recognized as the obligation is satisfied
+        const isSeries = eventData.eventType === 'Series';
+        const amount = parseFloat(eventData.amount.toString());
         const monthlyAmount = amount / 12;
+        const eventTypLabel = isSeries ? 'Series' : 'Schedule';
 
         for (let i = 0; i < 12; i++) {
             const scheduleDate = new Date(eventData.eventDate);
@@ -296,17 +317,16 @@ export class RevenueService {
 
             const [recognition] = await db.insert(revenueRecognitions).values({
                 pobId,
-                contractId: eventData.relatedContractId || "temp", // Fix this logic to pass contractId
+                contractId: eventData.relatedContractId || "temp",
                 periodName: `${scheduleDate.toLocaleString('default', { month: 'short' })}-${scheduleDate.getFullYear().toString().substr(2)}`,
                 scheduleDate,
                 amount: monthlyAmount.toFixed(2),
                 status: "Pending",
-                eventType: "Schedule",
+                eventType: eventTypLabel,
                 accountType: "Revenue"
             }).returning();
 
-            // Auto-Post to GL (Real-time integration)
-            // In production, this might be a batch job
+            // Auto-Post to GL
             await revenueAccountingService.createRevenueJournal(recognition.id, eventData.ledgerId);
         }
     }
@@ -569,7 +589,7 @@ export class RevenueService {
             unbilledDetails
         };
         return {
-            periodName: period.periodName,
+            periodName: period?.periodName,
             postedCount,
             unbilledAccrualTotal,
             unbilledDetails

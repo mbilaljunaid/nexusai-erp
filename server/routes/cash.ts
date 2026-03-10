@@ -18,7 +18,9 @@ const router = Router();
 router.get("/accounts", async (req, res) => {
     try {
         const userId = req.headers['x-user-id'] as string;
-        const accounts = await cashService.listBankAccounts(userId);
+        const entLegalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const entBusinessUnitId = req.headers['x-business-unit-id'] as string | undefined;
+        const accounts = await cashService.listBankAccounts(userId, entLegalEntityId, entBusinessUnitId);
         res.json(accounts);
     } catch (error) {
         res.status(500).json({ message: "Failed to list bank accounts" });
@@ -55,7 +57,9 @@ router.post("/accounts/:id/approve", async (req, res) => {
 // Cash Position / Dashboard
 router.get("/position", async (req, res) => {
     try {
-        const position = await cashService.getCashPosition();
+        const entLegalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const entBusinessUnitId = req.headers['x-business-unit-id'] as string | undefined;
+        const position = await cashService.getCashPosition(entLegalEntityId, entBusinessUnitId);
         res.json(position);
     } catch (error) {
         res.status(500).json({ message: "Failed to get cash position" });
@@ -143,9 +147,10 @@ router.post("/reconcile/unmatch", async (req, res) => {
 
 router.get("/accounts/:id/statement-lines", async (req, res) => {
     try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
         const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
         const offset = req.query.offset ? parseInt(req.query.offset as string) : undefined;
-        const lines = await cashService.listStatementLines(req.params.id, limit, offset);
+        const lines = await cashService.listStatementLines(req.params.id, limit, offset, legalEntityId);
         const count = await cashService.getStatementLinesCount(req.params.id);
         res.json({ data: lines, total: count });
     } catch (error) {
@@ -155,9 +160,10 @@ router.get("/accounts/:id/statement-lines", async (req, res) => {
 
 router.get("/accounts/:id/transactions", async (req, res) => {
     try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
         const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
         const offset = req.query.offset ? parseInt(req.query.offset as string) : undefined;
-        const transactions = await cashService.listTransactions(req.params.id, limit, offset);
+        const transactions = await cashService.listTransactions(req.params.id, limit, offset, legalEntityId);
         const count = await cashService.getTransactionsCount(req.params.id);
         res.json({ data: transactions, total: count });
     } catch (error) {
@@ -304,7 +310,8 @@ router.get("/accounts/:id/reconcile-report/pdf", async (req, res) => {
 // ZBA Routes
 router.get("/zba/structures", async (req, res) => {
     try {
-        const structures = await zbaService.listStructures();
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        const structures = await cashService.listZbaStructures(legalEntityId);
         res.json(structures);
     } catch (error) {
         res.status(500).json({ message: "Failed to list ZBA structures" });

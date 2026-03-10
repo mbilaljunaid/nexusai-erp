@@ -1,0 +1,2787 @@
+# NexusAI ERP — HCM Suite Detailed Use Cases and Test Scripts
+
+> **Scope:** Comprehensive Test Plan covering all modules, pages, forms, and E2E flows.
+> **Method:** Browser-based UI testing only (No Playwright, no direct data seeding scripts). Must ensure navigation exists for all pages.
+
+## Modules 18–26 | UI Frontend Testing (Browser-Based)
+
+---
+
+## Legend
+| Symbol | Meaning |
+|--------|---------|
+| ✅ | Test PASSED |
+| ❌ | Test FAILED (blocking — must fix before proceeding) |
+| ⚠️ | Partial — works but with visual/functional issues |
+| 🔧 | Bug found & fixed during testing |
+| 🔲 | Not yet tested |
+
+---
+
+## Pre-Testing Requirements
+### Navigation Availability Check
+Before testing any module, verify the HCM sidebar is present at each route:
+- [ ] Navigate to `/hr` → HrSidebar renders with all section groups
+- [ ] All 12 sidebar groups visible: Talent Core, Recruitment (ATS), Learning & Development, Learning Admin, Analytics & Insights, Time & Labor (WFM), WFM: Manager Tools, WFM: Admin & Analytics, Self-Service, Setup & Config, Payroll Admin, Global HR Administration
+- [ ] Sidebar links are clickable and navigate without page reload
+
+---
+
+## Module 18 — Core Human Resources (Global HR)
+
+### TC-18-01: HR Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the HR Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr` | **Sidebar:** Talent Core → Dashboard  
+
+**Test Execution Steps:**
+1. Click "Dashboard" in the Talent Core sidebar group
+2. Verify the page loads with HR module header
+3. Verify key metric cards are visible (headcount, turnover, etc.)
+4. Verify navigation links to sub-modules work
+5. Verify no console errors
+
+**Expected Results:**
+Full HR landing page renders with metrics and navigation
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-02: New Hire Wizard (5-Step Flow)
+
+**Use Case Description:**
+As an HR/System User, I want to use the New Hire Wizard (5-Step Flow) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/hire` | **Sidebar:** Talent Core → New Hire Wizard  
+
+**Test Execution Steps:**
+1. Click "New Hire Wizard" in sidebar
+2. **Step 1 - Personal Info:** Verify fields: First Name, Middle Name, Last Name, Date of Birth, Gender, National Identifier, Person Type (Employee/Contingent)
+3. Complete Step 1 → click Next
+4. **Step 2 - Work Relationship:** Verify fields: Legal Employer, Business Unit, Hire Date, Person Type
+5. Complete Step 2 → click Next
+6. **Step 3 - Assignment:** Verify fields: Department, Job, Position, Grade, Grade Ladder, Working Hours, Assignment Category (Full/Part Time), Probation End Date, Manager
+7. Complete Step 3 → click Next
+8. **Step 4 - Compensation:** Verify salary, pay basis fields
+9. Complete Step 4 → click Next
+10. **Step 5 - Review:** Verify summary of all entered data
+11. Verify Back navigation works at each step
+12. Verify step progress indicator shows current step
+
+**Expected Results:**
+5-step wizard completes full hire flow; all Oracle-required fields present
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-03: Person Management (Employee Directory)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Person Management (Employee Directory) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/employees` | **Sidebar:** Talent Core → Person Management  
+
+**Test Execution Steps:**
+1. Click "Person Management" in sidebar
+2. Verify employee list/table renders
+3. Verify search/filter functionality
+4. Click on an employee record → verify detail view loads
+5. Verify columns: Person Number, Name, Department, Job, Status
+
+**Expected Results:**
+Directory table loads with employee data and drill-down works
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-04: Person Spotlight (360° Worker View)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Person Spotlight (360° Worker View) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/employees/spotlight/EMP-10042` | **Sidebar:** Talent Core → Person Spotlight  
+
+**Test Execution Steps:**
+1. Click "Person Spotlight" in sidebar
+2. Verify 360° aggregated view: Employment, Compensation, Performance, Absence tabs
+3. Verify worker details panel shows Name, Job, Department
+4. Verify each tab section loads without errors
+
+**Expected Results:**
+Full worker spotlight with all four data domains shown
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-05: DateTrack Manager (Effective Dating)
+
+**Use Case Description:**
+As an HR/System User, I want to use the DateTrack Manager (Effective Dating) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/datetrack` | **Sidebar:** Talent Core → DateTrack Manager  
+
+**Test Execution Steps:**
+1. Click "DateTrack Manager" in sidebar
+2. Verify EffectiveDatingPanel loads
+3. Verify mode selector: Create / Correct / Future-Date
+4. Verify date picker for effective date is functional
+5. Verify assignment history table displays with date ranges
+6. Test switching between Create/Correct/Future-date modes
+
+**Expected Results:**
+DateTrack panel shows all three modes and assignment history table
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-06: Seniority Tracking
+
+**Use Case Description:**
+As an HR/System User, I want to use the Seniority Tracking feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/seniority-tracking` | **Sidebar:** Talent Core → Seniority Tracking  
+
+**Test Execution Steps:**
+1. Click "Seniority Tracking" in sidebar
+2. Verify service history table loads
+3. Verify calculation modes (Calendar Days / Working Days / Employment Periods)
+4. Verify break-in-service rules section is present
+5. Verify seniority length of service values are computed
+
+**Expected Results:**
+Seniority page with service history, break-in-service rules, calculation mode
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-07: Employment Contracts Manager
+
+**Use Case Description:**
+As an HR/System User, I want to use the Employment Contracts Manager feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/employment-contracts` | **Sidebar:** Global HR Administration → Employment Contracts  
+
+**Test Execution Steps:**
+1. Click "Employment Contracts" in sidebar
+2. Verify contract list renders
+3. Verify contract types available: Fixed Term, Permanent, Zero-Hours, Agency
+4. Click "New Contract" or equivalent → verify form fields: Contract Type, Start Date, End Date, Renewal Alert Threshold, Jurisdiction, E-Sign Upload
+5. Verify status filter works: Active / Expiring / Expired
+6. Verify renewal alerts are visually indicated
+
+**Expected Results:**
+Contract manager with type dropdown, status badges, e-sign field, renewal threshold
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-08: Position Budgeting Workbench
+
+**Use Case Description:**
+As an HR/System User, I want to use the Position Budgeting Workbench feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/position-budgeting` | **Sidebar:** Global HR Administration → Position Budgeting  
+
+**Test Execution Steps:**
+1. Click "Position Budgeting" in sidebar
+2. Verify department roll-up tree renders
+3. Verify each position shows: FTE Budget vs Actual Headcount
+4. Verify utilization progress bars
+5. Verify Vacancy Approval / Freeze workflow actions are available
+6. Verify vacancy status indicators
+
+**Expected Results:**
+FTE budget vs actual view with dept tree, progress bars, approval workflow
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-18-09: HR Journey Template Builder
+
+**Use Case Description:**
+As an HR/System User, I want to use the HR Journey Template Builder feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/journey-templates` | **Sidebar:** Global HR Administration → Journey Templates  
+
+**Test Execution Steps:**
+1. Click "Journey Templates" in sidebar
+2. Verify template list renders
+3. Click "New Template" → verify trigger event dropdown: Hire / Transfer / Termination / Life Event
+4. Verify task checklist builder: add tasks with day-offset due dates and assignee types
+5. Verify task ordering (drag/reorder) or up/down controls
+6. Verify Preview mode shows rendered checklist
+
+**Expected Results:**
+Journey builder with trigger events, ordered task list, day-offset dues, preview mode
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 19 — Global Payroll
+
+### TC-19-01: Payroll Workbench
+
+**Use Case Description:**
+As an HR/System User, I want to use the Payroll Workbench feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/payroll` | **Sidebar:** Talent Core → Payroll Workbench  
+
+**Test Execution Steps:**
+1. Click "Payroll Workbench" in Talent Core sidebar group
+2. Verify payroll runs list loads
+3. Verify Oracle-required fields present: Consolidation Group, Run Type (Regular/Supplemental/Report), Element Entry Override, Retro-Pay Indicator, GL Cost Allocation Mode
+4. Verify "Create New Payroll Run" button or equivalent action
+
+**Expected Results:**
+PayrollRuns list page with all 5 Oracle Phase 10 fields available in creation form
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-19-02: Payroll Definition Setup
+
+**Use Case Description:**
+As an HR/System User, I want to use the Payroll Definition Setup feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/payroll/definition-setup` | **Sidebar:** Payroll Admin → Payroll Definition Setup  
+
+**Test Execution Steps:**
+1. Navigate via Payroll Admin → Payroll Definition Setup
+2. Verify form fields: Pay Frequency (Weekly/Bi-Weekly/Semi-Monthly/Monthly)
+3. Verify Cut-off Date Rules: Period End / N Days Before (with N input)
+4. Verify First Period Start Date picker
+5. Verify Auto-Generate Period Calendar toggle/button
+6. Verify Consolidation Group assignment field
+7. Verify Element Set linking field
+
+**Expected Results:**
+Full setup form with all 7 Oracle-required configuration fields
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-19-03: Statutory Tax Filing
+
+**Use Case Description:**
+As an HR/System User, I want to use the Statutory Tax Filing feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/payroll/statutory-taxes` | **Sidebar:** Payroll Admin → Statutory Tax Filing  
+
+**Test Execution Steps:**
+1. Navigate via Payroll Admin → Statutory Tax Filing
+2. Verify form type selector: W-2 / 941 / etc.
+3. Verify tax year / period selection
+4. Verify employee data grid for statutory reporting
+5. Verify archive/generate action
+
+**Expected Results:**
+Tax filing page with form type, period, data grid, and generation action
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-19-04: Off-Cycle Payment
+
+**Use Case Description:**
+As an HR/System User, I want to use the Off-Cycle Payment feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/payroll/off-cycle` | **Sidebar:** Payroll Admin → Off-Cycle Payment  
+
+**Test Execution Steps:**
+1. Navigate via Payroll Admin → Off-Cycle Payment
+2. Verify employee/reason selection for off-cycle run
+3. Verify payment amount field
+4. Verify payment type (bonus, correction, etc.)
+5. Submit and verify confirmation/preview
+
+**Expected Results:**
+Off-cycle payment form with employee, amount, type, and submission
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-19-05: Payroll Simulator
+
+**Use Case Description:**
+As an HR/System User, I want to use the Payroll Simulator feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/payroll/simulator` | **Sidebar:** Payroll Admin → Payroll Simulator  
+
+**Test Execution Steps:**
+1. Navigate via Payroll Admin → Payroll Simulator
+2. Verify "What-If" scenario inputs: employee selection, salary change, element adjustments
+3. Click Simulate → verify net pay impact results
+4. Verify comparison view (current vs simulated)
+5. Verify gross-to-net breakdown in output
+
+**Expected Results:**
+Interactive simulator with inputs, results, and comparison breakdown
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-19-06: Retro-Active Pay Engine
+
+**Use Case Description:**
+As an HR/System User, I want to use the Retro-Active Pay Engine feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/payroll/retro`  
+
+**Test Execution Steps:**
+1. Navigate directly to `/hr/payroll/retro`
+2. Verify retro pay request form loads
+3. Verify employee and period selection
+4. Verify retro-pay calculation preview
+
+**Expected Results:**
+Retroactive pay engine form and calculation result
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 20 — Time & Labor (WFM)
+
+### TC-20-01: My Time (Employee Self-Service)
+
+**Use Case Description:**
+As an HR/System User, I want to use the My Time (Employee Self-Service) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/me/time` | **Sidebar:** Time & Labor (WFM) → My Time  
+
+**Test Execution Steps:**
+1. Click "My Time" in Time & Labor sidebar group
+2. Verify time entry calendar/grid renders
+3. Verify time entry input (hours, activity type)
+4. Verify weekly/period totals are calculated
+5. Submit time for approval → verify status changes to Pending
+
+**Expected Results:**
+Time entry grid with weekly totals and submission workflow
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-02: Leave Balances (Accrual)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Leave Balances (Accrual) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/me/balances` | **Sidebar:** Time & Labor (WFM) → Leave Balances  
+
+**Test Execution Steps:**
+1. Click "Leave Balances" in sidebar
+2. Verify accrual balance cards: Vacation, Sick, PTO, etc.
+3. Verify balance as of date
+4. Verify accrual rate and carry-forward rules visible
+
+**Expected Results:**
+Leave balance summary with plan types and accrual rules
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-03: Shift Bidding Board
+
+**Use Case Description:**
+As an HR/System User, I want to use the Shift Bidding Board feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/shift-bidding` | **Sidebar:** Time & Labor (WFM) → Shift Bidding  
+
+**Test Execution Steps:**
+1. Click "Shift Bidding" in sidebar
+2. Verify open shifts list renders
+3. Verify shift details: Date, Time, Department, Location, Slots Available
+4. Click "Bid for Shift" → verify confirmation action
+5. Verify "My Bids" section shows submitted bids
+
+**Expected Results:**
+Shift bidding board with open shifts and bid submission
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-04: Team Schedule (Manager View)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Team Schedule (Manager View) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/team/schedule` | **Sidebar:** WFM: Manager Tools → Team Schedule  
+
+**Test Execution Steps:**
+1. Click "Team Schedule" in WFM: Manager Tools
+2. Verify calendar/Gantt view of team shifts
+3. Verify employee rows with their scheduled shifts
+4. Verify date navigation (week/month toggle)
+
+**Expected Results:**
+Visual schedule grid with employee rows and date navigation
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-05: Manager Time Approvals (Calendar View)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Manager Time Approvals (Calendar View) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/team/approvals` | **Sidebar:** WFM: Manager Tools → Approvals  
+
+**Test Execution Steps:**
+1. Click "Approvals" in WFM: Manager Tools
+2. Verify pending approval items list
+3. Click Approve on a time entry → verify status updates
+4. Click Reject → verify rejection reason dialog
+5. Verify calendar view if available
+
+**Expected Results:**
+Manager approval queue with approve/reject actions
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-06: Timekeeper Console
+
+**Use Case Description:**
+As an HR/System User, I want to use the Timekeeper Console feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/timekeeper` | **Sidebar:** WFM: Manager Tools → Timekeeper Console  
+
+**Test Execution Steps:**
+1. Click "Timekeeper Console" in sidebar
+2. Verify employee timesheet grid (all direct reports or dept)
+3. Verify exception flags (missing punches, overtime, etc.)
+4. Verify edit capabilities for corrections
+
+**Expected Results:**
+Timekeeper console with multi-employee view and exception management
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-07: Time Card Audit
+
+**Use Case Description:**
+As an HR/System User, I want to use the Time Card Audit feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/timecard-audit` | **Sidebar:** WFM: Manager Tools → Time Card Audit  
+
+**Test Execution Steps:**
+1. Click "Time Card Audit" in sidebar
+2. Verify audit log of manual overrides
+3. Verify punch exception records
+4. Verify filter by date range and employee
+5. Verify audit trail columns: Who, What, When
+
+**Expected Results:**
+Audit log with override history, punch exceptions, filters
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-08: FMLA Workbench
+
+**Use Case Description:**
+As an HR/System User, I want to use the FMLA Workbench feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/fmla` | **Sidebar:** WFM: Admin & Analytics → FMLA Workbench  
+
+**Test Execution Steps:**
+1. Click "FMLA Workbench" in sidebar
+2. Verify FMLA leave request list
+3. Verify medical certification tracking fields
+4. Verify leave balance tracking
+5. Verify FMLA eligibility check
+
+**Expected Results:**
+FMLA management with medical certification and eligibility fields
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-09: Time Rules Builder
+
+**Use Case Description:**
+As an HR/System User, I want to use the Time Rules Builder feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/admin/time-rules` | **Sidebar:** WFM: Admin & Analytics → Time Rules  
+
+**Test Execution Steps:**
+1. Click "Time Rules" in WFM: Admin & Analytics
+2. Verify rule builder interface
+3. Create an Overtime rule: > 8 hours/day → 1.5x rate
+4. Create a Double-Time rule: > 12 hours/day → 2x rate
+5. Verify toggle enable/disable rules
+
+**Expected Results:**
+Rules builder with condition/action pairs for OT rules
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-10: Absence Setup
+
+**Use Case Description:**
+As an HR/System User, I want to use the Absence Setup feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/absence/setup` | **Sidebar:** WFM: Admin & Analytics → Absence Setup  
+
+**Test Execution Steps:**
+1. Click "Absence Setup" in sidebar
+2. Verify absence plan types (Vacation, Sick, PTO)
+3. Verify accrual rate configuration
+4. Verify carry-forward limit settings
+
+**Expected Results:**
+Absence plan setup with accrual config and carry-forward rules
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-20-11: Labor Analytics
+
+**Use Case Description:**
+As an HR/System User, I want to use the Labor Analytics feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/wfm/analytics` | **Sidebar:** WFM: Admin & Analytics → Labor Analytics  
+
+**Test Execution Steps:**
+1. Click "Labor Analytics" in sidebar
+2. Verify analytics dashboard with overtime, absence, schedule adherence metrics
+3. Verify charts/graphs render
+
+**Expected Results:**
+WFM analytics dashboard with labor metrics
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 21 — Recruitment (ATS / Oracle Recruiting Cloud)
+
+### TC-21-01: Job Openings (Requisitions)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Job Openings (Requisitions) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment` | **Sidebar:** Recruitment (ATS) → Job Openings  
+
+**Test Execution Steps:**
+1. Click "Job Openings" in sidebar
+2. Verify requisitions list with status: Open, Approved, On Hold
+3. Click a requisition → verify detail page loads
+4. Verify fields: Job Title, Department, Hiring Manager, Target Date, Business Unit
+
+**Expected Results:**
+Requisition list with status filters and requisition detail
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-02: Pipeline Board (Kanban)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Pipeline Board (Kanban) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/pipeline` | **Sidebar:** Recruitment (ATS) → Pipeline Board  
+
+**Test Execution Steps:**
+1. Click "Pipeline Board" in sidebar
+2. Verify Kanban columns: Applied → Screened → Interview → Offer → Hired
+3. Verify candidate cards in each stage
+4. Drag a candidate to the next stage (or click to advance)
+5. Verify candidate count per stage
+
+**Expected Results:**
+Kanban pipeline with drag-and-drop stage advancement
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-03: Candidate Search
+
+**Use Case Description:**
+As an HR/System User, I want to use the Candidate Search feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/candidates` — accessible from Pipeline/Recruitment menus  
+**Note:** Route exists but might not have a direct sidebar link — verify navigation from Recruitment pages  
+
+**Test Execution Steps:**
+1. From Job Openings page, look for "Candidates" tab or link
+2. Verify search by name, skill, requisition
+3. Verify candidate profile summary view
+
+**Expected Results:**
+Candidate search with profile summaries
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-04: Interview Scheduling
+
+**Use Case Description:**
+As an HR/System User, I want to use the Interview Scheduling feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/interviews` | **Sidebar:** Recruitment (ATS) → Interview Schedule  
+
+**Test Execution Steps:**
+1. Click "Interview Schedule" in sidebar
+2. Verify interview list or calendar
+3. Verify fields: Candidate, Interviewer(s), Date, Time, Format (Virtual/In-Person)
+4. Verify "Schedule Interview" action
+
+**Expected Results:**
+Interview scheduler with calendar view and scheduling form
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-05: Interview Scoring Rubric
+
+**Use Case Description:**
+As an HR/System User, I want to use the Interview Scoring Rubric feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/interview-scoring` | **Sidebar:** Recruitment (ATS) → Interview Scoring  
+
+**Test Execution Steps:**
+1. Click "Interview Scoring" in sidebar
+2. Verify per-competency scoring grid (1–5 scale)
+3. Verify competency list: Communication, Technical Skills, Leadership, etc.
+4. Verify overall score aggregation (automated)
+5. Verify final recommendation: Strong Yes / Yes / No / Strong No
+6. Verify consensus panel for multiple interviewers
+
+**Expected Results:**
+Scoring rubric with 1-5 scale, aggregation, consensus, and recommendation
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-06: Offer Management Workbench
+
+**Use Case Description:**
+As an HR/System User, I want to use the Offer Management Workbench feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/offers` | **Sidebar:** Recruitment (ATS) → Offer Management  
+
+**Test Execution Steps:**
+1. Click "Offer Management" in sidebar
+2. Verify offer list with candidate and status
+3. Click "Create Offer" → verify form: Salary, Bonus, Start Date, Job Title, Expiry Date
+4. Verify "Generate Offer Letter" produces PDF output or preview
+5. Verify offer acceptance/rejection tracking
+
+**Expected Results:**
+Offer workbench with offer form and letter generation
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-07: Career Site Builder
+
+**Use Case Description:**
+As an HR/System User, I want to use the Career Site Builder feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/career-site` | **Sidebar:** Recruitment (ATS) → Career Site Builder  
+
+**Test Execution Steps:**
+1. Click "Career Site Builder" in sidebar
+2. Verify branding options: Logo, Color Scheme, Banner Image
+3. Verify layout sections: Hero, Job List, Culture Description
+4. Verify preview mode renders the public career page
+
+**Expected Results:**
+WYSIWYG-style career site configurator with preview
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-08: Candidate Merge / Deduplication
+
+**Use Case Description:**
+As an HR/System User, I want to use the Candidate Merge / Deduplication feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/candidate-merge` | **Sidebar:** Recruitment (ATS) → Candidate Merge  
+
+**Test Execution Steps:**
+1. Click "Candidate Merge" in sidebar
+2. Verify duplicate detection list (side-by-side candidate comparison)
+3. Verify merge action to consolidate profiles
+4. Verify application history is preserved after merge
+
+**Expected Results:**
+Duplicate candidate list with side-by-side comparison and merge action
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-09: AI Candidate Matching
+
+**Use Case Description:**
+As an HR/System User, I want to use the AI Candidate Matching feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/matching` | **Sidebar:** Recruitment (ATS) → AI Matching  
+
+**Test Execution Steps:**
+1. Click "AI Matching" in sidebar
+2. Verify resume parsing results
+3. Verify match score per candidate vs job requirements
+4. Verify skill gap analysis output
+
+**Expected Results:**
+AI matching view with parsed resume scores and gap analysis
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-10: Requisition Approval Rules
+
+**Use Case Description:**
+As an HR/System User, I want to use the Requisition Approval Rules feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/approval-rules` | **Sidebar:** Recruitment (ATS) → Approval Rules  
+
+**Test Execution Steps:**
+1. Click "Approval Rules" in sidebar
+2. Verify AME-style rules engine interface
+3. Add a rule condition: Salary Band > $100K → requires VP approval
+4. Add conditions for: Worker Type, Business Unit, Headcount
+5. Verify rule order/priority management
+
+**Expected Results:**
+Conditional routing engine with conditions and approver assignments
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-11: Onboarding Checklist Manager
+
+**Use Case Description:**
+As an HR/System User, I want to use the Onboarding Checklist Manager feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/onboarding-checklist` | **Sidebar:** Recruitment (ATS) → Onboarding Checklist  
+
+**Test Execution Steps:**
+1. Click "Onboarding Checklist" in sidebar
+2. Verify template list (IT Setup, Legal Docs, Facilities, HR Orientation)
+3. Click template → verify task list with assignee types and due day offsets
+4. Verify trigger condition: "On Offer Acceptance"
+5. Verify auto-assignment configuration
+
+**Expected Results:**
+Checklist template manager with task auto-assignment on offer acceptance
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-21-12: Onboarding Tracker
+
+**Use Case Description:**
+As an HR/System User, I want to use the Onboarding Tracker feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/recruitment/onboarding-tracker` | **Sidebar:** Recruitment (ATS) → Onboarding Tracker  
+
+**Test Execution Steps:**
+1. Click "Onboarding Tracker" in sidebar
+2. Verify new hire onboarding progress view
+3. Verify task completion status per new hire
+4. Verify overdue task alerts
+
+**Expected Results:**
+Progress tracker with per-hire task status and overdue flags
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 22 — Performance Management
+
+### TC-22-01: Performance Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Performance Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/performance` | **Sidebar:** Talent Core → Performance Reviews  
+
+**Test Execution Steps:**
+1. Click "Performance Reviews" in Talent Core sidebar
+2. Verify performance document list (active review cycles)
+3. Verify status: Not Started / In Progress / Complete
+4. Verify filter by review period/cycle
+
+**Expected Results:**
+Performance document list with cycle status
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-22-02: Performance Calibration Board
+
+**Use Case Description:**
+As an HR/System User, I want to use the Performance Calibration Board feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/performance/calibration` | **Sidebar:** Talent Core → Calibration Board  
+
+**Test Execution Steps:**
+1. Click "Calibration Board" in sidebar
+2. Verify calibration session with employee grid
+3. Verify performance rating adjustment interface
+4. Verify distribution curve or population stats
+5. Verify lock/unlock calibration action
+
+**Expected Results:**
+Calibration board with employee ratings, distribution, and lock action
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-22-03: 360° Feedback Center
+
+**Use Case Description:**
+As an HR/System User, I want to use the 360° Feedback Center feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/performance/360-feedback` | **Sidebar:** Talent Core → 360° Feedback  
+
+**Test Execution Steps:**
+1. Click "360° Feedback" in sidebar
+2. Verify "Request Feedback" flow: invite colleagues/manager
+3. Verify deadline tracking for pending requests
+4. Verify anonymity toggle for feedback givers
+5. Verify aggregated results view (after deadline)
+6. Verify manager-controlled reveal gate
+
+**Expected Results:**
+360° invite→deadline→aggregated results with anonymity and reveal gate
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-22-04: Document Routing Config
+
+**Use Case Description:**
+As an HR/System User, I want to use the Document Routing Config feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/talent/performance/routing` | **Sidebar:** Talent Core → Doc Routing Config  
+
+**Test Execution Steps:**
+1. Click "Doc Routing Config" in sidebar
+2. Verify state machine configuration
+3. Verify routing steps: Self-Assessment → Manager Review → Calibration → HR Sign-off
+4. Verify conditions for transitioning states
+5. Verify notification triggers per step
+
+**Expected Results:**
+State machine builder for performance document workflow
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-22-05: Performance → Compensation Integration
+
+**Use Case Description:**
+As an HR/System User, I want to use the Performance → Compensation Integration feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/talent/performance/comp-sync` | **Sidebar:** Talent Core → Comp Integration  
+
+**Test Execution Steps:**
+1. Click "Comp Integration" in sidebar
+2. Verify rating-to-merit guideline mapping table
+3. Verify sync configuration between performance ratings and merit %
+4. Verify "Apply Sync" action
+
+**Expected Results:**
+Rating-to-merit mapping table with sync action
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-22-06: Goal Cascade Tree
+
+**Use Case Description:**
+As an HR/System User, I want to use the Goal Cascade Tree feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/talent/goal-cascade` | **Sidebar:** Talent Core → Goal Cascade  
+
+**Test Execution Steps:**
+1. Click "Goal Cascade" in sidebar
+2. Verify hierarchical goal tree: Company → Dept → Individual
+3. Verify alignment indicators (goals linked to parent goals)
+4. Verify progress % per goal level
+
+**Expected Results:**
+Cascaded goal hierarchy with alignment and progress tracking
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 23 — Learning Management (LMS)
+
+### TC-23-01: My Learning Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the My Learning Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/me` | **Sidebar:** Learning & Development → My Learning  
+
+**Test Execution Steps:**
+1. Click "My Learning" in sidebar
+2. Verify enrolled courses list
+3. Verify completion % per course
+4. Verify upcoming deadlines
+5. Verify "Launch" button → navigates to course player
+
+**Expected Results:**
+Learner dashboard with enrollment, progress, deadlines, and launch
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-02: Course Player (SCORM)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Course Player (SCORM) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/play/:id` — accessed via "Launch" from My Learning  
+
+**Test Execution Steps:**
+1. From My Learning, click Launch on a course
+2. Verify course player loads (SCORM/in-browser)
+3. Verify navigation controls: Next, Previous, TOC
+4. Verify progress is tracked/saved on exit
+5. Verify completion status updates in dashboard
+
+**Expected Results:**
+In-app SCORM player with navigation and completion tracking
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-03: Course Catalog Admin
+
+**Use Case Description:**
+As an HR/System User, I want to use the Course Catalog Admin feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/admin` | **Sidebar:** Learning Admin → Course Catalog  
+
+**Test Execution Steps:**
+1. Click "Course Catalog" in Learning Admin sidebar group
+2. Verify course list with filter by Type, Category, Status
+3. Click "Create Course" → verify fields: Title, Type (SCORM/ILT/Video), Duration, Category, Compliance Required
+4. Verify course publish/unpublish action
+
+**Expected Results:**
+Admin catalog with course CRUD and publish workflow
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-04: Instructor Dashboard (ILT)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Instructor Dashboard (ILT) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/instructor` | **Sidebar:** Learning & Development → Instructor  
+
+**Test Execution Steps:**
+1. Click "Instructor" in Learning & Development sidebar
+2. Verify class session list for this instructor
+3. Verify enrollment roster per session
+4. Verify attendance marking capability
+5. Verify session scheduling/creation
+
+**Expected Results:**
+Instructor dashboard with sessions, rosters, and attendance marking
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-05: Compliance Renewal Monitor
+
+**Use Case Description:**
+As an HR/System User, I want to use the Compliance Renewal Monitor feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/compliance` | **Sidebar:** Learning Admin → Compliance Renewals  
+
+**Test Execution Steps:**
+1. Click "Compliance Renewals" in Learning Admin
+2. Verify expiring certification list with days-to-expiry
+3. Verify employee name, cert name, renewal course linked
+4. Verify "Send Reminder" nudge action
+5. Verify auto-renewal cron status/last-run indicators
+
+**Expected Results:**
+Compliance tracker with expiry alerts and reminder nudge
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-06: Learning Path (Curriculum) Builder
+
+**Use Case Description:**
+As an HR/System User, I want to use the Learning Path (Curriculum) Builder feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/admin/curricula` | **Sidebar:** Learning Admin → Learning Paths  
+
+**Test Execution Steps:**
+1. Click "Learning Paths" in sidebar
+2. Click "Create Path" → verify ordered course sequence editor
+3. Verify prerequisites between courses can be set
+4. Verify completion rules: all required / X of Y
+
+**Expected Results:**
+Curriculum builder with ordered sequence and completion rules
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-07: External CPE Credit
+
+**Use Case Description:**
+As an HR/System User, I want to use the External CPE Credit feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/external-credit` | **Sidebar:** Learning & Development → External CPE Credit  
+
+**Test Execution Steps:**
+1. Click "External CPE Credit" in sidebar
+2. Verify submission form: Course Name, Provider, Date Completed, Certificate Upload, Hours
+3. Submit → verify pending approval status
+4. Verify compliance hours tracker updates after approval
+
+**Expected Results:**
+External credit submission with certificate upload and hour tracking
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-08: Skills Integration
+
+**Use Case Description:**
+As an HR/System User, I want to use the Skills Integration feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/skill-sync` | **Sidebar:** Learning Admin → Skills Integration  
+
+**Test Execution Steps:**
+1. Click "Skills Integration" in sidebar
+2. Verify course-to-competency mapping interface
+3. Map a course → a competency with proficiency level
+4. Verify changes reflect in learner skill profile
+
+**Expected Results:**
+Course→competency mapping engine with proficiency levels
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-23-09: AI Learning Recommendations
+
+**Use Case Description:**
+As an HR/System User, I want to use the AI Learning Recommendations feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/learning/recommendations` | **Sidebar:** Learning & Development → AI Recommendations  
+
+**Test Execution Steps:**
+1. Click "AI Recommendations" in sidebar
+2. Verify role-fit scoring cards
+3. Verify skill-gap detection list
+4. Verify career-path suggestion cards
+
+**Expected Results:**
+AI recommendations with role fit, skill gaps, and career path suggestions
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 24 — Succession Planning
+
+### TC-24-01: Succession Planning Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Succession Planning Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/succession` | **Sidebar:** Talent Core → Succession Planning  
+
+**Test Execution Steps:**
+1. Click "Succession Planning" in sidebar
+2. Verify talent pool list with readiness scores
+3. Verify critical position list
+4. Verify successor nominations
+
+**Expected Results:**
+Comprehensive succession dashboard with pools, nominees, critical positions
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-24-02: Succession Org Chart Overlay
+
+**Use Case Description:**
+As an HR/System User, I want to use the Succession Org Chart Overlay feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/succession/org-chart` | **Sidebar:** Talent Core → Succession Org Chart  
+
+**Test Execution Steps:**
+1. Click "Succession Org Chart" in sidebar
+2. Verify org tree renders with successor overlays
+3. Verify performance-potential strata color coding (9-box)
+4. Verify critical gap alerts on positions with no successors
+5. Verify drill-down into position/person
+
+**Expected Results:**
+Org chart with succession overlays and critical gap indicators
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-24-03: Risk of Loss Scoreboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Risk of Loss Scoreboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/succession/risk-board` | **Sidebar:** Talent Core → Risk of Loss Matrix  
+
+**Test Execution Steps:**
+1. Click "Risk of Loss Matrix" in sidebar
+2. Verify predictive flight-risk matrix (risk × impact grid)
+3. Verify employee plotted on matrix
+4. Verify risk factors listed per employee
+5. Verify intervention recommendations
+
+**Expected Results:**
+Flight risk matrix with impact scoring and intervention suggestions
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-24-04: Succession Notifications
+
+**Use Case Description:**
+As an HR/System User, I want to use the Succession Notifications feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/succession/notifications` | **Sidebar:** Talent Core → Succession Alerts  
+
+**Test Execution Steps:**
+1. Click "Succession Alerts" in sidebar
+2. Verify notification policy configuration
+3. Verify per-successor notify/revoke controls
+4. Verify notification history log
+
+**Expected Results:**
+Notification policy panel with per-successor control and log
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-24-05: 9-Box Grid (Performance vs Potential)
+
+**Use Case Description:**
+As an HR/System User, I want to use the 9-Box Grid (Performance vs Potential) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** Accessible from Succession Planning page via link/button  
+
+**Test Execution Steps:**
+1. From Succession Planning (`/hr/succession`), look for "9-Box Grid" link/tab
+2. Verify 3×3 grid renders (Performance Y-axis × Potential X-axis)
+3. Verify employees plotted in correct quadrants
+4. Verify click on employee card shows profile
+5. Verify drag-and-drop to reposition if supported
+
+**Expected Results:**
+Interactive 9-box grid with employee placement and profile drill-down
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 25 — Compensation & Benefits
+
+### TC-25-01: Compensation & Benefits Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Compensation & Benefits Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/compensation` | **Sidebar:** Setup & Config → Comp & Benefits  
+
+**Test Execution Steps:**
+1. Click "Comp & Benefits" in Setup & Config sidebar
+2. Verify CompBenDashboard loads with module overview
+3. Verify quick links to sub-modules
+
+**Expected Results:**
+Comp & Benefits overview dashboard
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-25-02: Workforce Compensation Workbench (Merit Budget)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Workforce Compensation Workbench (Merit Budget) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/compensation/workbench` | **Sidebar:** Setup & Config → Comp Workbench  
+
+**Test Execution Steps:**
+1. Click "Comp Workbench" in sidebar
+2. Verify merit allocation grid (Employees × Departments)
+3. Verify merit % input per employee
+4. Verify budget utilization tracker (used $ vs allocated)
+5. Verify bonus pool distribution section
+6. Verify submit for approval action
+
+**Expected Results:**
+Merit workbench with allocation grid, budget tracker, and approval
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-25-03: Compensation Eligibility Profiles
+
+**Use Case Description:**
+As an HR/System User, I want to use the Compensation Eligibility Profiles feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/compensation/eligibility-profiles` | **Sidebar:** Setup & Config → Eligibility Profiles  
+
+**Test Execution Steps:**
+1. Click "Eligibility Profiles" in sidebar
+2. Verify rules engine interface
+3. Create profile with conditions: FTE ≥ 1.0, Tenure ≥ 12 months, Grade = Band 3
+4. Verify plan linkage to eligibility profile
+5. Verify active employee count that matches profile
+
+**Expected Results:**
+Eligibility rules engine with FTE/tenure/grade conditions and employee count
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-25-04: Salary Ranges & CompaRatio
+
+**Use Case Description:**
+As an HR/System User, I want to use the Salary Ranges & CompaRatio feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/compensation/salary-ranges` | **Sidebar:** Setup & Config → Salary Ranges  
+
+**Test Execution Steps:**
+1. Click "Salary Ranges" in sidebar
+2. Verify grade-to-band table: Grade, Min Salary, Mid Salary, Max Salary
+3. Verify per-employee CompaRatio calculated (actual / midpoint)
+4. Verify traffic-light color coding: Green (80-120%), Yellow (<80%), Red (>120%)
+5. Verify edit salary band action
+
+**Expected Results:**
+Salary band table with CompaRatio and traffic-light status colors
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-25-05: Benefits Open Enrollment Wizard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Benefits Open Enrollment Wizard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/self-service/benefits` — accessible from Self-Service sidebar  
+**Note:** Route `/hr/self-service/benefits` maps to BenefitsEnrollment  
+
+**Test Execution Steps:**
+1. Navigate from Self-Service → Employees (ESS) dashboard → look for "Benefits" link
+   OR navigate directly to `/hr/self-service/benefits` from sidebar
+2. Verify enrollment shopping wizard loads (25KB component)
+3. Verify benefit plan cards: Medical, Dental, Vision, Life, 401k
+4. Select a plan → verify coverage tier options (Employee Only / EE+Spouse / EE+Children / Family)
+5. Verify cost preview per pay period
+6. Verify enrollment summary screen before submission
+
+**Expected Results:**
+Multi-step benefits shopping wizard with plan selection and cost preview
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-25-06: Life Events Processing
+
+**Use Case Description:**
+As an HR/System User, I want to use the Life Events Processing feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/self-service/life-events` | Self-Service section  
+
+**Test Execution Steps:**
+1. Navigate from Self-Service sidebar or ESS Dashboard → Life Events
+2. Verify life event types: Marriage, Divorce, Birth/Adoption, Death, Coverage Loss
+3. Select an event → verify special enrollment period opens
+4. Verify supporting document upload
+5. Verify benefit change submission
+
+**Expected Results:**
+Life event selection with special enrollment and document upload
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-25-07: Total Compensation Statement
+
+**Use Case Description:**
+As an HR/System User, I want to use the Total Compensation Statement feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/compensation/total-rewards` | **Sidebar:** Self-Service → Total Compensation  
+
+**Test Execution Steps:**
+1. Click "Total Compensation" in Self-Service sidebar group
+2. Verify "Hidden paycheck" visualization
+3. Verify breakdown: Base Salary, Bonus, Benefits Value, Equity, Employer Contributions
+4. Verify chart/visual representation
+5. Verify export/download option
+
+**Expected Results:**
+Total comp statement with all components and "hidden paycheck" visualization
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-25-08: Equity Awards Manager
+
+**Use Case Description:**
+As an HR/System User, I want to use the Equity Awards Manager feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/compensation/equity` | **Sidebar:** Self-Service → Equity Awards  
+
+**Test Execution Steps:**
+1. Click "Equity Awards" in Self-Service sidebar
+2. Verify RSU/Option list with vesting schedules
+3. Verify vesting cliff and milestone dates
+4. Verify valuation per grant (fair market value × shares)
+5. Verify vestings history timeline
+
+**Expected Results:**
+Equity grants list with RSU/Options, vesting schedule, and valuation
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Module 26 — Workforce Structures (Org Design)
+
+### TC-26-01: Workforce Config Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Workforce Config Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/setup` | **Sidebar:** Setup & Config → Workforce Config  
+
+**Test Execution Steps:**
+1. Click "Workforce Config" in Setup & Config sidebar
+2. Verify dashboard with links to all structure setup areas
+3. Verify entity summary counts (Departments, Locations, Jobs, Positions)
+
+**Expected Results:**
+Structure dashboard with entity counts and navigation links
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-26-02: Workforce Structures Setup (Geography Hierarchy)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Workforce Structures Setup (Geography Hierarchy) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/setup/workforce-structures` | **Sidebar:** Setup & Config → Workforce Structures  
+
+**Test Execution Steps:**
+1. Click "Workforce Structures" in sidebar
+2. Verify geography hierarchy: Country → State → City → Site
+3. Verify Location CRUD (Create, Edit, Delete)
+4. Verify Department tree with parent-child relationships
+5. Verify Business Unit to Legal Entity mapping
+
+**Expected Results:**
+Hierarchical geography and org structure with full CRUD
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-26-03: Grade Ladders (Pay Progression)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Grade Ladders (Pay Progression) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/setup/grade-ladders` | **Sidebar:** Setup & Config → Grade Ladders  
+
+**Test Execution Steps:**
+1. Click "Grade Ladders" in sidebar
+2. Verify grade ladder list (e.g., GS Pay Scale)
+3. Click to view ladder → verify step progression table: Step, Base Pay
+4. Create a new grade step
+5. Verify linkage to Jobs and Positions
+
+**Expected Results:**
+Grade ladder with step-progression pay matrix and job linkage
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-26-04: Job Families & Profiles
+
+**Use Case Description:**
+As an HR/System User, I want to use the Job Families & Profiles feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/setup/job-families` | **Sidebar:** Setup & Config → Job Families & Profiles  
+
+**Test Execution Steps:**
+1. Click "Job Families & Profiles" in sidebar
+2. Verify Job Family CRUD: Code, Name
+3. Verify Job Profile creation with required competencies and proficiency levels
+4. Verify active employee count linked to profile
+
+**Expected Results:**
+Job family/profile CRUD with competency linkage and employee count
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-26-05: Document Records
+
+**Use Case Description:**
+As an HR/System User, I want to use the Document Records feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/setup/document-records` | **Sidebar:** Setup & Config → Document Records  
+
+**Test Execution Steps:**
+1. Click "Document Records" in sidebar
+2. Verify document type list (Passport, Visa, Certification, Contract)
+3. Verify create/upload document record for an employee
+4. Verify expiry date tracking and alert status
+
+**Expected Results:**
+Document records with type list, upload, and expiry tracking
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-26-06: Tree Versioning (Org Chart History)
+
+**Use Case Description:**
+As an HR/System User, I want to use the Tree Versioning (Org Chart History) feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/setup/tree-versioning` | **Sidebar:** Setup & Config → Tree Versioning  
+
+**Test Execution Steps:**
+1. Click "Tree Versioning" in sidebar
+2. Verify version table: Version Name, Effective Date, Status
+3. Click "View Diff" → verify before/after structure comparison
+4. Verify "Restore" action on a previous version
+5. Verify tree comparison highlighting
+
+**Expected Results:**
+Version table with diff view and restore capability
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-26-07: EEO-1 Establishment Reporting
+
+**Use Case Description:**
+As an HR/System User, I want to use the EEO-1 Establishment Reporting feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/reports/eeo-establishment` | **Sidebar:** Analytics & Insights → EEO-1 Reporting  
+
+**Test Execution Steps:**
+1. Click "EEO-1 Reporting" in Analytics & Insights sidebar
+2. Verify EEO-1 demographic matrix (Race × Job Category)
+3. Verify establishment location filter
+4. Verify report year selection
+5. Verify export to CSV/PDF action
+
+**Expected Results:**
+EEO-1 matrix with demographic breakdown, establishment filter, and export
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Cross-Module / Additional Pages
+
+### TC-CROSS-01: Competency Management
+
+**Use Case Description:**
+As an HR/System User, I want to use the Competency Management feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/talent/competencies` | **Sidebar:** Talent Core → Competency Management  
+
+**Test Execution Steps:**
+1. Click "Competency Management" in sidebar
+2. Verify competency library list
+3. Verify competency CRUD with proficiency level definitions
+4. Verify linkage to jobs and performance templates
+
+**Expected Results:**
+Competency library with CRUD and linkage capabilities
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-CROSS-02: HR Analytics Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the HR Analytics Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/analytics` | **Sidebar:** Analytics & Insights → HR Analytics  
+
+**Test Execution Steps:**
+1. Click "HR Analytics" in sidebar
+2. Verify metric cards: Headcount, Turnover Rate, Time-to-Hire, etc.
+3. Verify charts render (bar, line, pie)
+4. Verify date range filter
+5. Verify drill-down from chart to underlying data
+
+**Expected Results:**
+Analytics dashboard with multi-metric cards and interactive charts
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-CROSS-03: Predictive Analytics
+
+**Use Case Description:**
+As an HR/System User, I want to use the Predictive Analytics feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/analytics/predictive` | **Sidebar:** Analytics & Insights → Predictive Analytics  
+
+**Test Execution Steps:**
+1. Click "Predictive Analytics" in sidebar
+2. Verify attrition risk prediction model
+3. Verify high-risk employee list with risk scores
+4. Verify time-horizon selector (30/60/90 days)
+
+**Expected Results:**
+Predictive attrition model with scored employee list
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-CROSS-04: HR Reports
+
+**Use Case Description:**
+As an HR/System User, I want to use the HR Reports feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/reports` | **Sidebar:** Analytics & Insights → Reports  
+
+**Test Execution Steps:**
+1. Click "Reports" in sidebar
+2. Verify standard report list
+3. Run a headcount report → verify results table
+4. Verify export to Excel/CSV
+
+**Expected Results:**
+Report catalog with run and export capabilities
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-CROSS-05: Employee Self-Service (ESS) Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Employee Self-Service (ESS) Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/self-service/me` | **Sidebar:** Self-Service → Employee (ESS)  
+
+**Test Execution Steps:**
+1. Click "Employee (ESS)" in Self-Service sidebar
+2. Verify quick-action tiles: View Payslip, Submit Leave, Update Profile, Enroll Benefits
+3. Verify announcements/notifications panel
+4. Verify upcoming events (review due dates, benefit enrollment)
+
+**Expected Results:**
+ESS dashboard with quick actions, announcements, and upcoming events
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-CROSS-06: Manager Self-Service (MSS) Dashboard
+
+**Use Case Description:**
+As an HR/System User, I want to use the Manager Self-Service (MSS) Dashboard feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/self-service/team` | **Sidebar:** Self-Service → My Team (MSS)  
+
+**Test Execution Steps:**
+1. Click "My Team (MSS)" in sidebar
+2. Verify team roster with key HR data
+3. Verify quick actions: Approve Time, Initiate Transfer, Create Requisition
+4. Verify team alerts (probation end, contract expiry)
+
+**Expected Results:**
+MSS dashboard with team roster and manager quick actions
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-CROSS-07: Delegation Workbench
+
+**Use Case Description:**
+As an HR/System User, I want to use the Delegation Workbench feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/self-service/delegation` | **Sidebar:** Self-Service → Delegations  
+
+**Test Execution Steps:**
+1. Click "Delegations" in sidebar
+2. Verify "Create Delegation" form: Delegate To, Role, Date Range, Task Scope
+3. Verify active delegations list
+4. Verify revoke delegation action
+
+**Expected Results:**
+Delegation workbench with create, list, and revoke
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### TC-CROSS-08: Regulatory Calendar
+
+**Use Case Description:**
+As an HR/System User, I want to use the Regulatory Calendar feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Route:** `/hr/regulatory-calendar` | **Sidebar:** Setup & Config → Regulatory Calendar  
+
+**Test Execution Steps:**
+1. Click "Regulatory Calendar" in sidebar
+2. Verify calendar view with regulatory deadlines
+3. Verify event types: Tax Filing, Compliance Reporting, Open Enrollment
+4. Verify upcoming events sorted by date
+
+**Expected Results:**
+Calendar with regulatory deadline events by type and date
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## End-to-End Process Flows
+
+### E2E-01: Full Hire-to-Payroll Flow
+
+**Use Case Description:**
+As an HR/System User, I want to use the Full Hire-to-Payroll Flow feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** Verify new employee can be hired and appears in payroll
+1. **Hire:** Navigate via Talent Core → New Hire Wizard → Complete 5-step wizard
+2. **Verify Directory:** Navigate to Person Management → verify new hire appears
+3. **Check Assignment:** Navigate to DateTrack Manager → verify effective assignment record
+4. **Payroll:** Navigate to Payroll Workbench → verify new hire appears in employee list for next payroll run
+
+**Expected Results:**
+Hired employee visible in directory, assignment history, and payroll scope
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### E2E-02: Recruit-to-Hire Flow
+
+**Use Case Description:**
+As an HR/System User, I want to use the Recruit-to-Hire Flow feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** Verify complete ATS pipeline into hire
+1. **Create Requisition:** Job Openings → New Requisition
+2. **Pipeline:** Pipeline Board → advance candidate through stages
+3. **Interview:** Interview Schedule → create and score interview
+4. **Offer:** Offer Management → create and accept offer
+5. **Onboard:** Onboarding Tracker → verify tasks assigned
+6. **Hire:** New Hire Wizard → complete hire for the candidate
+
+**Expected Results:**
+End-to-end ATS flow with offer acceptance triggering onboarding
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### E2E-03: Performance-to-Compensation Flow
+
+**Use Case Description:**
+As an HR/System User, I want to use the Performance-to-Compensation Flow feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** Verify performance rating drives merit increase
+1. **Performance Review:** Performance Reviews → complete a review cycle
+2. **Calibration:** Calibration Board → calibrate ratings
+3. **Comp Integration:** Comp Integration page → sync ratings to merit
+4. **Comp Workbench:** Workforce Compensation Workbench → verify merit % applied
+
+**Expected Results:**
+Rating from performance drives merit suggestion in compensation workbench
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### E2E-04: Leave Request Approval Flow
+
+**Use Case Description:**
+As an HR/System User, I want to use the Leave Request Approval Flow feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** Verify leave request from employee through manager approval
+1. **Submit:** Self-Service → My Time → Submit leave request (type, dates, reason)
+2. **Notify:** Verify approval notification appears
+3. **Approve:** WFM: Manager Tools → Approvals → find the request → Approve
+4. **Balance:** Self-Service → Leave Balances → verify balance reduced
+
+**Expected Results:**
+Leave request goes ESS → Manager Approvals → balance deducted
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### E2E-05: Learning Enrollment-to-Completion Flow
+
+**Use Case Description:**
+As an HR/System User, I want to use the Learning Enrollment-to-Completion Flow feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** Verify course enrollment and completion tracking
+1. **Browse:** My Learning → view catalog → enroll in a course
+2. **Play:** Launch course → Course Player → complete SCORM module
+3. **Verify:** Return to My Learning → verify 100% completion
+4. **Compliance:** Learning Admin → Compliance Renewals → verify cert updated
+
+**Expected Results:**
+Course enrollment, completion in player, and compliance cert updated
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Multi-Tenant Scope Validation
+
+### SCOPE-01: Unit Test — Tenant ID Scoping
+
+**Use Case Description:**
+As an HR/System User, I want to use the Unit Test — Tenant ID Scoping feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** Verify all core database queries automatically include tenantId restriction
+**Test Method (Code Review):**
+1. Review [HrRoutes.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/routes/HrRoutes.tsx) — verify all API calls pass `tenantId` from `useNexusAI()` context
+2. Verify no hardcoded `MOCK_TENANT_ID` remaining in any HCM component
+3. Spot-check key files: `MyTime.tsx`, `TeamSchedule.tsx`, `ViolationsDashboard.tsx` — confirmed remediated per HCM audit
+
+**Expected Results:**
+All queries scoped by `tenantId` with no mock IDs
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### SCOPE-02: E2E — Business Unit Data Isolation
+
+**Use Case Description:**
+As an HR/System User, I want to use the E2E — Business Unit Data Isolation feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** User assigned to Business Unit A cannot see data from Business Unit B
+**Test Steps (Browser UI):**
+1. Log in as a user assigned exclusively to Business Unit A
+2. Navigate to Job Openings (`/hr/recruitment`) → verify only BU-A requisitions visible
+3. Navigate to Payroll Workbench → verify only BU-A employees in payroll scope
+4. Navigate to Performance Reviews → verify only BU-A employees' reviews accessible
+5. Attempt to manually navigate to a BU-B record URL → verify access denied or empty result
+
+**Expected Results:**
+All lists filtered to the user's assigned Business Unit only
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+
+### SCOPE-03: State Preservation — Context Persistence on Refresh
+
+**Use Case Description:**
+As an HR/System User, I want to use the State Preservation — Context Persistence on Refresh feature so that I can manage related HR processes successfully according to the system's business rules.
+
+**Pre-conditions:**
+- User is logged in to NexusAI ERP.
+- Appropriate Tenant, Business Unit, and Legal Entity context is selected.
+- User has sufficient permissions to access the module.
+- Ensure appropriate sidebar navigation is available; do not use direct links if navigation is missing.
+
+**Test Data (No Seeding, Use UI to create if needed):**
+- Manual input as per form requirements.
+**Objective:** Refreshing the app retains the active tenant/BU/LE context selection
+
+**Test Execution Steps:**
+1. Log in and select a specific Tenant + Business Unit + Legal Entity context
+2. Navigate to `/hr/payroll` — verify context banner shows the selected scope
+3. Press F5 / Cmd+R (hard refresh)
+4. Verify the page reloads with the same tenant + BU + LE context still active
+5. Navigate to `/hr/recruitment` — verify context is still preserved
+6. Open a new browser tab → navigate to `/hr` — verify context still persists (session storage or localStorage)
+
+**Expected Results:**
+Context survives browser refresh and tab navigation
+
+**Actual Result:** [To be filled during testing]
+**Status:** 🔲
+
+---
+
+## Testing Results Summary
+| Module | Test Cases | Passed | Failed | Warnings | Status |
+|--------|-----------|--------|--------|----------|--------|
+| M18 — Core HR | 9 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M19 — Payroll | 6 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M20 — WFM | 11 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M21 — Recruitment | 12 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M22 — Performance | 6 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M23 — Learning | 9 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M24 — Succession | 5 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M25 — Comp/Benefits | 8 | 🔲 | 🔲 | 🔲 | 🔲 |
+| M26 — Structures | 7 | 🔲 | 🔲 | 🔲 | 🔲 |
+| Cross-Module | 8 | 🔲 | 🔲 | 🔲 | 🔲 |
+| E2E Flows | 5 | 🔲 | 🔲 | 🔲 | 🔲 |
+| Scope Tests | 3 | 🔲 | 🔲 | 🔲 | 🔲 |
+| **TOTAL** | **89** | 🔲 | 🔲 | 🔲 | 🔲 |
+
+---
+
+## Bug Log
+| ID | Severity | Module | Description | Status |
+|----|---------|--------|-------------|--------|
+| — | — | — | No bugs logged yet | — |

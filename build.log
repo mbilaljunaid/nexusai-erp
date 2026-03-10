@@ -1,0 +1,158 @@
+
+> rest-express@1.0.0 build
+> tsx script/build.ts
+
+building client...
+vite v5.4.20 building for production...
+transforming...
+✓ 2971 modules transformed.
+x Build failed in 3.85s
+[vite:esbuild] Transform failed with 1 error:
+/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/transportation/CarrierScorecardDashboard.tsx:198:78: ERROR: Expected identifier but found "3"
+file: /Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/transportation/CarrierScorecardDashboard.tsx:198:78
+
+Expected identifier but found "3"
+196|                      <CardContent>
+197|                          <div className="text-2xl font-bold text-rose-600">{underPerformers.length}</div>
+198|                          <p className="text-xs text-muted-foreground">Rating < 3.5 stars</p>
+   |                                                                                ^
+199|                      </CardContent>
+200|                  </Card>
+
+    at failureErrorWithLog (/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/vite/node_modules/esbuild/lib/main.js:755:50
+    at responseCallbacks.<computed> (/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/vite/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/vite/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  errors: [Getter/Setter],
+  warnings: [Getter/Setter],
+  frame: '\n' +
+    'Expected identifier but found "3"\n' +
+    '196|                      <CardContent>\n' +
+    '197|                          <div className="text-2xl font-bold text-rose-600">{underPerformers.length}</div>\n' +
+    '198|                          <p className="text-xs text-muted-foreground">Rating < 3.5 stars</p>\n' +
+    '   |                                                                                ^\n' +
+    '199|                      </CardContent>\n' +
+    '200|                  </Card>\n',
+  loc: {
+    column: 78,
+    file: '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/transportation/CarrierScorecardDashboard.tsx',
+    length: 1,
+    line: 198,
+    lineText: '                        <p className="text-xs text-muted-foreground">Rating < 3.5 stars</p>',
+    namespace: '',
+    suggestion: ''
+  },
+  code: 'PLUGIN_ERROR',
+  plugin: 'vite:esbuild',
+  hook: 'transform',
+  id: '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/transportation/CarrierScorecardDashboard.tsx',
+  watchFiles: [
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/index.html',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/main.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/package.json',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/react/jsx-runtime.js',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/index.css',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/react-dom/client.js',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/App.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/react/cjs/react-jsx-runtime.production.min.js',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/react-dom/index.js',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/react/index.js',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/TestRoute.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/lib/queryClient.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/lib/lazyWithRetry.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/@tanstack/react-query/build/modern/index.js',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ThemeProvider.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/node_modules/wouter/esm/index.js',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/RBACContext.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/GuidedTour.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/hooks/use-tour.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/contexts/NexusAIContext.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ProtectedRoute.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/context/LedgerContext.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/QuickTips.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/toaster.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/NexusAIPanel.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/layout/GlobalLayout.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/components/ui/tooltip.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/CrmRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/FinanceRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/HrRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ScmRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/MaintenanceRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ConstructionRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ServiceRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ProjectRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/AdminRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/OrderRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/PortalRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/WfmAnalytics.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/AccrualTesting.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ReportRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/PublicRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/AnalyticsRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/MarketingRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ComplianceRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/IndustryRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ErpRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/ProcessRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/routes/MdmRoutes.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/LearningDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/instructor/InstructorDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/RecruitmentManagement.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/PerformanceManagement.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/rewards/CompensationDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/rewards/PayrollWorkbench.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/recruitment/JobRequisitionDetail.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/selfservice/ESSDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/HRAnalyticsDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/PredictiveAnalytics.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/HRReports.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/selfservice/MyTimeCard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/selfservice/MSSDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/Settings.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/Inventory.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/Dashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/EPMPage.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/analytics/KpiConfiguration.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/selfservice/PersonalDetails.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/analytics/ReportScheduler.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/manager/ManagerLearningDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/admin/CourseCatalogAdmin.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/recruitment/InterviewerDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/recruitment/OnboardingWorkbench.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/player/LearningPlayer.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/admin/CurriculumBuilder.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/admin/AssessmentBuilder.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/RecruitmentConfiguration.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/PerformanceConfiguration.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/MyTime.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/ShiftConfiguration.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/PayrollTransfer.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/TeamSchedule.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/ManagerApprovals.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/TimekeeperConsole.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/ViolationsDashboard.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/AIWorkforceInsights.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/HolidayCalendar.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/recruitment/RecruitingAnalytics.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/learning/admin/CommunityBrowser.tsx',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/config/ai-capabilities.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/config/navigation.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/data/featureRegistry.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/data/mock-data.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/hooks/use-debounce.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/hooks/use-toast.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/hooks/useAuth.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/lib/api.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/lib/authUtils.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/lib/conditionalLogicEngine.ts',
+    '/Users/mbjunaid/My Projects/nexusai-erp-2/src/lib/exportUtils.ts',
+    ... 4136 more items
+  ]
+}

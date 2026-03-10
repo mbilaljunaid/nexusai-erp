@@ -1,0 +1,233 @@
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/dateUtils";
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { AlertTriangle, CheckCircle2, ShieldAlert, ClipboardList } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
+interface BGCOrder {
+    id: string; applicant_id: string; candidate_name: string; package_type: string;
+    status: string; adjudication: string; consent_signed_at: string; ordered_at: string;
+    completed_at: string; total_components: number; completed_components: number; hits: number;
+    hold_start_date: string; final_decision: string;
+}
+interface BGCDetail extends BGCOrder { components: { component_type: string; status: string; result: string; details: string }[]; }
+interface BGCSummary { initiated: number; in_progress: number; clear: number; consider: number; adverse_action: number; withdrawn: number; }
+
+const STATUS_CLR: Record<string, string> = { Initiated: 'bg-blue-700/10 text-blue-700', In_Progress: 'bg-amber-600/10 text-amber-600', Complete: 'bg-emerald-600/10 text-emerald-600', Adverse_Action: 'bg-red-600/10 text-red-600', Cancelled: 'bg-gray-500/10 text-muted-foreground' };
+const ADJ_CLR: Record<string, string> = { Clear: 'text-emerald-600', Consider: 'text-amber-600', Adverse: 'text-red-600' };
+const RESULT_CLR: Record<string, string> = { Clear: 'text-emerald-600', Hit: 'text-red-600', Unable_To_Verify: 'text-amber-600' };
+
+function fmtDate(d: string) { return d ? formatDate(d) : '—'; }
+
+export default function BackgroundCheckStatus() {
+    const [selectedOrder, setSelectedOrder] = useState<BGCDetail | null>(null);
+    const [showNew, setShowNew] = useState(false);
+    const [filter, setFilter] = useState('');
+    const [form, setForm] = useState({ applicantId: '', candidateName: '', candidateEmail: '', packageType: 'STANDARD' });
+    const [componentForm, setComponentForm] = useState({ componentType: 'CRIMINAL', result: 'Clear', details: '' });
+    const [decisionForm, setDecisionForm] = useState({ decision: 'Proceed' as 'Proceed' | 'Withdraw' | 'Conditional', notes: '' });
+    const qc = useQueryClient();
+
+    const { data: summary } = useQuery<BGCSummary>({ queryKey: ['bgc-summary'], queryFn: () => fetch('/api/recruiting/bgc/summary').then(r => r.json()) });
+    const { data: orders = [] } = useQuery<BGCOrder[]>({ queryKey: ['bgc-orders', filter], queryFn: () => fetch(`/api/recruiting/bgc/orders${filter ? `?status=${filter}` : ''}`).then(r => r.json()) });
+
+    const initMut = useMutation({ mutationFn: (d: any) => fetch('/api/recruiting/bgc/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['bgc-orders', 'bgc-summary'] }); setShowNew(false); } });
+    const consentMut = useMutation({ mutationFn: (id: string) => fetch(`/api/recruiting/bgc/orders/${id}/consent`, { method: 'POST' }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['bgc-orders', 'bgc-summary'] }) });
+    const componentMut = useMutation({ mutationFn: ({ id, ...d }: any) => fetch(`/api/recruiting/bgc/orders/${id}/component`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: (_, v) => { qc.invalidateQueries({ queryKey: ['bgc-orders', 'bgc-summary'] }); loadDetail(v.id); } });
+    const adverseMut = useMutation({ mutationFn: (id: string) => fetch(`/api/recruiting/bgc/orders/${id}/adverse`, { method: 'POST' }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['bgc-orders', 'bgc-summary'] }) });
+    const decisionMut = useMutation({ mutationFn: ({ id, ...d }: any) => fetch(`/api/recruiting/bgc/orders/${id}/decision`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...d, decidedBy: 'current-user' }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['bgc-orders', 'bgc-summary'] }) });
+
+    const loadDetail = async (id: string) => {
+        const d = await fetch(`/api/recruiting/bgc/orders/${id}`).then(r => r.json());
+        setSelectedOrder(d);
+    };
+
+    const orderColumns: SpreadsheetColumn<any>[] = [
+        {
+            id: "candidate", header: "Candidate", width: "200px", cell: (row) => (
+                <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => loadDetail(row.id)}>
+                <div className="cursor-pointer">
+                                    <div className="font-bold">{row.candidate_name ?? row.applicant_id}</div>
+                                    <div className="text-[10px] text-muted-foreground/70">{row.applicant_id}</div>
+                                </div>
+                </Button>
+            )
+        },
+        { id: "package", header: "Package", width: "120px", cell: (row) => <div className="font-mono text-[10px] font-bold text-foreground/90">{row.package_type}</div> },
+        {
+            id: "progress", header: "Progress", width: "200px", cell: (row) => {
+                const pct = row.total_components > 0 ? Math.round(Number(row.completed_components) / Number(row.total_components) * 100) : 0;
+                return (
+                    <div>
+                        <div className="flex justify-between text-[9px] text-muted-foreground">
+                            <span>{row.completed_components}/{row.total_components}</span>
+                            {Number(row.hits) > 0 && <span className="text-red-600 font-bold">⚑ {row.hits} hit{Number(row.hits) > 1 ? 's' : ''}</span>}
+                        </div>
+                        <style>{`.bgc-pct-${row.id} { width: ${pct}%; }`}</style>
+                        <div className="bg-muted rounded-full h-1 mt-0.5">
+                            {/* eslint-disable-next-line react/forbid-dom-props */}
+                            <div className={cn(`h-full rounded-full bgc-pct-${row.id} ${pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'}`)} />
+                        </div>
+                    </div>
+                );
+            }
+        },
+        { id: "adjudication", header: "Adjudication", width: "120px", cell: (row) => row.adjudication ? <span className={cn(`font-bold ${ADJ_CLR[row.adjudication] ?? 'text-muted-foreground'}`)}>{row.adjudication}</span> : <span className="text-muted-foreground/70 text-[10px]">—</span> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => <span className={cn(`px-2 py-0.5 rounded text-[10px] font-bold ${STATUS_CLR[row.status] ?? 'bg-gray-500/10 text-muted-foreground'}`)}>{row.status.replace(/_/g, ' ')}</span> },
+        {
+            id: "actions", header: "", width: "160px", cell: (row) => (
+                <div className="flex gap-1.5 justify-end w-full">
+                    <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); loadDetail(row.id); }} className="text-foreground/90 ] text-[10px]">View</Button>
+                    {row.status === 'Initiated' && <Button variant="default" size="sm" onClick={(e) => { e.stopPropagation(); consentMut.mutate(row.id); }} className="text-white ] text-[10px]">Get Consent</Button>}
+                </div>
+            )
+        }
+    ];
+
+    return (
+        <StandardPage title="Background Check Management" description="FCRA compliant · Adverse action workflow · Component-level results">
+            <div className="flex justify-between mb-4">
+                <Button variant="default" size="sm" onClick={() => setShowNew(true)} className="text-white text-xs">+ Initiate Check</Button>
+            </div>
+
+            {/* KPIs */}
+            {summary && (
+                <div className="flex gap-2.5 mb-3.5">
+                    {([['Initiated', summary.initiated, 'border-gray-500', 'text-muted-foreground'], ['In Progress', summary.in_progress, 'border-amber-600', 'text-amber-600'], ['Clear', summary.clear, 'border-emerald-600', 'text-emerald-600'], ['Consider', summary.consider, 'border-amber-500', 'text-amber-500'], ['Adverse Action', summary.adverse_action, 'border-red-600', 'text-red-600'], ['Withdrawn', summary.withdrawn, 'border-gray-400', 'text-muted-foreground/70']] as [string, number, string, string][]).map(([l, v, bc, tc]) => (
+                        <Card key={l} className={cn(`flex-1 border-l-4 p-2.5 shadow-sm rounded-xl ${bc}`)}>
+                            <div className={cn(`text-xl font-extrabold font-mono ${tc}`)}>{v ?? 0}</div>
+                            <div className="text-[10px] text-muted-foreground/70">{l}</div>
+                        </Card>
+                    ))}
+                </div>
+            )}
+
+            {/* Filter row */}
+            <div className="flex gap-1.5 mb-3">
+                {['', 'Initiated', 'In_Progress', 'Complete', 'Adverse_Action'].map(s => (
+                    <Button variant="secondary" size="sm" key={s} onClick={() => setFilter(s)} className={cn(`px-3 py-1 border border-border rounded-md text-[11px] font-semibold cursor-pointer ${filter === s ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>{s || 'All'}</Button>
+                ))}
+            </div>
+
+            {/* New order form */}
+            {showNew && (
+                <Card className="p-3.5 mb-3 bg-slate-500/10 shadow-sm border-border">
+                    <div className="text-[13px] font-bold mb-2.5">Initiate Background Check</div>
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className="flex flex-col gap-0.5">
+                            <Label className="text-[10px] font-semibold">Package</Label>
+                            <Select value={form.packageType} onValueChange={v => setForm(p => ({ ...p, packageType: v }))}>
+                                <SelectTrigger className="px-2 py-1.5 text-[11px]" aria-label="Package"><SelectValue /></SelectTrigger>
+                                <SelectContent>{['BASIC', 'STANDARD', 'COMPREHENSIVE', 'EXECUTIVE', 'INTERNATIONAL'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                            </Select>
+                        </div>
+                        {[['applicantId', 'Applicant ID', 'text'], ['candidateName', 'Candidate Name', 'text'], ['candidateEmail', 'Email', 'email']].map(([k, l, t]) => (
+                            <div key={k} className="flex flex-col gap-0.5">
+                                <Label className="text-[10px] font-semibold">{l}</Label>
+                                <Input type={t} value={(form as any)[k]} onChange={e => setForm(p => ({ ...p, [k]: e.target.value }))} className="h-8 text-[11px]" aria-label={l} />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex gap-1.5 justify-end mt-2.5">
+                        <Button variant="secondary" size="sm" onClick={() => setShowNew(false)} className="text-[11px]">Cancel</Button>
+                        <Button variant="default" size="sm" disabled={!form.applicantId} onClick={() => initMut.mutate(form)} className="text-white text-[11px] disabled:opacity-50">Initiate</Button>
+                    </div>
+                </Card>
+            )}
+
+            <div className="flex gap-3.5">
+                {/* Orders list */}
+                <Card className="flex-1 h-[600px] overflow-hidden shadow-sm">
+                    {orders.length === 0 ? (
+                        <div className="text-center text-muted-foreground/70 p-6">No orders</div>
+                    ) : (
+                        <InteractiveSpreadsheet
+                            columns={orderColumns}
+                            data={orders.map(o => ({ ...o, _selected: o.id === selectedOrder?.id }))}
+                            onChange={() => { }}
+                            containerHeight="100%"
+                        />
+                    )}
+                </Card>
+
+                {/* Detail panel */}
+                {selectedOrder && (
+                    <Card className="w-80 p-4 shrink-0 shadow-sm">
+                        <div className="flex justify-between mb-2.5">
+                            <div className="text-[13px] font-bold">{selectedOrder.candidate_name ?? selectedOrder.applicant_id}</div>
+                            <Button variant="outline" onClick={() => setSelectedOrder(null)} className="text-sm">✕</Button>
+                        </div>
+                        <div className="text-[11px] text-muted-foreground mb-2.5">
+                            <div>Package: <strong>{selectedOrder.package_type}</strong></div>
+                            <div>Consent: {fmtDate(selectedOrder.consent_signed_at)}</div>
+                            <div>Ordered: {fmtDate(selectedOrder.ordered_at)}</div>
+                            {selectedOrder.completed_at && <div>Completed: {fmtDate(selectedOrder.completed_at)}</div>}
+                            {selectedOrder.hold_start_date && <div className="text-red-600">Hold start: {selectedOrder.hold_start_date}</div>}
+                            {selectedOrder.final_decision && <div>Final decision: <strong>{selectedOrder.final_decision}</strong></div>}
+                        </div>
+
+                        {/* Components */}
+                        <div className="text-[11px] font-bold mb-1.5 text-foreground/90">Component Results</div>
+                        <div className="flex flex-col gap-1 mb-3">
+                            {selectedOrder.components.map(c => (
+                                <div key={c.component_type} className="flex justify-between px-2 py-1 bg-gray-500/10 rounded-md">
+                                    <span className="text-[10px]">{c.component_type}</span>
+                                    <span className={cn(`text-[10px] font-bold ${c.result ? (RESULT_CLR[c.result] ?? 'text-muted-foreground') : 'text-muted-foreground/70'}`)}>{c.result ?? c.status}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Update component */}
+                        {selectedOrder.status === 'In_Progress' && (
+                            <div className="bg-green-500/10 border border-green-200 rounded-lg p-2.5 mb-2.5">
+                                <div className="text-[10px] font-bold mb-1.5">Record Component Result</div>
+                                <div className="flex flex-col gap-1.5">
+                                    <Select value={componentForm.componentType} onValueChange={v => setComponentForm(p => ({ ...p, componentType: v }))}>
+                                        <SelectTrigger className="px-1.5 py-1 text-[10px]" aria-label="Component type"><SelectValue /></SelectTrigger>
+                                        <SelectContent>{selectedOrder.components.filter(c => !c.result).map(c => <SelectItem key={c.component_type} value={c.component_type}>{c.component_type}</SelectItem>)}</SelectContent>
+                                    </Select>
+                                    <Select value={componentForm.result} onValueChange={v => setComponentForm(p => ({ ...p, result: v }))}>
+                                        <SelectTrigger className="px-1.5 py-1 text-[10px]" aria-label="Result"><SelectValue /></SelectTrigger>
+                                        <SelectContent>{['Clear', 'Hit', 'Unable_To_Verify'].map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}</SelectContent>
+                                    </Select>
+                                    <Input placeholder="Details (optional)" value={componentForm.details} onChange={e => setComponentForm(p => ({ ...p, details: e.target.value }))} className="h-7 text-[10px]" aria-label="Details" />
+                                    <Button variant="default" size="sm" onClick={() => componentMut.mutate({ id: selectedOrder.id, ...componentForm })} className="text-white text-[10px]">Record</Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Adverse action */}
+                        {selectedOrder.status === 'Complete' && selectedOrder.adjudication === 'Consider' && (
+                            <div className="bg-red-500/10 border border-red-200 rounded-lg p-2.5 mb-2.5">
+                                <div className="text-[10px] font-bold text-red-600 mb-1">Adverse Adjudication</div>
+                                <Button variant="destructive" size="sm" onClick={() => adverseMut.mutate(selectedOrder.id)} className="w-full text-white text-[10px] flex items-center justify-center gap-1">
+                                    <ShieldAlert className="h-2.5 w-2.5"  /> Initiate Adverse Action
+                                </Button>
+                            </div>
+                        )}
+
+                        {/* Final decision */}
+                        {(selectedOrder.status === 'Complete' || selectedOrder.status === 'Adverse_Action') && !selectedOrder.final_decision && (
+                            <div className="bg-blue-500/10 border border-blue-200 rounded-lg p-2.5">
+                                <div className="text-[10px] font-bold mb-1.5">Final Decision</div>
+                                <Select value={decisionForm.decision} onValueChange={v => setDecisionForm(p => ({ ...p, decision: v as any }))}>
+                                    <SelectTrigger className="px-1.5 py-1 text-[10px] w-full mb-1" aria-label="Decision"><SelectValue /></SelectTrigger>
+                                    <SelectContent>{['Proceed', 'Withdraw', 'Conditional'].map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
+                                </Select>
+                                <Input placeholder="Notes" value={decisionForm.notes} onChange={e => setDecisionForm(p => ({ ...p, notes: e.target.value }))} className="h-7 text-[10px] mb-1" aria-label="Notes" />
+                                <Button variant="default" size="sm" onClick={() => decisionMut.mutate({ id: selectedOrder.id, ...decisionForm })} className="w-full text-white text-[10px]">Finalize</Button>
+                            </div>
+                        )}
+                    </Card>
+                )}
+            </div>
+        </StandardPage>
+    );
+}

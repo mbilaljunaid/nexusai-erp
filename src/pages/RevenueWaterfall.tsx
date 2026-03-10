@@ -1,0 +1,97 @@
+import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { formatNumber } from '@/lib/formatters';
+
+export default function RevenueWaterfall() {
+    const [year, setYear] = useState<string>(new Date().getFullYear().toString());
+
+    const { data: waterfallData, isLoading, error } = useQuery<any>({
+        queryKey: ['revenue-waterfall', year],
+        queryFn: async () => {
+            const res = await fetch(`/api/revenue/reporting/waterfall?year=${year}`);
+            if (!res.ok) throw new Error("Failed to fetch waterfall data");
+            return res.json();
+        }
+    });
+
+    return (
+        <StandardPage
+            title="Revenue Waterfall"
+            description="Visualize recognized revenue over time."
+            actions={
+                <Select value={year} onValueChange={setYear}>
+                    <SelectTrigger className="w-44">
+                        <SelectValue placeholder="Select Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="2025">FY 2025</SelectItem>
+                        <SelectItem value="2026">FY 2026</SelectItem>
+                        <SelectItem value="2027">FY 2027</SelectItem>
+                    </SelectContent>
+                </Select>
+            }
+        >
+
+            {error && (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>
+                        Failed to load revenue waterfall data. Please try again.
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            <div className="grid gap-6">
+                <Card className="shadow-lg border-blue-100 dark:border-blue-900">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <span>Recognized Revenue by Period</span>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="h-[500px]">
+                        {isLoading ? (
+                            <Skeleton className="h-full w-full" />
+                        ) : (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                    data={waterfallData}
+                                    margin={{
+                                        top: 20,
+                                        right: 30,
+                                        left: 20,
+                                        bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                                    <XAxis dataKey="period" stroke="#64748B" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis
+                                        stroke="#64748B"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickFormatter={(value) => `$${value}`}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                        formatter={(value: number) => [`$${formatNumber(value)}`, 'Revenue']}
+                                        cursor={{ fill: '#F1F5F9' }}
+                                    />
+                                    <Legend />
+                                    <Bar dataKey="amount" fill="#3B82F6" radius={[4, 4, 0, 0]} name="Recognized Revenue" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
+        </StandardPage>
+    );
+}

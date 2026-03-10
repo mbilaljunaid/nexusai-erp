@@ -1,0 +1,170 @@
+# Deep Oracle Parity Audit - Phased Approach
+
+## Phase 1: Core Financials (AP, AR, GL)
+- [x] **Accounts Payable (AP)**
+  - Find all DB, Backend, and Frontend files for AP.
+  - Analyze exact table columns, API payloads, and UI fields.
+  - Compare with Oracle Payables (Invoice Workbench, Payments, Withholding, 3-way match, Holds).
+  - Write detailed AP gap report.
+- [x] **Accounts Receivable (AR)**
+  - Find all DB, Backend, and Frontend files for AR.
+  - Analyze exact table columns, API payloads, and UI fields.
+  - Compare with Oracle Receivables (AutoInvoice, Receipts, Credit Memos, Disputes).
+  - Write detailed AR gap report.
+- [x] **General Ledger (GL)**
+  - Find all DB, Backend, and Frontend files for GL.
+  - Analyze exact table columns, API payloads, and UI fields.
+  - Compare with Oracle GL (Journals, Ledgers, Reporting, Period Close).
+  - Write detailed GL gap report.
+  - Consolidate AP, AR, GL findings into the main `oracle_parity_assessment.md`.
+
+## Phase 2: Cash Management, Fixed Assets, Tax
+- [x] **Cash Management (CE)**
+  - Find DB, Backend, and Frontend files for CE.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Cash Management (Bank Reconciliation, Cash Positioning, Tolerances).
+  - Write detailed CE gap report.
+- [x] **Fixed Assets (FA)**
+  - Find DB, Backend, and Frontend files for FA.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle FA (Asset Additions, Depreciation Rules, Retirements, Books).
+  - Write detailed FA gap report.
+- [x] **Tax Engine**
+  - Find DB, Backend, and Frontend files for Tax.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle E-Business Tax (Regimes, Rates, Rules, Geographies).
+  - Write detailed Tax gap report.
+  - Consolidate Phase 2 findings into `oracle_parity_assessment.md`.
+
+## Phase 3: Procurement & Inventory
+- [x] **Purchasing / Procurement (PO)**
+  - Find DB, Backend, and Frontend files for PO.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Purchasing (Requisitions, BPAs, CPA, PO Distributions).
+  - Write detailed PO gap report.
+- [x] **Inventory Management (INV)**
+  - Find DB, Backend, and Frontend files for INV.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Inventory (Item Master 10-Tabs, Locators, Min-Max, Lot/Serial Control).
+  - Write detailed INV gap report.
+- [x] **Warehouse & LCM (WMS/LCM)**
+  - Find DB, Backend, and Frontend files for WMS and LCM.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle WMS/LCM (LPNs, Directed Putaway, RF Scanner UI, Landed Cost Charges).
+  - Write detailed WMS/LCM gap report.
+  - Consolidate Phase 3 findings into `oracle_parity_assessment.md`.
+
+## Phase 4: Order Management & Billing
+- [x] **Order Management (OM)**
+  - Find DB, Backend, and Frontend files for OM.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle OM.
+  - Write detailed OM gap report.
+- [x] **Billing & Revenue (AR/Billing/RMCS)**
+  - Find DB, Backend, and Frontend files for Billing/Revenue.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle SM and RMCS.
+  - Write detailed Billing and Revenue gap reports.
+
+## Phase 5: Manufacturing & Projects
+- [x] **Manufacturing & WIP**
+  - Find DB, Backend, and Frontend files for WIP/MFG.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle WIP/MFG (Discrete Jobs, Routings, BOMs, Resource Rates).
+  - Write detailed MFG gap report.
+- [x] **Project Portfolio Management (PPM)**
+  - Find DB, Backend, and Frontend files for PPM.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle PPM (Expenditures, Cost Returns, Burdening, Project Billing).
+  - Write detailed PPM gap report.
+  - Consolidate Phase 4 findings into `oracle_parity_assessment.md`.
+
+## Phase 6: HCM Suite
+- [x] **Core HR (HCM)**
+  - Find DB, Backend, and Frontend files for Core HR.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Core HR.
+  - Write detailed Core HR gap report.
+- [x] **Payroll & Compensation**
+  - Find DB, Backend, and Frontend files for Payroll.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Payroll.
+  - Write detailed Payroll gap report.
+- [x] **Talent - Recruitment**
+  - Find DB, Backend, and Frontend files for Recruitment.
+  - Compare with Oracle Recruiting Cloud.
+  - Write detailed Recruitment gap report.
+- [x] **Talent - Performance**
+  - Find DB, Backend, and Frontend files for Performance.
+  - Compare with Oracle Performance.
+  - Write detailed Performance gap report.
+- [x] **Talent - Learning**
+  - Find DB, Backend, and Frontend files for Learning.
+  - Compare with Oracle Learning Cloud.
+  - Write detailed Learning gap report.
+- [x] **Talent - Succession**
+  - Find DB, Backend, and Frontend files for Succession.
+  - Compare with Oracle Succession Planning.
+  - Write detailed Succession gap report.
+- [x] **Workforce Structures**
+  - Find DB, Backend, and Frontend files for Structures.
+  - Compare with Oracle Global HR Structures.
+  - Write detailed Structures gap report.
+- [x] **HR Infrastructure & Analytics**
+  - Find DB, Backend, and Frontend files for Analytics & HDL.
+  - Compare with Oracle HR Analytics and Data Loaders.
+  - Write detailed Analytics/Infra gap report.
+- [x] **Workforce Management (Time & Labor)**
+  - Find DB, Backend, and Frontend files for WFM.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Time & Labor.
+  - Write detailed WFM gap report.
+- [x] **Compensation & Benefits**
+  - Find DB, Backend, and Frontend files for Rewards.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Rewards.
+  - Write detailed Comp & Ben gap report.
+- [x] **HR Service Delivery**
+  - Find DB, Backend, and Frontend files for Checklists and Compliance.
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Journeys & Help Desk.
+  - Write detailed HR Services gap report.
+
+## Phase 7: CRM & EPM
+- [x] **CRM - Sales (SFA) & Territory Management**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle CX Sales.
+  - Write detailed CRM Sales gap report.
+- [x] **CRM - Marketing (Campaigns & Leads)**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle CX Marketing.
+  - Write detailed CRM Marketing gap report.
+- [x] **CRM - CPQ & Order Capture**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle CPQ.
+  - Write detailed CRM CPQ gap report.
+- [x] **CRM - Service Cloud & Knowledge Base**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Service Cloud.
+  - Write detailed CRM Service gap report.
+- [x] **CRM - Field Service**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Field Service.
+  - Write detailed CRM Field Service gap report.
+- [x] **CRM - Incentive Compensation**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle Incentive Compensation.
+  - Write detailed CRM Compensation gap report.
+- [x] **EPM - Financial Planning (Budgets & Scenarios)**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle EPM Planning.
+  - Write detailed EPM Planning gap report.
+- [x] **EPM - Workforce & CapEx Planning**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle EPM Workforce/CapEx.
+  - Write detailed EPM extended planning gap report.
+- [x] **EPM - ESG Reporting**
+  - Analyze table columns, APIs, and UI fields.
+  - Compare with Oracle EPM ESG.
+  - Write detailed EPM ESG gap report.
+  - Consolidate Phase 6 findings and finalize `oracle_parity_assessment.md`.

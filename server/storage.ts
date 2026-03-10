@@ -106,11 +106,15 @@ import {
 
   // AP
   apSuppliers, apInvoices, apInvoiceLines, apInvoiceDistributions, apPayments, apApprovals,
+  apPaymentTerms, apTolerances, apPprTemplates,
   type ApSupplier, type InsertApSupplier,
   type ApInvoice, type InsertApInvoice, type ApInvoiceLine, type InsertApInvoiceLine,
   type ApInvoiceDistribution, type InsertApInvoiceDistribution,
   type ApPayment, type InsertApPayment,
   type ApApproval, type InsertApApproval,
+  type ApPaymentTerm, type InsertApPaymentTerm,
+  type ApTolerance, type InsertApTolerance,
+  type ApPprTemplate, type InsertApPprTemplate,
 
   // AR
   arCustomers, arInvoices, arReceipts,
@@ -118,11 +122,14 @@ import {
   type ArCustomer, type InsertArCustomer,
   type ArCustomerAccount, type InsertArCustomerAccount,
   type ArCustomerSite, type InsertArCustomerSite,
+  arCustomerContacts, type ArCustomerContact, type InsertArCustomerContact,
+  arInvoiceLines, type ArInvoiceLine, type InsertArInvoiceLine,
   type ArInvoice, type InsertArInvoice,
   type ArReceipt, type InsertArReceipt,
   type ArReceiptApplication, type InsertArReceiptApplication,
   arRevenueRules, type ArRevenueRule, type InsertArRevenueRule,
   arRevenueSchedules, type ArRevenueSchedule, type InsertArRevenueSchedule,
+  arPaymentSchedules, type ArPaymentSchedule, type InsertArPaymentSchedule,
   arDunningTemplates, // Removed arCollections if not exists
   arDunningRuns,
   arCollectorTasks,
@@ -131,8 +138,25 @@ import {
   type ArDunningRun, type InsertArDunningRun,
   type ArCollectorTask, type InsertArCollectorTask,
   type ArAdjustment, type InsertArAdjustment,
-  arPeriodStatuses, type ArPeriodStatus, type InsertArPeriodStatus,
+  type ArAutoInvoiceStaging, type InsertArAutoInvoiceStaging,
+  type ArAutoInvoiceError, type InsertArAutoInvoiceError,
+  type ArSalesCredit, type InsertArSalesCredit,
+  type ArPeriodStatus, type InsertArPeriodStatus,
   type ArSystemOptions, type InsertArSystemOptions,
+  // AR Config (Oracle Parity)
+  arTransactionTypes, type ArTransactionType, type InsertArTransactionType,
+  arBatchSources, type ArBatchSource, type InsertArBatchSource,
+  arCustomerProfiles, type ArCustomerProfile, type InsertArCustomerProfile,
+  arCustomerBankAccounts, type ArCustomerBankAccount, type InsertArCustomerBankAccount,
+  arReceiptMethods, type ArReceiptMethod, type InsertArReceiptMethod,
+  arAutoAccountingRules, type ArAutoAccountingRule, type InsertArAutoAccountingRule,
+  arDocumentSequences, type ArDocumentSequence, type InsertArDocumentSequence,
+  arDocumentSequenceAssignments, type ArDocumentSequenceAssignment, type InsertArDocumentSequenceAssignment,
+
+  // Lockbox
+  arLockboxBatches, type ArLockboxBatch, type InsertArLockboxBatch,
+  arLockboxItems, type ArLockboxItem, type InsertArLockboxItem,
+
 
   // Tax
   taxCodes, taxJurisdictions, taxExemptions,
@@ -168,10 +192,7 @@ import {
   // Others
   type CopilotConversation, type InsertCopilotConversation,
   type CopilotMessage, type InsertCopilotMessage,
-  type RevenueForecast, type InsertRevenueForecast,
-  budgetAllocations, type BudgetAllocation, type InsertBudgetAllocation,
   type TimeSeriesData, type InsertTimeSeriesData,
-  type ForecastModel, type InsertForecastModel,
   type Scenario, type InsertScenario,
   type ScenarioVariable, type InsertScenarioVariable,
   type DashboardWidget, type InsertDashboardWidget,
@@ -203,7 +224,14 @@ import {
   type CommunityBadgeProgress, type InsertCommunityBadgeProgress,
   invoices as legacyInvoices, type Invoice, type InsertInvoice,
   glCodeCombinations, type GlCodeCombination, type InsertGlCodeCombination,
-  type FaAssetBook
+  type FaAssetBook,
+  // Expense Management
+  expenseReports, expenseLines, expensePolicies, expensePerDiems, corporateCardTransactions,
+  type ExpenseReport, type InsertExpenseReport,
+  type ExpenseLine, type InsertExpenseLine,
+  type ExpensePolicy, type InsertExpensePolicy,
+  type ExpensePerDiem, type InsertExpensePerDiem,
+  type CorporateCardTransaction, type InsertCorporateCardTransaction,
 } from "@shared/schema";
 
 import { dbStorage } from "./storage-db";
@@ -249,13 +277,13 @@ export interface IStorage {
   deleteArRevenueSchedule(id: string): Promise<boolean>;
 
   // Cash Management
-  listCashBankAccounts(): Promise<CashBankAccount[]>;
+  listCashBankAccounts(entLegalEntityId?: string, entBusinessUnitId?: string): Promise<CashBankAccount[]>;
   getCashBankAccount(id: string): Promise<CashBankAccount | undefined>;
   createCashBankAccount(data: InsertCashBankAccount): Promise<CashBankAccount>;
   updateCashBankAccount(id: string, data: Partial<InsertCashBankAccount>): Promise<CashBankAccount | undefined>;
   deleteCashBankAccount(id: string): Promise<boolean>;
 
-  listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]>;
+  listCashStatementLines(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashStatementLine[]>;
   createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine>;
   updateCashStatementLine(id: string, data: Partial<InsertCashStatementLine>): Promise<CashStatementLine>;
 
@@ -264,7 +292,7 @@ export interface IStorage {
   createCashStatementHeader(data: InsertCashStatementHeader): Promise<CashStatementHeader>;
   updateCashStatementHeader(id: string, data: Partial<InsertCashStatementHeader>): Promise<CashStatementHeader>;
 
-  listCashTransactions(bankAccountId: string): Promise<CashTransaction[]>;
+  listCashTransactions(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashTransaction[]>;
   createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction>;
   updateCashTransaction(id: string, data: Partial<InsertCashTransaction>): Promise<CashTransaction>;
 
@@ -398,21 +426,11 @@ export interface IStorage {
   listCopilotMessages(conversationId?: string): Promise<CopilotMessage[]>;
   createCopilotMessage(msg: InsertCopilotMessage): Promise<CopilotMessage>;
 
-  getRevenueForecast(id: string): Promise<RevenueForecast | undefined>;
-  listRevenueForecasts(): Promise<RevenueForecast[]>;
-  createRevenueForecast(forecast: InsertRevenueForecast): Promise<RevenueForecast>;
-
-  getBudgetAllocation(id: string): Promise<BudgetAllocation | undefined>;
-  listBudgetAllocations(year?: number): Promise<BudgetAllocation[]>;
-  createBudgetAllocation(budget: InsertBudgetAllocation): Promise<BudgetAllocation>;
 
   getTimeSeriesData(id: string): Promise<TimeSeriesData | undefined>;
   listTimeSeriesData(): Promise<TimeSeriesData[]>;
   createTimeSeriesData(data: InsertTimeSeriesData): Promise<TimeSeriesData>;
 
-  getForecastModel(id: string): Promise<ForecastModel | undefined>;
-  listForecastModels(): Promise<ForecastModel[]>;
-  createForecastModel(model: InsertForecastModel): Promise<ForecastModel>;
 
   getScenario(id: string): Promise<Scenario | undefined>;
   listScenarios(): Promise<Scenario[]>;
@@ -585,6 +603,7 @@ export interface IStorage {
   getOrCreateCodeCombination(ledgerId: string, segments: string[]): Promise<GlCodeCombination>;
 
   listGlDailyRates(fromCurrency: string, toCurrency: string, date: Date): Promise<GlDailyRate[]>;
+  getAllGlDailyRates(): Promise<GlDailyRate[]>;
   createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate>;
 
   // Revaluation
@@ -597,6 +616,11 @@ export interface IStorage {
   getExchangeRate(currency: string, periodName: string): Promise<GlExchangeRate | undefined>;
 
   // AP Module
+  listApPaymentTerms(): Promise<ApPaymentTerm[]>;
+  getApPaymentTerm(id: string): Promise<ApPaymentTerm | undefined>;
+  createApPaymentTerm(data: InsertApPaymentTerm): Promise<ApPaymentTerm>;
+  updateApPaymentTerm(id: string, data: Partial<InsertApPaymentTerm>): Promise<ApPaymentTerm | undefined>;
+
   listApSuppliers(): Promise<ApSupplier[]>;
   getApSupplier(id: string): Promise<ApSupplier | undefined>;
   createApSupplier(supplier: InsertApSupplier): Promise<ApSupplier>;
@@ -615,6 +639,16 @@ export interface IStorage {
   // Legacy Finance
   listInvoices(): Promise<Invoice[]>;
   getApInvoice(id: string): Promise<ApInvoice | undefined>;
+  getApInvoicesCount(entBusinessUnitId?: string, tenantId?: string): Promise<number>;
+  listApInvoices(options?: {
+    limit?: number;
+    offset?: number;
+    status?: string | "all";
+    validationStatus?: string | "all";
+    tenantId?: string;
+    entBusinessUnitId?: string;
+    filters?: Record<string, any>;
+  }): Promise<any[]>;
 
   // Enterprise AP Interface
   createApInvoiceHeader(invoice: InsertApInvoice): Promise<ApInvoice>;
@@ -625,7 +659,7 @@ export interface IStorage {
   updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined>;
   deleteApInvoice(id: string): Promise<boolean>;
 
-  listApPayments(): Promise<ApPayment[]>;
+  listApPayments(options?: { entBusinessUnitId?: string }): Promise<ApPayment[]>;
   getApPayment(id: string): Promise<ApPayment | undefined>;
   createApPayment(data: InsertApPayment): Promise<ApPayment>;
   updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined>;
@@ -637,12 +671,36 @@ export interface IStorage {
   updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined>;
   deleteApApproval(id: string): Promise<boolean>;
 
+  // AP Oracle Parity Additions
+  listApTolerances(): Promise<ApTolerance[]>;
+  getApTolerance(id: string): Promise<ApTolerance | undefined>;
+  createApTolerance(data: InsertApTolerance): Promise<ApTolerance>;
+  updateApTolerance(id: string, data: Partial<InsertApTolerance>): Promise<ApTolerance | undefined>;
+  deleteApTolerance(id: string): Promise<boolean>;
+
+  listApPprTemplates(): Promise<ApPprTemplate[]>;
+  getApPprTemplate(id: string): Promise<ApPprTemplate | undefined>;
+  createApPprTemplate(data: InsertApPprTemplate): Promise<ApPprTemplate>;
+  updateApPprTemplate(id: string, data: Partial<InsertApPprTemplate>): Promise<ApPprTemplate | undefined>;
+  deleteApPprTemplate(id: string): Promise<boolean>;
+
   // AR Module
   listArCustomers(): Promise<ArCustomer[]>;
   getArCustomer(id: string): Promise<ArCustomer | undefined>;
   createArCustomer(data: InsertArCustomer): Promise<ArCustomer>;
   updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined>;
   deleteArCustomer(id: string): Promise<boolean>;
+
+  // Customer Profiles & Bank Accounts (TCA)
+  listArCustomerProfiles(): Promise<ArCustomerProfile[]>;
+  getArCustomerProfile(id: string): Promise<ArCustomerProfile | undefined>;
+  createArCustomerProfile(data: InsertArCustomerProfile): Promise<ArCustomerProfile>;
+  updateArCustomerProfile(id: string, data: Partial<InsertArCustomerProfile>): Promise<ArCustomerProfile | undefined>;
+
+  listArCustomerBankAccounts(customerId?: string): Promise<ArCustomerBankAccount[]>;
+  getArCustomerBankAccount(id: string): Promise<ArCustomerBankAccount | undefined>;
+  createArCustomerBankAccount(data: InsertArCustomerBankAccount): Promise<ArCustomerBankAccount>;
+  updateArCustomerBankAccount(id: string, data: Partial<InsertArCustomerBankAccount>): Promise<ArCustomerBankAccount | undefined>;
 
   // AR Accounts
   listArCustomerAccounts(customerId?: string): Promise<ArCustomerAccount[]>;
@@ -656,14 +714,44 @@ export interface IStorage {
   createArCustomerSite(data: InsertArCustomerSite): Promise<ArCustomerSite>;
   updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined>;
 
-  listArInvoices(limit?: number, offset?: number): Promise<ArInvoice[]>;
-  getArInvoicesCount(): Promise<number>;
+  // AR Contacts
+  listArCustomerContacts(customerId: string): Promise<ArCustomerContact[]>;
+  getArCustomerContact(id: string): Promise<ArCustomerContact | undefined>;
+  createArCustomerContact(data: InsertArCustomerContact): Promise<ArCustomerContact>;
+  updateArCustomerContact(id: string, data: Partial<InsertArCustomerContact>): Promise<ArCustomerContact | undefined>;
+  deleteArCustomerContact(id: string): Promise<boolean>;
+
+  listArInvoices(limit?: number, offset?: number, entBusinessUnitId?: string): Promise<ArInvoice[]>;
+  getArInvoicesCount(entBusinessUnitId?: string): Promise<number>;
   getArInvoice(id: string): Promise<ArInvoice | undefined>;
   createArInvoice(data: InsertArInvoice): Promise<ArInvoice>;
+  createArPaymentSchedulesBulk(data: InsertArPaymentSchedule[]): Promise<ArPaymentSchedule[]>;
   updateArInvoice(id: string, data: Partial<InsertArInvoice>): Promise<ArInvoice | undefined>;
   deleteArInvoice(id: string): Promise<boolean>;
 
-  listArReceipts(): Promise<ArReceipt[]>;
+  listArInvoiceLines(invoiceId: string): Promise<ArInvoiceLine[]>;
+  createArInvoiceLine(data: InsertArInvoiceLine): Promise<ArInvoiceLine>;
+  updateArInvoiceLine(id: string, data: Partial<InsertArInvoiceLine>): Promise<ArInvoiceLine | undefined>;
+
+  // AutoInvoice Staging
+  listArAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]>;
+  getArAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined>;
+  createArAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging>;
+  updateArAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined>;
+  deleteArAutoInvoiceStaging(id: string): Promise<boolean>;
+
+  // AutoInvoice Errors
+  listArAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]>;
+  createArAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError>;
+  deleteArAutoInvoiceErrors(stagingId: string): Promise<boolean>;
+
+  // Sales Credits
+  listArSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]>;
+  createArSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit>;
+  updateArSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined>;
+  deleteArSalesCredit(id: string): Promise<boolean>;
+
+  listArReceipts(entBusinessUnitId?: string): Promise<ArReceipt[]>;
   getArReceipt(id: string): Promise<ArReceipt | undefined>;
   createArReceipt(data: InsertArReceipt): Promise<ArReceipt>;
   updateArReceipt(id: string, r: Partial<InsertArReceipt>): Promise<ArReceipt | undefined>;
@@ -674,6 +762,51 @@ export interface IStorage {
   getArSystemOptions(ledgerId: string): Promise<ArSystemOptions | undefined>;
   upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions>;
 
+  // Document Sequences
+  listArDocumentSequences(module?: string): Promise<ArDocumentSequence[]>;
+  createArDocumentSequence(data: InsertArDocumentSequence): Promise<ArDocumentSequence>;
+  updateArDocumentSequence(id: string, data: Partial<InsertArDocumentSequence>): Promise<ArDocumentSequence | undefined>;
+
+  listArDocumentSequenceAssignments(sequenceId?: string): Promise<ArDocumentSequenceAssignment[]>;
+  createArDocumentSequenceAssignment(data: InsertArDocumentSequenceAssignment): Promise<ArDocumentSequenceAssignment>;
+  updateArDocumentSequenceAssignment(id: string, data: Partial<InsertArDocumentSequenceAssignment>): Promise<ArDocumentSequenceAssignment | undefined>;
+
+  // AR Foundation Configurations (Oracle Parity)
+  listArTransactionTypes(): Promise<ArTransactionType[]>;
+  getArTransactionType(id: string): Promise<ArTransactionType | undefined>;
+  createArTransactionType(data: InsertArTransactionType): Promise<ArTransactionType>;
+
+  // AutoInvoice Staging
+  listArAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]>;
+  getArAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined>;
+  createArAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging>;
+  updateArAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined>;
+  deleteArAutoInvoiceStaging(id: string): Promise<boolean>;
+
+  // AutoInvoice Errors
+  listArAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]>;
+  createArAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError>;
+  deleteArAutoInvoiceErrors(stagingId: string): Promise<boolean>;
+
+  // Sales Credits
+  listArSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]>;
+  createArSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit>;
+  updateArSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined>;
+  deleteArSalesCredit(id: string): Promise<boolean>;
+
+  listArBatchSources(): Promise<ArBatchSource[]>;
+  getArBatchSource(id: string): Promise<ArBatchSource | undefined>;
+  createArBatchSource(data: InsertArBatchSource): Promise<ArBatchSource>;
+
+  listArReceiptMethods(): Promise<ArReceiptMethod[]>;
+  getArReceiptMethod(id: string): Promise<ArReceiptMethod | undefined>;
+  createArReceiptMethod(data: InsertArReceiptMethod): Promise<ArReceiptMethod>;
+
+  listArAutoAccountingRules(): Promise<ArAutoAccountingRule[]>;
+  getArAutoAccountingRule(id: string): Promise<ArAutoAccountingRule | undefined>;
+  createArAutoAccountingRule(data: InsertArAutoAccountingRule): Promise<ArAutoAccountingRule>;
+
+
   // AR Revenue Recognition
   listArRevenueRules(): Promise<ArRevenueRule[]>;
   getArRevenueRule(id: string): Promise<ArRevenueRule | undefined>;
@@ -682,6 +815,17 @@ export interface IStorage {
   listArRevenueSchedules(status?: string): Promise<ArRevenueSchedule[]>;
   getArRevenueSchedule(id: string): Promise<ArRevenueSchedule | undefined>;
   updateArRevenueSchedule(id: string, data: Partial<InsertArRevenueSchedule>): Promise<ArRevenueSchedule | undefined>;
+
+  // Lockbox Methods
+  createArLockboxBatch(data: InsertArLockboxBatch): Promise<ArLockboxBatch>;
+  getArLockboxBatch(id: string): Promise<ArLockboxBatch | undefined>;
+  listArLockboxBatches(): Promise<ArLockboxBatch[]>;
+  updateArLockboxBatch(id: string, data: Partial<InsertArLockboxBatch>): Promise<ArLockboxBatch | undefined>;
+
+  createArLockboxItem(data: InsertArLockboxItem): Promise<ArLockboxItem>;
+  getArLockboxItem(id: string): Promise<ArLockboxItem | undefined>;
+  listArLockboxItems(batchId: string): Promise<ArLockboxItem[]>;
+  updateArLockboxItem(id: string, data: Partial<InsertArLockboxItem>): Promise<ArLockboxItem | undefined>;
   deleteArRevenueSchedule(id: string): Promise<boolean>;
 
   // AR Collections
@@ -788,16 +932,33 @@ export interface IStorage {
   updateArPeriodStatus(name: string, status: string, auditId: string): Promise<ArPeriodStatus | undefined>;
 
   // Tax
-  listTaxCodes(): Promise<TaxCode[]>;
+  listTaxCodes(entLegalEntityId?: string): Promise<TaxCode[]>;
   getTaxCode(id: string): Promise<TaxCode | undefined>;
   createTaxCode(data: InsertTaxCode): Promise<TaxCode>;
-  listTaxJurisdictions(): Promise<TaxJurisdiction[]>;
+  listTaxJurisdictions(entLegalEntityId?: string): Promise<TaxJurisdiction[]>;
   getTaxJurisdiction(id: string): Promise<TaxJurisdiction | undefined>;
   createTaxJurisdiction(data: InsertTaxJurisdiction): Promise<TaxJurisdiction>;
-  listTaxExemptions(): Promise<TaxExemption[]>;
+  listTaxExemptions(entLegalEntityId?: string): Promise<TaxExemption[]>;
   getTaxExemption(id: string): Promise<TaxExemption | undefined>;
   createTaxExemption(data: InsertTaxExemption): Promise<TaxExemption>;
   getApplicableTaxRate(invoiceId: string): Promise<number>;
+
+  // Expense Management
+  listExpenseReports(tenantId: string, employeeId?: string): Promise<ExpenseReport[]>;
+  getExpenseReport(id: string): Promise<ExpenseReport | undefined>;
+  createExpenseReport(data: InsertExpenseReport): Promise<ExpenseReport>;
+  updateExpenseReport(id: string, data: Partial<InsertExpenseReport>): Promise<ExpenseReport>;
+  listExpenseLines(reportId: string): Promise<ExpenseLine[]>;
+  listAllExpenseLines(tenantId: string): Promise<ExpenseLine[]>;
+  createExpenseLine(data: InsertExpenseLine): Promise<ExpenseLine>;
+  updateExpenseLine(id: string, data: Partial<InsertExpenseLine>): Promise<ExpenseLine>;
+  listExpensePolicies(tenantId: string): Promise<ExpensePolicy[]>;
+  createExpensePolicy(data: InsertExpensePolicy): Promise<ExpensePolicy>;
+  listExpensePerDiems(tenantId: string): Promise<ExpensePerDiem[]>;
+  createExpensePerDiem(data: InsertExpensePerDiem): Promise<ExpensePerDiem>;
+  listCorporateCardTransactions(tenantId: string, employeeId?: string): Promise<CorporateCardTransaction[]>;
+  createCorporateCardTransaction(data: InsertCorporateCardTransaction): Promise<CorporateCardTransaction>;
+  updateCorporateCardTransaction(id: string, data: Partial<InsertCorporateCardTransaction>): Promise<CorporateCardTransaction>;
 }
 
 
@@ -1042,7 +1203,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getApSupplier(id: string): Promise<ApSupplier | undefined> {
-    const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, parseInt(id)));
+    const [supplier] = await db.select().from(apSuppliers).where(eq(apSuppliers.id, id));
     return supplier;
   }
 
@@ -1052,18 +1213,59 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateApSupplier(id: string, supplier: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
-    const [updated] = await db.update(apSuppliers).set(supplier).where(eq(apSuppliers.id, parseInt(id))).returning();
+    const [updated] = await db.update(apSuppliers).set(supplier).where(eq(apSuppliers.id, id)).returning();
     return updated;
   }
 
   async deleteApSupplier(id: string): Promise<boolean> {
-    const [deleted] = await db.delete(apSuppliers).where(eq(apSuppliers.id, parseInt(id))).returning();
+    const [deleted] = await db.delete(apSuppliers).where(eq(apSuppliers.id, id)).returning();
     return !!deleted;
   }
 
   // Enterprise Invoice Methods
-  async listApInvoices(limit?: number, offset?: number): Promise<ApInvoice[]> {
-    let query = db.select().from(apInvoices).orderBy(desc(apInvoices.createdAt));
+  async listApInvoices(options?: {
+    limit?: number;
+    offset?: number;
+    status?: string;
+    validationStatus?: string;
+    entBusinessUnitId?: string;
+    filters?: Record<string, any>;
+  }): Promise<any[]> {
+    const { limit, offset, status, validationStatus, entBusinessUnitId, filters } = options || {};
+    const conditions = [];
+
+    if (status && status !== "all") {
+      conditions.push(sql`lower(${apInvoices.invoiceStatus}) = lower(${status})`);
+    }
+    if (validationStatus && validationStatus !== "all") {
+      conditions.push(sql`lower(${apInvoices.validationStatus}) = lower(${validationStatus})`);
+    }
+    // Enterprise BU scoping — only show invoices for the active BU
+    if (entBusinessUnitId) {
+      conditions.push(eq(apInvoices.entBusinessUnitId, entBusinessUnitId));
+    }
+    // Optional per-field filters from the route query string
+    if (filters?.supplierId) {
+      conditions.push(eq(apInvoices.supplierId, filters.supplierId));
+    }
+    if (filters?.invoiceNumber) {
+      conditions.push(sql`lower(${apInvoices.invoiceNumber}) LIKE lower(${'%' + filters.invoiceNumber + '%'})`);
+    }
+
+    let query = db.select({
+      invoice: apInvoices,
+      supplier: apSuppliers
+    }).from(apInvoices)
+      .leftJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id));
+
+    if (conditions.length > 0) {
+      // @ts-ignore
+      query = query.where(and(...conditions));
+    }
+
+    // @ts-ignore
+    query = query.orderBy(desc(apInvoices.createdAt));
+
     if (limit !== undefined) {
       // @ts-ignore
       query = query.limit(limit);
@@ -1072,16 +1274,21 @@ export class DatabaseStorage implements IStorage {
       // @ts-ignore
       query = query.offset(offset);
     }
-    return await query;
+    const results = await query;
+    return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
   }
 
-  async getApInvoicesCount(): Promise<number> {
-    const [res] = await db.select({ count: count() }).from(apInvoices);
+  async getApInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(apInvoices);
+    if (entBusinessUnitId) {
+      query = query.where(eq(apInvoices.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    const [res] = await query;
     return res.count;
   }
 
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
-    const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, parseInt(id)));
+    const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, id));
     return invoice;
   }
 
@@ -1106,15 +1313,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateApInvoice(id: string, invoice: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
-    const [updated] = await db.update(apInvoices).set(invoice).where(eq(apInvoices.id, parseInt(id))).returning();
+    const [updated] = await db.update(apInvoices).set(invoice).where(eq(apInvoices.id, id)).returning();
     return updated;
   }
 
   async deleteApInvoice(id: string): Promise<boolean> {
     // Service must handle cascade
-    await db.delete(apInvoiceDistributions).where(eq(apInvoiceDistributions.invoiceId, parseInt(id)));
-    await db.delete(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, parseInt(id)));
-    const [deleted] = await db.delete(apInvoices).where(eq(apInvoices.id, parseInt(id))).returning();
+    await db.delete(apInvoiceDistributions).where(eq(apInvoiceDistributions.invoiceId, id));
+    await db.delete(apInvoiceLines).where(eq(apInvoiceLines.invoiceId, id));
+    const [deleted] = await db.delete(apInvoices).where(eq(apInvoices.id, id)).returning();
     return !!deleted;
   }
 
@@ -1130,6 +1337,24 @@ export class DatabaseStorage implements IStorage {
   async listApApprovals(): Promise<ApApproval[]> {
     return await db.select().from(apApprovals);
   }
+
+  // Payment Terms
+  async listApPaymentTerms(): Promise<ApPaymentTerm[]> {
+    return await db.select().from(apPaymentTerms).orderBy(desc(apPaymentTerms.createdAt));
+  }
+  async getApPaymentTerm(id: string): Promise<ApPaymentTerm | undefined> {
+    const [res] = await db.select().from(apPaymentTerms).where(eq(apPaymentTerms.id, id));
+    return res;
+  }
+  async createApPaymentTerm(data: InsertApPaymentTerm): Promise<ApPaymentTerm> {
+    const [res] = await db.insert(apPaymentTerms).values(data).returning();
+    return res;
+  }
+  async updateApPaymentTerm(id: string, data: Partial<InsertApPaymentTerm>): Promise<ApPaymentTerm | undefined> {
+    const [res] = await db.update(apPaymentTerms).set({ ...data, updatedAt: new Date() }).where(eq(apPaymentTerms.id, id)).returning();
+    return res;
+  }
+
 
   async listGlJournalBatches() {
     return await db.select().from(glJournalBatches);
@@ -1219,6 +1444,9 @@ export class DatabaseStorage implements IStorage {
   }
   async listGlDailyRates(from: string, to: string, date: Date) {
     return dbStorage.listGlDailyRates(from, to, date);
+  }
+  async getAllGlDailyRates() {
+    return dbStorage.getAllGlDailyRates();
   }
 
   async createGlDailyRate(rate: InsertGlDailyRate) {
@@ -1327,7 +1555,7 @@ export class DatabaseStorage implements IStorage {
 
   // Missing IStorage Methods - AP Approvals
   async getApApproval(id: string) {
-    const [res] = await db.select().from(apApprovals).where(eq(apApprovals.id, parseInt(id)));
+    const [res] = await db.select().from(apApprovals).where(eq(apApprovals.id, id));
     return res;
   }
   async createApApproval(data: InsertApApproval) {
@@ -1343,7 +1571,7 @@ export class DatabaseStorage implements IStorage {
 
 
   async deleteApApproval(id: string) {
-    await db.delete(apApprovals).where(eq(apApprovals.id, parseInt(id)));
+    await db.delete(apApprovals).where(eq(apApprovals.id, id));
     return true;
   }
 
@@ -1360,6 +1588,55 @@ export class DatabaseStorage implements IStorage {
   }
 
   // AR Module Implementation (DB-Backed)
+  // AR Foundation Configurations (Oracle Parity)
+  async listArTransactionTypes() {
+    return await db.select().from(arTransactionTypes);
+  }
+  async getArTransactionType(id: string) {
+    const [res] = await db.select().from(arTransactionTypes).where(eq(arTransactionTypes.id, id));
+    return res;
+  }
+  async createArTransactionType(data: InsertArTransactionType) {
+    const [res] = await db.insert(arTransactionTypes).values(data).returning();
+    return res;
+  }
+
+  async listArBatchSources() {
+    return await db.select().from(arBatchSources);
+  }
+  async getArBatchSource(id: string) {
+    const [res] = await db.select().from(arBatchSources).where(eq(arBatchSources.id, id));
+    return res;
+  }
+  async createArBatchSource(data: InsertArBatchSource) {
+    const [res] = await db.insert(arBatchSources).values(data).returning();
+    return res;
+  }
+
+  async listArReceiptMethods() {
+    return await db.select().from(arReceiptMethods);
+  }
+  async getArReceiptMethod(id: string) {
+    const [res] = await db.select().from(arReceiptMethods).where(eq(arReceiptMethods.id, id));
+    return res;
+  }
+  async createArReceiptMethod(data: InsertArReceiptMethod) {
+    const [res] = await db.insert(arReceiptMethods).values(data).returning();
+    return res;
+  }
+
+  async listArAutoAccountingRules() {
+    return await db.select().from(arAutoAccountingRules);
+  }
+  async getArAutoAccountingRule(id: string) {
+    const [res] = await db.select().from(arAutoAccountingRules).where(eq(arAutoAccountingRules.id, id));
+    return res;
+  }
+  async createArAutoAccountingRule(data: InsertArAutoAccountingRule) {
+    const [res] = await db.insert(arAutoAccountingRules).values(data).returning();
+    return res;
+  }
+
   async listArCustomers() {
     return await db.select().from(arCustomers);
   }
@@ -1378,6 +1655,43 @@ export class DatabaseStorage implements IStorage {
   async deleteArCustomer(id: string) {
     await db.delete(arCustomers).where(eq(arCustomers.id, id));
     return true;
+  }
+
+  // TCA Customer Profiles
+  async listArCustomerProfiles(): Promise<ArCustomerProfile[]> {
+    return await db.select().from(arCustomerProfiles);
+  }
+  async getArCustomerProfile(id: string): Promise<ArCustomerProfile | undefined> {
+    const [res] = await db.select().from(arCustomerProfiles).where(eq(arCustomerProfiles.id, id));
+    return res;
+  }
+  async createArCustomerProfile(data: InsertArCustomerProfile): Promise<ArCustomerProfile> {
+    const [res] = await db.insert(arCustomerProfiles).values(data).returning();
+    return res;
+  }
+  async updateArCustomerProfile(id: string, data: Partial<InsertArCustomerProfile>): Promise<ArCustomerProfile | undefined> {
+    const [res] = await db.update(arCustomerProfiles).set(data).where(eq(arCustomerProfiles.id, id)).returning();
+    return res;
+  }
+
+  // TCA Customer Bank Accounts
+  async listArCustomerBankAccounts(customerId?: string): Promise<ArCustomerBankAccount[]> {
+    if (customerId) {
+      return await db.select().from(arCustomerBankAccounts).where(eq(arCustomerBankAccounts.customerId, customerId));
+    }
+    return await db.select().from(arCustomerBankAccounts);
+  }
+  async getArCustomerBankAccount(id: string): Promise<ArCustomerBankAccount | undefined> {
+    const [res] = await db.select().from(arCustomerBankAccounts).where(eq(arCustomerBankAccounts.id, id));
+    return res;
+  }
+  async createArCustomerBankAccount(data: InsertArCustomerBankAccount): Promise<ArCustomerBankAccount> {
+    const [res] = await db.insert(arCustomerBankAccounts).values(data).returning();
+    return res;
+  }
+  async updateArCustomerBankAccount(id: string, data: Partial<InsertArCustomerBankAccount>): Promise<ArCustomerBankAccount | undefined> {
+    const [res] = await db.update(arCustomerBankAccounts).set(data).where(eq(arCustomerBankAccounts.id, id)).returning();
+    return res;
   }
 
   // AR Accounts
@@ -1417,8 +1731,12 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listArInvoices(limit?: number, offset?: number) {
-    let query = db.select().from(arInvoices).orderBy(desc(arInvoices.createdAt));
+  async listArInvoices(limit?: number, offset?: number, entBusinessUnitId?: string) {
+    let query = db.select().from(arInvoices);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoices.businessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(arInvoices.createdAt)) as any;
     if (limit !== undefined) {
       // @ts-ignore
       query = query.limit(limit);
@@ -1430,8 +1748,12 @@ export class DatabaseStorage implements IStorage {
     return await query;
   }
 
-  async getArInvoicesCount(): Promise<number> {
-    const [res] = await db.select({ count: count() }).from(arInvoices);
+  async getArInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(arInvoices);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoices.businessUnitId, entBusinessUnitId)) as any;
+    }
+    const [res] = await query;
     return res.count;
   }
   async getArInvoice(id: string) {
@@ -1441,6 +1763,13 @@ export class DatabaseStorage implements IStorage {
   async createArInvoice(data: InsertArInvoice) {
     const [res] = await db.insert(arInvoices).values(data).returning();
     return res;
+  }
+  async createArInvoiceLine(data: InsertArInvoiceLine) {
+    const [res] = await db.insert(arInvoiceLines).values(data).returning();
+    return res;
+  }
+  async createArPaymentSchedulesBulk(data: InsertArPaymentSchedule[]) {
+    return await db.insert(arPaymentSchedules).values(data).returning();
   }
   async updateArInvoice(id: string, data: Partial<InsertArInvoice>) {
     const [res] = await db.update(arInvoices).set(data).where(eq(arInvoices.id, id)).returning();
@@ -1455,8 +1784,12 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listArReceipts() {
-    return await db.select().from(arReceipts);
+  async listArReceipts(entBusinessUnitId?: string) {
+    let query = db.select().from(arReceipts);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arReceipts.businessUnitId, entBusinessUnitId)) as any;
+    }
+    return await query;
   }
   async getArReceipt(id: string) {
     const [res] = await db.select().from(arReceipts).where(eq(arReceipts.id, id));
@@ -1535,6 +1868,45 @@ export class DatabaseStorage implements IStorage {
     return await db.insert(arRevenueSchedules).values(data).returning();
   }
 
+  // Lockbox Methods
+  async createArLockboxBatch(data: InsertArLockboxBatch): Promise<ArLockboxBatch> {
+    const [res] = await db.insert(arLockboxBatches).values({ ...data, id: data.id || randomUUID(), tenantId: "00000000-0000-0000-0000-000000000000" }).returning();
+    return res;
+  }
+
+  async getArLockboxBatch(id: string): Promise<ArLockboxBatch | undefined> {
+    const [res] = await db.select().from(arLockboxBatches).where(eq(arLockboxBatches.id, id));
+    return res;
+  }
+
+  async listArLockboxBatches(): Promise<ArLockboxBatch[]> {
+    return await db.select().from(arLockboxBatches).orderBy(desc(arLockboxBatches.createdAt));
+  }
+
+  async updateArLockboxBatch(id: string, data: Partial<InsertArLockboxBatch>): Promise<ArLockboxBatch | undefined> {
+    const [res] = await db.update(arLockboxBatches).set({ ...data, updatedAt: new Date() }).where(eq(arLockboxBatches.id, id)).returning();
+    return res;
+  }
+
+  async createArLockboxItem(data: InsertArLockboxItem): Promise<ArLockboxItem> {
+    const [res] = await db.insert(arLockboxItems).values({ ...data, id: data.id || randomUUID(), tenantId: "00000000-0000-0000-0000-000000000000" }).returning();
+    return res;
+  }
+
+  async getArLockboxItem(id: string): Promise<ArLockboxItem | undefined> {
+    const [res] = await db.select().from(arLockboxItems).where(eq(arLockboxItems.id, id));
+    return res;
+  }
+
+  async listArLockboxItems(batchId: string): Promise<ArLockboxItem[]> {
+    return await db.select().from(arLockboxItems).where(eq(arLockboxItems.batchId, batchId)).orderBy(arLockboxItems.createdAt);
+  }
+
+  async updateArLockboxItem(id: string, data: Partial<InsertArLockboxItem>): Promise<ArLockboxItem | undefined> {
+    const [res] = await db.update(arLockboxItems).set({ ...data, updatedAt: new Date() }).where(eq(arLockboxItems.id, id)).returning();
+    return res;
+  }
+
   // AR Collections
   async createArDunningTemplate(data: InsertArDunningTemplate) {
     const [res] = await db.insert(arDunningTemplates).values(data).returning();
@@ -1591,8 +1963,12 @@ export class DatabaseStorage implements IStorage {
 
 
   // Cash Management Implementation (DB-Backed)
-  async listCashBankAccounts() {
-    return await db.select().from(cashBankAccounts);
+  async listCashBankAccounts(entLegalEntityId?: string) {
+    let query = db.select().from(cashBankAccounts);
+    if (entLegalEntityId) {
+      query = query.where(eq(cashBankAccounts.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    return await query;
   }
   async getCashBankAccount(id: string) {
     const [acc] = await db.select().from(cashBankAccounts).where(eq(cashBankAccounts.id, id));
@@ -1611,10 +1987,16 @@ export class DatabaseStorage implements IStorage {
     return true;
   }
 
-  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number) {
+  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string) {
     let query = db.select().from(cashStatementLines)
       .where(eq(cashStatementLines.bankAccountId, bankAccountId))
-      .orderBy(desc(cashStatementLines.transactionDate));
+      .orderBy(desc(cashStatementLines.transactionDate)) as any;
+
+    if (entLegalEntityId) {
+      query = db.select().from(cashStatementLines)
+        .where(and(eq(cashStatementLines.bankAccountId, bankAccountId), eq(cashStatementLines.entLegalEntityId, entLegalEntityId)))
+        .orderBy(desc(cashStatementLines.transactionDate)) as any;
+    }
 
     if (limit !== undefined && offset !== undefined) {
       return await query.limit(limit).offset(offset);
@@ -1647,10 +2029,14 @@ export class DatabaseStorage implements IStorage {
     return header;
   }
 
-  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number) {
+  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string) {
+    let baseWhere = entLegalEntityId
+      ? and(eq(cashTransactions.bankAccountId, bankAccountId), eq(cashTransactions.entLegalEntityId, entLegalEntityId))
+      : eq(cashTransactions.bankAccountId, bankAccountId);
+
     let query = db.select().from(cashTransactions)
-      .where(eq(cashTransactions.bankAccountId, bankAccountId))
-      .orderBy(desc(cashTransactions.transactionDate));
+      .where(baseWhere)
+      .orderBy(desc(cashTransactions.transactionDate)) as any;
 
     if (limit !== undefined && offset !== undefined) {
       return await query.limit(limit).offset(offset);
@@ -1729,7 +2115,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // ZBA
-  async listCashZbaStructures() {
+  async listCashZbaStructures(entLegalEntityId?: string) {
+    if (entLegalEntityId) {
+      return await db.select().from(cashZbaStructures).where(eq(cashZbaStructures.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(cashZbaStructures);
   }
   async createCashZbaStructure(data: InsertCashZbaStructure) {
@@ -2780,7 +3169,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Tax CRUD methods
-  async listTaxCodes(): Promise<TaxCode[]> {
+  async listTaxCodes(entLegalEntityId?: string): Promise<TaxCode[]> {
+    if (entLegalEntityId) {
+      return await db.select().from(taxCodes).where(eq(taxCodes.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(taxCodes);
   }
 
@@ -2794,7 +3186,10 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listTaxJurisdictions(): Promise<TaxJurisdiction[]> {
+  async listTaxJurisdictions(entLegalEntityId?: string): Promise<TaxJurisdiction[]> {
+    if (entLegalEntityId) {
+      return await db.select().from(taxJurisdictions).where(eq(taxJurisdictions.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(taxJurisdictions);
   }
 
@@ -2808,7 +3203,10 @@ export class DatabaseStorage implements IStorage {
     return res;
   }
 
-  async listTaxExemptions(): Promise<TaxExemption[]> {
+  async listTaxExemptions(entLegalEntityId?: string): Promise<TaxExemption[]> {
+    if (entLegalEntityId) {
+      return await db.select().from(taxExemptions).where(eq(taxExemptions.entLegalEntityId, entLegalEntityId));
+    }
     return await db.select().from(taxExemptions);
   }
 
@@ -2869,6 +3267,53 @@ export class DatabaseStorage implements IStorage {
 
   async upsertArSystemOptions(data: InsertArSystemOptions): Promise<ArSystemOptions> {
     return await dbStorage.upsertArSystemOptions(data);
+  }
+
+  // Expense Management
+  async listExpenseReports(tenantId: string, employeeId?: string): Promise<ExpenseReport[]> {
+    return await dbStorage.listExpenseReports(tenantId, employeeId);
+  }
+  async getExpenseReport(id: string): Promise<ExpenseReport | undefined> {
+    return await dbStorage.getExpenseReport(id);
+  }
+  async createExpenseReport(data: InsertExpenseReport): Promise<ExpenseReport> {
+    return await dbStorage.createExpenseReport(data);
+  }
+  async updateExpenseReport(id: string, data: Partial<InsertExpenseReport>): Promise<ExpenseReport> {
+    return await dbStorage.updateExpenseReport(id, data);
+  }
+  async listExpenseLines(reportId: string): Promise<ExpenseLine[]> {
+    return await dbStorage.listExpenseLines(reportId);
+  }
+  async listAllExpenseLines(tenantId: string): Promise<ExpenseLine[]> {
+    return await dbStorage.listAllExpenseLines(tenantId);
+  }
+  async createExpenseLine(data: InsertExpenseLine): Promise<ExpenseLine> {
+    return await dbStorage.createExpenseLine(data);
+  }
+  async updateExpenseLine(id: string, data: Partial<InsertExpenseLine>): Promise<ExpenseLine> {
+    return await dbStorage.updateExpenseLine(id, data);
+  }
+  async listExpensePolicies(tenantId: string): Promise<ExpensePolicy[]> {
+    return await dbStorage.listExpensePolicies(tenantId);
+  }
+  async createExpensePolicy(data: InsertExpensePolicy): Promise<ExpensePolicy> {
+    return await dbStorage.createExpensePolicy(data);
+  }
+  async listExpensePerDiems(tenantId: string): Promise<ExpensePerDiem[]> {
+    return await dbStorage.listExpensePerDiems(tenantId);
+  }
+  async createExpensePerDiem(data: InsertExpensePerDiem): Promise<ExpensePerDiem> {
+    return await dbStorage.createExpensePerDiem(data);
+  }
+  async listCorporateCardTransactions(tenantId: string, employeeId?: string): Promise<CorporateCardTransaction[]> {
+    return await dbStorage.listCorporateCardTransactions(tenantId, employeeId);
+  }
+  async createCorporateCardTransaction(data: InsertCorporateCardTransaction): Promise<CorporateCardTransaction> {
+    return await dbStorage.createCorporateCardTransaction(data);
+  }
+  async updateCorporateCardTransaction(id: string, data: Partial<InsertCorporateCardTransaction>): Promise<CorporateCardTransaction> {
+    return await dbStorage.updateCorporateCardTransaction(id, data);
   }
 }
 

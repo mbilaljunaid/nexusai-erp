@@ -1,0 +1,77 @@
+[
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/RevenueSourceEvents.tsx",
+    "line": 338,
+    "content": "<Button variant=\"ghost\" size=\"sm\" title={event.errorMessage || \"View error\"}>"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/billing/BillingProfileManager.tsx",
+    "line": 173,
+    "content": "<input type=\"checkbox\" aria-label=\"Tax Exempt\" title=\"Tax Exempt\" className=\"h-4 w-4 rounded border-gray-300\" checked={row.taxExempt || false} onChange={e => updateRow(\"taxExempt\", e.target.checked)} />"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/billing/BillingProfileManager.tsx",
+    "line": 191,
+    "content": "<input type=\"checkbox\" aria-label=\"Auto-Email Invoices\" title=\"Auto-Email Invoices\" className=\"h-4 w-4 rounded border-gray-300\" checked={row.emailInvoices ?? true} onChange={e => updateRow(\"emailInvoices\", e.target.checked)} />"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/cost-management/LcmWorkbench.tsx",
+    "line": 150,
+    "content": "<Button variant=\"ghost\" size=\"icon\" title=\"View Details\">"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/finance/AccountCertPortal.tsx",
+    "line": 87,
+    "content": "{ id: \"actions\", header: \"Actions\", width: \"120px\", cell: (row) => <div className=\"actions-cell\">{row.status === 'In-Review' && <button className=\"btn-certify\" onClick={() => certifyMutation.mutate(row.id)} disabled={certifyMutation.isPending} aria-label={`Certify account ${row.account_id}`}>Certify</button>}{row.escalation_reason && <span className=\"escalation-tooltip\" title={row.escalation_reason}><AlertTriangle size={14} color=\"#dc2626\" /></span>}</div> }"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/finance/ap/APInvoiceEntry.tsx",
+    "line": 306,
+    "content": "<Input className=\"h-9 bg-slate-50 font-medium text-slate-700\" type=\"number\" step=\"0.01\" value={line.amount} readOnly title=\"Auto-calculated from Qty * Price. Override manually if needed.\" onChange={e => updateRow(\"amount\", e.target.value)} placeholder=\"0.00\" />"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/finance/ap/APInvoiceEntry.tsx",
+    "line": 367,
+    "content": "<Button variant=\"ghost\" size=\"icon\" className=\"h-9 w-9 text-slate-500 hover:text-slate-900\" title=\"View Distributions\" onClick={(e) => {"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/PredictiveScheduler.tsx",
+    "line": 181,
+    "content": "<div className=\"bar\" style={{ height: `${(req / maxDemand) * 80}px`, background: isGap ? '#fca5a5' : '#93c5fd' }} title={`${h}:00 — ${req} needed`} />"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/hr/performance/PerformanceCalibrationBoard.tsx",
+    "line": 206,
+    "content": "<div className=\"absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 border-2 border-white dark:border-zinc-950 animate-pulse\" title=\"High Flight Risk\" />"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/scm/wms/ShippingWorkbench.tsx",
+    "line": 60,
+    "content": "<Button variant=\"ghost\" size=\"icon\" title=\"Print Labels\"><Printer className=\"w-4 h-4\" /></Button>"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/scm/wms/WavePlanning.tsx",
+    "line": 52,
+    "content": "header: <input type=\"checkbox\" className=\"rounded bg-slate-900 border-slate-700\" title=\"Select all orders\" aria-label=\"Select all orders\" />,"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/tax/TaxRuleEngine.tsx",
+    "line": 51,
+    "content": "<input id=\"ruleName\" title=\"Rule Name\" className=\"w-full border rounded-md p-2\" placeholder=\"e.g., High Value Tax\" />"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/tax/TaxRuleEngine.tsx",
+    "line": 102,
+    "content": "<input id=\"rulePriority\" title=\"Priority\" type=\"number\" className=\"w-full border rounded-md p-2\" defaultValue=\"10\" placeholder=\"Priority\" />"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/transportation/CarrierManager.tsx",
+    "line": 163,
+    "content": "<div key={i} className={`w-8 bg-emerald-500/20 hover:bg-emerald-500 transition-all rounded-t-sm cursor-help h-[${h}%]`} title={`Month ${i + 1}: $${h * 10}`}></div>"
+  },
+  {
+    "file": "/Users/mbjunaid/My Projects/nexusai-erp-2/src/pages/wfm/TimekeeperConsole.tsx",
+    "line": 174,
+    "content": "{isEdited && <div className=\"w-2 h-2 rounded-full bg-blue-500 mx-auto\" title=\"Unsaved changes\" />}"
+  }
+]

@@ -17,8 +17,11 @@ router.patch("/operations/:id", maintenanceController.updateOperation);
 // Assets
 router.get("/assets", maintenanceController.listOperationalAssets);
 router.post("/assets/:id/extension", maintenanceController.upsertAssetExtension);
-router.get("/assets/:id/health", maintenanceController.getAssetHealth); // Added
-router.get("/assets/:id/bom", maintenanceController.getAssetBom); // Added
+router.get("/assets/health", maintenanceController.getAssetHealth); // Fleet
+router.get("/assets/:id/health", maintenanceController.getAssetHealth); // Single
+router.get("/assets/:id/health/trends", maintenanceController.getHealthTrends); // Trends
+router.get("/alerts/predictive", maintenanceController.getPredictiveAlerts); // Alerts
+router.get("/assets/:id/bom", maintenanceController.getAssetBom);
 
 // PM Definitions
 router.get("/pm-definitions", maintenanceController.listPMDefinitions);
@@ -79,7 +82,13 @@ router.get("/library/definitions", maintenanceController.listWorkDefinitions);
 router.post("/library/definitions", maintenanceController.createWorkDefinition);
 router.post("/library/definitions/:id/apply/:workOrderId", maintenanceController.applyWorkDefinition);
 
-// Failure Analysis
+// 12. Failure Analysis
 router.get("/failure-codes", maintenanceController.listFailureCodes);
+router.get("/failure-codes/tree", maintenanceController.getFailureCodesTree);
+router.post("/failure-codes", maintenanceController.upsertFailureCodes);
+
+// Permit Types - NEW ENDPOINTS
+router.get("/permit-types", maintenanceController.getPermitTypes);
+router.get("/permit-types/:id", maintenanceController.getPermitType);
 
 export const maintenanceRouter = router;

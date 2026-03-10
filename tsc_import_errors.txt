@@ -1,0 +1,135 @@
+scripts/benchmark_performance.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/benchmark_performance.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/seed_epm_foundation.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/seed_large_volume.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/seed_large_volume.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/seed_talent_v2.ts(7,10): error TS2305: Module '"../shared/schema/hr_structures"' has no exported member 'hrPersons'.
+scripts/sweeper_job.ts(2,29): error TS2307: Cannot find module '../services/cash.service' or its corresponding type declarations.
+scripts/sweeper_job.ts(3,24): error TS2307: Cannot find module '../utils/logger' or its corresponding type declarations.
+scripts/test_import.ts(2,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-scenario.entity.ts' or its corresponding type declarations.
+scripts/verify_accounting_flow.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_accounting_flow.ts(6,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
+scripts/verify_accounting_flow.ts(7,46): error TS2307: Cannot find module '../server/services/MaintenanceAccountingService' or its corresponding type declarations.
+scripts/verify_advanced_supply_chain.ts(4,36): error TS2307: Cannot find module '../server/modules/scm/ProcurementService' or its corresponding type declarations.
+scripts/verify_advanced_supply_chain.ts(8,38): error TS2307: Cannot find module '../server/services/ManufacturingService' or its corresponding type declarations.
+scripts/verify_ai.ts(2,20): error TS2307: Cannot find module '../db' or its corresponding type declarations.
+scripts/verify_allocations.ts(2,20): error TS2307: Cannot find module '../db' or its corresponding type declarations.
+scripts/verify_ar_adjustments.ts(5,28): error TS2307: Cannot find module '../server/services/SlaService' or its corresponding type declarations.
+scripts/verify_ar_parity_final.ts(6,19): error TS2307: Cannot find module 'axios' or its corresponding type declarations.
+scripts/verify_asset_health_step3.ts(50,49): error TS2307: Cannot find module '../server/services/AssetHealthService' or its corresponding type declarations.
+scripts/verify_corrective_flow.ts(3,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_cost_ai.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_cost_ai.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/verify_costing_flow.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_costing_flow.ts(6,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
+scripts/verify_epm_foundation.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_epm_phase2.ts(10,29): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-version.entity' or its corresponding type declarations.
+scripts/verify_epm_phase2.ts(6,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/verify_epm_phase2.ts(7,27): error TS2307: Cannot find module '../backend/src/modules/finance/entities/gl-balance.entity' or its corresponding type declarations.
+scripts/verify_epm_phase2.ts(8,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-unit.entity' or its corresponding type declarations.
+scripts/verify_epm_phase2.ts(9,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-scenario.entity' or its corresponding type declarations.
+scripts/verify_epm_phase2_draft.ts(11,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/verify_epm_phase2_draft.ts(12,27): error TS2307: Cannot find module '../backend/src/modules/finance/entities/gl-balance.entity' or its corresponding type declarations.
+scripts/verify_epm_phase2_draft.ts(13,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-unit.entity' or its corresponding type declarations.
+scripts/verify_epm_phase2_draft.ts(14,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-scenario.entity' or its corresponding type declarations.
+scripts/verify_epm_phase2_draft.ts(15,29): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-version.entity' or its corresponding type declarations.
+scripts/verify_epm_phase3.ts(10,27): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-asset.entity' or its corresponding type declarations.
+scripts/verify_epm_phase3.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_epm_phase3.ts(9,30): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-position.entity' or its corresponding type declarations.
+scripts/verify_epm_phase4.ts(10,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/epm-audit.entity' or its corresponding type declarations.
+scripts/verify_epm_phase4.ts(4,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_epm_phase4.ts(9,26): error TS2307: Cannot find module '../backend/src/modules/epm/entities/plan-unit.entity' or its corresponding type declarations.
+scripts/verify_lcm.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_lcm.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/verify_maintenance_accounting.ts(3,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
+scripts/verify_maintenance_foundation.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_maintenance_full_audit.ts(4,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_maintenance_full_audit.ts(5,43): error TS2307: Cannot find module '../server/services/MaintenanceCostingService' or its corresponding type declarations.
+scripts/verify_maintenance_full_audit.ts(8,43): error TS2307: Cannot find module '../server/services/MaintenanceQualityService' or its corresponding type declarations.
+scripts/verify_maintenance_phase14.ts(4,43): error TS2307: Cannot find module '../server/services/MaintenanceQualityService' or its corresponding type declarations.
+scripts/verify_maintenance_phase15.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_manufacturing_costing.ts(1,45): error TS2307: Cannot find module '../server/services/ManufacturingCostingService' or its corresponding type declarations.
+scripts/verify_manufacturing_costing.ts(2,38): error TS2307: Cannot find module '../server/services/ManufacturingService' or its corresponding type declarations.
+scripts/verify_manufacturing_process.ts(1,45): error TS2307: Cannot find module '../server/services/ManufacturingProcessService' or its corresponding type declarations.
+scripts/verify_material_flow.ts(3,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_operations.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_overhaul_capitalization.ts(74,49): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_parity_step1.ts(4,41): error TS2307: Cannot find module '../server/services/MaintenanceMeterService' or its corresponding type declarations.
+scripts/verify_parity_step1.ts(5,43): error TS2307: Cannot find module '../server/services/MaintenanceLibraryService' or its corresponding type declarations.
+scripts/verify_parity_step1.ts(6,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_parity_step2.ts(3,41): error TS2307: Cannot find module '../server/services/MaintenanceMeterService' or its corresponding type declarations.
+scripts/verify_parity_step2.ts(4,43): error TS2307: Cannot find module '../server/services/MaintenanceLibraryService' or its corresponding type declarations.
+scripts/verify_parity_step2.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_period_close.ts(5,36): error TS2307: Cannot find module '../server/modules/sla/period-close.service' or its corresponding type declarations.
+scripts/verify_period_reconciliation.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_period_reconciliation.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/verify_period_sweep.ts(7,32): error TS2307: Cannot find module '../server/services/RevenueService' or its corresponding type declarations.
+scripts/verify_phase6_consumption.ts(7,36): error TS2307: Cannot find module '../server/modules/scm/ProcurementService' or its corresponding type declarations.
+scripts/verify_planning_flow.ts(5,44): error TS2307: Cannot find module '../server/services/MaintenancePlanningService' or its corresponding type declarations.
+scripts/verify_planning_flow.ts(6,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_pm_logic.ts(2,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_posting_persistence.ts(7,34): error TS2307: Cannot find module '../metadata' or its corresponding type declarations.
+scripts/verify_ppm_ap_integration.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_assets.ts(3,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_billing.ts(4,35): error TS2307: Cannot find module '../server/services/PpmBillingService' or its corresponding type declarations.
+scripts/verify_ppm_burdening.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_capitalization.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_configuration.ts(6,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_core.ts(3,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_cross_charge.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_intelligence.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_inventory.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_labor.ts(7,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_performance.ts(1,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_ppm_planning.ts(4,36): error TS2307: Cannot find module '../server/services/PpmPlanningService' or its corresponding type declarations.
+scripts/verify_ppm_subledger.ts(2,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_procurement_step2.ts(39,52): error TS2307: Cannot find module '../server/services/MaintenanceSCMService' or its corresponding type declarations.
+scripts/verify_project_integration.ts(5,28): error TS2307: Cannot find module '../server/services/PpmService' or its corresponding type declarations.
+scripts/verify_quality_flow.ts(5,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_quality_flow.ts(6,43): error TS2307: Cannot find module '../server/services/MaintenanceQualityService' or its corresponding type declarations.
+scripts/verify_resource_flow.ts(3,36): error TS2307: Cannot find module '../server/services/MaintenanceService' or its corresponding type declarations.
+scripts/verify_revenue_intelligence.ts(4,32): error TS2307: Cannot find module '../server/services/RevenueService' or its corresponding type declarations.
+scripts/verify_revenue_intelligence.ts(5,43): error TS2307: Cannot find module '../server/services/RevenueForecastingService' or its corresponding type declarations.
+scripts/verify_revenue_phase_d.ts(6,32): error TS2307: Cannot find module '../server/services/RevenueService' or its corresponding type declarations.
+scripts/verify_revenue_recognition.ts(3,28): error TS2307: Cannot find module '../server/services/SlaService' or its corresponding type declarations.
+scripts/verify_sla_draft.ts(2,38): error TS2307: Cannot find module '../server/services/SlaService' or its corresponding type declarations.
+scripts/verify_standard_costing.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_standard_costing.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/verify_supplier_name_display.ts(5,19): error TS2307: Cannot find module 'axios' or its corresponding type declarations.
+scripts/verify_wip_costing.ts(3,31): error TS2307: Cannot find module '@nestjs/typeorm' or its corresponding type declarations.
+scripts/verify_wip_costing.ts(5,28): error TS2307: Cannot find module 'typeorm' or its corresponding type declarations.
+scripts/verify_wms_flow.ts(4,28): error TS2307: Cannot find module '../server/services/WmsService' or its corresponding type declarations.
+scripts/verify_wms_foundation.ts(2,20): error TS2307: Cannot find module '../db' or its corresponding type declarations.
+server/modules/finance/finance.service.ts(187,46): error TS2307: Cannot find module '../../../services/period-close/CloseEngine' or its corresponding type declarations.
+server/modules/finance/routes.ts(319,64): error TS2307: Cannot find module '../../services/RevenueRecognitionService' or its corresponding type declarations.
+server/modules/finance/routes.ts(338,64): error TS2307: Cannot find module '../../services/RevenueRecognitionService' or its corresponding type declarations.
+server/modules/intercompany/intercompany.invoice.service.ts(7,27): error TS2307: Cannot find module '../shared/schema/intercompany' or its corresponding type declarations.
+server/modules/inventory/wms-wave.service.ts(3,30): error TS2305: Module '"@shared/schema/scm"' has no exported member 'omOrderLines'.
+server/modules/inventory/wms-wave.service.ts(3,44): error TS2305: Module '"@shared/schema/scm"' has no exported member 'omOrderHeaders'.
+server/modules/order/BackToBackService.ts(4,38): error TS2307: Cannot find module '../../services/ManufacturingService' or its corresponding type declarations.
+server/modules/scm/procurementRoutes.ts(6,36): error TS2307: Cannot find module './ProcurementService' or its corresponding type declarations.
+server/modules/scm/wms-routes.ts(3,28): error TS2307: Cannot find module '../../services/WmsService' or its corresponding type declarations.
+server/scripts/verify_fixed_assets.ts(3,10): error TS2305: Module '"../services/fixedAssets"' has no exported member 'fixedAssetsService'.
+server/services/AnomalyDetectionService.ts(5,30): error TS2305: Module '"drizzle-orm"' has no exported member 'stddev'.
+server/services/BulkImportService.ts(5,23): error TS2305: Module '"../../shared/schema/parties"' has no exported member 'InsertOrganization'.
+server/services/BulkImportService.ts(5,43): error TS2305: Module '"../../shared/schema/parties"' has no exported member 'InsertPerson'.
+server/services/CarrierRatingService.ts(4,10): error TS2305: Module '"../../shared/schema/transportation"' has no exported member 'InsertTlCarrier'.
+server/services/TLOptimizationService.ts(4,10): error TS2305: Module '"../../shared/schema/transportation"' has no exported member 'InsertTlShipment'.
+server/services/agentic.ts(219,53): error TS2307: Cannot find module './PpmService' or its corresponding type declarations.
+server/services/agentic.ts(265,71): error TS2307: Cannot find module './ManufacturingPlanningService' or its corresponding type declarations.
+server/storage.ts(172,23): error TS2305: Module '"@shared/schema"' has no exported member 'InsertScenario'.
+server/storage.ts(172,8): error TS2305: Module '"@shared/schema"' has no exported member 'Scenario'.
+server/storage.ts(173,31): error TS2305: Module '"@shared/schema"' has no exported member 'InsertScenarioVariable'.
+server/storage.ts(173,8): error TS2305: Module '"@shared/schema"' has no exported member 'ScenarioVariable'.
+src/components/GlobalLayout.test.tsx(3,26): error TS2307: Cannot find module './GlobalLayout' or its corresponding type declarations.
+src/components/transportation/RouteMapOverlay.tsx(5,27): error TS2307: Cannot find module 'leaflet/dist/images/marker-icon.png' or its corresponding type declarations.
+src/components/transportation/RouteMapOverlay.tsx(6,29): error TS2307: Cannot find module 'leaflet/dist/images/marker-shadow.png' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(10,31): error TS2307: Cannot find module '@assets/stock_images/industrial_manufactu_283e69f0.jpg' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(11,27): error TS2307: Cannot find module '@assets/stock_images/logistics_warehouse__5ce59285.jpg' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(12,27): error TS2307: Cannot find module '@assets/stock_images/modern_education_uni_aed4c4fe.jpg' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(13,28): error TS2307: Cannot find module '@assets/stock_images/government_building__65e1f24d.jpg' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(14,28): error TS2307: Cannot find module '@assets/stock_images/automotive_car_deale_62f1f498.jpg' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(15,25): error TS2307: Cannot find module '@assets/stock_images/banking_finance_corp_f11367f7.jpg' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(8,28): error TS2307: Cannot find module '@assets/stock_images/modern_hospital_heal_f0393426.jpg' or its corresponding type declarations.
+src/pages/IndustryDetail.tsx(9,24): error TS2307: Cannot find module '@assets/stock_images/retail_store_shoppin_143d3777.jpg' or its corresponding type declarations.
+src/pages/recruitment/InterviewerDashboard.tsx(8,25): error TS2307: Cannot find module '@/hooks/use-user' or its corresponding type declarations.

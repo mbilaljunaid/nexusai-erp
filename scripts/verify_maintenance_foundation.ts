@@ -1,8 +1,8 @@
 
-import { maintenanceService } from "../server/services/MaintenanceService";
+import { maintenanceService } from "../server/modules/maintenance/services/MaintenanceService";
 import { faService } from "../server/services/fixedAssets";
 import { db } from "../server/db";
-import { faAssets, faCategories, faBooks, faAssetBooks, maintAssetsExtension } from "../shared/schema";
+import { faAssets, faCategories, faBooks, faAssetBooks, maintAssetsExtension, faTransactions, maintWorkOrders, maintWorkOrderOperations } from "../shared/schema";
 import { eq } from "drizzle-orm";
 
 
@@ -24,10 +24,18 @@ async function verifyMaintenanceFoundation() {
         // Delete extensions
         await db.delete(maintAssetsExtension).where(eq(maintAssetsExtension.assetId, existingAsset.id));
 
-        // Delete Work Orders (might fail if operations exist, assumes clean or cascade if configured, but let's be safe)
-        // We'd need to find WOs for this asset first.
-        // For simplicity in this test, let's just use SQL to delete cascade-like if possible or query IDs.
-        // Actually, since we just created it in this script previously, let's try to do it properly.
+        // Delete Work Orders and Operations
+        const wos = await db.select().from(maintWorkOrders).where(eq(maintWorkOrders.assetId, existingAsset.id));
+        for (const wo of wos) {
+            await db.delete(maintWorkOrderOperations).where(eq(maintWorkOrderOperations.workOrderId, wo.id));
+            await db.delete(maintWorkOrders).where(eq(maintWorkOrders.id, wo.id));
+        }
+
+        // Delete dependent transactions first (Resolve Book IDs)
+        const books = await db.select().from(faAssetBooks).where(eq(faAssetBooks.assetId, existingAsset.id));
+        for (const book of books) {
+            await db.delete(faTransactions).where(eq(faTransactions.assetBookId, book.id));
+        }
 
         // Delete Asset Books
         await db.delete(faAssetBooks).where(eq(faAssetBooks.assetId, existingAsset.id));
@@ -99,7 +107,7 @@ async function verifyMaintenanceFoundation() {
 
         // 3. Verify List
         const list = await maintenanceService.listWorkOrders();
-        const found = list.find(w => w.id === wo.id);
+        const found = list.data.find(w => w.id === wo.id);
         if (found) {
             console.log("✅ Verify List: Success");
         } else {
@@ -109,7 +117,7 @@ async function verifyMaintenanceFoundation() {
 
         // 4. Update Status
         const updated = await maintenanceService.updateWorkOrderStatus(wo.id, "RELEASED");
-        if (updated[0].status === "RELEASED") {
+        if (updated.status === "RELEASED") {
             console.log("✅ Status Update: Success");
         } else {
             console.error("❌ Status Update: Failed");

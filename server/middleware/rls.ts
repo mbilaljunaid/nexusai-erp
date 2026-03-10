@@ -1,0 +1,46 @@
+import { Request, Response, NextFunction } from "./types";
+
+/**
+ * RLS Middleware
+ * Simulates an Authentication Provider (like Auth0) and Role Enforcement.
+ * In a real app, this would decode a JWT.
+ * Here, we trust the 'x-mock-role' header for demonstration.
+ */
+export const rlsMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    // 1. Extract Role from Header (Default to EMPLOYEE)
+    const role = (req.headers["x-mock-role"] as string) || "EMPLOYEE";
+
+    // 2. Define Permissions based on Role
+    let permissions: string[] = [];
+
+    switch (role) {
+        case "HR_ADMIN":
+            permissions = ["VIEW_ALL", "VIEW_SENSITIVE", "EDIT_CONFIG", "RUN_REPORTS", "MANAGE_SECURITY"];
+            break;
+        case "HR_ANALYST":
+            permissions = ["VIEW_ALL", "VIEW_REPORTS", "CREATE_REPORTS", "VIEW_ANALYTICS"];
+            break;
+        case "MANAGER":
+            permissions = ["VIEW_TEAM", "VIEW_REPORTS", "VIEW_TEAM_ANALYTICS"];
+            break;
+        case "EMPLOYEE":
+        default:
+            permissions = ["VIEW_SELF"];
+            break;
+    }
+
+    // 3. Attach User Context
+    req.user = {
+        id: "mock-user-id",
+        role,
+        permissions,
+        tenantId: "default"
+    };
+
+    // Log context for debugging transparency
+    if (req.path.startsWith("/api/hr")) {
+        console.log(`[RLS] Request: ${req.method} ${req.path} | Role: ${role} | Perms: ${permissions.length}`);
+    }
+
+    next();
+};

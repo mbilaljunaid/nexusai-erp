@@ -1,0 +1,202 @@
+import { useState } from "react";
+import { formatCurrency } from "@/lib/formatters";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { DollarSign, TrendingUp, AlertCircle, CreditCard, Clock } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { IconNavigation } from "@/components/IconNavigation";
+
+interface AgingBucket {
+  days: string;
+  count: number;
+  amount: string;
+  percentage: number;
+}
+
+interface AgingData {
+  id: string;
+  type: "ap" | "ar";
+  current: AgingBucket;
+  days30: AgingBucket;
+  days60: AgingBucket;
+  days90: AgingBucket;
+  over90: AgingBucket;
+  totalAmount: string;
+  createdAt: string;
+}
+
+export default function AgingReport() {
+  const [activeNav, setActiveNav] = useState("ap");
+  const { data: apData = [] } = useQuery<AgingData[]>({
+    queryKey: ["/api/aging-report?type=ap"],
+    retry: false,
+  });
+
+  const { data: arData = [] } = useQuery<AgingData[]>({
+    queryKey: ["/api/aging-report?type=ar"],
+    retry: false,
+  });
+
+  const apLatest = apData[0];
+  const arLatest = arData[0];
+
+  const navItems = [
+    { id: "ap", label: "Accounts Payable", icon: CreditCard, color: "text-blue-500" },
+    { id: "ar", label: "Accounts Receivable", icon: Clock, color: "text-green-500" },
+  ];
+
+  const renderAgingChart = (data: AgingData | undefined) => {
+    if (!data) return <p className="text-muted-foreground">No data available</p>;
+
+    const buckets = [
+      { label: "Current", data: data.current, color: "bg-green-500" },
+      { label: "30-60 Days", data: data.days30, color: "bg-yellow-500" },
+      { label: "60-90 Days", data: data.days60, color: "bg-orange-500" },
+      { label: "90+ Days", data: data.over90, color: "bg-red-500" },
+    ];
+
+    return (
+      <div className="space-y-4">
+        {buckets.map((bucket) => (
+          <div key={bucket.label}>
+            <div className="flex justify-between mb-2">
+              <span className="text-sm font-medium">{bucket.label}</span>
+              <span className="text-sm">{formatCurrency(parseFloat(bucket.data.amount))}</span>
+            </div>
+            <div className="w-full bg-secondary h-6 rounded flex overflow-hidden">
+              <svg width={`${bucket.data.percentage || 0}%`} height="100%" className="transition-all">
+                <rect width="100%" height="100%" className={bucket.color.replace("bg-", "fill-")} />
+              </svg>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">{bucket.data.count} invoices ({bucket.data.percentage.toFixed(0)}%)</p>
+          </div>
+        ))}
+        <div className="pt-4 border-t">
+          <div className="flex justify-between">
+            <span className="font-semibold">Total</span>
+            <span className="font-semibold text-lg">{formatCurrency(parseFloat(data.totalAmount))}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold">Aging Report</h1>
+        <p className="text-muted-foreground text-sm">View aging analysis for Accounts Payable and Receivable</p>
+      </div>
+
+      <IconNavigation items={navItems} activeId={activeNav} onSelect={setActiveNav} />
+
+      {activeNav === "ap" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="h-5 w-5 text-orange-500" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Overdue 90+ Days</p>
+                    <p className="text-2xl font-semibold font-mono">
+                      {formatCurrency(apLatest ? parseFloat(apLatest.over90.amount) : 0)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="h-5 w-5 text-blue-500" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Total AP</p>
+                    <p className="text-2xl font-semibold font-mono">
+                      {formatCurrency(apLatest ? parseFloat(apLatest.totalAmount) : 0)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <DollarSign className="h-5 w-5 text-green-500" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Current (Not Due)</p>
+                    <p className="text-2xl font-semibold font-mono">
+                      {formatCurrency(apLatest ? parseFloat(apLatest.current.amount) : 0)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>AP Aging Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {renderAgingChart(apLatest)}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeNav === "ar" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="h-5 w-5 text-orange-500" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Overdue 90+ Days</p>
+                    <p className="text-2xl font-semibold font-mono">
+                      {formatCurrency(arLatest ? parseFloat(arLatest.over90.amount) : 0)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="h-5 w-5 text-blue-500" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Total AR</p>
+                    <p className="text-2xl font-semibold font-mono">
+                      {formatCurrency(arLatest ? parseFloat(arLatest.totalAmount) : 0)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <DollarSign className="h-5 w-5 text-green-500" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Current (Not Due)</p>
+                    <p className="text-2xl font-semibold font-mono">
+                      {formatCurrency(arLatest ? parseFloat(arLatest.current.amount) : 0)}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>AR Aging Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {renderAgingChart(arLatest)}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}

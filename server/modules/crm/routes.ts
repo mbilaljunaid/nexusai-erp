@@ -18,6 +18,10 @@ import { fieldServiceRoutes } from "./field-service-routes";
 import { knowledgeBaseRoutes } from "./knowledge-base-routes";
 import { contractRoutes } from "./contracts-routes";
 import { partnerRoutes } from "./partner-routes";
+import { cpqRoutes } from "./cpq-routes";
+
+// Import mock routes for new CRM features
+import { crmRouter as crmDatabaseRouter } from "../../routes/crmRoutes";
 
 export const crmRouter = Router();
 
@@ -37,6 +41,10 @@ crmRouter.use("/knowledge", knowledgeBaseRoutes);
 crmRouter.use("/contracts", contractRoutes);
 crmRouter.use("/partner", partnerRoutes);
 crmRouter.use("/analytics", analyticsRoutes);
+crmRouter.use("/cpq", cpqRoutes);
+
+// USE REAL DATABASE-BACKED ROUTES
+crmRouter.use(crmDatabaseRouter);
 
 // --- CrmController Routes ---
 

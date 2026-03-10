@@ -14,8 +14,10 @@ router.get("/recruitment/jobs", async (req, res) => {
         const tenantId = (req as any).user?.tenantId || "default_tenant";
         const limit = parseInt(req.query.limit as string) || 50;
         const offset = parseInt(req.query.offset as string) || 0;
+        const entLegalEntityId = req.headers['x-legal-entity-id'] || req.query.legalEntityId as string;
+        const entBusinessUnitId = req.headers['x-business-unit-id'] || req.query.businessUnitId as string;
 
-        const jobs = await RecruitmentService.getRequisitions(tenantId, { limit, offset });
+        const jobs = await RecruitmentService.getRequisitions(tenantId, { limit, offset, entLegalEntityId, entBusinessUnitId });
         res.json(jobs);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
@@ -26,7 +28,9 @@ router.get("/recruitment/jobs", async (req, res) => {
 router.post("/recruitment/jobs", async (req, res) => {
     try {
         const tenantId = (req as any).user?.tenantId || "default_tenant";
-        const data = { ...req.body, tenantId };
+        const entLegalEntityId = req.headers['x-legal-entity-id'] || req.body.entLegalEntityId as string;
+        const entBusinessUnitId = req.headers['x-business-unit-id'] || req.body.entBusinessUnitId as string;
+        const data = { ...req.body, tenantId, entLegalEntityId, entBusinessUnitId };
         const job = await RecruitmentService.createRequisition(data);
         res.status(201).json(job);
     } catch (err: any) {
@@ -51,12 +55,14 @@ router.get("/recruitment/candidates", async (req, res) => {
         const tenantId = (req as any).user?.tenantId || "default_tenant";
         const limit = parseInt(req.query.limit as string) || 50;
         const offset = parseInt(req.query.offset as string) || 0;
+        const entLegalEntityId = req.headers['x-legal-entity-id'] || req.query.legalEntityId as string;
+        const entBusinessUnitId = req.headers['x-business-unit-id'] || req.query.businessUnitId as string;
 
         // RBAC: Recruiters and Admins see full data. Managers see masked.
         const role = (req as any).user?.role || "viewer";
         const maskPII = !['recruiter', 'admin', 'hr_manager'].includes(role);
 
-        const candidates = await RecruitmentService.getCandidates(tenantId, { limit, offset, maskPII });
+        const candidates = await RecruitmentService.getCandidates(tenantId, { limit, offset, maskPII, entLegalEntityId, entBusinessUnitId });
         res.json(candidates);
     } catch (err: any) {
         res.status(500).json({ error: err.message });

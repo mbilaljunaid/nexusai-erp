@@ -114,7 +114,7 @@ async function verifyEnterpriseBilling() {
     }
 
     // 3. Verify Invoice
-    const invoiceId = batchResult.invoiceIds[0];
+    const invoiceId = batchResult.invoiceIds ?? [][0];
     const invoices = await db.select().from(arInvoices).where(eq(arInvoices.id, invoiceId));
 
     if (invoices.length === 0) {

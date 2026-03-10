@@ -11,6 +11,9 @@ import { maintenanceSCMService } from "./services/MaintenanceSCMService";
 import { assetHealthService } from "./services/AssetHealthService";
 import { projectCostingIntegration } from "../../services/ProjectCostingIntegration"; // External
 import { inventoryReorderService } from "../../services/InventoryReorderService"; // External
+import { db } from "../../db";
+import * as schema from "../../../shared/schema";
+import { eq } from "drizzle-orm";
 
 export class MaintenanceController {
 
@@ -23,6 +26,7 @@ export class MaintenanceController {
             const { limit, offset, status, assignedToId, page, organizationId } = req.query;
             let finalOffset = Number(offset) || 0;
             const finalLimit = Number(limit) || 20;
+            const invOrgId = req.headers['x-inventory-org-id'] as string | undefined;
 
             if (page) {
                 finalOffset = (Number(page) - 1) * finalLimit;
@@ -34,7 +38,8 @@ export class MaintenanceController {
                 {
                     status: status as string,
                     assignedToId: assignedToId === 'null' ? null : (assignedToId as string),
-                    organizationId: organizationId as string
+                    organizationId: (organizationId as string) || invOrgId,
+                    entInventoryOrgId: invOrgId
                 }
             );
             res.json(result);
@@ -55,7 +60,11 @@ export class MaintenanceController {
 
     async createWorkOrder(req: Request, res: Response) {
         try {
-            const wo = await maintenanceService.createWorkOrder(req.body);
+            const invOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const wo = await maintenanceService.createWorkOrder({
+                ...req.body,
+                ...(invOrgId ? { entInventoryOrgId: invOrgId } : {})
+            });
             res.json(wo);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -128,8 +137,32 @@ export class MaintenanceController {
 
     async getAssetHealth(req: Request, res: Response) {
         try {
-            const health = await assetHealthService.getAssetHealth(req.params.id);
-            res.json(health);
+            if (req.params.id) {
+                const health = await assetHealthService.getAssetHealth(req.params.id);
+                res.json(health);
+            } else {
+                const health = await assetHealthService.getFleetHealth();
+                res.json(health);
+            }
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getPredictiveAlerts(req: Request, res: Response) {
+        try {
+            const alerts = await assetHealthService.getPredictiveAlerts();
+            res.json(alerts);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getHealthTrends(req: Request, res: Response) {
+        try {
+            if (!req.params.id) return res.status(400).json({ error: "Asset ID is required" });
+            const trends = await assetHealthService.getHealthTrends(req.params.id);
+            res.json(trends);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
@@ -510,6 +543,83 @@ export class MaintenanceController {
             const { type, parentId } = req.query;
             const codes = await failureAnalysisService.listFailureCodes(type as string, parentId as string);
             res.json(codes);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getFailureCodesTree(req: Request, res: Response) {
+        try {
+            const tree = await failureAnalysisService.getFailureCodesTree();
+            res.json(tree);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async upsertFailureCodes(req: Request, res: Response) {
+        try {
+            const results = await failureAnalysisService.upsertFailureCodes(req.body);
+            res.json(results);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    // ==============================================================================
+    // 13. PERMIT TYPES
+    // ==============================================================================
+
+    async getPermitTypes(req: Request, res: Response) {
+        try {
+            const data = await db.query.maintPermitTypes.findMany({
+                where: eq(schema.maintPermitTypes.isActive, true),
+                orderBy: (types, { asc }) => [asc(types.name)],
+            });
+
+            // Map database fields to frontend expected format
+            const permitTypes = data.map((row: any) => ({
+                id: row.id,
+                name: row.name,
+                description: row.description,
+                category: row.category,
+                requiresApproval: row.requiresApproval ?? true,
+                approvalLevels: row.approvalLevels ?? 1,
+                validityHours: row.validityHours ?? 8,
+                requiredDocuments: row.requiredDocuments || []
+            }));
+
+            res.json(permitTypes);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getPermitType(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+
+            const data = await db.query.maintPermitTypes.findFirst({
+                where: eq(schema.maintPermitTypes.id, id),
+            });
+
+            if (!data) {
+                return res.status(404).json({ error: "Permit type not found" });
+            }
+
+            // Map database fields to frontend expected format
+            const permitType = {
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                category: data.category,
+                requiresApproval: data.requiresApproval ?? true,
+                approvalLevels: data.approvalLevels ?? 1,
+                validityHours: data.validityHours ?? 8,
+                requiredDocuments: data.requiredDocuments || []
+            };
+
+            res.json(permitType);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }

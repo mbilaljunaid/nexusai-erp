@@ -29,4 +29,15 @@ export class ApController {
     payInvoice(@Param('id') id: string, @Body() dto: any) {
         return this.apService.payInvoice(id, dto);
     }
+
+    /** P0: Async Payment Batch (PPR — Payment Process Request) */
+    @Post('payment-batches')
+    createPaymentBatch(@Body() dto: { batchName: string; invoiceIds: string[]; checkDate?: string; paymentMethod?: string; bankAccountId?: string }) {
+        return this.apService.createPaymentBatch(dto);
+    }
+
+    @Get('payment-batches/:id')
+    getPaymentBatch(@Param('id') id: string) {
+        return this.apService.getPaymentBatch(id);
+    }
 }

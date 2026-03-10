@@ -34,7 +34,7 @@ class MaintenanceSCMService {
         const prLine = await scmService.addRequisitionLine(prId, {
             itemId: mat.inventoryId,
             itemDescription: `Parts for WO ${wo.workOrderNumber}`, // In real app, fetch item name
-            quantity: mat.plannedQuantity.toString(),
+            quantity: (mat.plannedQuantity ?? 0).toString(),
             needByDate: wo.scheduledStartDate
         });
 

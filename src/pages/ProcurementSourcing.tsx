@@ -1,0 +1,180 @@
+import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Badge } from "@/components/ui/badge";
+import { ShoppingCart, Plus, Trash2 } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { StandardPage } from '@/components/layout/StandardPage';
+
+const poSchema = z.object({
+  poId: z.string().min(1, "PO ID is required"),
+  supplierId: z.string().min(1, "Supplier ID is required"),
+  itemId: z.string().min(1, "Item ID is required"),
+  quantity: z.coerce.number().min(1, "Quantity must be > 0")
+});
+
+type POFormValues = z.infer<typeof poSchema>;
+
+export default function ProcurementSourcing() {
+  const { toast } = useToast();
+
+  const form = useForm<POFormValues>({
+    resolver: zodResolver(poSchema),
+    defaultValues: { poId: "", supplierId: "", itemId: "", quantity: 0 }
+  });
+
+  const { data: orders = [], isLoading } = useQuery<any>({
+    queryKey: ["/api/fb-procurement"],
+    queryFn: () => fetch("/api/fb-procurement").then(r => r.json()).catch(() => []),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => fetch("/api/fb-procurement", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/fb-procurement"] });
+      form.reset();
+      toast({ title: "PO created" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => fetch(`/api/fb-procurement/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/fb-procurement"] });
+      toast({ title: "PO deleted" });
+    },
+  });
+
+  const completed = orders.filter((o: any) => o.status === "completed").length;
+  const pending = orders.filter((o: any) => o.status === "draft").length;
+
+  return (
+    <StandardPage
+      title={
+        <div className="flex items-center gap-2">
+          <ShoppingCart className="h-8 w-8" />
+          Procurement & Sourcing
+        </div>
+      }
+      description="Supplier qualification, RFQ, PO management, and sustainability tracking"
+    >
+      <div className="space-y-6">
+        <div className="grid grid-cols-4 gap-3">
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Total POs</p>
+              <p className="text-2xl font-bold">{orders.length}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Draft</p>
+              <p className="text-2xl font-bold text-yellow-600">{pending}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Completed</p>
+              <p className="text-2xl font-bold text-green-600">{completed}</p>
+            </CardContent>
+          </Card>
+          <Card className="p-3">
+            <CardContent className="pt-0">
+              <p className="text-xs text-muted-foreground">Completion %</p>
+              <p className="text-2xl font-bold">{orders.length > 0 ? ((completed / orders.length) * 100).toFixed(0) : 0}%</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card data-testid="card-new-po">
+          <CardHeader><CardTitle className="text-base">Create Purchase Order</CardTitle></CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit((data) => createMutation.mutate({ ...data, status: "draft" }))} className="grid grid-cols-5 gap-2">
+                <FormField
+                  control={form.control}
+                  name="poId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="PO ID" data-testid="input-poid" className="text-sm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="supplierId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Supplier ID" data-testid="input-sid" className="text-sm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="itemId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Item ID" data-testid="input-iid" className="text-sm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Qty" type="number" data-testid="input-qty" className="text-sm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={createMutation.isPending} size="sm" data-testid="button-create">
+                  <Plus className="w-3 h-3" />
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader><CardTitle className="text-base">Purchase Orders</CardTitle></CardHeader>
+          <CardContent className="space-y-2">
+            {isLoading ? <TableSkeleton rows={4} /> : orders.length === 0 ? <p className="text-muted-foreground text-center py-4">No POs</p> : orders.map((o: any) => (
+              <div key={o.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`po-${o.id}`}>
+                <div className="flex-1">
+                  <p className="font-semibold">{o.poId}</p>
+                  <p className="text-xs text-muted-foreground">Supplier: {o.supplierId} • Qty: {o.quantity}</p>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Badge variant={o.status === "completed" ? "default" : "secondary"} className="text-xs">{o.status}</Badge>
+                  <Button size="icon" variant="ghost" data-testid={`button-delete-${o.id}`} className="h-7 w-7" aria-label="Delete">
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    </StandardPage>
+  );
+}

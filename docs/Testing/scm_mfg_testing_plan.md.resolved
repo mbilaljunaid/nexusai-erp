@@ -1,0 +1,197 @@
+# Nexus AI ERP: SCM & Manufacturing Testing Plan
+
+## Overview
+This document outlines the comprehensive testing plan, test scenarios, and use cases for the Supply Chain Management (SCM) and Manufacturing modules (Modules 10-17). The objective is to validate frontend UI functionality entirely through browser-based manual testing without automated Playwright or data seeding scripts.
+
+## Core Core Enterprise Scoping Validations
+Across all test cases, the following three core enterprise invariants must be verified:
+1. **Unit Tests (Data Scope)**: Ensure core UI data queries automatically include scope restrictions alongside `tenantId`. (Visible in UI by filtering records).
+2. **E2E Validation (Context Isolation)**: Verify that a user assigned *only* to Business Unit A (or Org A) cannot view or interact with records (e.g., POs or Invoices) created under Business Unit B, even within the same Tenant.
+3. **State Preservation**: Verify that refreshing the frontend application retains the user's active context selection (e.g., selected Inventory Org or BU remains active on F5/refresh).
+
+## Testing Protocols
+- **Navigation Mandate**: ALL testing must originate from standard UI navigation (Sidebars, Menus, Dashboards). **Direct link access (typing into URL bar) is strictly prohibited.** If a page cannot be reached via UI clicks, the missing navigation link must be built *before* testing proceeds.
+- **Immediate Remediation**: If any feature/button/form is found broken (even if it's outside the exact scenario steps), execution pauses, the bug is fixed, and testing only resumes once it works.
+
+---
+
+## Module 10: Procurement
+**Total Pages**: 26
+
+### Scenarios & Use Cases
+1. **Procure-to-Pay (P2P) Lifecycle**:
+   - Navigate to `Purchase Requisitions`. Create and submit a PR.
+   - Navigate to `Buyer Work Area`. Convert PR to PO.
+   - Navigate to `Purchase Orders`. Open the newly created PO. Ensure lines and distributions load.
+   - Add a `PO Change Order` and approve it.
+2. **Supplier Sourcing & Agreements**:
+   - Navigate to `Supplier Management`. View supplier profile.
+   - Navigate to `Supplier Qualification`. Fill a questionnaire.
+   - Navigate to `Supplier Negotiation Workbench`. Create an RFQ scoring matrix.
+   - Navigate to `Blanket Purchase Agreement` / `Contract Purchase Agreement`. Verify releases and percentage utilization.
+3. **Advanced Procurement**:
+   - Access `Funds Check Dashboard`. Verify encumbrance logic.
+   - Open `Punchout Catalog Setup`. Check mock cXML gateway.
+   - Check `PODistributionWorkbench` for charge splits.
+   - Submit ASN via `Supplier ASN Portal`.
+   - Test `DropShipB2BWorkbench`.
+   - Test `LandedCostApportionment` allocations.
+
+---
+
+## Module 11: Inventory / PIM
+**Total Pages**: 23
+
+### Scenarios & Use Cases
+1. **Item Master Data**:
+   - Navigate to `Item Directory` & `Item Profile`.
+   - Check `Item Master Org Tabs` (Purchasing, BOM, Costing).
+   - Use `Item Category Hierarchy` tree.
+   - View `Item Relationships`.
+2. **Stock Operations**:
+   - View [Inventory](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/scm.ts#162-163) list and `OnHandBalanceInquiry`.
+   - Process a `Stock Transfer` and `InterOrgTransfer`.
+   - Process `Stock Picking Packing`.
+   - Review `MinMaxPlanningSetup`.
+3. **Advanced Inventory**:
+   - Check `LotSerialManager` genealogy.
+   - Execute a `CycleCountingAudit`.
+   - View `MaterialStatusControls`.
+   - Verify `UOMConversionMatrix`.
+   - Check `ConsignmentStockManager` billing triggers.
+   - Configure [LocatorPickingSequence](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/scm/wms/LocatorPickingSequence.tsx#48-193) (Zone/Class rules).
+   - Setup `ABCClassificationSetup`.
+   - Test `CatchWeightEntry`.
+
+---
+
+## Module 12: Warehouse Management (WMS)
+**Total Pages**: 14
+
+### Scenarios & Use Cases
+1. **Inbound Operations**:
+   - Navigate to `Warehouse` dashboard.
+   - Configure `DirectedPutawayRules`.
+   - Process [GoodsReceiptPutaway](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/GoodsReceiptPutaway.tsx#27-183).
+2. **Outbound Operations**:
+   - Manage `WavePlanning`.
+   - View `TaskDashboard` & use `TaskInterleavingEngine`.
+   - Access `MobileWarehouse` scanner screens.
+   - Run `PackStation` for scan-to-pack.
+   - Check `ShippingWorkbench`.
+3. **Advanced WMS**:
+   - View `YardDockManagement` and `YardManagement`.
+   - Process `CrossDockingWorkbench` auto-match.
+   - Check `LPNTransactionWorkbench` (Scan/Split/Merge).
+   - Review `WmsLaborPerformance`.
+   - Test `RMAWorkbench` (Returns).
+
+---
+
+## Module 13: Manufacturing
+**Total Pages**: 27
+
+### Scenarios & Use Cases
+1. **Engineering (BOM & Routings)**:
+   - Use `BOMDesigner` and `RoutingEditor`.
+   - View `StandardOpLibrary`.
+   - Review `ECOManagement` versions.
+   - Set up `FormulaDesigner` (Process Mfg).
+2. **Planning & Scheduling**:
+   - Run `MRPWorkbench` & [MRPExplosionViewer](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/manufacturing/MRPExplosionViewer.tsx#59-149).
+   - View `ProductionGantt` & `ConstraintScheduler`.
+   - Use `CapacityPlanning` & `CalendarManager`.
+3. **Shop Floor Execution**:
+   - Release from `WorkOrderList`.
+   - Operator execution in `ShopFloorTerminal`.
+   - View `WorkInstructionLibrary` (SCORM/PDF).
+   - Use `QualityManager` and `VarianceAnalysis`.
+   - Explore `OSPWorkbench` (Outside Processing).
+   - Run `ReworkOrderDispatcher` and `KanbanReplenishmentSetup`.
+   - View `ProductionAdherenceReport`.
+
+---
+
+## Module 14: Cost Management
+**Total Pages**: 10
+
+### Scenarios & Use Cases
+1. **Cost Setup & Execution**:
+   - Check `CostDashboard` and `CostInsights`.
+   - View `StandardCosting`.
+   - Execute `CostRollupWorkbench`.
+   - Configure `CostMethodSetup` (FIFO/Average).
+2. **Advanced Costing**:
+   - Track `CostProcessorMonitor` (Queue/Errors).
+   - Check AP Accruals via `ReceiptAccountingViewer`.
+   - Run `CostAdjustmentApprovalWorkbench`.
+   - View `CostVarianceReport`.
+   - Configure `TransferPricingSetup`.
+   - Set `OverheadAbsorptionRules` and run `PeriodCloseReconciliation`.
+
+---
+
+## Module 15: Maintenance (EAM)
+**Total Pages**: 21
+
+### Scenarios & Use Cases
+1. **Asset Management**:
+   - Use [AssetHierarchyTree](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/maintenance/AssetHierarchyTree.tsx#56-95) and `Asset360View`.
+   - Check `AssetWarrantyManager`.
+2. **Work Execution & Planning**:
+   - Track [AssetHealthDashboard](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/maintenance/AssetHealthDashboard.tsx#78-489) and `IoTSensorDashboard`.
+   - Configure `PMDefinitionBuilder` and `PMScheduler`.
+   - Check `PMRouteManager` (Route Grouping).
+   - Use `MaintenanceWorkbench`.
+   - Run [AdvancedSchedulingBoard](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/maintenance/AdvancedSchedulingBoard.tsx#82-451).
+3. **Reliability & Advanced**:
+   - Report failures via `FailureCodeConfig` and `RCAWorkbench`.
+   - Test `FMEAWorkbench`.
+   - Check `InspectionWorkflow` and `PermitWorkflow`.
+   - Use `MeterReadingModule` and configure `MeterConfiguration`.
+   - Set `CBMRulesEngine`.
+
+---
+
+## Module 16: Transportation (TMS)
+**Total Pages**: 14
+
+### Scenarios & Use Cases
+1. **Planning & Tendering**:
+   - View `TransportationManagementSystem`.
+   - Check `RoutePlanningWorkbench` & `RouteOptimization`.
+   - Test `MultiModalShipmentOptimizer`.
+   - Run `LoadTendering`.
+2. **Execution & Visibility**:
+   - Manage `FleetManagement` & `CarrierManager`.
+   - Monitor `EDI214EventLog`.
+   - Check `DangerousGoodsCompliance`.
+3. **Settlement**:
+   - Review `CarrierRateWorkbench` & `CarrierScorecardDashboard`.
+   - Execute `FreightSettlementWorkbench` & `FreightSettlementConsole`.
+   - Process `FreightAudit` and `FreightClaimManagement`.
+
+---
+
+## Module 17: Project Portfolio Management (PPM)
+**Total Pages**: 33
+
+### Scenarios & Use Cases
+1. **Project Financials**:
+   - View `BudgetForecastingDashboard` and `AccountingDashboard`.
+   - Check `RevenueRecognitionDashboard`.
+   - Manage `FundingLimits`.
+2. **Cost Collection & Burdening**:
+   - Submit `NonLaborExpenseBatch`.
+   - Review `TimesheetIntegrationMonitor`.
+   - Execute `CostBurdeningInterface` + `BurdenRuleBuilder`.
+   - Verify `CipWorkbench` & `CipConsolidationDashboard`.
+   - Run `InterprojectAllocation`.
+3. **Billing & Revenue**:
+   - Setup `BillingRulesManager`.
+   - View `BillingEventsManager`.
+   - Run `ProjectBillingWorkbench` & `DraftInvoiceWorkbench`.
+   - Manage `CrossChargeInvoicing`.
+
+---
+**End of Plan**

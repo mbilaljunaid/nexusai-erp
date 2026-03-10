@@ -1,6 +1,6 @@
 
 import { db } from "../server/db";
-import { maintenanceService } from "../server/services/MaintenanceService";
+import { maintenanceService } from "../server/modules/maintenance/services/MaintenanceService";
 import { inventory, maintWorkOrderMaterials, maintWorkOrders, faAssets } from "../shared/schema";
 import { eq } from "drizzle-orm";
 

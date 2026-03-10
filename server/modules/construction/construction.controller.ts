@@ -19,7 +19,11 @@ export class ConstructionController {
 
     createContract = async (req: Request, res: Response) => {
         try {
-            const contract = await this.constructionService.createContract(req.body);
+            const buId = req.headers['x-business-unit-id'] as string | undefined;
+            const contract = await this.constructionService.createContract({
+                ...req.body,
+                ...(buId ? { entBusinessUnitId: buId } : {})
+            });
             res.json(contract);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -28,7 +32,8 @@ export class ConstructionController {
 
     getContractsByProject = async (req: Request, res: Response) => {
         try {
-            const contracts = await this.constructionService.getContracts(req.params.projectId);
+            const buId = req.headers['x-business-unit-id'] as string | undefined;
+            const contracts = await this.constructionService.getContracts(req.params.projectId, buId);
             res.json(contracts);
         } catch (error: any) {
             res.status(500).json({ error: error.message });

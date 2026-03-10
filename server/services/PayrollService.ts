@@ -3,7 +3,8 @@ import { hrmPayGroups, hrmPayElements, hrmPayrollRuns, hrmPayrollRunResults } fr
 import { hrmWorkerSalaries, hrmSalaryBases } from "@shared/schema/rewards_compensation";
 import { hrAssignments, hrPersons } from "@shared/schema/hr_worker";
 import { hrmTimeSheets, hrmTimePeriods, hrmRegionalPolicies } from "@shared/schema/time_labor";
-import { eq, desc, and, inArray } from "drizzle-orm";
+import { hrmVoluntaryDeductions } from "@shared/schema/hr_payroll_ext";
+import { eq, desc, and, inArray, lt } from "drizzle-orm";
 import { CompensationService } from "./CompensationService";
 import { TaxService } from "./TaxService";
 
@@ -32,9 +33,12 @@ export class PayrollService {
         return run;
     }
 
-    static async getRuns(tenantId: string) {
+    static async getRuns(tenantId: string, entLegalEntityId?: string) {
         return await db.select().from(hrmPayrollRuns)
-            .where(eq(hrmPayrollRuns.tenantId, tenantId))
+            .where(and(
+                eq(hrmPayrollRuns.tenantId, tenantId),
+                entLegalEntityId ? eq(hrmPayrollRuns.entLegalEntityId, entLegalEntityId) : sql`true`
+            ))
             .orderBy(desc(hrmPayrollRuns.periodStartDate));
     }
 
@@ -49,11 +53,12 @@ export class PayrollService {
         await db.update(hrmPayrollRuns).set({ status: "CALCULATING" }).where(eq(hrmPayrollRuns.id, runId));
 
         try {
-            // 3. Find Eligible Assignments for this Pay Group
+            // 3. Find Eligible Assignments for this Pay Group & Legal Entity
             const activeAssignments = await db.select().from(hrAssignments)
                 .where(and(
                     eq(hrAssignments.tenantId, tenantId),
-                    eq(hrAssignments.assignmentStatus, "ACTIVE")
+                    eq(hrAssignments.assignmentStatus, "ACTIVE"),
+                    run.entLegalEntityId ? eq(hrAssignments.entLegalEntityId, run.entLegalEntityId) : sql`true`
                 ));
 
             // 4. Clean previous results for this run
@@ -254,5 +259,42 @@ export class PayrollService {
     static async getRunResults(runId: string) {
         return await db.select().from(hrmPayrollRunResults)
             .where(eq(hrmPayrollRunResults.payrollRunId, runId));
+    }
+
+    // === SELF-SERVICE EXTENSIONS ===
+
+    static async getVoluntaryDeductions(assignmentId: string, tenantId: string) {
+        return await db.select().from(hrmVoluntaryDeductions)
+            .where(and(
+                eq(hrmVoluntaryDeductions.assignmentId, assignmentId),
+                eq(hrmVoluntaryDeductions.tenantId, tenantId),
+                eq(hrmVoluntaryDeductions.status, "ACTIVE")
+            ));
+    }
+
+    static async createVoluntaryDeduction(data: any) {
+        const [deduction] = await db.insert(hrmVoluntaryDeductions).values(data).returning();
+        return deduction;
+    }
+
+    static async deleteVoluntaryDeduction(id: string) {
+        const [deduction] = await db.update(hrmVoluntaryDeductions)
+            .set({ status: "INACTIVE", endDate: new Date() })
+            .where(eq(hrmVoluntaryDeductions.id, id))
+            .returning();
+        return deduction;
+    }
+
+    static async getRetroPayHistory(assignmentId: string, tenantId: string) {
+        // Retro pay history is essentially looking for results that were calculated 
+        // in a previous run but for an earlier period, OR just identifying adjustments.
+        // For simplicity in ESS, we'll return any "Retro" classified results.
+        return await db.select().from(hrmPayrollRunResults)
+            .where(and(
+                eq(hrmPayrollRunResults.assignmentId, assignmentId),
+                eq(hrmPayrollRunResults.tenantId, tenantId),
+                sql`${hrmPayrollRunResults.elementName} LIKE '%Retro%'`
+            ))
+            .orderBy(desc(hrmPayrollRunResults.createdAt));
     }
 }

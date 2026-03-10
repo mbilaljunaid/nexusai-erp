@@ -57,6 +57,16 @@ territoryRoutes.get("/:id/rules", async (req, res) => {
     }
 });
 
+// Delete Rule
+territoryRoutes.delete("/:id/rules/:ruleId", async (req, res) => {
+    try {
+        await db.delete(territoryRules).where(eq(territoryRules.id, req.params.ruleId));
+        res.json({ message: "Rule deleted" });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // --- Assignment Logic ---
 
 // Trigger Assignment for an Account (Debug/Admin tool)

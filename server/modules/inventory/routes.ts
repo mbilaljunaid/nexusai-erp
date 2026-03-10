@@ -45,6 +45,13 @@ wmsRouter.get("/packing/lpn/:lpnNumber", wmsController.getLpnDetails);
 
 // --- SHIPPING ---
 wmsRouter.post("/shipping/confirm", wmsController.shipConfirm);
+wmsRouter.post("/shipping/:id/rate-shop", wmsController.rateShop);
+wmsRouter.post("/shipping/:id/generate-bol", wmsController.generateBol);
 
 // --- OPTIMIZATION ---
 wmsRouter.get("/optimization/slotting", wmsController.getSlottingSuggestions);
+// --- ITEM MASTER (MULTI-ORG) ---
+wmsRouter.put("/item-master", wmsController.updateItemMaster);
+
+// --- UOM CONVERSIONS ---
+wmsRouter.post("/uom-conversions", wmsController.createUomConversion);

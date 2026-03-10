@@ -9,7 +9,7 @@ import {
     apSystemParameters, apDistributionSets, apDistributionSetLines,
     apPaymentBatches, apInvoicePayments, glLedgers, glPeriods,
     apAuditLogs, apPeriodStatuses, apPrepayApplications,
-    apWhtGroups, apWhtRates,
+    apWhtGroups, apWhtRates, apPaymentTerms,
     type InsertApSystemParameters, type InsertApDistributionSet, type InsertApDistributionSetLine,
     type InsertApPaymentBatch
 } from "@shared/schema";
@@ -23,12 +23,12 @@ export interface CreateInvoicePayload {
 }
 
 export class ApService {
-    async listInvoices(limit?: number, offset?: number) {
-        return storage.listApInvoices(limit, offset);
+    async listInvoices(limit?: number, offset?: number, status?: string, validationStatus?: string, entBusinessUnitId?: string) {
+        return storage.listApInvoices({ limit, offset, status, validationStatus, entBusinessUnitId });
     }
 
-    async getInvoicesCount(): Promise<number> {
-        return storage.getApInvoicesCount();
+    async getInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+        return storage.getApInvoicesCount(entBusinessUnitId);
     }
 
     // Placeholder for seed (can be reimplemented fully later)
@@ -153,7 +153,7 @@ export class ApService {
         return await db.select().from(apSupplierSites).where(eq(apSupplierSites.supplierId, supplierId));
     }
 
-    async createInvoice(data: { header: InsertApInvoice; lines: InsertApInvoiceLine[] }) {
+    async createInvoice(data: { header: InsertApInvoice; lines: InsertApInvoiceLine[]; entBusinessUnitId?: string }) {
         const validation = insertApInvoiceSchema.safeParse(data.header);
         if (!validation.success) {
             throw new Error(`Invalid invoice header: ${validation.error.message}`);
@@ -168,12 +168,18 @@ export class ApService {
                 if (paySite) siteId = paySite.id;
             }
 
-            // 2. Insert Header
+            // Determine prepay remaining amount
+            const prepayRemaining =
+                data.header.invoiceType === "PREPAYMENT" ? data.header.invoiceAmount : null;
+
+            // 2. Insert Header — inject entBusinessUnitId from the request context
             const [invoice] = await tx.insert(apInvoices).values({
                 ...data.header,
+                prepayAmountRemaining: prepayRemaining,
                 supplierSiteId: siteId,
                 invoiceStatus: "DRAFT",
-                validationStatus: "NEVER VALIDATED"
+                validationStatus: "NEVER VALIDATED",
+                ...(data.entBusinessUnitId ? { entBusinessUnitId: data.entBusinessUnitId } : {})
             }).returning();
 
             // 3. Insert Lines
@@ -224,7 +230,7 @@ export class ApService {
     }
 
     // Validation Logic (Phase 2 Real Implementation)
-    async validateInvoice(invoiceId: number): Promise<{ status: string, holds: string[] }> {
+    async validateInvoice(invoiceId: string): Promise<{ status: string, holds: string[] }> {
         console.log(`Validating Invoice ${invoiceId}...`);
 
         // 1. Fetch Invoice, Lines, and Parameters
@@ -257,7 +263,55 @@ export class ApService {
             });
         }
 
-        // 3. Duplicate Invoice Check
+        // 3. PO Matching Variance Check (2-Way Match) & Receipt Matching (3-Way Match)
+        for (const line of lines) {
+            if (line.poHeaderId) {
+                // We'd typically check PO Lines, but since we grabbed poHeaderId to test:
+                const poData = await db.query.purchaseOrders.findFirst({
+                    where: (po, { eq }) => eq(po.id, line.poHeaderId as string)
+                });
+
+                if (poData) {
+                    const poTotal = Number(poData.totalAmount);
+                    // 2-Way Match: If invoice amount drastically exceeds the total referenced PO
+                    if (headerAmount > poTotal + tolerance) {
+                        holds.push("PO_MATCH_VARIANCE");
+                        await db.insert(apHolds).values({
+                            invoice_id: invoiceId,
+                            hold_lookup_code: "PO_MATCH_VARIANCE",
+                            hold_type: "MATCHING",
+                            hold_reason: `Invoice Total ($${headerAmount}) exceeds PO Total ($${poTotal}) by more than tolerance ($${tolerance})`,
+                            held_by: 1
+                        });
+                        break; // Only apply header-level PO hold once
+                    }
+
+                    // 3-Way Match Check (Receipts)
+                    try {
+                        const { rcvShipmentLines } = await import('../../shared/schema/scm');
+                        const receipts = await db.select().from(rcvShipmentLines).where(eq(rcvShipmentLines.poHeaderId, line.poHeaderId));
+                        const totalReceivedQty = receipts.reduce((sum, r) => sum + Number(r.quantityReceived || 0), 0);
+
+                        // If the invoice is being processed but there are ZERO verified receipts natively matching the PO Header, or quantity is vastly mismatched.
+                        if (totalReceivedQty === 0 && Number(line.amount) > 0) {
+                            holds.push("RECEIPT_MATCH_VARIANCE");
+                            await db.insert(apHolds).values({
+                                invoice_id: invoiceId,
+                                hold_lookup_code: "RECEIPT_MATCH_VARIANCE",
+                                hold_type: "MATCHING",
+                                hold_reason: `3-Way Match Failed: Invoice Line billed for $${line.amount} but ZERO SCM Receipts found for PO ${line.poHeaderId}`,
+                                held_by: 1
+                            });
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn("Could not query SCM Receipts:", e);
+                    }
+                }
+            }
+        }
+
+        // 4. Duplicate Invoice Check
         const duplicates = await db.select().from(apInvoices).where(and(
             eq(apInvoices.supplierId, invoice.supplierId),
             eq(apInvoices.invoiceNumber, invoice.invoiceNumber),
@@ -353,7 +407,6 @@ export class ApService {
         await this.logAuditAction("SYSTEM", "VALIDATE", "INVOICE", String(invoiceId),
             `Invoice validated with status ${validationStatus}. Total WHT: ${whtAmountStr}`);
 
-        // 6. Trigger Accounting if Validated
         if (validationStatus === "VALIDATED") {
             try {
                 await slaEngine.createAccounting({
@@ -364,10 +417,10 @@ export class ApService {
                     description: `Invoice ${invoice.invoiceNumber} Validated (WHT: ${whtAmountStr})`,
                     amount: Number(invoice.invoiceAmount),
                     currencyCode: invoice.invoiceCurrencyCode || "USD",
-                    eventDate: new Date(),
-                    glDate: new Date(),
+                    eventDate: invoice.invoiceDate || new Date(),
+                    glDate: invoice.invoiceDate || new Date(),
                     ledgerId,
-                    sourceData: { supplierId: invoice.supplierId, withholdingAmount: whtAmountStr }
+                    sourceData: { supplierId: invoice.supplierId, withholdingAmount: whtAmountStr, invoiceNumber: invoice.invoiceNumber }
                 });
             } catch (err) {
                 console.error(`[AP] Accounting failed for invoice ${invoiceId}:`, err);
@@ -377,7 +430,7 @@ export class ApService {
         return { status: validationStatus, holds };
     }
 
-    async generateAccounting(invoiceId: number) {
+    async generateAccounting(invoiceId: string) {
         const [invoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, invoiceId)).limit(1);
         if (!invoice) throw new Error("Invoice not found");
         if (invoice.validationStatus !== "VALIDATED") throw new Error("Only validated invoices can be accounted");
@@ -400,7 +453,7 @@ export class ApService {
         });
     }
 
-    async matchInvoiceToPO(invoiceId: number, matchData: { lineNumber: number, poHeaderId: string, poLineId: string, poUnitPrice: number, poQuantity: number }) {
+    async matchInvoiceToPO(invoiceId: string, matchData: { lineNumber: number, poHeaderId: string, poLineId: string, poUnitPrice: number, poQuantity: number }) {
         console.log(`Matching Invoice ${invoiceId} Line ${matchData.lineNumber} to PO ${matchData.poHeaderId}`);
 
         const params = await this.getSystemParameters();
@@ -440,7 +493,7 @@ export class ApService {
         return { success: true, variance };
     }
 
-    async getInvoiceHolds(invoiceId: number) {
+    async getInvoiceHolds(invoiceId: string) {
         return await db.select().from(apHolds).where(eq(apHolds.invoice_id, invoiceId));
     }
 
@@ -452,19 +505,59 @@ export class ApService {
         return hold;
     }
 
-    async applyPayment(invoiceId: string, paymentData: InsertApPayment): Promise<ApPayment | undefined> {
+    async applyPayment(invoiceId: string, paymentData: InsertApPayment & { entBusinessUnitId?: string }): Promise<ApPayment | undefined> {
         return await db.transaction(async (tx) => {
-            const [payment] = await tx.insert(apPayments).values(paymentData).returning();
+            const [invoice] = await tx.select().from(apInvoices).where(eq(apInvoices.id, parseInt(invoiceId))).limit(1);
+            if (!invoice) throw new Error("Invoice not found");
+
+            let discountAmount = 0;
+            if (invoice.paymentTerms) {
+                const [term] = await tx.select().from(apPaymentTerms).where(eq(apPaymentTerms.termName, invoice.paymentTerms)).limit(1);
+
+                // If the term has an early payment discount bracket
+                if (term && term.discountDays && term.discountPercent) {
+                    const invoiceDate = new Date(invoice.invoiceDate);
+                    const paymentDate = new Date(paymentData.paymentDate);
+
+                    // Difference in days
+                    const diffTime = paymentDate.getTime() - invoiceDate.getTime();
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays >= 0 && diffDays <= term.discountDays) {
+                        const invAmt = Number(invoice.invoiceAmount);
+                        const pct = Number(term.discountPercent) / 100;
+                        discountAmount = invAmt * pct;
+                        discountAmount = Math.round(discountAmount * 100) / 100; // Round to 2 decimals
+                    }
+                }
+            }
+
+            // Persist payment with BU scoping inherited from the active BU context
+            const { entBusinessUnitId, ...corePaymentData } = paymentData as any;
+            const paymentToInsert = {
+                ...corePaymentData,
+                ...(entBusinessUnitId ? { entBusinessUnitId } : {})
+            };
+            const [payment] = await tx.insert(apPayments).values(paymentToInsert).returning();
 
             await tx.insert(apInvoicePayments).values({
                 paymentId: payment.id,
                 invoiceId: parseInt(invoiceId),
                 amount: payment.amount,
+                discountTaken: discountAmount.toString(),
                 accountingDate: payment.paymentDate
             });
 
+            // Re-evaluate invoice status
+            const [paymentsForInvoice] = await tx.select({
+                totalPaid: sql<number>`COALESCE(SUM(CAST(${apInvoicePayments.amount} AS numeric) + CAST(${apInvoicePayments.discountTaken} AS numeric)), 0)`
+            }).from(apInvoicePayments).where(eq(apInvoicePayments.invoiceId, parseInt(invoiceId)));
+
+            const remaining = Number(invoice.invoiceAmount) - Number(paymentsForInvoice.totalPaid);
+            const newStatus = remaining <= 0.01 ? "PAID" : "PARTIAL";
+
             await tx.update(apInvoices)
-                .set({ paymentStatus: "PAID" })
+                .set({ paymentStatus: newStatus })
                 .where(eq(apInvoices.id, parseInt(invoiceId)));
 
             return payment;
@@ -473,16 +566,20 @@ export class ApService {
 
     // --- PPR (Payment Process Request) Engine ---
 
-    async listPaymentBatches() {
-        return await db.select().from(apPaymentBatches).orderBy(sql`${apPaymentBatches.createdAt} DESC`);
+    async listPaymentBatches(entBusinessUnitId?: string) {
+        let query = db.select().from(apPaymentBatches);
+        if (entBusinessUnitId) {
+            query = query.where(eq(apPaymentBatches.entBusinessUnitId, entBusinessUnitId)) as any;
+        }
+        return await (query as any).orderBy(sql`${apPaymentBatches.createdAt} DESC`);
     }
 
-    async createPaymentBatch(data: InsertApPaymentBatch) {
-        const [batch] = await db.insert(apPaymentBatches).values(data).returning();
+    async createPaymentBatch(data: InsertApPaymentBatch & { entBusinessUnitId?: string }) {
+        const [batch] = await db.insert(apPaymentBatches).values(data as any).returning();
         return batch;
     }
 
-    async selectInvoicesForBatch(batchId: number, tx: any = db) {
+    async selectInvoicesForBatch(batchId: string, tx: any = db) {
         const [batch] = await tx.select().from(apPaymentBatches).where(eq(apPaymentBatches.id, batchId)).limit(1);
         if (!batch) throw new Error("Batch not found");
 
@@ -493,16 +590,17 @@ export class ApService {
         ];
 
         // Logic to EXCLUDE invoices with active holds
-        const invoicesWithHolds = tx.select({ id: apHolds.invoice_id })
+        const holds = await tx.select({ id: apHolds.invoice_id })
             .from(apHolds)
             .where(sql`${apHolds.release_lookup_code} IS NULL`);
 
-        const selectedInvoices = await tx.select()
+        const holdIds = new Set(holds.map((h: any) => h.id));
+
+        let selectedInvoices = await tx.select()
             .from(apInvoices)
-            .where(and(
-                ...selectionCriteria,
-                sql`${apInvoices.id} NOT IN (${invoicesWithHolds})`
-            ));
+            .where(and(...selectionCriteria));
+
+        selectedInvoices = selectedInvoices.filter((inv: any) => !holdIds.has(inv.id));
 
         // Update batch with projected totals
         const total = selectedInvoices.reduce((sum: number, inv: any) => sum + Number(inv.invoiceAmount), 0);
@@ -517,7 +615,7 @@ export class ApService {
         return selectedInvoices;
     }
 
-    async confirmPaymentBatch(batchId: number) {
+    async confirmPaymentBatch(batchId: string) {
         // LEVEL 15 PARITY: Async Processing for High Volume
         const [batch] = await db.select().from(apPaymentBatches).where(eq(apPaymentBatches.id, batchId)).limit(1);
         if (!batch) throw new Error("Batch not found"); // ALLOW re-confirm if previously errored or selected
@@ -533,11 +631,16 @@ export class ApService {
 
         return { success: true, message: "Payment batch submitted for processing. Check status shortly." };
     }
-    async getBatchPayments(batchId: number) {
-        return await db.select()
+    async getBatchPayments(batchId: string, entBusinessUnitId?: string) {
+        let query = db.select()
             .from(apPayments)
-            .where(eq(apPayments.batchId, batchId))
-            .orderBy(desc(apPayments.paymentDate));
+            .where(eq(apPayments.batchId, batchId));
+
+        if (entBusinessUnitId) {
+            query = query.where(and(eq(apPayments.batchId, batchId), eq(apPayments.entBusinessUnitId, entBusinessUnitId))) as any;
+        }
+
+        return await query.orderBy(desc(apPayments.paymentDate));
     }
 
     // --- Audit Trail ---
@@ -571,19 +674,24 @@ export class ApService {
 
     // --- Aging Report ---
 
-    async getAgingReport() {
+    async getAgingReport(entBusinessUnitId?: string) {
+        const conditions: any[] = [eq(apInvoices.paymentStatus, "UNPAID")];
+        if (entBusinessUnitId) {
+            conditions.push(eq(apInvoices.entBusinessUnitId, entBusinessUnitId));
+        }
+
         const results = await db.select({
             supplierName: apSuppliers.name,
             current: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} > NOW() THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            days1_30: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() AND ${apInvoices.dueDate} > NOW() - INTERVAL '30 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            days31_60: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '30 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '60 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            days61_90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '60 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
-            daysOver90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days30: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() AND ${apInvoices.dueDate} > NOW() - INTERVAL '30 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days60: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '30 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '60 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            days90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '60 days' AND ${apInvoices.dueDate} > NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
+            over90: sql<number>`SUM(CASE WHEN ${apInvoices.dueDate} <= NOW() - INTERVAL '90 days' THEN ${apInvoices.invoiceAmount} ELSE 0 END)`,
             total: sql<number>`SUM(${apInvoices.invoiceAmount})`
         })
             .from(apInvoices)
             .innerJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
-            .where(eq(apInvoices.paymentStatus, "UNPAID"))
+            .where(and(...conditions))
             .groupBy(apSuppliers.name);
 
         return results;
@@ -657,7 +765,7 @@ export class ApService {
             ));
     }
 
-    async applyPrepayment(standardInvoiceId: number, prepayId: number, amount: number, userId: string) {
+    async applyPrepayment(standardInvoiceId: string, prepayId: string, amount: number, userId: string) {
         return await db.transaction(async (tx) => {
             // 1. Fetch Invoices
             const [standard] = await tx.select().from(apInvoices).where(eq(apInvoices.id, standardInvoiceId)).limit(1);
@@ -733,7 +841,7 @@ export class ApService {
         });
     }
 
-    async getPrepayApplications(invoiceId: number) {
+    async getPrepayApplications(invoiceId: string) {
         return await db.select({
             id: apPrepayApplications.id,
             prepaymentNumber: apInvoices.invoiceNumber,
@@ -747,7 +855,7 @@ export class ApService {
             .where(eq(apPrepayApplications.standardInvoiceId, invoiceId));
     }
 
-    async unapplyPrepayment(applicationId: number, userId: string) {
+    async unapplyPrepayment(applicationId: string, userId: string) {
         return await db.transaction(async (tx) => {
             const [app] = await tx.select().from(apPrepayApplications).where(eq(apPrepayApplications.id, applicationId)).limit(1);
             if (!app || app.status !== "APPLIED") throw new Error("Application not found or already unapplied");
@@ -876,6 +984,54 @@ export class ApService {
 
         await this.logAuditAction(userId, "CLEAR", "PAYMENT", String(paymentId), `Payment marked as CLEARED`);
         return { success: true };
+    }
+
+    // --- Approvals ---
+    // --- Approvals ---
+    async approveInvoice(invoiceId: string | number, userId: string) {
+        const id = String(invoiceId);
+        const [invoice] = await db.update(apInvoices)
+            .set({
+                approvalStatus: "APPROVED",
+                invoiceStatus: "APPROVED",
+                updatedAt: new Date()
+            })
+            .where(eq(apInvoices.id, id))
+            .returning();
+
+        if (!invoice) throw new Error("Invoice not found");
+        await this.logAuditAction(userId, "APPROVE", "INVOICE", String(id), `Invoice ${invoice.invoiceNumber} approved`);
+        return invoice;
+    }
+
+    async rejectInvoice(invoiceId: string | number, reason: string, userId: string) {
+        const id = String(invoiceId);
+        const [invoice] = await db.update(apInvoices)
+            .set({
+                approvalStatus: "REJECTED",
+                invoiceStatus: "REJECTED",
+                updatedAt: new Date()
+            })
+            .where(eq(apInvoices.id, id))
+            .returning();
+
+        if (!invoice) throw new Error("Invoice not found");
+        await this.logAuditAction(userId, "REJECT", "INVOICE", String(id), `Invoice ${invoice.invoiceNumber} rejected. Reason: ${reason}`);
+        return invoice;
+    }
+
+    async updateInvoiceStatus(invoiceId: string | number, status: string) {
+        const id = typeof invoiceId === 'string' ? parseInt(invoiceId) : invoiceId;
+        const [invoice] = await db.update(apInvoices)
+            .set({
+                invoiceStatus: status,
+                updatedAt: new Date()
+            })
+            .where(eq(apInvoices.id, id))
+            .returning();
+
+        if (!invoice) throw new Error("Invoice not found");
+        return invoice;
     }
 }
 

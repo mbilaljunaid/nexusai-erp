@@ -60,6 +60,7 @@ export type BillingProfile = typeof billingProfiles.$inferSelect;
 export const billingBatches = pgTable("billing_batches", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     runDate: timestamp("run_date").default(sql`now()`),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     status: varchar("status").default("Processing"), // 'Processing', 'Completed', 'Failed', 'Completed with Errors'
     totalEventsProcessed: integer("total_events_processed").default(0),
     totalInvoicesCreated: integer("total_invoices_created").default(0),
@@ -81,6 +82,7 @@ export const billingEvents = pgTable("billing_events", {
     sourceTransactionId: varchar("source_transaction_id").notNull(), // ID of the Project Task, Order Line, etc.
     customerId: varchar("customer_id").notNull(),
     eventDate: timestamp("event_date").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
     currency: varchar("currency").default("USD"),
     description: text("description").notNull(),

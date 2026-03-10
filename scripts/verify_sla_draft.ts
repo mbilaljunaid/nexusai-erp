@@ -1,5 +1,5 @@
 
-import { slaService, SlaEvent } from "../server/services/SlaService";
+import { slaEngine as slaService, type SlaEventPayload as SlaEvent } from "../server/modules/sla/sla.service";
 import { db } from "../server/db";
 import { slaJournalHeaders, slaJournalLines, glJournals } from "@shared/schema";
 import { eq } from "drizzle-orm";

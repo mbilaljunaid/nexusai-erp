@@ -1,6 +1,6 @@
 
 import { db } from "../db";
-import { openai } from "./ai"; // Reuse the configured OpenAI instance
+import { callAIJson, getCapabilityPrompt } from "./nexus-ai-gateway";
 import { opportunities, accounts, interactions, leads } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
@@ -64,20 +64,26 @@ export class CrmAiService {
         }
         `;
 
+
+        const systemPrompt = await getCapabilityPrompt(
+            "CRM Opportunity Analyzer",
+            "You are a seasoned Sales Director AI."
+        );
+
         try {
-            const response = await openai.chat.completions.create({
-                model: "gpt-4o",
-                messages: [
-                    { role: "system", content: "You are a helpful CRM AI Assistant. Return JSON only." },
-                    { role: "user", content: prompt }
-                ],
-                response_format: { type: "json_object" }
-            });
+            // Use the centralized AI gateway instead of calling executeTool (which would be circular)
+            const result = await callAIJson<{
+                winProbability: number,
+                risks: string[],
+                nextSteps: string[],
+                sentiment: string,
+                reasoning: string
+            }>([
+                { role: "system", content: systemPrompt },
+                { role: "user", content: prompt }
+            ], { jsonMode: true });
 
-            const content = response.choices[0].message.content;
-            if (!content) throw new Error("No response from AI");
-
-            return JSON.parse(content);
+            return result;
         } catch (error) {
             console.error("AI Analysis Failed:", error);
             // Graceful Degradation (Tier-1 Requirement)

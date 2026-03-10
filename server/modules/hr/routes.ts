@@ -82,10 +82,12 @@ hrRouter.post("/structures/positions", workforceStructuresController.createPosit
 
 // --- Phase 5: Intelligence & Audit ---
 
+import { auditController } from "./audit.controller";
 import { documentController } from "./document.controller";
 import { checklistController } from "./checklist.controller";
 
 // Documents (DOR)
+hrRouter.get("/audit-logs", auditController.listLogs);
 hrRouter.get("/persons/:personId/documents", documentController.getDocumentsByPerson);
 hrRouter.post("/documents", documentController.uploadDocument);
 
@@ -100,3 +102,61 @@ hrRouter.post("/tasks/:taskId/status", checklistController.updateTaskStatus);
 import * as hdlController from "./hdl.controller";
 hrRouter.post("/hdl/workers", hdlController.importWorkers);
 hrRouter.get("/hdl/history", hdlController.getRecentImports);
+
+// --- Phase 9: Compliance & Governance ---
+import { complianceController } from "./compliance.controller";
+hrRouter.get("/compliance/analytics", complianceController.getAnalytics);
+hrRouter.get("/compliance-rules", complianceController.listRules);
+hrRouter.post("/compliance-rules", complianceController.createRule);
+hrRouter.delete("/compliance-rules/:id", complianceController.deleteRule);
+hrRouter.get("/compliance/violations", complianceController.listViolations);
+hrRouter.patch("/compliance/violations/:id", complianceController.updateViolation);
+hrRouter.post("/compliance/violations/:id/approve", complianceController.approveRemediation);
+hrRouter.post("/compliance/remediate/approve", complianceController.requestRemediationApproval);
+hrRouter.post("/compliance/remediate/approve", complianceController.requestRemediationApproval);
+hrRouter.post("/compliance/predict-risk", complianceController.predictRisk);
+
+// --- Phase 6: Consent Management ---
+hrRouter.post("/compliance/policies/acknowledge", complianceController.acknowledgePolicy);
+hrRouter.get("/compliance/policies/my-consents", complianceController.getMyPolicies);
+
+// --- Phase 7: SoD Matrix ---
+hrRouter.get("/compliance/sod/rules", complianceController.getSodRules);
+hrRouter.post("/compliance/sod/rules", complianceController.createSodRule);
+hrRouter.delete("/compliance/sod/rules/:id", complianceController.deleteSodRule);
+
+// --- AOR & Security Profiles ---
+hrRouter.get("/security/aor", hrController.listAors);
+hrRouter.post("/security/aor", hrController.assignAor);
+
+// --- Phase 10: DateTrack Assignment History ---
+import { DateTrackService } from "./services/DateTrackService";
+
+/** GET /api/hr/persons/:personId/assignment-history
+ * Returns all DateTrack history rows for all assignments belonging to this person,
+ * ordered by effective date descending. Powers the AssignmentHistory.tsx UI.
+ */
+hrRouter.get("/persons/:personId/assignment-history", async (req, res) => {
+    try {
+        const { personId } = req.params;
+        const tenantId = (req.headers["x-tenant-id"] as string) ?? "default";
+        const history = await DateTrackService.getPersonHistory(personId, tenantId);
+        res.json(history);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** GET /api/hr/assignments/:assignmentId/history
+ * Returns all DateTrack history rows for a single assignment.
+ */
+hrRouter.get("/assignments/:assignmentId/history", async (req, res) => {
+    try {
+        const { assignmentId } = req.params;
+        const tenantId = (req.headers["x-tenant-id"] as string) ?? "default";
+        const history = await DateTrackService.getHistory(assignmentId, tenantId);
+        res.json(history);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});

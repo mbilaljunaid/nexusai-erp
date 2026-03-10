@@ -28,8 +28,9 @@ slaRouter.post("/mapping-sets/:id/values", slaController.upsertMappingSetValues)
 // GL Transfer (Subledger -> GL)
 slaRouter.post("/transfer", slaController.transferToGl);
 
-// AI Explainability
+// AI Explainability & Insights
 slaRouter.post("/explain", slaController.explainAccounting);
+slaRouter.get("/insights", slaController.getProactiveInsights);
 
 // Phase 17: Manual Adjustments
 slaRouter.post("/manual-journals", slaController.createManualJournal);

@@ -46,11 +46,15 @@ router.get("/quality-results/:inspectionId", manufacturingController.getQualityR
 router.post("/quality-results/:inspectionId", manufacturingController.saveQualityResults);
 
 // Costing
+router.get("/cost-scenarios", manufacturingController.getCostScenarios);
+router.get("/costs/metrics", manufacturingController.getCostMetrics);
 router.get("/cost-elements", manufacturingController.getCostElements);
 router.post("/cost-elements", manufacturingController.createCostElement);
 router.get("/standard-costs", manufacturingController.getStandardCosts);
 router.post("/standard-costs/rollup", manufacturingController.calculateStandardCostRollup);
 router.get("/wip-balances", manufacturingController.getWipBalances);
+router.get("/wip-trend", manufacturingController.getWipTrend);
+router.get("/events", manufacturingController.getManufacturingEvents);
 router.get("/variance-journals", manufacturingController.getVarianceJournals);
 
 // Cost AI
@@ -67,6 +71,7 @@ router.get("/planning/mrp-plans", manufacturingController.getMrpPlans);
 router.post("/planning/mrp-plans", manufacturingController.createMrpPlan);
 router.post("/planning/mrp-plans/:id/run", manufacturingController.runMrpPlan);
 router.get("/planning/mrp-plans/:id/recommendations", manufacturingController.getMrpRecommendations);
+router.post("/mrp/explode", manufacturingController.runMrpExplosion);
 
 // Process (Formulas, Recipes, Batches)
 router.get("/formulas", manufacturingController.listFormulas);

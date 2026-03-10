@@ -2,7 +2,7 @@
 import { db } from "../../../db";
 import { eq, sum } from "drizzle-orm";
 // import { maintWorkOrderCosts, maintWorkOrderMaterials, maintWorkOrderResources, inventory, users } from "@shared/schema";
-import { maintWorkOrderCosts, inventory, users } from "@shared/schema"; // Removed potentially missing tables for now, need to verify
+import { maintWorkOrderCosts, inventory, users } from "../../../../shared/schema"; // Removed potentially missing tables for now, need to verify
 import { maintenanceAccountingService } from "./MaintenanceAccountingService";
 
 export class MaintenanceCostingService {
@@ -21,7 +21,7 @@ export class MaintenanceCostingService {
                 where: eq(inventory.id, materialRecord.inventoryId)
             });
             // Fallback mock cost if standard cost is 0 or missing
-            unitCost = Number(item?.unitCost || item?.averageCost || 15.00);
+            unitCost = Number((item as any)?.unitCost || (item as any)?.averageCost || 15.00);
         }
 
         const quantity = Number(materialRecord.actualQuantity || 1); // Logic typically triggered on +1 issue
@@ -46,7 +46,7 @@ export class MaintenanceCostingService {
             unitCost: unitCost.toString(),
             totalCost: totalCost.toString(),
             sourceReference: materialRecord.id // Link to WO Material Record
-        }).returning();
+        } as any).returning();
 
         // Trigger Accounting (Real-time)
         // In prod, this might be async/queue
@@ -80,7 +80,7 @@ export class MaintenanceCostingService {
             unitCost: hourlyRate.toString(),
             totalCost: totalCost.toString(),
             sourceReference: laborRecord.id
-        }).returning();
+        } as any).returning();
 
         // Trigger Accounting
         try {
@@ -163,7 +163,7 @@ export class MaintenanceCostingService {
         // 4. Update Status
         if (postedIds.length > 0) {
             await db.update(maintWorkOrderCosts)
-                .set({ glStatus: "POSTED" })
+                .set({ glStatus: "POSTED" } as any)
                 .where(eq(maintWorkOrderCosts.workOrderId, workOrderId));
         }
 

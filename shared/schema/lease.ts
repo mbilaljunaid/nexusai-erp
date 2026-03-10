@@ -13,6 +13,8 @@ export const leaseHeaders = pgTable("lease_headers", {
     vendorId: varchar("vendor_id").notNull(), // Link to scm_suppliers
     status: varchar("status").default("DRAFT"), // DRAFT, ACTIVE, CLOSED, TERMINATED
     currency: varchar("currency").default("USD"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
 
     // Dates
     commencementDate: timestamp("commencement_date").notNull(),
@@ -43,6 +45,8 @@ export const leaseHeaders = pgTable("lease_headers", {
 export const leasePayments = pgTable("lease_payments", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     leaseId: varchar("lease_id").notNull(), // FK to lease_headers
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     paymentType: varchar("payment_type").default("FIXED"), // FIXED, VARIABLE, BALLOON
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
     frequency: varchar("frequency").default("MONTHLY"), // MONTHLY, QUARTERLY, ANNUALLY
@@ -68,6 +72,8 @@ export const leaseAssets = pgTable("lease_assets", {
 export const leaseSchedules = pgTable("lease_schedules", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     leaseId: varchar("lease_id").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     period: integer("period").notNull(), // 1, 2, 3...
     date: timestamp("date").notNull(),
 

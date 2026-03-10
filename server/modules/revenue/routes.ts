@@ -22,6 +22,8 @@ revenueRouter.post("/jobs/process-events", revenueController.processEventsJob);
 revenueRouter.post("/ssp/books", revenueController.createSspBook);
 revenueRouter.get("/ssp/books", revenueController.getSspBooks);
 revenueRouter.post("/ssp/lines", revenueController.addSspLine);
+revenueRouter.put("/ssp/lines/:id", revenueController.updateSspLine);
+revenueRouter.delete("/ssp/lines/:id", revenueController.deleteSspLine);
 revenueRouter.get("/ssp/books/:id/lines", revenueController.getSspLines);
 
 revenueRouter.get("/rules/identification", revenueController.getIdentificationRules);
@@ -38,6 +40,8 @@ revenueRouter.get("/forecasting/projection", revenueController.getForecast);
 revenueRouter.get("/periods", revenueController.getPeriods);
 revenueRouter.post("/periods/close", revenueController.closePeriod);
 revenueRouter.post("/periods/:id/sweep", revenueController.sweepPeriod);
+revenueRouter.post("/periods/auto-sweep", revenueController.autoSweepPeriod);
 
 // Audit
 revenueRouter.get("/audit/trace/:sourceId", revenueController.getAuditTrace);
+

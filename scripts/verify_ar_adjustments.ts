@@ -2,7 +2,7 @@ import "dotenv/config";
 import { db } from "../server/db";
 import { arAdjustments, arInvoices, slaJournalHeaders } from "@shared/schema";
 import { arService } from "../server/services/ar";
-import { slaService } from "../server/services/SlaService";
+import { slaEngine as slaService } from "../server/modules/sla/sla.service";
 import { eq, desc } from "drizzle-orm";
 
 async function verify() {

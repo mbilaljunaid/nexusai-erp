@@ -1,0 +1,53 @@
+import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Search, ArrowLeft } from "lucide-react";
+import { Link } from "wouter";
+import PayrollForm from "@/components/forms/PayrollForm";
+import { ContextualSearch } from "@/components/ContextualSearch";
+
+export default function PayrollDetail() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const payrolls = [{ id: 1, name: "Dec 2024 Payroll", employees: 245, amount: 875000 }, { id: 2, name: "Nov 2024 Payroll", employees: 243, amount: 850000 }];
+
+  return (
+    <StandardPage
+      title="Payroll"
+      description="Process and manage payroll runs"
+      className="space-y-6"
+    >
+      <div className="mb-4">
+        <Link to="/hr">
+          <Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4 mr-2" /> Back to HR</Button>
+        </Link>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex gap-2 items-center">
+          <div className="flex-1">
+            <ContextualSearch
+              placeholder="Search payrolls..."
+              fields={[{ key: "query", label: "Search", type: "text" }]}
+              onSearch={(filters) => setSearchQuery(filters.query || "")}
+            />
+          </div>
+          <Button>+ New Payroll</Button>
+        </div>
+
+        <div className="space-y-2">
+          {payrolls.filter((p: any) => p.name.toLowerCase().includes(searchQuery.toLowerCase())).map((p: any) => (
+            <Card key={p.id} className="hover-elevate cursor-pointer"><CardContent className="p-4"><div className="flex justify-between items-center"><div><p className="font-semibold">{p.name}</p><p className="text-sm text-muted-foreground">{p.employees} employees</p></div><Badge>${(p.amount / 1000).toFixed(0)}K</Badge></div></CardContent></Card>
+          ))}
+        </div>
+
+        <div className="mt-8 border-t pt-8">
+          <h2 className="text-xl font-semibold mb-4">+ New Payroll Run</h2>
+          <PayrollForm />
+        </div>
+      </div>
+    </StandardPage>
+  );
+}

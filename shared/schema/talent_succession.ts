@@ -51,6 +51,7 @@ export const hrmSuccessionCandidates = pgTable("hrm_succession_candidates", {
 
     readiness: varchar("readiness").default("READY_NOW"), // READY_NOW, READY_1_2_YEARS, READY_3_5_YEARS
     ranking: integer("ranking"), // 1, 2, 3
+    nineBoxPosition: varchar("nine_box_position"), // HIGH_PERF_HIGH_POT, etc.
 
     notes: text("notes"),
 
@@ -58,11 +59,50 @@ export const hrmSuccessionCandidates = pgTable("hrm_succession_candidates", {
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 
+// 4. READINESS ASSESSMENTS
+export const hrmReadinessAssessments = pgTable("hrm_readiness_assessments", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    candidateId: varchar("candidate_id").notNull().references(() => hrmSuccessionCandidates.id),
+    assessorId: varchar("assessor_id").references(() => hrPersons.id),
+
+    technicalCompetence: integer("technical_competence").notNull(),
+    leadershipCapability: integer("leadership_capability").notNull(),
+    culturalFit: integer("cultural_fit").notNull(),
+
+    overallScore: integer("overall_score"),
+    developmentNeeds: text("development_needs"),
+    readinessTimeline: varchar("readiness_timeline"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedBy: varchar("updated_by"),
+});
+
+// Position History (for tracking 9-box movement)
+export const hrmPositionHistory = pgTable("hrm_position_history", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+    candidateId: varchar("candidate_id").notNull().references(() => hrmSuccessionCandidates.id),
+
+    previousPosition: varchar("previous_position"),
+    newPosition: varchar("new_position").notNull(),
+    changedBy: varchar("changed_by"),
+    changeReason: text("change_reason"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+
 // SCHEMAS
 export const insertTalentPoolSchema = createInsertSchema(hrmTalentPools);
 export const insertSuccessionPlanSchema = createInsertSchema(hrmSuccessionPlans);
 export const insertSuccessionCandidateSchema = createInsertSchema(hrmSuccessionCandidates);
+export const insertReadinessAssessmentSchema = createInsertSchema(hrmReadinessAssessments);
+export const insertPositionHistorySchema = createInsertSchema(hrmPositionHistory);
 
 export type TalentPool = typeof hrmTalentPools.$inferSelect;
 export type SuccessionPlan = typeof hrmSuccessionPlans.$inferSelect;
 export type SuccessionCandidate = typeof hrmSuccessionCandidates.$inferSelect;
+export type ReadinessAssessment = typeof hrmReadinessAssessments.$inferSelect;
+export type PositionHistory = typeof hrmPositionHistory.$inferSelect;

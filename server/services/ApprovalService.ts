@@ -1,5 +1,5 @@
 
-import { db } from "../../db";
+import { db } from "@db";
 import { approvalRequests, users } from "@shared/schema";
 import { eq, and } from "drizzle-orm";
 

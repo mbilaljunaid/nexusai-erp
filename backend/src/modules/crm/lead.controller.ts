@@ -1,11 +1,13 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { LeadService } from './lead.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
-import { Lead } from './entities/lead.entity';
+import * as schema from '../../../../shared/schema/index';
+
+type Lead = typeof schema.leads.$inferSelect;
 
 @Controller('api/crm/leads')
 export class LeadController {
-  constructor(private readonly leadService: LeadService) {}
+  constructor(private readonly leadService: LeadService) { }
 
   @Post()
   create(@Body() createLeadDto: CreateLeadDto): Promise<Lead> {

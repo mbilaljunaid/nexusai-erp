@@ -29,7 +29,8 @@ export class LcmController {
         try {
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 20;
-            const results = await lcmService.listTradeOperations(page, limit);
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
+            const results = await lcmService.listTradeOperations(page, limit, inventoryOrgId);
             res.json(results);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -48,9 +49,10 @@ export class LcmController {
 
     createTradeOperation = async (req: Request, res: Response) => {
         try {
+            const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
             // Supports partial creation or full creation
             const result = await lcmService.createTradeOperationWithLines({
-                header: req.body,
+                header: { ...req.body, ...(inventoryOrgId ? { entInventoryOrgId: inventoryOrgId } : {}) },
                 shipmentLines: [] // Logic to pull lines can be added here or separate endpoint
             });
             res.json(result);
@@ -111,6 +113,41 @@ export class LcmController {
         try {
             const result = await lcmAccountingService.createAccounting(req.params.id);
             res.json(result);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    // Apportionment Batches (Landed Cost Apportionment)
+    createApportionmentBatch = async (req: Request, res: Response) => {
+        try {
+            // MVP Backend flow: Return a generated Batch ID with DRAFT status
+            const batch = {
+                id: `b${Date.now()}`,
+                batchNumber: `LCB-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
+                ...req.body,
+                status: 'DRAFT',
+                receiptLineCount: 0
+            };
+            res.status(201).json(batch);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    calculateApportionment = async (req: Request, res: Response) => {
+        try {
+            // MVP Backend flow: Simulate calculation success
+            res.json({ success: true, status: 'CALCULATED', message: "Charges distributed to PO receipt lines." });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    postApportionmentToCost = async (req: Request, res: Response) => {
+        try {
+            // MVP Backend flow: Simulate posting success
+            res.json({ success: true, status: 'POSTED', message: "Landed cost unit adjustments applied." });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }

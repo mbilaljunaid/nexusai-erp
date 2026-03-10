@@ -13,6 +13,9 @@ export * from "./hr_audit";
 export * from './talent_succession';
 export * from "./hr_hdl";
 export * from "./hr_aor";
+export * from "./hr_delegation";
+export * from "./hr_compliance";
+export * from "./hr_analytics";
 export * from "./manufacturing";
 export * from "./scm";
 export * from "./projects";
@@ -25,6 +28,7 @@ export * from "./partner";
 export * from "./copilot";
 export * from "./mobile";
 export * from "./reporting";
+export * from "./admin";
 export * from "./epm";
 export * from "./integration";
 export * from "./platform";
@@ -48,9 +52,11 @@ export * from "./revenue_periods";
 export * from "./revenue_rules";
 export * from "./costing";
 export * from "./cost_ai";
+export * from "./finance_expenses";
 
 export * from "./billing_enterprise";
 export * from "./billing_subscription";
+export * from "./usage_metering";
 export * from "./order_management";
 export * from "./maintenance";
 export * from "./maintenance_pm";
@@ -83,7 +89,25 @@ export * from "./talent_performance";
 export * from './talent_learning';
 export * from "./rewards_compensation";
 export * from "./rewards_payroll";
+export * from "./hr_payroll_ext";
 export * from "./time_labor";
 export * from "./time_ai";
 export * from "./rewards_benefits";
+// export * from "./time_rules";
 export * from "./time_rules";
+
+// MDM / TCA
+export * from "./parties";
+export * from "./locations";
+export * from "./reference";
+export * from "./relationships";
+export * from "./data-quality";
+export * from "./pim";
+export * from "./governance";
+export * from "./nexus_ai";
+
+// Enterprise Structure
+export * from "./enterprise";
+
+// Oracle Parity Round 5 Phase 5/6 SCM Extensions
+export * from "./scm_phase56";

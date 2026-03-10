@@ -86,6 +86,60 @@ router.get("/alerts", (req, res) => {
 });
 
 /**
+ * GET /security/whitelist
+ * Get whitelisted IPs
+ */
+router.get("/security/whitelist", (req, res) => {
+  try {
+    const whitelist = securityHardener.getWhitelist();
+    res.json(whitelist);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /security/blacklist
+ * Get blacklisted IPs
+ */
+router.get("/security/blacklist", (req, res) => {
+  try {
+    const blacklist = securityHardener.getBlacklist();
+    res.json(blacklist);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /security/whitelist/:ip
+ * Remove IP from whitelist
+ */
+router.delete("/security/whitelist/:ip", (req, res) => {
+  try {
+    const { ip } = req.params;
+    securityHardener.removeFromWhitelist(ip);
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /security/blacklist/:ip
+ * Remove IP from blacklist
+ */
+router.delete("/security/blacklist/:ip", (req, res) => {
+  try {
+    const { ip } = req.params;
+    securityHardener.removeFromBlacklist(ip);
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * POST /backup
  * Create backup
  */

@@ -1,0 +1,220 @@
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/dateUtils";
+import React, { useState } from 'react';
+import { Textarea } from "@/components/ui/textarea";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ClipboardList, CheckCircle2, AlertCircle } from 'lucide-react';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { DatePicker } from '@/components/ui/DatePicker';
+import { StandardPage } from '@/components/layout/StandardPage';
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { PromptDialog } from "@/components/shared/PromptDialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatCurrency, formatNumber } from "@/lib/formatters";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
+
+interface Cycle { id: string; cycle_name: string; cycle_type: string; status: string; count_date: string; line_count: number; counted_lines: number; approved_by: string; created_at: string; }
+interface Line { id: string; item_number: string; location: string; lot_number: string; book_quantity: number; count_quantity: number; variance_quantity: number; variance_value: number; count_status: string; counted_by: string; }
+
+const CYCLE_STATUS_TW: Record<string, { border: string; bg: string; text: string }> = {
+    Planned: { border: 'border-l-gray-500', bg: 'bg-gray-500/10', text: 'text-gray-500' },
+    Counting: { border: 'border-l-amber-600', bg: 'bg-amber-600/10', text: 'text-amber-600' },
+    Under_Review: { border: 'border-l-blue-700', bg: 'bg-blue-700/10', text: 'text-blue-700' },
+    Approved: { border: 'border-l-violet-600', bg: 'bg-violet-600/10', text: 'text-violet-600' },
+    Posted: { border: 'border-l-emerald-600', bg: 'bg-emerald-600/10', text: 'text-emerald-600' },
+    Cancelled: { border: 'border-l-red-600', bg: 'bg-red-600/10', text: 'text-red-600' }
+};
+
+export default function PhysicalInventory() {
+    const [selectedCycle, setSelectedCycle] = useState<Cycle | null>(null);
+    const [showNewCycle, setShowNewCycle] = useState(false);
+    const [showAddLines, setShowAddLines] = useState(false);
+    const [statusFilter, setStatusFilter] = useState('');
+    const [cycleForm, setCycleForm] = useState({ cycleName: '', cycleType: 'CYCLE_COUNT', countDate: new Date().toISOString().split('T')[0], locationFilter: '', itemFilter: '' });
+    const [linesText, setLinesText] = useState('');
+    const [countBy, setCountBy] = useState('');
+    const qc = useQueryClient();
+    const [countDialogOpen, setCountDialogOpen] = useState(false);
+    const [pendingCountLineId, setPendingCountLineId] = useState<string | null>(null);
+
+    const { data: cycles = [] } = useQuery<Cycle[]>({ queryKey: ['pi-cycles', statusFilter], queryFn: () => fetch(`/api/mfg/physical-inventory/cycles${statusFilter ? `?status=${statusFilter}` : ''}`).then(r => r.json()) });
+    const { data: variance = [] } = useQuery<Line[]>({ queryKey: ['pi-variance', selectedCycle?.id], enabled: !!selectedCycle, queryFn: () => fetch(`/api/mfg/physical-inventory/cycles/${selectedCycle!.id}/variance`).then(r => r.json()) });
+
+    const createCycleMut = useMutation({ mutationFn: (d: any) => fetch('/api/mfg/physical-inventory/cycles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['pi-cycles'] }); setShowNewCycle(false); } });
+    const addLinesMut = useMutation({ mutationFn: ({ cycleId, lines }: { cycleId: string; lines: any[] }) => fetch(`/api/mfg/physical-inventory/cycles/${cycleId}/lines`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lines }) }).then(r => r.json()), onSuccess: () => { qc.invalidateQueries({ queryKey: ['pi-cycles'] }); setShowAddLines(false); } });
+    const recordCountMut = useMutation({ mutationFn: ({ lineId, countQuantity }: { lineId: string; countQuantity: number }) => fetch(`/api/mfg/physical-inventory/lines/${lineId}/count`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ countQuantity, countedBy: countBy || 'current-user' }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['pi-variance'] }) });
+    const approveMut = useMutation({ mutationFn: (cycleId: string) => fetch(`/api/mfg/physical-inventory/cycles/${cycleId}/approve`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ approvedBy: 'current-user' }) }).then(r => r.json()), onSuccess: () => qc.invalidateQueries({ queryKey: ['pi-cycles'] }) });
+
+    const parseLines = () => linesText.trim().split('\n').map(row => { const [itemNumber, location, bookQty, unitCost] = row.split(','); return { itemNumber, location, bookQuantity: parseFloat(bookQty), unitCost: parseFloat(unitCost) }; }).filter(l => l.itemNumber);
+
+    const totalVariance = variance.reduce((s, l) => s + Number(l.variance_value ?? 0), 0);
+    const negCount = variance.filter(l => Number(l.variance_quantity) < 0).length;
+    const posCount = variance.filter(l => Number(l.variance_quantity) > 0).length;
+
+    const varianceColumns: SpreadsheetColumn<Line>[] = [
+        { id: "item", header: "Item", width: "120px", cell: (l) => <span className="font-bold">{l.item_number}</span> },
+        { id: "location", header: "Location", width: "120px", cell: (l) => <span className="text-muted-foreground">{l.location ?? '—'}</span> },
+        { id: "lot", header: "Lot", width: "120px", cell: (l) => <span className="font-mono text-[10px] text-muted-foreground/70">{l.lot_number ?? '—'}</span> },
+        { id: "bookQty", header: "Book Qty", width: "100px", cell: (l) => <span className="font-mono">{formatNumber(l.book_quantity, 2)}</span> },
+        { id: "countQty", header: "Count Qty", width: "100px", cell: (l) => <span className={cn(`font-mono ${l.count_quantity == null ? 'text-muted-foreground/70' : 'text-foreground/90'}`)}>{l.count_quantity != null ? formatNumber(l.count_quantity, 2) : '—'}</span> },
+        {
+            id: "variance", header: "Variance", width: "100px", cell: (l) => {
+                const vqty = Number(l.variance_quantity ?? 0);
+                return <span className={cn(`font-mono font-bold ${vqty < 0 ? 'text-red-600' : vqty > 0 ? 'text-green-600' : 'text-muted-foreground/70'}`)}>{vqty !== 0 ? (vqty > 0 ? '+' : '') + formatNumber(vqty, 2) : '0'}</span>;
+            }
+        },
+        {
+            id: "valueDelta", header: "Value Δ", width: "100px", cell: (l) => {
+                const vval = Number(l.variance_value ?? 0);
+                return <span className={cn(`font-mono text-[10px] ${vval < 0 ? 'text-red-600' : vval > 0 ? 'text-green-600' : 'text-muted-foreground/70'}`)}>{vval !== 0 ? (vval > 0 ? '+' : '') + formatCurrency(Math.abs(vval)) : '—'}</span>;
+            }
+        },
+        { id: "status", header: "Status", width: "100px", cell: (l) => <div className="px-1"><StatusBadge status={l.count_status} /></div> },
+        {
+            id: "action", header: "Action", width: "100px", cell: (l) => l.count_status === 'Pending' ? (
+                <Button variant="default" onClick={() => { setPendingCountLineId(l.id); setCountDialogOpen(true); }} className="/10 rounded text-[9px] text-blue-700">Count</Button>
+            ) : null
+        }
+    ];
+
+    return (
+        <>
+            <StandardPage title="Physical Inventory" description="Cycle counts · Wall-to-wall · Variance analysis · Approval workflow"
+                actions={<Button variant="default" size="sm" onClick={() => setShowNewCycle(true)} className="text-white text-xs">+ New Cycle</Button>}>
+
+                {/* New cycle form */}
+                {showNewCycle && (
+                    <div className="bg-gray-500/10 border border-border rounded-xl p-3.5 mb-3">
+                        <div className="text-xs font-bold mb-2.5">Create Count Cycle</div>
+                        <div className="grid grid-cols-3 gap-2 mb-2.5">
+                            <div className="flex flex-col gap-0.5">
+                                <Label className="text-[10px] font-bold">Cycle Name</Label>
+                                <Input value={cycleForm.cycleName} onChange={e => setCycleForm(p => ({ ...p, cycleName: e.target.value }))} className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Cycle name" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <Label className="text-[10px] font-bold">Type</Label>
+                                <Select value={cycleForm.cycleType} onValueChange={v => setCycleForm(p => ({ ...p, cycleType: v }))}>
+                                    <SelectTrigger className="px-2 py-1.5 text-xs" aria-label="Cycle type"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        {['CYCLE_COUNT', 'FULL_WALL_TO_WALL', 'ABC_CYCLE'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <Label className="text-[10px] font-bold">Count Date</Label>
+                                <DatePicker value={cycleForm.countDate} onChange={v => setCycleForm(p => ({ ...p, countDate: v }))} aria-label="Count date" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <Label className="text-[10px] font-bold">Location Filter</Label>
+                                <Input value={cycleForm.locationFilter} onChange={e => setCycleForm(p => ({ ...p, locationFilter: e.target.value }))} placeholder="e.g. WHSE-A" className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Location filter" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <Label className="text-[10px] font-bold">Item Filter</Label>
+                                <Input value={cycleForm.itemFilter} onChange={e => setCycleForm(p => ({ ...p, itemFilter: e.target.value }))} placeholder="e.g. A-class items" className="px-2 py-1.5 border border-gray-300 rounded-md text-xs" aria-label="Item filter" />
+                            </div>
+                        </div>
+                        <div className="flex gap-1.5 justify-end">
+                            <Button variant="secondary" size="sm" onClick={() => setShowNewCycle(false)} className="text-[11px]">Cancel</Button>
+                            <Button variant="default" size="sm" disabled={!cycleForm.cycleName} onClick={() => createCycleMut.mutate(cycleForm)} className="text-white text-[11px] disabled:opacity-50">Create</Button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Status filter */}
+                <div className="flex gap-1.5 mb-3">
+                    {['', 'Planned', 'Counting', 'Under_Review', 'Approved', 'Posted', 'Cancelled'].map(s => (
+                        <Button variant="secondary" size="sm" key={s} onClick={() => setStatusFilter(s)} className={cn(`px-2.5 py-1 border border-border rounded-md text-[10px] font-semibold cursor-pointer ${statusFilter === s ? 'bg-gray-900 text-white' : 'bg-card text-muted-foreground'}`)}>{s || 'All'}</Button>
+                    ))}
+                </div>
+
+                <div className="flex gap-3.5">
+                    {/* Cycles list */}
+                    <div className="w-96 shrink-0">
+                        <div className="flex flex-col gap-1.5">
+                            {cycles.map(c => {
+                                const tw = CYCLE_STATUS_TW[c.status] ?? CYCLE_STATUS_TW.Planned;
+                                const pct = c.line_count > 0 ? Math.round(Number(c.counted_lines) / Number(c.line_count) * 100) : 0;
+                                return (
+                                    <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)}>
+                                        <div key={c.id} className={cn("bg-card rounded-xl px-3.5 py-3 cursor-pointer border-y border-r border-l-4", selectedCycle?.id === c.id ? 'border-y-blue-700 border-r-blue-700' : 'border-y-gray-200 border-r-gray-200', tw.border)}>
+                                            <div className="flex justify-between mb-1">
+                                                <div className="font-bold text-[13px]">{c.cycle_name}</div>
+                                                <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-bold", tw.bg, tw.text)}>{c.status}</span>
+                                            </div>
+                                            <div className="text-[10px] text-muted-foreground mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {formatDate(c.count_date)} · {c.counted_lines}/{c.line_count} lines</div>
+                                            <div className="bg-muted rounded-full h-1">
+                                                <Progress value={pct} className="h-full" indicatorClassName={pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'} />
+                                            </div>
+                                            {c.status === 'Counting' && (
+                                                <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 text-white rounded text-[10px] flex items-center gap-1">
+                                                    <CheckCircle2 className="h-[9px] w-[9px]" /> Approve
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </Button>
+                                );
+                            })}
+                            {cycles.length === 0 && <div className="text-center text-muted-foreground/70 p-8 bg-card rounded-xl">No cycles — create a count cycle to start</div>}
+                        </div>
+                    </div>
+
+                    {/* Variance detail */}
+                    {selectedCycle && (
+                        <div className="flex-1">
+                            <div className="flex justify-between mb-2.5 items-center">
+                                <div className="font-bold text-sm">{selectedCycle.cycle_name} — Variance</div>
+                                <div className="flex gap-2">
+                                    <div className="text-[11px] bg-red-100 text-red-600 font-bold px-2.5 py-1 rounded-md">Short: {negCount}</div>
+                                    <div className="text-[11px] bg-green-100 text-green-700 font-bold px-2.5 py-1 rounded-md">Over: {posCount}</div>
+                                    <div className={cn(`text-[11px] font-bold px-2.5 py-1 rounded-md ${Math.abs(totalVariance) > 0 ? 'bg-amber-100 text-amber-600' : 'bg-muted text-muted-foreground'}`)}>
+                                        Net: {totalVariance < 0 ? '-' : '+'}{formatCurrency(Math.abs(totalVariance))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mb-2.5 flex gap-2">
+                                <Button variant="secondary" size="sm" onClick={() => setShowAddLines(!showAddLines)} className="border text-[11px]">+ Add Lines (CSV)</Button>
+                                <Input value={countBy} onChange={e => setCountBy(e.target.value)} placeholder="Counted by…" className="px-2 py-1 border border-gray-300 rounded-md text-[11px] w-28" aria-label="Counted by" />
+                            </div>
+                            {showAddLines && (
+                                <div className="bg-gray-500/10 border border-border rounded-lg p-2.5 mb-2.5">
+                                    <div className="text-[10px] text-muted-foreground mb-1">CSV format: ItemNumber, Location, BookQty, UnitCost (one per line)</div>
+                                    <Textarea rows={4} value={linesText} onChange={e => setLinesText(e.target.value)} className="font-mono text-[10px] box-border" aria-label="CSV lines" />
+                                    <Button variant="default" size="sm" onClick={() => addLinesMut.mutate({ cycleId: selectedCycle.id, lines: parseLines() })} disabled={!linesText.trim()} className="mt-1.5 text-white text-[11px] disabled:opacity-50">Add Lines</Button>
+                                </div>
+                            )}
+                            <div className="h-[500px] w-full">
+                                <InteractiveSpreadsheet
+                                    columns={varianceColumns}
+                                    data={variance}
+                                    onChange={() => { }}
+                                    containerHeight="500px"
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </StandardPage >
+
+            <PromptDialog
+                open={countDialogOpen}
+                title="Record Count"
+                description="Enter the physical counted quantity for this line."
+                label="Counted Quantity"
+                placeholder="0"
+                inputType="number"
+                defaultValue="0"
+                confirmLabel="Save Count"
+                onConfirm={(val) => {
+                    setCountDialogOpen(false);
+                    if (pendingCountLineId) recordCountMut.mutate({ lineId: pendingCountLineId, countQuantity: parseFloat(val) || 0 });
+                    setPendingCountLineId(null);
+                }}
+                onCancel={() => { setCountDialogOpen(false); setPendingCountLineId(null); }}
+            />
+        </>
+    );
+}

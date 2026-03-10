@@ -48,6 +48,7 @@ export const revenueContracts = pgTable("revenue_contracts", {
     ledgerId: varchar("ledger_id").notNull(),
     legalEntityId: varchar("legal_entity_id"), // Added for Phase A
     orgId: varchar("org_id"),                 // Added for Phase A
+    entBusinessUnitId: varchar("ent_business_unit_id"),
     currency: varchar("currency").default("USD"),
     totalTransactionPrice: numeric("total_transaction_price", { precision: 18, scale: 2 }).default("0"),
     totalAllocatedPrice: numeric("total_allocated_price", { precision: 18, scale: 2 }).default("0"),
@@ -84,6 +85,7 @@ export const performanceObligations = pgTable("performance_obligations", {
     contractId: varchar("contract_id").notNull(), // Link to Parent Contract
     name: varchar("name").notNull(), // "Software License", "Implementation"
     itemType: varchar("item_type"), // Goods, Service, Subscription
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     // Amounts
     transactionPrice: numeric("transaction_price", { precision: 18, scale: 2 }).default("0"), // What we sold it for
@@ -109,6 +111,7 @@ export const revenueRecognitions = pgTable("revenue_recognitions", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     pobId: varchar("pob_id").notNull(), // Link to POB
     contractId: varchar("contract_id").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     // Timing
     periodName: varchar("period_name").notNull(), // "Jan-26"
@@ -139,6 +142,7 @@ export const revenueSourceEvents = pgTable("revenue_source_events", {
     sourceId: varchar("source_id").notNull(), // OrderLineID, UsageID
     eventType: varchar("event_type").notNull(), // Booking, Shipment, Consumption, Invoice
     eventDate: timestamp("event_date").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     // Data Payload
     itemId: varchar("item_id"),

@@ -54,6 +54,9 @@ export const faAssets = pgTable("fa_assets", {
     // Overall Status
     status: varchar("status", { length: 20 }).default("ACTIVE"), // ACTIVE, RETIRED, CIP
 
+    // LE Scoping (assets owned by a specific legal entity)
+    entLegalEntityId: varchar("ent_legal_entity_id", { length: 255 }),
+
     // Lease Reference (L4)
     leaseId: varchar("lease_id"),
 
@@ -196,6 +199,9 @@ export const faMassAdditions = pgTable("fa_mass_additions", {
     amount: numeric("amount", { precision: 20, scale: 2 }).notNull(),
     date: timestamp("date").notNull(),
     vendorName: varchar("vendor_name"),
+
+    // LE Scoping
+    entLegalEntityId: varchar("ent_legal_entity_id", { length: 255 }),
 
     // Asset Prep Info
     status: varchar("status", { length: 20 }).default("QUEUE"), // QUEUE, POSTED, ON_HOLD

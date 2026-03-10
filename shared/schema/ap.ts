@@ -1,12 +1,14 @@
 
 // Accounts Payable (AP) schema definitions for Oracle Fusion parity
-import { pgTable, serial, text, varchar, numeric, timestamp, boolean, integer, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, numeric, timestamp, boolean, integer, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { createInsertSchema } from "drizzle-zod";
 
 // 1. Supplier Entity (Parent)
 export const apSuppliers = pgTable("ap_suppliers", {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     supplierNumber: varchar("supplier_number", { length: 50 }), // Business Key
     name: varchar("name", { length: 255 }).notNull(),
     taxOrganizationType: varchar("tax_organization_type", { length: 50 }), // Corporation, Partnership, etc.
@@ -30,7 +32,7 @@ export const apSuppliers = pgTable("ap_suppliers", {
     // Contact
     country: varchar("country", { length: 100 }),
     contactEmail: varchar("contact_email", { length: 255 }),
-    parentSupplierId: integer("parent_supplier_id"),
+    parentSupplierId: varchar("parent_supplier_id"),
 
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow()
@@ -42,9 +44,10 @@ export type InsertApSupplier = typeof apSuppliers.$inferInsert;
 
 // 1.1 Supplier Sites (Child - New V2 Schema)
 export const apSupplierSites = pgTable("ap_supplier_sites", {
-    id: serial("id").primaryKey(),
-    supplierId: integer("supplier_id").notNull(), // Parent
-    orgId: integer("org_id").default(1), // Business Unit assignment
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
+    supplierId: varchar("supplier_id").notNull(), // Parent
+    orgId: varchar("org_id").default("1"), // Business Unit assignment
     siteName: varchar("site_name", { length: 100 }).notNull().default("OFFICE"), // e.g. HEADQUARTERS, PAY_ONLY
 
     address: text("address"),
@@ -72,11 +75,17 @@ export type InsertApSupplierSite = typeof apSupplierSites.$inferInsert;
 
 // 2. Invoice Header
 export const apInvoices = pgTable("ap_invoices", {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     invoiceId: varchar("invoice_id", { length: 50 }), // Logical ID if needed, or use serial ID
 
-    supplierId: integer("supplier_id").notNull(),
-    supplierSiteId: integer("supplier_site_id"), // FK to ap_supplier_sites (Migration will populate this)
+    supplierId: varchar("supplier_id").notNull(),
+    supplierSiteId: varchar("supplier_site_id").notNull(), // Enforced for enterprise banking routing
+
+    // Multi-Org
+    businessUnitId: varchar("business_unit_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
+    legalEntityId: varchar("legal_entity_id"),
 
     invoiceNumber: varchar("invoice_number", { length: 100 }).notNull(),
     invoiceDate: timestamp("invoice_date").notNull(),
@@ -105,6 +114,15 @@ export const apInvoices = pgTable("ap_invoices", {
     // Controls
     cancelledDate: timestamp("cancelled_date"),
     glDate: timestamp("gl_date"), // Default GL Date
+    transactionDate: timestamp("transaction_date"),
+    termsDate: timestamp("terms_date"),
+    goodsReceivedDate: timestamp("goods_received_date"),
+    invoiceReceivedDate: timestamp("invoice_received_date"),
+    controlAmount: numeric("control_amount", { precision: 18, scale: 2 }),
+    payGroup: varchar("pay_group", { length: 50 }),
+    paymentMethodOverride: varchar("payment_method_override", { length: 50 }),
+    documentCategory: varchar("document_category", { length: 50 }),
+    exchangeRate: numeric("exchange_rate", { precision: 18, scale: 6 }),
 
     // AI Extraction Metadata
     audioUrl: text("audio_url"),
@@ -126,8 +144,8 @@ export type InsertApInvoice = typeof apInvoices.$inferInsert;
 
 // 3. Invoice Lines (The "what" - Items, Freight, Tax)
 export const apInvoiceLines = pgTable("ap_invoice_lines", {
-    id: serial("id").primaryKey(),
-    invoiceId: integer("invoice_id").notNull(), // FK to apInvoices
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(), // FK to apInvoices
     lineNumber: integer("line_number").notNull(),
 
     lineType: varchar("line_type", { length: 50 }).notNull().default("ITEM"), // ITEM, TAX, FREIGHT, MISC
@@ -140,6 +158,13 @@ export const apInvoiceLines = pgTable("ap_invoice_lines", {
     poLineId: varchar("po_line_id"),
     quantityInvoiced: numeric("quantity_invoiced", { precision: 18, scale: 4 }),
     unitPrice: numeric("unit_price", { precision: 18, scale: 4 }),
+    uom: varchar("uom", { length: 50 }),
+
+    // Tax & Assets
+    taxClassificationCode: varchar("tax_classification_code", { length: 50 }),
+    trackAsAssetFlag: boolean("track_as_asset_flag").default(false),
+    assetCategoryId: varchar("asset_category_id"),
+    requesterId: varchar("requester_id"), // Employee ID for routing
 
     // Status
     discardedFlag: boolean("discarded_flag").default(false),
@@ -165,11 +190,12 @@ export type InsertApInvoiceLine = typeof apInvoiceLines.$inferInsert;
 
 // 4. Invoice Distributions (The "accounting" - Cost Centers)
 export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
-    id: serial("id").primaryKey(),
-    invoiceId: integer("invoice_id").notNull(),
-    invoiceLineId: integer("invoice_line_id").notNull(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    invoiceLineId: varchar("invoice_line_id").notNull(),
     distLineNumber: integer("dist_line_number").notNull(),
 
+    distributionLineType: varchar("distribution_line_type", { length: 50 }).notNull().default("ITEM"), // ITEM, ACCRUAL, TAX, VARIANCE
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
 
     // Accounting
@@ -177,6 +203,12 @@ export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
     accountingDate: timestamp("accounting_date"),
 
     description: text("description"),
+
+    // PPM & Costing Project integration extensions
+    ppmProjectId: varchar("ppm_project_id"),
+    ppmTaskId: varchar("ppm_task_id"),
+    expenditureItemDate: timestamp("expenditure_item_date"),
+    expenditureType: varchar("expenditure_type", { length: 100 }),
 
     // Status
     postedFlag: boolean("posted_flag").default(false), // Has this been sent to SLA/GL?
@@ -188,17 +220,39 @@ export const apInvoiceDistributions = pgTable("ap_invoice_distributions", {
 export const insertApInvoiceDistributionSchema = createInsertSchema(apInvoiceDistributions);
 export type ApInvoiceDistribution = typeof apInvoiceDistributions.$inferSelect;
 export type InsertApInvoiceDistribution = typeof apInvoiceDistributions.$inferInsert;
+// 4.5 Payment Schedules (For tracking installments)
+export const apPaymentSchedules = pgTable("ap_payment_schedules", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    paymentNumber: integer("payment_number").notNull().default(1),
+    dueDate: timestamp("due_date").notNull(),
+    amountDue: numeric("amount_due", { precision: 18, scale: 2 }).notNull(),
+    amountPaid: numeric("amount_paid", { precision: 18, scale: 2 }).default("0"),
+    paymentStatus: varchar("payment_status", { length: 50 }).default("UNPAID"), // UNPAID, PARTIAL, PAID
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
+    holdFlag: boolean("hold_flag").default(false),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPaymentScheduleSchema = createInsertSchema(apPaymentSchedules);
+export type ApPaymentSchedule = typeof apPaymentSchedules.$inferSelect;
+export type InsertApPaymentSchedule = typeof apPaymentSchedules.$inferInsert;
 
 // 5. Payment Batches (PPR - Payment Process Request)
 export const apPaymentBatches = pgTable("ap_payment_batches", {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     batchName: varchar("batch_name", { length: 100 }).notNull(),
-    status: varchar("status", { length: 50 }).default("NEW"), // NEW, SELECTED, CONFIRMED, CANCELLED
+    status: varchar("status", { length: 50 }).default("SELECTING"), // SELECTING, BUILDING, FORMATTING, CONFIRMED, CANCELLED
 
     // Selection Criteria
+    templateId: varchar("template_id"),
     checkDate: timestamp("check_date").notNull().defaultNow(),
+    payThroughDate: timestamp("pay_through_date"),
     payGroup: varchar("pay_group", { length: 50 }),
+    priorityRange: varchar("priority_range", { length: 50 }),
     paymentMethodCode: varchar("payment_method_code", { length: 50 }).default("CHECK"),
+    paymentDocumentId: varchar("payment_document_id"),
 
     // Totals
     totalAmount: numeric("total_amount", { precision: 18, scale: 2 }).default("0"),
@@ -206,6 +260,9 @@ export const apPaymentBatches = pgTable("ap_payment_batches", {
 
     // Disbursement Bank
     bankAccountId: varchar("bank_account_id"),
+
+    // Enterprise BU Scoping
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
 
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow()
@@ -217,33 +274,35 @@ export type InsertApPaymentBatch = typeof apPaymentBatches.$inferInsert;
 
 // 6. Payments (Refactored to link to Invoices)
 export const apPayments = pgTable("ap_payments", {
-    id: serial("id").primaryKey(),
-    paymentNumber: serial("payment_number"), // Internal sequential
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
+    paymentNumber: varchar("payment_number", { length: 50 }), // Internal sequential
     checkNumber: varchar("check_number"), // External ref
 
-    batchId: integer("batch_id"), // Link to PPR batch
+    batchId: varchar("batch_id"), // Link to PPR batch
 
     paymentDate: timestamp("payment_date").notNull(),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(),
     currencyCode: varchar("currency_code", { length: 10 }).notNull(),
 
     paymentMethodCode: varchar("payment_method_code", { length: 50 }).notNull(), // CHECK, WIRE, CLEARING
-    supplierId: integer("supplier_id").notNull(),
+    supplierId: varchar("supplier_id").notNull(),
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping Key
 
     status: varchar("status", { length: 50 }).default("NEGOTIABLE"), // NEGOTIABLE, CLEARED, VOIDED
     createdAt: timestamp("created_at").defaultNow()
 });
 
 export const apHolds = pgTable("ap_holds", {
-    id: serial("id").primaryKey(),
-    invoice_id: integer("invoice_id").notNull(),
-    line_location_id: integer("line_location_id"), // Optional: if hold is on a specific line
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoice_id: varchar("invoice_id").notNull(),
+    line_location_id: varchar("line_location_id"), // Optional: if hold is on a specific line
     hold_lookup_code: varchar("hold_lookup_code", { length: 50 }).notNull(), // e.g. PRICE VARIANCE, QTY RECD
     hold_type: varchar("hold_type", { length: 50 }).notNull().default("GENERAL"), // e.g. PRICE_VARIANCE, QTY_VARIANCE
     hold_reason: varchar("hold_reason", { length: 255 }),
     release_lookup_code: varchar("release_lookup_code", { length: 50 }), // NULL if active
     hold_date: timestamp("hold_date").defaultNow(),
-    held_by: integer("held_by").default(1), // System User ID
+    held_by: varchar("held_by").default("1"), // System User ID
 });
 
 export const insertApHoldSchema = createInsertSchema(apHolds);
@@ -252,8 +311,8 @@ export type InsertApHold = typeof apHolds.$inferInsert;
 
 // 6. System Parameters (Global Options)
 export const apSystemParameters = pgTable("ap_system_parameters", {
-    id: serial("id").primaryKey(),
-    orgId: integer("org_id").default(1), // Single Org for now
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    orgId: varchar("org_id").default("1"), // Single Org for now
 
     // Tolerances
     priceTolerancePercent: numeric("price_tolerance_percent").default("0.05"), // 5%
@@ -287,7 +346,7 @@ export type InsertApSystemParameters = typeof apSystemParameters.$inferInsert;
 
 // 7. Distribution Sets (Templates)
 export const apDistributionSets = pgTable("ap_distribution_sets", {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 100 }).notNull(),
     description: text("description"),
     isActive: boolean("is_active").default(true),
@@ -300,10 +359,10 @@ export type ApDistributionSet = typeof apDistributionSets.$inferSelect;
 export type InsertApDistributionSet = typeof apDistributionSets.$inferInsert;
 
 export const apDistributionSetLines = pgTable("ap_distribution_set_lines", {
-    id: serial("id").primaryKey(),
-    distributionSetId: integer("distribution_set_id").notNull(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    distributionSetId: varchar("distribution_set_id").notNull(),
     distributionPercent: numeric("distribution_percent").notNull(), // e.g. 50.00
-    distCodeCombinationId: integer("dist_code_combination_id").notNull(), // GL Account
+    distCodeCombinationId: varchar("dist_code_combination_id").notNull(), // GL Account
     description: varchar("description", { length: 255 }),
 });
 
@@ -320,19 +379,20 @@ export type InsertApPayment = typeof apPayments.$inferInsert;
 // Payment History / Invoice Linkage
 // In Fusion this is ap_invoice_payments_all
 export const apInvoicePayments = pgTable("ap_invoice_payments", {
-    id: serial("id").primaryKey(),
-    paymentId: integer("payment_id").notNull(),
-    invoiceId: integer("invoice_id").notNull(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    paymentId: varchar("payment_id").notNull(),
+    invoiceId: varchar("invoice_id").notNull(),
     amount: numeric("amount", { precision: 18, scale: 2 }).notNull(), // Amount of THIS invoice paid by THIS payment
+    discountTaken: numeric("discount_taken", { precision: 18, scale: 2 }).default("0"), // Early payment discount amount
     accountingDate: timestamp("accounting_date"),
     createdAt: timestamp("created_at").defaultNow()
 });
 
 // Approvals (Simplified for now)
 export const apApprovals = pgTable("ap_approvals", {
-    id: serial("id").primaryKey(),
-    invoiceId: integer("invoice_id").notNull(),
-    approverId: integer("approver_id"),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    invoiceId: varchar("invoice_id").notNull(),
+    approverId: varchar("approver_id"),
     status: varchar("status", { length: 50 }).default("Pending"),
     decision: varchar("decision", { length: 50 }).default("Pending"),
     actionDate: timestamp("action_date"),
@@ -346,7 +406,7 @@ export type InsertApApproval = typeof apApprovals.$inferInsert;
 
 // 8. AP Audit Logs (Immutable history)
 export const apAuditLogs = pgTable("ap_audit_logs", {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     action: varchar("action", { length: 100 }).notNull(), // e.g. INVOICE_VALIDATED, PAYMENT_CREATED
     entity: varchar("entity", { length: 50 }).notNull(), // e.g. INVOICE, SUPPLIER
     entityId: varchar("entity_id", { length: 50 }).notNull(),
@@ -362,7 +422,7 @@ export type ApAuditLog = typeof apAuditLogs.$inferSelect;
 
 // 9. AP Period Statuses (Control)
 export const apPeriodStatuses = pgTable("ap_period_statuses", {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     periodId: varchar("period_id").notNull(), // refers to glPeriods.id
     status: varchar("status", { length: 20 }).default("OPEN"), // OPEN, CLOSED, PERMANENTLY_CLOSED
     closedDate: timestamp("closed_date"),
@@ -376,7 +436,7 @@ export type ApPeriodStatus = typeof apPeriodStatuses.$inferSelect;
 // 10. Prepayment Applications (Linking Prepayments to Standard Invoices)
 // 11. Withholding Tax Groups & Rates
 export const apWhtGroups = pgTable("ap_wht_groups", {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     groupName: varchar("group_name", { length: 100 }).unique().notNull(),
     description: text("description"),
     enabledFlag: boolean("enabled_flag").default(true),
@@ -384,9 +444,9 @@ export const apWhtGroups = pgTable("ap_wht_groups", {
 });
 
 export const apWhtRates = pgTable("ap_wht_rates", {
-    id: serial("id").primaryKey(),
-    groupId: integer("group_id").notNull(),
-    taxAuthorityId: integer("tax_authority_id"), // refers to a supplier marked as tax authority
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    groupId: varchar("group_id").notNull(),
+    taxAuthorityId: varchar("tax_authority_id"), // refers to a supplier marked as tax authority
     taxRateName: varchar("tax_rate_name", { length: 100 }).notNull(),
     ratePercent: numeric("rate_percent", { precision: 5, scale: 2 }).notNull(), // e.g. 7.50
     priority: integer("priority").default(1),
@@ -400,9 +460,9 @@ export type ApWhtGroup = typeof apWhtGroups.$inferSelect;
 export type ApWhtRate = typeof apWhtRates.$inferSelect;
 
 export const apPrepayApplications = pgTable("ap_prepay_applications", {
-    id: serial("id").primaryKey(),
-    standardInvoiceId: integer("standard_invoice_id").notNull(),
-    prepaymentInvoiceId: integer("prepayment_invoice_id").notNull(),
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    standardInvoiceId: varchar("standard_invoice_id").notNull(),
+    prepaymentInvoiceId: varchar("prepayment_invoice_id").notNull(),
     amountApplied: numeric("amount_applied", { precision: 18, scale: 2 }).notNull(),
     accountingDate: timestamp("accounting_date").notNull().defaultNow(),
     userId: varchar("user_id").notNull(),
@@ -412,3 +472,83 @@ export const apPrepayApplications = pgTable("ap_prepay_applications", {
 
 export const insertApPrepayApplicationSchema = createInsertSchema(apPrepayApplications);
 export type ApPrepayApplication = typeof apPrepayApplications.$inferSelect;
+
+// 12. Payment Terms
+export const apPaymentTerms = pgTable("ap_payment_terms", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    termName: varchar("term_name", { length: 100 }).unique().notNull(), // e.g. "Net 30", "2% 10 Net 30"
+    description: text("description"),
+    dueDays: integer("due_days").notNull(), // e.g. 30
+    discountDays: integer("discount_days"), // e.g. 10
+    discountPercent: numeric("discount_percent", { precision: 5, scale: 2 }), // e.g. 2.00
+    enabledFlag: boolean("enabled_flag").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPaymentTermSchema = createInsertSchema(apPaymentTerms);
+export type ApPaymentTerm = typeof apPaymentTerms.$inferSelect;
+export type InsertApPaymentTerm = typeof apPaymentTerms.$inferInsert;
+
+// ========== ORACLE PARITY: ENTERPRISE SETUP ==========
+
+// Tolerances (System Parameters)
+export const apTolerances = pgTable("ap_tolerances", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 100 }).notNull().unique(),
+    description: text("description"),
+
+    // Percentage Variances (0 - 100)
+    priceTolerancePct: numeric("price_tolerance_pct", { precision: 5, scale: 2 }).default("0"),
+    quantityTolerancePct: numeric("quantity_tolerance_pct", { precision: 5, scale: 2 }).default("0"),
+
+    // Amount Variances
+    maxAmountTolerance: numeric("max_amount_tolerance", { precision: 18, scale: 2 }).default("0"),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApToleranceSchema = createInsertSchema(apTolerances);
+export type ApTolerance = typeof apTolerances.$inferSelect;
+export type InsertApTolerance = typeof apTolerances.$inferInsert;
+
+// PPR (Payment Process Request) Templates
+export const apPprTemplates = pgTable("ap_ppr_templates", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    templateName: varchar("template_name", { length: 100 }).notNull().unique(),
+    description: text("description"),
+
+    // Selection Criteria
+    payGroupId: varchar("pay_group_id"),
+    priorityRangeFrom: integer("priority_range_from"),
+    priorityRangeTo: integer("priority_range_to"),
+    paymentMethodCode: varchar("payment_method_code", { length: 50 }),
+    bankAccountId: varchar("bank_account_id"),
+
+    // Processing Options 
+    autoReviewInvoices: boolean("auto_review_invoices").default(true),
+    autoFormatPayments: boolean("auto_format_payments").default(false),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const insertApPprTemplateSchema = createInsertSchema(apPprTemplates);
+export type ApPprTemplate = typeof apPprTemplates.$inferSelect;
+export type InsertApPprTemplate = typeof apPprTemplates.$inferInsert;
+
+
+// ========== RELATIONS ==========
+import { relations } from "drizzle-orm";
+
+export const apSuppliersRelations = relations(apSuppliers, ({ many }) => ({
+    sites: many(apSupplierSites),
+}));
+
+export const apSupplierSitesRelations = relations(apSupplierSites, ({ one }) => ({
+    supplier: one(apSuppliers, {
+        fields: [apSupplierSites.supplierId],
+        references: [apSuppliers.id],
+    }),
+}));

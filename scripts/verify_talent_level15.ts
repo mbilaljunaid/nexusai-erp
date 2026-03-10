@@ -97,8 +97,8 @@ async function verifyTalentLevel15() {
         // Update Goal
         await PerformanceService.updateGoal(goal.id, { progress: 50 });
         const updatedGoal = (await PerformanceService.getGoals(personId)).find(g => g.id === goal.id);
-        if (updatedGoal.progress !== 50) throw new Error("Goal progress update failed");
-        console.log("✅ Goal Progress Updated:", updatedGoal.progress + "%");
+        if (updatedGoal?.progress !== 50) throw new Error("Goal progress update failed");
+        console.log("✅ Goal Progress Updated:", updatedGoal?.progress + "%");
 
 
         console.log("\n🎉 ALL LEVEL-15 CHECKS PASSED!");

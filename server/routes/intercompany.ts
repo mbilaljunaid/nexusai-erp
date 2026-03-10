@@ -1,8 +1,10 @@
 
+
 import { Router } from "express";
 import { intercompanyService } from "../modules/intercompany/intercompany.service";
 import { db } from "../db";
-import { icOrgs, icTransactionTypes } from "../../shared/schema/intercompany";
+import { icOrgs, icTransactionTypes, icDataAccessSets } from "../../shared/schema/intercompany";
+import { eq, and } from "drizzle-orm";
 
 import { intercompanyReportService } from "../modules/intercompany/intercompany.report.service";
 import { icSecurityService } from "../services/ic-security";
@@ -22,7 +24,49 @@ router.get("/security/orgs", async (req, res) => {
     }
 });
 
+// User Search (for Data Access UI)
+router.get("/users/search", async (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q || (q as string).length < 3) {
+            return res.json([]);
+        }
+
+        // Mock user search - in production, this would query the user service
+        const mockUsers = [
+            { id: "user-001", name: "John Doe", email: "john.doe@example.com" },
+            { id: "user-002", name: "Jane Smith", email: "jane.smith@example.com" },
+            { id: "user-003", name: "Bob Johnson", email: "bob.johnson@example.com" },
+            { id: "user-004", name: "Alice Williams", email: "alice.williams@example.com" }
+        ];
+
+        const searchTerm = (q as string).toLowerCase();
+        const filtered = mockUsers.filter(u =>
+            u.name.toLowerCase().includes(searchTerm) ||
+            u.email.toLowerCase().includes(searchTerm)
+        );
+
+        res.json(filtered);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // 1. Get Setup Data
+router.get("/orgs", async (req, res) => {
+    try {
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        let orgsQuery = db.select({ id: icOrgs.id, org_name: icOrgs.orgName }).from(icOrgs);
+        if (legalEntityId) {
+            orgsQuery = orgsQuery.where(eq(icOrgs.legalEntityId, legalEntityId)) as any;
+        }
+        const orgs = await orgsQuery;
+        res.json(orgs);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch IC Orgs" });
+    }
+});
+
 router.get("/setup/orgs", async (req, res) => {
     try {
         const orgs = await db.select().from(icOrgs);
@@ -45,13 +89,21 @@ router.get("/setup/transaction-types", async (req, res) => {
 router.get("/batches", async (req, res) => {
     try {
         const { initiatorOrgId, role, page, limit } = req.query;
-        // Default to "INITIATOR" role if orgId is provided as initiator
-        // For simplicity, assume query param 'role'
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
 
-        // If mocked/test environment
-        const orgId = (initiatorOrgId as string) || "ICO-101"; // Default
+        // If legalEntityId header provided, resolve the initiatorOrgId from icOrgs
+        let orgId = (initiatorOrgId as string) || "ICO-101"; // Default fallback
+        if (legalEntityId) {
+            const [leOrg] = await db.select({ id: icOrgs.id })
+                .from(icOrgs)
+                .where(eq(icOrgs.legalEntityId, legalEntityId))
+                .limit(1);
+            if (leOrg) {
+                orgId = leOrg.id;
+            }
+        }
+
         const userRole = (role as "INITIATOR" | "RECEIVER") || "INITIATOR";
-
         const result = await intercompanyService.getBatches(orgId, userRole, Number(page) || 1, Number(limit) || 20);
         res.json(result);
     } catch (error: any) {
@@ -83,8 +135,20 @@ router.post("/batches/:id/submit", async (req, res) => {
 router.get("/transactions/inbound", async (req, res) => {
     try {
         const { receiverOrgId } = req.query;
-        if (!receiverOrgId) return res.status(400).json({ error: "receiverOrgId required" });
-        const txns = await intercompanyService.getInboundTransactions(receiverOrgId as string);
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+
+        // Resolve receiverOrgId from LE if not explicitly provided
+        let orgId = receiverOrgId as string | undefined;
+        if (!orgId && legalEntityId) {
+            const [leOrg] = await db.select({ id: icOrgs.id })
+                .from(icOrgs)
+                .where(eq(icOrgs.legalEntityId, legalEntityId))
+                .limit(1);
+            if (leOrg) orgId = leOrg.id;
+        }
+
+        if (!orgId) return res.status(400).json({ error: "receiverOrgId required (or provide x-legal-entity-id header)" });
+        const txns = await intercompanyService.getInboundTransactions(orgId);
         res.json(txns);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
@@ -175,6 +239,254 @@ router.get("/reports/reconciliation", async (req, res) => {
         const { period } = req.query;
         const report = await intercompanyReportService.getReconciliationReport(period as string || "All");
         res.json(report);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ── Data Access Management ──
+router.get("/data-access", async (req, res) => {
+    try {
+        const sets = await db.select().from(icDataAccessSets);
+        res.json(sets);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/data-access", async (req, res) => {
+    try {
+        const { userId, icOrgId, accessLevel } = req.body;
+
+        if (!userId || !icOrgId) {
+            return res.status(400).json({ error: "userId and icOrgId are required" });
+        }
+
+        // Check for duplicate
+        const existing = await db.select().from(icDataAccessSets)
+            .where(and(
+                eq(icDataAccessSets.userId, userId),
+                eq(icDataAccessSets.icOrgId, icOrgId)
+            ));
+
+        if (existing.length > 0) {
+            return res.status(409).json({ error: "User already has access to this organization" });
+        }
+
+        const [newSet] = await db.insert(icDataAccessSets).values({
+            userId,
+            icOrgId,
+            accessLevel: accessLevel || "FULL"
+        }).returning();
+
+        res.json(newSet);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.delete("/data-access/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        await db.delete(icDataAccessSets).where(eq(icDataAccessSets.id, id));
+        res.json({ success: true });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- In-Memory Store for Mock Disputes ---
+let globalMockDisputes = [
+    {
+        id: "DISP-1001",
+        dispute_number: "DISP-2026-001",
+        from_entity: "US Corp",
+        to_entity: "UK Subsidiary",
+        disputed_amount: 15000,
+        currency: "USD",
+        status: "Open",
+        reason: "AMOUNT_MISMATCH",
+        opened_by: "Alice",
+        opened_at: new Date().toISOString(),
+        events: [{ at: new Date().toISOString(), by: "Alice", action: "OPENED", note: "Initial discrepancy" }]
+    }
+];
+
+// ── Disputes Module ──
+router.get("/disputes", async (req, res) => {
+    try {
+        const { status } = req.query;
+        res.json(status ? globalMockDisputes.filter(d => d.status === status) : globalMockDisputes);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.get("/disputes/summary", async (req, res) => {
+    try {
+        const openCount = globalMockDisputes.filter(d => d.status === 'Open').length;
+        const openAmts = globalMockDisputes.filter(d => d.status === 'Open').reduce((acc, curr) => acc + (curr.disputed_amount || 0), 0);
+        res.json([
+            { status: "Open", reason: "AMOUNT_MISMATCH", count: openCount || 1, total_disputed: openAmts || 15000 }
+        ]);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post("/disputes", async (req, res) => {
+    try {
+        const newDispute = {
+            id: `DISP-${Date.now()}`,
+            dispute_number: `DISP-${Date.now()}`,
+            ...req.body,
+            status: "Open",
+            opened_at: new Date().toISOString(),
+            events: [{ at: new Date().toISOString(), by: req.body.openedBy || 'System', action: "OPENED", note: req.body.notes || "" }]
+        };
+        globalMockDisputes = [newDispute, ...globalMockDisputes];
+        res.json(newDispute);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+router.post("/disputes/:id/event", async (req, res) => {
+    try {
+        const { action, note, actor } = req.body;
+        globalMockDisputes = globalMockDisputes.map(d => {
+            if (d.id === req.params.id) {
+                const newStatus = action === 'ESCALATE' ? 'Escalated' : action === 'REVIEW' ? 'Under_Review' : d.status;
+                return {
+                    ...d,
+                    status: newStatus,
+                    events: [...(d.events || []), { at: new Date().toISOString(), by: actor || 'System', action, note }]
+                };
+            }
+            return d;
+        });
+        res.json({ success: true });
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+router.post("/disputes/:id/resolve", async (req, res) => {
+    try {
+        const { resolution, resolvedBy } = req.body;
+        globalMockDisputes = globalMockDisputes.map(d => {
+            if (d.id === req.params.id) {
+                return {
+                    ...d,
+                    status: "Resolved",
+                    reason: resolution || "Resolved",
+                    events: [...(d.events || []), { at: new Date().toISOString(), by: resolvedBy || "System", action: "RESOLVED", note: resolution || "Resolved" }]
+                };
+            }
+            return d;
+        });
+        res.json({ success: true });
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+// ── Netting Module ──
+router.get("/netting/batches", async (req, res) => {
+    try {
+        // Mock netting batches - in production, query from icNettingBatches table
+        const mockBatches = [
+            {
+                id: "NET-001",
+                batchName: "Month-End Netting - Feb 2026",
+                status: "PENDING",
+                createdDate: new Date("2026-02-10"),
+                participatingOrgs: ["ICO-101", "ICO-102", "ICO-103"],
+                totalSettlementAmount: 150000,
+                currency: "USD"
+            },
+            {
+                id: "NET-002",
+                batchName: "Q1 Netting Batch",
+                status: "EXECUTED",
+                createdDate: new Date("2026-01-31"),
+                participatingOrgs: ["ICO-101", "ICO-104"],
+                totalSettlementAmount: 85000,
+                currency: "USD",
+                executedDate: new Date("2026-02-01")
+            }
+        ];
+        res.json(mockBatches);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post("/netting/batches", async (req, res) => {
+    try {
+        const { batchName, participatingOrgIds, periodStart, periodEnd, currency } = req.body;
+
+        if (!batchName || !participatingOrgIds || participatingOrgIds.length < 2) {
+            return res.status(400).json({ error: "batchName and at least 2 participating orgs required" });
+        }
+
+        // Mock netting calculation
+        // In production, this would:
+        // 1. Query all IC transactions between orgs in the period
+        // 2. Calculate bilateral positions
+        // 3. Apply multilateral netting algorithm
+        // 4. Generate net settlement positions
+
+        const newBatch = {
+            id: `NET-${Date.now()}`,
+            batchName,
+            status: "PENDING",
+            createdDate: new Date(),
+            participatingOrgs: participatingOrgIds,
+            currency: currency || "USD",
+            periodStart,
+            periodEnd,
+            // Mock calculated positions
+            positions: participatingOrgIds.map((orgId: string, idx: number) => ({
+                orgId,
+                grossPayable: (idx + 1) * 50000,
+                grossReceivable: (idx + 1) * 45000,
+                netPosition: (idx % 2 === 0 ? 1 : -1) * (5000 * (idx + 1))
+            })),
+            totalSettlementAmount: 0 // Will be calculated
+        };
+
+        // Calculate total settlement
+        const totalSettlement = newBatch.positions.reduce((sum: number, p: any) =>
+            sum + Math.abs(p.netPosition), 0) / 2;
+        newBatch.totalSettlementAmount = totalSettlement;
+
+        res.json(newBatch);
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.post("/netting/batches/:id/execute", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // In production, this would:
+        // 1. Validate batch status is PENDING
+        // 2. Create settlement payment transactions
+        // 3. Update IC balances
+        // 4. Generate GL journals
+        // 5. Mark batch as EXECUTED
+
+        const result = {
+            batchId: id,
+            status: "EXECUTED",
+            executedDate: new Date(),
+            settlementsCreated: 3,
+            message: "Netting batch executed successfully. Settlement transactions created."
+        };
+
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

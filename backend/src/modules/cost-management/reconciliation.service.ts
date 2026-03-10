@@ -1,23 +1,16 @@
+
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
-import { OnHandBalance } from '../inventory/entities/on-hand-balance.entity';
-import { CstItemCost } from './entities/cst-item-cost.entity';
-import { GLEntry } from '../erp/entities/gl-entry.entity';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../../../../shared/schema';
+import { eq, and, sql } from 'drizzle-orm';
 
 @Injectable()
 export class ReconciliationService {
     private readonly logger = new Logger(ReconciliationService.name);
 
     constructor(
-        @InjectRepository(CstItemCost)
-        private itemCostRepo: Repository<CstItemCost>,
-        @InjectRepository(GLEntry)
-        private glRepo: Repository<GLEntry>,
-        @InjectRepository(OnHandBalance)
-        private onHandRepo: Repository<OnHandBalance>,
-        @InjectDataSource()
-        private dataSource: DataSource
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
     async reconcileInventory(orgId: string): Promise<any> {
@@ -25,24 +18,35 @@ export class ReconciliationService {
 
         // 1. Get Subledger Balance (Sum of Item Costs * Qty)
         // Join OnHandBalance (b) -> ItemCost (c)
-        // Condition: b.organization = orgId, c.inventoryOrganizationId = orgId
-        const result = await this.onHandRepo.createQueryBuilder('b')
-            .select('SUM(b.quantity * c.unitCost)', 'value')
-            .innerJoin(CstItemCost, 'c', 'c.itemId = b.item.id AND c.inventoryOrganizationId = b.organization.id')
-            .where('b.organization.id = :orgId', { orgId })
-            .getRawOne();
+        // Condition: b.organization = orgId, c.inventoryOrganizationId = orgId, b.itemId = c.itemId
 
-        const subledgerValue = parseFloat(result?.value || '0');
+        // Note: Drizzle query builder for joins with aggregation
+        const result = await this.db.select({
+            value: sql<string>`SUM(${schema.inventoryOnHandQuantities.quantity} * ${schema.cstItemCosts.unitCost})`
+        })
+            .from(schema.inventoryOnHandQuantities)
+            .innerJoin(
+                schema.cstItemCosts,
+                and(
+                    eq(schema.cstItemCosts.itemId, schema.inventoryOnHandQuantities.itemId),
+                    eq(schema.cstItemCosts.inventoryOrganizationId, schema.inventoryOnHandQuantities.organizationId)
+                )
+            )
+            .where(eq(schema.inventoryOnHandQuantities.organizationId, orgId));
+
+        const subledgerValue = parseFloat(result[0]?.value || '0');
 
         // 2. Get GL Balance for Inventory Asset Account (1410-000-0000)
-        const glResult = await this.glRepo.createQueryBuilder('gl')
-            .select('SUM(CASE WHEN gl.debitAccount = :acct THEN gl.debitAmount ELSE 0 END)', 'debitSum')
-            .addSelect('SUM(CASE WHEN gl.creditAccount = :acct THEN gl.creditAmount ELSE 0 END)', 'creditSum')
-            .setParameters({ acct: '1410-000-0000' })
-            .getRawOne();
+        const acct = '1410-000-0000';
+        const glResult = await this.db.select({
+            debitSum: sql<string>`SUM(CASE WHEN ${schema.glEntries.debitAccount} = ${acct} THEN ${schema.glEntries.debitAmount} ELSE 0 END)`,
+            creditSum: sql<string>`SUM(CASE WHEN ${schema.glEntries.creditAccount} = ${acct} THEN ${schema.glEntries.creditAmount} ELSE 0 END)`
+        })
+            .from(schema.glEntries);
+        // Note: Ideally filter by period or org if GL entries isolate them, but sticking to legacy logic for parity.
 
-        const glDebit = parseFloat(glResult?.debitSum || '0');
-        const glCredit = parseFloat(glResult?.creditSum || '0');
+        const glDebit = parseFloat(glResult[0]?.debitSum || '0');
+        const glCredit = parseFloat(glResult[0]?.creditSum || '0');
         const glNet = glDebit - glCredit;
 
         return {

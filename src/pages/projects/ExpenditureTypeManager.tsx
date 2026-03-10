@@ -1,0 +1,145 @@
+import { useState } from "react";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Tag, Layers } from "lucide-react";
+import { StandardPage } from '@/components/layout/StandardPage';
+
+interface ExpenditureType {
+    id: string;
+    name: string;
+    unitOfMeasure: string;
+    description: string;
+}
+
+export default function ExpenditureTypeManager() {
+    const { toast } = useToast();
+    const queryClient = useQueryClient();
+    const [isOpen, setIsOpen] = useState(false);
+    const [formData, setFormData] = useState({ name: "", unitOfMeasure: "Currency", description: "" });
+
+    const { data: types, isLoading } = useQuery<ExpenditureType[]>({
+        queryKey: ['/api/ppm/expenditure-types'],
+    });
+
+    const mutation = useMutation({
+        mutationFn: async (data: typeof formData) => {
+            const res = await fetch("/api/ppm/expenditure-types", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
+        onSuccess: () => {
+            toast({ title: "Success", description: "Expenditure Type created" });
+            queryClient.invalidateQueries({ queryKey: ['/api/ppm/expenditure-types'] });
+            setIsOpen(false);
+            setFormData({ name: "", unitOfMeasure: "Currency", description: "" });
+        },
+        onError: (error: Error) => {
+            toast({ title: "Error", description: error.message, variant: "destructive" });
+        }
+    });
+
+    const columns: SpreadsheetColumn<any>[] = [
+        { id: "name", header: "Name", width: "30%", cell: (item: any) => <div className="p-2 font-medium">{item.name}</div> },
+        { id: "unitOfMeasure", header: "UOM", width: "20%", cell: (item: any) => <div className="p-2">{item.unitOfMeasure}</div> },
+        { id: "description", header: "Description", width: "50%", cell: (item: any) => <div className="p-2">{item.description}</div> },
+    ];
+
+    return (
+        <StandardPage
+            title="Expenditure Types"
+            description="Manage classification of project costs and units of measure"
+        >
+            <div className="space-y-6">
+                <div className="flex justify-end">
+                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                        <DialogTrigger asChild>
+                            <Button className="bg-blue-600 hover:bg-blue-700">
+                                <Plus className="h-4 w-4 mr-2" /> New Type
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Create Expenditure Type</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label>Name</Label>
+                                    <Input
+                                        placeholder="e.g. Professional Services"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Unit of Measure</Label>
+                                    <Select
+                                        value={formData.unitOfMeasure}
+                                        onValueChange={(v) => setFormData({ ...formData, unitOfMeasure: v })}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Currency">Currency (Financial)</SelectItem>
+                                            <SelectItem value="Hours">Hours (Labor)</SelectItem>
+                                            <SelectItem value="Each">Each (Material)</SelectItem>
+                                            <SelectItem value="Miles">Miles (Travel)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Description</Label>
+                                    <Input
+                                        placeholder="Optional description"
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    />
+                                </div>
+                                <Button onClick={() => mutation.mutate(formData)} disabled={mutation.isPending} className="w-full">
+                                    {mutation.isPending ? "Creating..." : "Create Type"}
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card>
+                        <CardHeader className="py-4"><CardTitle className="text-sm text-muted-foreground">Active Types</CardTitle></CardHeader>
+                        <CardContent><div className="text-2xl font-bold">{types?.length || 0}</div></CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="py-4"><CardTitle className="text-sm text-muted-foreground">UOM Variants</CardTitle></CardHeader>
+                        <CardContent><div className="text-2xl font-bold flex items-center gap-2"><Layers className="h-4 w-4" /> {new Set(types?.map(t => t.unitOfMeasure)).size}</div></CardContent>
+                    </Card>
+                </div>
+
+                <Card className="border-0 shadow-none bg-transparent">
+                    {isLoading ? (
+                        <TableSkeleton rows={5} />
+                    ) : (
+                        <InteractiveSpreadsheet
+                            data={types || []}
+                            columns={columns}
+                            virtualized={true}
+                            containerHeight="600px"
+                            onChange={() => { }}
+                        />
+                    )}
+                </Card>
+            </div>
+        </StandardPage>
+    );
+}

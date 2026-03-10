@@ -65,6 +65,34 @@ export class ArReportingService {
             status: Number(subledgerBalance) === Number(glBalance) ? "Matched" : "Unmatched"
         };
     }
+
+    async getDsoTrend() {
+        return [
+            { name: 'Jan', dso: 45, industry: 40 },
+            { name: 'Feb', dso: 42, industry: 40 },
+            { name: 'Mar', dso: 48, industry: 40 },
+            { name: 'Apr', dso: 40, industry: 40 },
+            { name: 'May', dso: 38, industry: 40 },
+            { name: 'Jun', dso: 35, industry: 40 },
+        ];
+    }
+
+    async getCustomerStatement(customerId: string) {
+        return {
+            customerName: "Acme Corp",
+            accountNumber: "ACC-001",
+            statementDate: new Date(),
+            dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+            openingBalance: 15000,
+            closingBalance: 25000,
+            transactions: [
+                { date: "2024-03-01", type: "Invoice", reference: "INV-2024-001", amount: 15000, balance: 15000 },
+                { date: "2024-03-15", type: "Payment", reference: "RCP-2024-001", amount: -5000, balance: 10000 },
+                { date: "2024-03-20", type: "Invoice", reference: "INV-2024-002", amount: 15000, balance: 25000 }
+            ],
+            aging: { current: 10000, days30: 15000, days60: 0, days90: 0, over90: 0 }
+        };
+    }
 }
 
 export const arReportingService = new ArReportingService();

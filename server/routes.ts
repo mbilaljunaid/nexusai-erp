@@ -4,15 +4,28 @@ import { setupPlatformAuth, seedAdminUser } from "./platformAuth";
 import { enforceRBAC } from "./middleware/auth";
 import { storage } from "./storage";
 import { slaRouter } from "./modules/sla/routes";
+import { db } from "./db";
+import { suppliers } from "@shared/schema/scm";
+import { ppmProjects, ppmBudgetVersions, ppmBudgetLines } from "@shared/schema/ppm";
+import { eq, and } from "drizzle-orm";
 
 // Import modular routes
 import { registerDashboardRoutes } from "./modules/dashboard/routes";
 import { crmRouter } from "./modules/crm/routes";
 import { registerFeedbackRoutes } from "./modules/feedback/routes";
-import { copilotRouter } from "./modules/copilot/routes";
+
 import { registerFinanceRoutes } from "./modules/finance/routes";
+import { registerComplianceRoutes } from "./modules/compliance/routes";
 import { hrRouter } from "./modules/hr/routes";
+import { registerHRComplianceRoutes } from "./modules/hr/compliance-routes";
 import { registerProjectRoutes } from "./modules/project/routes";
+import { registerRecruitingRoutes } from "./modules/recruiting/routes";
+import { registerHRAnalyticsRoutes } from "./modules/hr-analytics/routes";
+import { registerMfgInventoryRoutes } from "./modules/manufacturing/mfg-inventory.routes";
+import { registerIntercompanyNettingRoutes } from "./modules/intercompany/ic-netting.routes";
+import { registerEPMRoutes } from "./modules/epm/epm.routes";
+import { registerEAMRoutes } from "./modules/eam/eam.routes";
+import { registerRemainingRoutes } from "./modules/remaining/remaining.routes";
 import { scmRoutes } from "./modules/scm/routes";
 import { scmController } from "./modules/scm/scm.controller"; // Import Controller
 import { manufacturingRouter } from "./modules/manufacturing/routes";
@@ -26,6 +39,10 @@ import leaseDirectRouter from "./routes/lease";
 import { registerNotificationRoutes } from "./modules/notifications/routes";
 import contractRoutes from "./modules/contracts/routes";
 import intercompanyRouter from "./routes/intercompany";
+import hrAnalyticsRouter from "./routes/hr_analytics";
+import hrPredictiveRouter from "./routes/hr_predictive";
+import hrReportsRouter from "./routes/hr_reports";
+import hrConfigurationRouter from "./routes/hr_configuration";
 
 
 // Import existing routes files that were already modularized (if any)
@@ -35,31 +52,39 @@ import migrationRoutes from "./routes/migrationRoutes";
 
 // import financeRouter from "./routes/finance";
 import { apRouter } from "./routes/ap";
-import arRouter from "./routes/ar";
+import glRoutes from "./routes/glRoutes";
+import epmRoutes from "./routes/epmRoutes";
 import cashRouter from "./routes/cash";
 import taxRouter from "./routes/tax";
 import nettingRouter from "./routes/netting";
 import portalRouter from "./routes/portal";
 import arAiRouter from "./routes/ar-ai";
+import arRouter from "./routes/ar";
 import arReportRouter from "./routes/ar-reports";
 import { fixedAssetsRouter } from "./routes/fixedAssets";
+import fieldServiceRouter from "./routes/fieldServiceRoutes";
+import { mobileSalesRouter } from "./routes/mobileSalesRoutes";
 import talentRouter from "./routes/talent";
 import successionRouter from "./routes/talent_succession";
 import learningRouter from "./routes/talent_learning";
 import profileRouter from "./routes/talent_profile";
 import rewardsRouter from "./routes/rewards";
+import hrSelfServiceRouter from "./routes/hr_self_service";
 
 import { constructionRouter } from "./modules/construction/routes";
-import aiRouter from "./routes/ai";
-import { aiService } from "./services/ai";
+
 import { supplierPortalRouter } from "./routes/supplierPortal";
 import contractPortalRouter from "./routes/contractPortal";
 import { supplierPortalExternalRouter } from "./routes/supplierPortalExternal";
 import publicCareersRouter from "./routes/public_careers";
-// // import sourcingRouter from "./routes/sourcing"; // Refactored to modules/scm/routes.ts
-// import { procurementRouter as PROCUREMENT_ROUTER } from "./modules/scm/procurementRoutes"; // Refactored to modules/scm/routes.ts
+import { mdmRouter } from "./routes/mdm";
+import { enterpriseRoutes } from "./routes/enterprise";
+// import sourcingRouter from "./routes/sourcing"; // Refactored to modules/scm/routes.ts
+import { procurementRouter } from "./modules/scm/procurementRoutes";
 
 import transportationRouter from "./modules/transportation/routes";
+import carrierRatesRouter from "./routes/carrier_rates";
+import shipmentTrackingRouter from "./routes/shipment_tracking";
 
 import { billingRouter } from "./modules/billing/billing.controller";
 import { orderRouter } from "./modules/order/order.controller";
@@ -71,6 +96,18 @@ import { lcmRouter } from "./modules/lcm/routes";
 
 import { ppmRouter } from "./modules/ppm/routes";
 import wfmRouter from "./routes/wfm";
+import { nexusAiRouter } from "./routes/nexus-ai";
+import expenseRouter from "./routes/expenses";
+import expensePolicyRouter from "./routes/expense-policies";
+import { registerLogisticsRoutes } from "./modules/logistics/routes";
+import { registerWMSRoutes } from "./modules/wms/routes";
+import { registerSupplierRoutes } from "./modules/supplier/routes";
+import featureFlagRoutes from "./modules/admin/feature-flag.routes";
+import pdfRoutes from "./routes/pdf.routes";
+import { oracleParityRouter } from "./routes/oracle-parity-round5";
+import { scmParityV8Router } from "./routes/scm-parity-v8";
+import { scmParityPhase56Router } from "./routes/scm-parity-phase56";
+
 
 export async function registerRoutes(
   httpServer: Server,
@@ -84,9 +121,13 @@ export async function registerRoutes(
 
   registerNotificationRoutes(app);
   registerFinanceRoutes(app);
+  registerComplianceRoutes(app);
+  registerHRComplianceRoutes(app);
   // Core Finance & ERP Routes
   // app.use("/api/finance", financeRouter); // Refactored to modules/finance/gl.routes.ts
 
+  app.use("/api/gl", glRoutes);
+  app.use("/api/epm", epmRoutes);
   app.use("/api/ap", apRouter);
   app.use("/api/ar", arRouter);
   app.use("/api/ar/ai", arAiRouter);
@@ -107,6 +148,9 @@ export async function registerRoutes(
   // New Consolidated SCM Route
   app.use("/api/scm", scmRoutes);
 
+  // Enterprise Structure
+  app.use("/api/enterprise", enterpriseRoutes);
+
   // Legacy SCM Routes (Mapped to New Controller)
   const legacyScmRouter = Router();
   legacyScmRouter.get("/purchase-orders", scmController.getPurchaseOrders);
@@ -115,7 +159,7 @@ export async function registerRoutes(
   legacyScmRouter.get("/rfqs", scmController.listRfqs);
 
   app.use("/api", legacyScmRouter); // Mounts /api/purchase-orders
-  app.use("/api/procurement", legacyScmRouter); // Mounts /api/procurement/requisitions
+  app.use("/api/procurement", procurementRouter);
 
   // Stub for /api/vendors
   app.get("/api/vendors", (req, res) => res.json([]));
@@ -130,23 +174,217 @@ export async function registerRoutes(
   // Legacy Ledger Stub
   app.get("/api/ledger", (req, res) => res.json({ message: "Use /api/finance/gl/ledgers" }));
 
+  // -----------------------------------------------------------------
+  // PROJECT BUDGETS – backed by ppmBudgetVersions + ppmProjects
+  // -----------------------------------------------------------------
+  app.get("/api/project-budgets", async (req: any, res) => {
+    try {
+      const buId = req.headers["x-business-unit-id"] as string | undefined;
+
+      // Fetch budget versions joined to projects
+      const versions = await db
+        .select({
+          id: ppmBudgetVersions.id,
+          projectId: ppmBudgetVersions.projectId,
+          category: ppmBudgetVersions.versionName,
+          status: ppmBudgetVersions.status,
+          createdAt: ppmBudgetVersions.createdAt,
+          projectName: ppmProjects.name,
+          projectNumber: ppmProjects.projectNumber,
+          entBusinessUnitId: ppmProjects.entBusinessUnitId,
+        })
+        .from(ppmBudgetVersions)
+        .leftJoin(ppmProjects, eq(ppmBudgetVersions.projectId, ppmProjects.id))
+        .where(buId ? eq(ppmProjects.entBusinessUnitId, buId) : undefined);
+
+      // Aggregate budget lines for each version
+      const versionIds = versions.map(v => v.id);
+      const lines = versionIds.length > 0
+        ? await db.select().from(ppmBudgetLines).where(
+          versionIds.length === 1
+            ? eq(ppmBudgetLines.versionId, versionIds[0])
+            : require("drizzle-orm").inArray(ppmBudgetLines.versionId, versionIds)
+        )
+        : [];
+
+      const result = versions.map(v => {
+        const vLines = lines.filter(l => l.versionId === v.id);
+        const allocated = vLines.reduce((s, l) => s + Number(l.amount ?? 0), 0);
+        return {
+          id: v.id,
+          project: v.projectName ?? v.projectId,
+          projectNumber: v.projectNumber,
+          category: v.category,
+          allocated,
+          actual: 0, // actual costs computed separately via expenditure items
+          status: v.status,
+          createdAt: v.createdAt,
+        };
+      });
+
+      res.json(result);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/project-budgets", async (req: any, res) => {
+    try {
+      const buId = req.headers["x-business-unit-id"] as string | undefined;
+      const { project: projectName, category, allocated } = req.body;
+      if (!projectName || !category) {
+        return res.status(400).json({ error: "project and category are required" });
+      }
+
+      // Find or create the project
+      let [proj] = await db
+        .select()
+        .from(ppmProjects)
+        .where(eq(ppmProjects.name, projectName))
+        .limit(1);
+
+      if (!proj) {
+        [proj] = await db
+          .insert(ppmProjects)
+          .values({
+            projectNumber: `PROJ-${Date.now()}`,
+            name: projectName,
+            projectType: "INDIRECT",
+            currencyCode: "USD",
+            startDate: new Date(),
+            entBusinessUnitId: buId ?? null,
+          })
+          .returning();
+      }
+
+      // Create a budget version for this category
+      const [version] = await db
+        .insert(ppmBudgetVersions)
+        .values({
+          projectId: proj.id,
+          versionName: category,
+          versionType: "COST",
+          status: "DRAFT",
+          currentFlag: true,
+        })
+        .returning();
+
+      // Create a budget line with the allocated amount
+      if (allocated != null) {
+        await db.insert(ppmBudgetLines).values({
+          versionId: version.id,
+          amount: String(allocated),
+          currencyCode: proj.currencyCode ?? "USD",
+        });
+      }
+
+      res.status(201).json({
+        id: version.id,
+        project: proj.name,
+        projectNumber: proj.projectNumber,
+        category,
+        allocated: Number(allocated ?? 0),
+        actual: 0,
+        status: version.status,
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.delete("/api/project-budgets/:id", async (req, res) => {
+    try {
+      // Delete child budget lines first, then the version
+      await db.delete(ppmBudgetLines).where(eq(ppmBudgetLines.versionId, req.params.id));
+      await db.delete(ppmBudgetVersions).where(eq(ppmBudgetVersions.id, req.params.id));
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // -----------------------------------------------------------------
+  // EQUIPMENT MANAGEMENT (Backed by maintAssets)
+  // -----------------------------------------------------------------
+  app.get("/api/equipment", async (req, res) => {
+    try {
+      const { maintAssets } = await import("@shared/schema");
+      const assets = await db.select().from(maintAssets).where(eq(maintAssets.typeCategory, "Equipment"));
+
+      // Map to EquipmentManagement frontend structure
+      res.json(assets.map((a: any) => ({
+        id: a.id,
+        equipmentId: a.assetNumber || `EQ-${a.id.substring(0, 4)}`,
+        type: a.name,
+        location: a.locationId || "Main Site",
+        hourMeter: "0.00", // Would be fetched from meters
+        status: a.status === "GOOD" ? "operational" : "maintenance",
+        fuelCost: "0.00" // Stub for fuel cost
+      })));
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/equipment", async (req, res) => {
+    try {
+      const { maintAssets } = await import("@shared/schema");
+      const { equipmentId, type, location, status } = req.body;
+      const [asset] = await db.insert(maintAssets).values({
+        name: type,
+        assetNumber: equipmentId,
+        typeCategory: "Equipment",
+        status: status === "operational" ? "GOOD" : "WARNING",
+        criticality: "MEDIUM"
+      }).returning();
+      res.status(201).json(asset);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.delete("/api/equipment/:id", async (req, res) => {
+    try {
+      const { maintAssets } = await import("@shared/schema");
+      await db.delete(maintAssets).where(eq(maintAssets.id, req.params.id));
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
 
   app.use("/api/portal", portalRouter); // Generic Portal (Customer)
   app.use("/api/fa", fixedAssetsRouter);
   app.use("/api/maintenance", maintenanceRouter);
+  app.use("/api/field-service", fieldServiceRouter);
   app.use("/api/ppm", ppmRouter);
   app.use("/api/construction", constructionRouter);
   app.use("/api/lcm", lcmRouter);
   app.use("/api/treasury", treasuryRouter);
   app.use("/api/wfm", wfmRouter);
+  app.use("/api/mdm", mdmRouter);
+  app.use("/api/hr-self-service", hrSelfServiceRouter);
   app.use("/api/treasury", treasuryRouter);
   app.use("/api/transportation", transportationRouter);
+  app.use("/api", carrierRatesRouter); // Mounts /api/carrier-rates
+  app.use("/api", shipmentTrackingRouter); // Mounts /api/shipment-tracking
   app.use("/api/lease", leaseDirectRouter); // Lease Management
   app.use("/api/contracts", contractRoutes); // CLM Management
+  registerLogisticsRoutes(app); // P1-G: TMS — Load Tender, Carrier Tracking, Mode Optimizer
+  registerWMSRoutes(app);       // P1-H: WMS — Directed Putaway, Yard Mgmt, Carrier Manifest
+  registerSupplierRoutes(app);  // P1-I: Supplier Portal — Obligations, Certifications, Qualifications
+  registerRecruitingRoutes(app); // P1-K: Recruiting — EEO, E-Signature, Background Checks
+  registerHRAnalyticsRoutes(app); // P1-L: HR Analytics — Pay Equity, Attrition, FCPA, Reg Calendar
+  registerMfgInventoryRoutes(app); // P1-M: Manufacturing & Inventory — ECO, OSP, Capacity, WIP, Lots, QH, PI, Consignment
+  registerIntercompanyNettingRoutes(app); // P1-N: IC Netting, Transfer Pricing, Disputes
+  registerEPMRoutes(app); // P1-O: EPM — ESG Planning, Budgetary Control, Narrative Reporting
+  registerEAMRoutes(app); // P1-O: EAM — Permit-to-Work, CBM, Meter PM
+  registerRemainingRoutes(app); // P1-Q: EVM, Drawing Register, CPQ, Renewals, Travel/Mileage, LCM, Lease Ext, Stage-Gate PPM, GL Recon, MDM, Talent Ext
 
 
   // Enterprise Billing
   app.use("/api/intercompany", intercompanyRouter);
+  app.use("/api/ic", intercompanyRouter);
   app.use("/api", talentRouter);
   app.use("/api", successionRouter);
   app.use("/api", learningRouter);
@@ -157,6 +395,19 @@ export async function registerRoutes(
   // SLA Configuration
   app.use("/api/sla", slaRouter);
 
+  // Expense Management
+  app.use("/api/expenses", expenseRouter);
+  app.use("/api/expense-policies", expensePolicyRouter);
+
+  // Oracle Parity Round 5 — AR Memos, AP Match Tolerances, FA Tax Books, Expense, Tax eBTax, Lease Approval Chains
+  app.use("/api", oracleParityRouter);
+
+  // SCM/MFG Parity v8 — ASN Acknowledgements, Consignment, RMA, Production Adherence, Transfer Pricing, Multi-Modal, Scorecard KPIs
+  app.use("/api", scmParityV8Router);
+
+  // SCM/MFG Phase 5/6 Parity — ABC, Catch Weight, Dropship, Rework, Kanban, Overhead, Period Close, CBM, Meters, Freight Claims, ERS
+  app.use("/api", scmParityPhase56Router);
+
   // Order Management
   app.use("/api/order-management", orderRouter);
 
@@ -164,16 +415,22 @@ export async function registerRoutes(
 
 
 
-  // Agentic AI
-  app.use("/api", aiRouter);
-  await aiService.initialize();
+
+
+  // Cross-Cutting P1: Feature Flags + PDF Generation
+  app.use("/api/feature-flags", featureFlagRoutes);
+  app.use("/api/pdf", pdfRoutes);
+
+  // NexusAI Provider Management
+  app.use("/api/nexus-ai", nexusAiRouter);
 
   // Apply RBAC middleware to all /api routes (except health check, auth, and public demo routes)
   app.use("/api", (req, res, next) => {
     // Exemptions for public/auth routes
     const publicPaths = [
       "/health", "/login", "/logout", "/callback", "/auth", "/demos",
-      "/copilot", "/feedback", "/marketplace/categories",
+      "/health", "/login", "/logout", "/callback", "/auth", "/demos",
+      "/feedback", "/marketplace/categories",
       "/api/supplier-portal/register", "/portal/supplier", "/api/construction", "/api/ppm", "/api/public"
     ];
 
@@ -230,13 +487,75 @@ export async function registerRoutes(
     return res.json({ isAuthenticated: false, user: null });
   });
 
+  // Admin Access Control Endpoints
+  app.get("/api/admin/users", (req, res) => {
+    try {
+      res.json([
+        { id: "1", name: "System Admin", email: "admin@nexusai.com", role: "ADMIN" },
+        { id: "2", name: "Finance Manager", email: "finance@nexusai.com", role: "GL_MANAGER" },
+        { id: "3", name: "Auditor", email: "auditor@nexusai.com", role: "GL_VIEWER" }
+      ]);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/admin/audit-logs", (req, res) => {
+    try {
+      res.json([
+        { id: "log1", createdAt: new Date(Date.now() - 3600000).toISOString(), userId: "admin", action: "UPDATE_ROLE", entityType: "User", entityId: "2", status: "SUCCESS" },
+        { id: "log2", createdAt: new Date(Date.now() - 7200000).toISOString(), userId: "system", action: "BACKUP_DB", entityType: "System", entityId: "db-main", status: "SUCCESS" },
+        { id: "log3", createdAt: new Date(Date.now() - 10800000).toISOString(), userId: "finance", action: "POST_JOURNAL", entityType: "Journal", entityId: "JRNL-1234", status: "Failed" }
+      ]);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/admin/users/:id/role", (req, res) => {
+    try {
+      res.json({ success: true, updatedRole: req.body.role, id: req.params.id });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  // Supplier Management API
+  app.get("/api/procurement/suppliers", async (req, res) => {
+    try {
+      const data = await db.select().from(suppliers);
+      res.json(data);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/procurement/suppliers", async (req, res) => {
+    try {
+      const { name, email, phone, category, status } = req.body;
+      const data = await db.insert(suppliers).values({
+        name,
+        email,
+        phone,
+        status: status || "active"
+      }).returning();
+      res.json(data[0]);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   // Register Modular Routes
   registerDashboardRoutes(app);
   registerFinanceRoutes(app);
   // HR
   app.use("/api/hr", hrRouter);
+  app.use("/api/hr/analytics", hrAnalyticsRouter);
+  app.use("/api/hr/predictive", hrPredictiveRouter);
+  app.use("/api/hr/reports", hrReportsRouter);
+  app.use("/api/hr/config", hrConfigurationRouter);
   // Copilot (AI)
-  app.use("/api/copilot", copilotRouter);
+
   registerProjectRoutes(app);
   // Manufacturing
   app.use("/api/manufacturing", manufacturingRouter);
@@ -259,6 +578,7 @@ export async function registerRoutes(
 
   // CRM Module (Mounted)
   app.use("/api/crm", crmRouter);
+  app.use("/api/mobile/sales", mobileSalesRouter);
 
   return httpServer;
 }

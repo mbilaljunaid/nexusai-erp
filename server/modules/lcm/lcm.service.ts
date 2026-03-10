@@ -16,15 +16,21 @@ export class LcmService {
     }
 
     // --- Trade Operations ---
-    async listTradeOperations(page: number = 1, limit: number = 20) {
+    async listTradeOperations(page: number = 1, limit: number = 20, inventoryOrgId?: string) {
         const offset = (page - 1) * limit;
 
+        const whereClause = inventoryOrgId
+            ? eq(lcmTradeOperations.entInventoryOrgId, inventoryOrgId)
+            : undefined;
+
         const data = await db.select().from(lcmTradeOperations)
+            .where(whereClause)
             .limit(limit)
             .offset(offset)
             .orderBy(sql`${lcmTradeOperations.createdAt} DESC`);
 
-        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(lcmTradeOperations);
+        const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(lcmTradeOperations)
+            .where(whereClause);
 
         return {
             data,
@@ -173,73 +179,6 @@ export class LcmService {
             return { success: true };
         });
     }
-
-
-    /**
-     * Workflow Methods
-     */
-    async submitForApproval(id: string) {
-        return await db.transaction(async (tx) => {
-            const [op] = await tx.select().from(lcmTradeOperations).where(eq(lcmTradeOperations.id, id));
-            if (!op) throw new Error("Trade Operation not found");
-
-            // Validation: Must have charges and allocations?
-            // For now, at least must be OPEN
-            if (op.status !== 'OPEN') throw new Error("Operation must be OPEN to submit");
-
-            await tx.update(lcmTradeOperations)
-                .set({ approvalStatus: 'PENDING_APPROVAL' })
-                .where(eq(lcmTradeOperations.id, id));
-
-            await lcmAuditService.logAction('lcm_trade_operations', id, 'UPDATE', {
-                approvalStatus: { old: op.approvalStatus, new: 'PENDING_APPROVAL' }
-            });
-
-            return { success: true };
-        });
-    }
-
-    async approveTradeOperation(id: string, userId: string = 'ADMIN') {
-        return await db.transaction(async (tx) => {
-            const [op] = await tx.select().from(lcmTradeOperations).where(eq(lcmTradeOperations.id, id));
-            if (!op) throw new Error("Trade Operation not found");
-            if (op.approvalStatus !== 'PENDING_APPROVAL') throw new Error("Operation is not pending approval");
-
-            await tx.update(lcmTradeOperations)
-                .set({
-                    approvalStatus: 'APPROVED',
-                    approvedBy: userId,
-                    approvedAt: new Date()
-                })
-                .where(eq(lcmTradeOperations.id, id));
-
-            await lcmAuditService.logAction('lcm_trade_operations', id, 'UPDATE', {
-                approvalStatus: { old: op.approvalStatus, new: 'APPROVED' },
-                approvedBy: userId
-            });
-
-            return { success: true };
-        });
-    }
-
-    async rejectTradeOperation(id: string, reason: string) {
-        return await db.transaction(async (tx) => {
-            const [op] = await tx.select().from(lcmTradeOperations).where(eq(lcmTradeOperations.id, id));
-            if (!op) throw new Error("Trade Operation not found");
-
-            await tx.update(lcmTradeOperations)
-                .set({ approvalStatus: 'REJECTED' }) // Or back to DRAFT? usage depends on policy. Let's say REJECTED.
-                .where(eq(lcmTradeOperations.id, id));
-
-            await lcmAuditService.logAction('lcm_trade_operations', id, 'UPDATE', {
-                approvalStatus: { old: op.approvalStatus, new: 'REJECTED' },
-                reason
-            });
-
-            return { success: true };
-        });
-    }
-
 
     /**
      * Closes the Trade Operation and computes Variances.

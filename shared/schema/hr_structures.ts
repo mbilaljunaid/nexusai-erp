@@ -86,6 +86,63 @@ export const hrGrades = pgTable("hr_grades", {
 
     payScaleId: varchar("pay_scale_id"),
 
+    // Salary Bands (for CompaRatio calculation)
+    minSalary: numeric("min_salary", { precision: 15, scale: 2 }),
+    midSalary: numeric("mid_salary", { precision: 15, scale: 2 }),
+    maxSalary: numeric("max_salary", { precision: 15, scale: 2 }),
+    salaryCurrency: varchar("salary_currency").default("USD"),
+
+    activeStatus: varchar("active_status").default("ACTIVE"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// 4.1 GRADE STEPS (Pay Progression within a Grade)
+export const hrGradeSteps = pgTable("hr_grade_steps", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    gradeId: varchar("grade_id").notNull().references(() => hrGrades.id),
+    stepNumber: integer("step_number").notNull(), // 1, 2, 3...
+    description: varchar("description"), // e.g. "Step 1 — Entry"
+
+    salary: numeric("salary", { precision: 15, scale: 2 }).notNull(),
+    currency: varchar("currency").default("USD"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+// 5.5 JOB FAMILIES
+export const hrJobFamilies = pgTable("hr_job_families", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    code: varchar("code").notNull(),
+    name: varchar("name").notNull(), // Technology, Finance, HR
+    description: varchar("description"),
+
+    activeStatus: varchar("active_status").default("ACTIVE"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// 5.6 JOB PROFILES (Competency-linked role specification)
+export const hrJobProfiles = pgTable("hr_job_profiles", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    jobFamilyId: varchar("job_family_id").notNull().references(() => hrJobFamilies.id),
+    jobId: varchar("job_id").references(() => hrJobs.id), // Optional link to specific job
+
+    name: varchar("name").notNull(), // e.g. "Sr. Software Engineer Profile"
+    gradeRangeMin: varchar("grade_range_min"), // e.g. IC4
+    gradeRangeMax: varchar("grade_range_max"), // e.g. IC5
+
+    // Required competencies: [{ competency: string, proficiency: string }]
+    requiredCompetencies: jsonb("required_competencies"),
+
     activeStatus: varchar("active_status").default("ACTIVE"),
 
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -126,10 +183,16 @@ export const insertLocationSchema = createInsertSchema(hrLocations);
 export const insertOrganizationSchema = createInsertSchema(hrOrganizations);
 export const insertJobSchema = createInsertSchema(hrJobs);
 export const insertGradeSchema = createInsertSchema(hrGrades);
+export const insertGradeStepSchema = createInsertSchema(hrGradeSteps);
 export const insertPositionSchema = createInsertSchema(hrPositions);
+export const insertJobFamilySchema = createInsertSchema(hrJobFamilies);
+export const insertJobProfileSchema = createInsertSchema(hrJobProfiles);
 
 export type HrLocation = typeof hrLocations.$inferSelect;
 export type HrOrganization = typeof hrOrganizations.$inferSelect;
 export type HrJob = typeof hrJobs.$inferSelect;
 export type HrGrade = typeof hrGrades.$inferSelect;
+export type HrGradeStep = typeof hrGradeSteps.$inferSelect;
 export type HrPosition = typeof hrPositions.$inferSelect;
+export type HrJobFamily = typeof hrJobFamilies.$inferSelect;
+export type HrJobProfile = typeof hrJobProfiles.$inferSelect;

@@ -77,6 +77,7 @@ export const productionOrders = pgTable("production_orders", {
     scheduledDate: timestamp("scheduled_date"),
     routingId: varchar("routing_id"),
     bomId: varchar("bom_id"),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // LE Scoping (Module 23)
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -247,6 +248,7 @@ export const wipBalances = pgTable("mfg_wip_balances", {
     productionOrderId: varchar("production_order_id").notNull(),
     costElementId: varchar("cost_element_id").notNull(),
     balance: numeric("balance", { precision: 18, scale: 4 }).default("0"),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // LE Scoping (Module 24)
     lastUpdated: timestamp("last_updated").default(sql`now()`),
 });
 
@@ -306,6 +308,7 @@ export const manufacturingBatches = pgTable("mfg_batches", {
     status: varchar("status").default("planned"), // planned, released, wip, completed, closed
     startDate: timestamp("start_date"),
     endDate: timestamp("end_date"),
+    entInventoryOrgId: varchar("ent_inventory_org_id"), // LE Scoping (Module 23 / Process Mfg)
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 

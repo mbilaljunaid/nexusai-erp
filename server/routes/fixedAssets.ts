@@ -21,9 +21,11 @@ fixedAssetsRouter.post("/assets", async (req, res) => {
 fixedAssetsRouter.get("/assets", async (req, res) => {
     try {
         const { limit, offset } = req.query;
+        const ledgerId = req.headers['x-ledger-id'] as string | undefined;
         const assets = await faService.listAssets(
             limit ? Number(limit) : undefined,
-            offset ? Number(offset) : undefined
+            offset ? Number(offset) : undefined,
+            ledgerId
         );
         const total = await faService.getAssetsCount();
         res.json({ data: assets, total });
@@ -35,7 +37,8 @@ fixedAssetsRouter.get("/assets", async (req, res) => {
 // Asset Stats
 fixedAssetsRouter.get("/stats", async (req, res) => {
     try {
-        const stats = await faService.getAssetsStats();
+        const ledgerId = req.headers['x-ledger-id'] as string | undefined;
+        const stats = await faService.getAssetsStats(ledgerId);
         res.json(stats);
     } catch (error) {
         res.status(500).json({ error: String(error) });
@@ -105,7 +108,15 @@ fixedAssetsRouter.get("/mass-additions", async (req, res) => {
     try {
         const { db } = await import("../db");
         const { faMassAdditions } = await import("@shared/schema");
-        const results = await db.select().from(faMassAdditions);
+        const { eq } = await import("drizzle-orm");
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
+        let results;
+        if (legalEntityId) {
+            results = await db.select().from(faMassAdditions)
+                .where(eq(faMassAdditions.entLegalEntityId, legalEntityId));
+        } else {
+            results = await db.select().from(faMassAdditions);
+        }
         res.json(results);
     } catch (error) {
         res.status(500).json({ error: String(error) });
@@ -163,6 +174,7 @@ fixedAssetsRouter.get("/reports/roll-forward", async (req, res) => {
 fixedAssetsRouter.post("/assets/from-lease", async (req, res) => {
     try {
         const { leaseId, cost, description, usefulLife } = req.body;
+        const legalEntityId = req.headers['x-legal-entity-id'] as string | undefined;
 
         // Validate
         if (!leaseId || !cost) {
@@ -172,7 +184,7 @@ fixedAssetsRouter.post("/assets/from-lease", async (req, res) => {
         const { db } = await import("../db");
         const { assets } = await import("@shared/schema");
 
-        const newAsset = {
+        const newAsset: Record<string, any> = {
             assetNumber: `ROU-${Date.now()}`,
             name: description || "ROU Asset from Lease",
             description: `ROU Asset for Lease ${leaseId}`,
@@ -187,6 +199,10 @@ fixedAssetsRouter.post("/assets/from-lease", async (req, res) => {
             salvageValue: "0",
             departmentId: "FINANCE"
         };
+
+        if (legalEntityId) {
+            newAsset.entLegalEntityId = legalEntityId;
+        }
 
         const [asset] = await db.insert(assets).values(newAsset).returning();
         res.json(asset);

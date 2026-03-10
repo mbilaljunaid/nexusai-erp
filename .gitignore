@@ -5,4 +5,8 @@ server/public
 vite.config.ts.*
 *.tar.gz
 .env
-.env.*
+.env.*.nestjs-bridge-bundle.mjs
+.env.example
+.env.infrastructure
+.geminirules
+.replit

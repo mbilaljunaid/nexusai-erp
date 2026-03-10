@@ -1,0 +1,1475 @@
+src/pages/AccessControl.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AccessibilityAudit.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AccountDirectory.tsx(40,5): error TS2657: JSX expressions must have one parent element.
+src/pages/AccountDirectory.tsx(43,4): error TS1003: Identifier expected.
+src/pages/AccountDirectory.tsx(44,9): error TS1005: ')' expected.
+src/pages/AccountDirectory.tsx(45,7): error TS1109: Expression expected.
+src/pages/AccountDirectory.tsx(47,7): error TS2657: JSX expressions must have one parent element.
+src/pages/AccountDirectory.tsx(95,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/AccountDirectory.tsx(96,3): error TS1128: Declaration or statement expected.
+src/pages/AccountReconciliation.tsx(64,101): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/AccountReconciliation.tsx(65,7): error TS1005: ')' expected.
+src/pages/AccountReconciliation.tsx(67,7): error TS2657: JSX expressions must have one parent element.
+src/pages/AccountReconciliation.tsx(146,5): error TS1128: Declaration or statement expected.
+src/pages/AccountReconciliation.tsx(147,3): error TS1109: Expression expected.
+src/pages/AccountsReceivable.tsx(88,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/AccountsReceivable.tsx(93,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AccountsReceivable.tsx(98,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AccountsReceivable.tsx(118,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/AccountsReceivable.tsx(120,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/AccountsReceivable.tsx(121,1): error TS1005: '</' expected.
+src/pages/ActivityTimeline.tsx(24,49): error TS1003: Identifier expected.
+src/pages/ActivityTimeline.tsx(24,111): error TS1002: Unterminated string literal.
+src/pages/ActivityTimeline.tsx(25,7): error TS1128: Declaration or statement expected.
+src/pages/ActivityTimeline.tsx(27,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ActivityTimeline.tsx(51,5): error TS1128: Declaration or statement expected.
+src/pages/ActivityTimeline.tsx(52,3): error TS1109: Expression expected.
+src/pages/admin/api/APIDocumentation.tsx(25,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/api/APIGateway.tsx(88,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/api/APIManagement.tsx(17,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/api/APIRateLimitPolicy.tsx(12,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/api/APIVersioning.tsx(12,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/BackupRestoreManager.tsx(142,5): error TS1109: Expression expected.
+src/pages/admin/BackupRestoreManager.tsx(251,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/DemoManagement.tsx(280,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/ModuleIndustryMapping.tsx(92,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/ModuleManagement.tsx(72,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/ProductionLayout.tsx(45,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/RequestsIssues.tsx(370,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/SecurityAdminPanel.tsx(228,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/SoDMatrix.tsx(84,5): error TS1109: Expression expected.
+src/pages/admin/SoDMatrix.tsx(152,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/SubscriptionBilling.tsx(31,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/SystemHealthDashboard.tsx(220,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/SystemLogsViewer.tsx(220,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/TenantSettings.tsx(68,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/admin/UsersAccess.tsx(78,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AdminRoles.tsx(100,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AdvancedPermissions.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AdvancedReporting.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AdvancedSearch.tsx(9,5): error TS2657: JSX expressions must have one parent element.
+src/pages/AdvancedSearch.tsx(10,23): error TS1003: Identifier expected.
+src/pages/AdvancedSearch.tsx(11,7): error TS1005: ')' expected.
+src/pages/AdvancedSearch.tsx(25,5): error TS1128: Declaration or statement expected.
+src/pages/AdvancedSearch.tsx(26,3): error TS1109: Expression expected.
+src/pages/AgileBoard.tsx(69,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AgingReport.tsx(79,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AgingReport.tsx(82,102): error TS1005: '}' expected.
+src/pages/AgingReport.tsx(82,143): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/pages/AgingReport.tsx(82,201): error TS17002: Expected corresponding JSX closing tag for 'span'.
+src/pages/AgingReport.tsx(197,1): error TS1005: '}' expected.
+src/pages/AlertsAndNotifications.tsx(16,5): error TS2657: JSX expressions must have one parent element.
+src/pages/AlertsAndNotifications.tsx(22,44): error TS1003: Identifier expected.
+src/pages/AlertsAndNotifications.tsx(22,46): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/AlertsAndNotifications.tsx(24,7): error TS1005: ')' expected.
+src/pages/AlertsAndNotifications.tsx(37,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/AlertsAndNotifications.tsx(38,3): error TS1128: Declaration or statement expected.
+src/pages/AnalyticsDetail.tsx(36,15): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/AnalyticsDetail.tsx(192,11): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/AnomalyDetection.tsx(49,49): error TS1003: Identifier expected.
+src/pages/AnomalyDetection.tsx(49,98): error TS1002: Unterminated string literal.
+src/pages/AnomalyDetection.tsx(50,7): error TS1128: Declaration or statement expected.
+src/pages/AnomalyDetection.tsx(52,7): error TS2657: JSX expressions must have one parent element.
+src/pages/AnomalyDetection.tsx(140,5): error TS1128: Declaration or statement expected.
+src/pages/AnomalyDetection.tsx(141,3): error TS1109: Expression expected.
+src/pages/ApprovalWorkflow.tsx(118,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AppStore.tsx(321,72): error TS1003: Identifier expected.
+src/pages/AppStore.tsx(321,123): error TS1002: Unterminated string literal.
+src/pages/AppStore.tsx(322,9): error TS1128: Declaration or statement expected.
+src/pages/AppStore.tsx(333,7): error TS1128: Declaration or statement expected.
+src/pages/AppStore.tsx(336,9): error TS1003: Identifier expected.
+src/pages/AppStore.tsx(336,14): error TS1005: ',' expected.
+src/pages/AppStore.tsx(337,21): error TS1005: ':' expected.
+src/pages/AppStore.tsx(349,9): error TS1005: ',' expected.
+src/pages/AppStore.tsx(349,14): error TS1005: ',' expected.
+src/pages/AppStore.tsx(350,7): error TS1109: Expression expected.
+src/pages/AppStore.tsx(350,9): error TS1128: Declaration or statement expected.
+src/pages/AppStore.tsx(439,5): error TS1128: Declaration or statement expected.
+src/pages/AppStore.tsx(440,3): error TS1109: Expression expected.
+src/pages/AppStore.tsx(441,1): error TS1128: Declaration or statement expected.
+src/pages/AssessmentGrading.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/AttendanceDashboard.tsx(17,5): error TS2657: JSX expressions must have one parent element.
+src/pages/AttendanceDashboard.tsx(23,52): error TS1005: '}' expected.
+src/pages/AttendanceDashboard.tsx(23,54): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/AttendanceDashboard.tsx(25,7): error TS1005: ')' expected.
+src/pages/AttendanceDashboard.tsx(27,7): error TS2657: JSX expressions must have one parent element.
+src/pages/AttendanceDashboard.tsx(64,5): error TS1128: Declaration or statement expected.
+src/pages/AttendanceDashboard.tsx(65,3): error TS1109: Expression expected.
+src/pages/AutomationRules.tsx(42,49): error TS1003: Identifier expected.
+src/pages/AutomationRules.tsx(42,87): error TS1002: Unterminated string literal.
+src/pages/AutomationRules.tsx(43,7): error TS1128: Declaration or statement expected.
+src/pages/AutomationRules.tsx(45,7): error TS2657: JSX expressions must have one parent element.
+src/pages/AutomationRules.tsx(122,5): error TS1128: Declaration or statement expected.
+src/pages/AutomationRules.tsx(123,3): error TS1109: Expression expected.
+src/pages/BackendIntegration.tsx(66,7): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/BackupRestore.tsx(17,5): error TS2657: JSX expressions must have one parent element.
+src/pages/BackupRestore.tsx(23,14): error TS1005: '}' expected.
+src/pages/BackupRestore.tsx(23,92): error TS17002: Expected corresponding JSX closing tag for 'Breadcrumb'.
+src/pages/BackupRestore.tsx(24,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/BackupRestore.tsx(26,7): error TS1005: ')' expected.
+src/pages/BackupRestore.tsx(28,7): error TS2657: JSX expressions must have one parent element.
+src/pages/BackupRestore.tsx(39,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/BackupRestore.tsx(40,3): error TS1128: Declaration or statement expected.
+src/pages/BatchManufacturing.tsx(58,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/BatchOperations.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/BatchOrdersManagement.tsx(58,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/billing/BillingDashboard.tsx(79,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/billing/BillingDashboard.tsx(94,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/billing/BillingDashboard.tsx(151,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/billing/BillingDashboard.tsx(184,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/billing/BillingDashboard.tsx(186,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/billing/BillingDashboard.tsx(187,1): error TS1005: '</' expected.
+src/pages/billing/DunningConfiguration.tsx(62,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/BillingPlans.tsx(38,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/BudgetPlanning.tsx(51,90): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/BudgetPlanning.tsx(52,7): error TS1005: ')' expected.
+src/pages/BudgetPlanning.tsx(54,7): error TS2657: JSX expressions must have one parent element.
+src/pages/BudgetPlanning.tsx(147,5): error TS1128: Declaration or statement expected.
+src/pages/BudgetPlanning.tsx(148,3): error TS1109: Expression expected.
+src/pages/BulkImportWizard.tsx(78,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/BulkOperations.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/BusinessIntelligence.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Calendar.tsx(10,5): error TS2657: JSX expressions must have one parent element.
+src/pages/Calendar.tsx(12,3): error TS1003: Identifier expected.
+src/pages/Calendar.tsx(13,7): error TS1005: ')' expected.
+src/pages/Calendar.tsx(15,7): error TS2657: JSX expressions must have one parent element.
+src/pages/Calendar.tsx(45,5): error TS1128: Declaration or statement expected.
+src/pages/Calendar.tsx(46,3): error TS1109: Expression expected.
+src/pages/CampaignsDetail.tsx(50,64): error TS1003: Identifier expected.
+src/pages/CampaignsDetail.tsx(50,65): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/pages/CampaignsDetail.tsx(50,66): error TS1002: Unterminated string literal.
+src/pages/CampaignsDetail.tsx(52,15): error TS17002: Expected corresponding JSX closing tag for 'Link'.
+src/pages/CampaignsDetail.tsx(74,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/CampaignsDetail.tsx(76,7): error TS1005: ')' expected.
+src/pages/CampaignsDetail.tsx(264,5): error TS1128: Declaration or statement expected.
+src/pages/CampaignsDetail.tsx(265,3): error TS1109: Expression expected.
+src/pages/CapacityPlanning.tsx(7,25): error TS1005: ')' expected.
+src/pages/CapacityPlanning.tsx(7,34): error TS1434: Unexpected keyword or identifier.
+src/pages/CapacityPlanning.tsx(7,42): error TS1128: Declaration or statement expected.
+src/pages/CapacityPlanning.tsx(7,129): error TS1005: ';' expected.
+src/pages/CapacityPlanning.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/CapacityPlanning.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/ChangeManagement.tsx(7,25): error TS1005: ')' expected.
+src/pages/ChangeManagement.tsx(7,32): error TS1434: Unexpected keyword or identifier.
+src/pages/ChangeManagement.tsx(7,42): error TS1128: Declaration or statement expected.
+src/pages/ChangeManagement.tsx(7,127): error TS1005: ';' expected.
+src/pages/ChangeManagement.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/ChangeManagement.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/ChartOfAccounts.tsx(82,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ChurnPrediction.tsx(17,101): error TS1003: Identifier expected.
+src/pages/ChurnPrediction.tsx(17,172): error TS1002: Unterminated string literal.
+src/pages/ChurnPrediction.tsx(18,9): error TS1128: Declaration or statement expected.
+src/pages/ChurnPrediction.tsx(29,7): error TS1128: Declaration or statement expected.
+src/pages/ChurnPrediction.tsx(92,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/ChurnPrediction.tsx(93,3): error TS1128: Declaration or statement expected.
+src/pages/ClientManagement.tsx(85,14): error TS1005: ',' expected.
+src/pages/ClientManagement.tsx(86,13): error TS1005: ',' expected.
+src/pages/ClientManagement.tsx(101,9): error TS1005: ',' expected.
+src/pages/ClientManagement.tsx(102,5): error TS1128: Declaration or statement expected.
+src/pages/ClientManagement.tsx(193,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ClientManagement.tsx(203,1): error TS1128: Declaration or statement expected.
+src/pages/cm/index.tsx(49,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CMMSMaintenance.tsx(146,7): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/CollaborationTools.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CommunicationCenter.tsx(49,82): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/CommunicationCenter.tsx(50,7): error TS1005: ')' expected.
+src/pages/CommunicationCenter.tsx(52,7): error TS2657: JSX expressions must have one parent element.
+src/pages/CommunicationCenter.tsx(131,5): error TS1128: Declaration or statement expected.
+src/pages/CommunicationCenter.tsx(132,3): error TS1109: Expression expected.
+src/pages/CompensationManagement.tsx(58,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CompetitorAnalysis.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/compliance/WHTRemittance.tsx(327,5): error TS1128: Declaration or statement expected.
+src/pages/ComplianceDashboard.tsx(68,49): error TS1003: Identifier expected.
+src/pages/ComplianceDashboard.tsx(68,109): error TS1002: Unterminated string literal.
+src/pages/ComplianceDashboard.tsx(69,7): error TS1128: Declaration or statement expected.
+src/pages/ComplianceDashboard.tsx(72,12): error TS1005: ';' expected.
+src/pages/ComplianceDashboard.tsx(73,9): error TS2657: JSX expressions must have one parent element.
+src/pages/ComplianceDashboard.tsx(107,7): error TS1128: Declaration or statement expected.
+src/pages/ComplianceDashboard.tsx(111,9): error TS2657: JSX expressions must have one parent element.
+src/pages/ComplianceDashboard.tsx(138,7): error TS1128: Declaration or statement expected.
+src/pages/ComplianceDashboard.tsx(169,5): error TS1128: Declaration or statement expected.
+src/pages/ComplianceDashboard.tsx(170,3): error TS1109: Expression expected.
+src/pages/ComplianceReports.tsx(72,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ConsolidationEngine.tsx(65,52): error TS1003: Identifier expected.
+src/pages/ConsolidationEngine.tsx(65,101): error TS1002: Unterminated string literal.
+src/pages/ConsolidationEngine.tsx(66,7): error TS1128: Declaration or statement expected.
+src/pages/ConsolidationEngine.tsx(68,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ConsolidationEngine.tsx(120,5): error TS1128: Declaration or statement expected.
+src/pages/ConsolidationEngine.tsx(121,3): error TS1109: Expression expected.
+src/pages/ContactDirectory.tsx(20,5): error TS2657: JSX expressions must have one parent element.
+src/pages/ContactDirectory.tsx(25,56): error TS1005: '}' expected.
+src/pages/ContactDirectory.tsx(25,134): error TS17002: Expected corresponding JSX closing tag for 'Breadcrumb'.
+src/pages/ContactDirectory.tsx(26,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/ContactDirectory.tsx(28,7): error TS1005: ')' expected.
+src/pages/ContactDirectory.tsx(30,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ContactDirectory.tsx(52,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/ContactDirectory.tsx(53,3): error TS1128: Declaration or statement expected.
+src/pages/ContactsDetail.tsx(438,11): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/contracts/ContractCreationWizard.tsx(79,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ContributorDashboard.tsx(141,4): error TS1003: Identifier expected.
+src/pages/ContributorDashboard.tsx(143,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/ContributorDashboard.tsx(144,7): error TS1005: ')' expected.
+src/pages/ContributorDashboard.tsx(146,16): error TS1005: ',' expected.
+src/pages/ContributorDashboard.tsx(192,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ContributorDashboard.tsx(562,5): error TS1128: Declaration or statement expected.
+src/pages/ContributorDashboard.tsx(563,3): error TS1109: Expression expected.
+src/pages/ContributorDashboard.tsx(564,1): error TS1128: Declaration or statement expected.
+src/pages/ContributorProfile.tsx(125,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/ContributorProfile.tsx(154,6): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ContributorProfile.tsx(380,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/ContributorProfile.tsx(382,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/ContributorProfile.tsx(383,1): error TS1005: '</' expected.
+src/pages/cost-management/LcmWorkbench.tsx(89,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CostInsights.tsx(117,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CostOptimization.tsx(7,25): error TS1005: ')' expected.
+src/pages/CostOptimization.tsx(7,30): error TS1434: Unexpected keyword or identifier.
+src/pages/CostOptimization.tsx(7,42): error TS1128: Declaration or statement expected.
+src/pages/CostOptimization.tsx(7,135): error TS1005: ';' expected.
+src/pages/CostOptimization.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/CostOptimization.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/CourseManagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CreditManagementCollections.tsx(23,51): error TS1003: Identifier expected.
+src/pages/CreditManagementCollections.tsx(23,131): error TS1002: Unterminated string literal.
+src/pages/CreditManagementCollections.tsx(24,9): error TS1128: Declaration or statement expected.
+src/pages/CreditManagementCollections.tsx(35,7): error TS1128: Declaration or statement expected.
+src/pages/CreditManagementCollections.tsx(37,7): error TS2657: JSX expressions must have one parent element.
+src/pages/CreditManagementCollections.tsx(101,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/CreditManagementCollections.tsx(102,3): error TS1128: Declaration or statement expected.
+src/pages/CRM.tsx(111,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/Account360.tsx(50,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/AccountDetail.tsx(57,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/crm/AccountDetail.tsx(58,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/AccountDetail.tsx(86,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/AccountDetail.tsx(167,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/crm/AccountDetail.tsx(169,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/crm/AccountDetail.tsx(170,1): error TS1005: '</' expected.
+src/pages/crm/CaseDetail.tsx(97,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/CaseManagement.tsx(116,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/CompetitorIntelligence.tsx(115,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/ContractDetail.tsx(57,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/CpqConfigurator.tsx(152,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/CrmAnalyticsDashboard.tsx(57,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/CrmDashboard.tsx(39,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/DealDesk.tsx(121,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/DealRegistration.tsx(121,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/EmailCampaignBuilder.tsx(136,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/KnowledgeBase.tsx(126,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/LeadScoringDashboard.tsx(116,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/MarketingAutomation.tsx(126,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/MarketingAutomationCanvas.tsx(29,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/OpportunityPipeline.tsx(130,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/PartnerManagement.tsx(103,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/ProductCatalogManager.tsx(137,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/QuoteBuilder.tsx(192,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/RevenueIntelligence.tsx(55,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/SalesForecasting.tsx(112,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/crm/TerritoryManager.tsx(149,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CustomerDetails.tsx(85,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CustomerJourneyMap.tsx(58,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CustomerSuccessPanel.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/CustomFields.tsx(10,101): error TS1003: Identifier expected.
+src/pages/CustomFields.tsx(10,142): error TS1002: Unterminated string literal.
+src/pages/CustomFields.tsx(11,9): error TS1128: Declaration or statement expected.
+src/pages/CustomFields.tsx(13,7): error TS1128: Declaration or statement expected.
+src/pages/CustomFields.tsx(26,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/CustomFields.tsx(27,3): error TS1128: Declaration or statement expected.
+src/pages/DashboardBuilder.tsx(41,101): error TS1003: Identifier expected.
+src/pages/DashboardBuilder.tsx(41,142): error TS1002: Unterminated string literal.
+src/pages/DashboardBuilder.tsx(42,9): error TS1128: Declaration or statement expected.
+src/pages/DashboardBuilder.tsx(43,7): error TS1109: Expression expected.
+src/pages/DashboardBuilder.tsx(45,7): error TS2657: JSX expressions must have one parent element.
+src/pages/DashboardBuilder.tsx(82,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/DashboardBuilder.tsx(83,3): error TS1128: Declaration or statement expected.
+src/pages/DatabaseMaintenance.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DataCleanup.tsx(9,49): error TS1003: Identifier expected.
+src/pages/DataCleanup.tsx(9,87): error TS1002: Unterminated string literal.
+src/pages/DataCleanup.tsx(10,7): error TS1128: Declaration or statement expected.
+src/pages/DataCleanup.tsx(11,7): error TS2657: JSX expressions must have one parent element.
+src/pages/DataCleanup.tsx(32,5): error TS1128: Declaration or statement expected.
+src/pages/DataCleanup.tsx(33,3): error TS1109: Expression expected.
+src/pages/DataExplorer.tsx(10,49): error TS1003: Identifier expected.
+src/pages/DataExplorer.tsx(10,91): error TS1002: Unterminated string literal.
+src/pages/DataExplorer.tsx(11,7): error TS1128: Declaration or statement expected.
+src/pages/DataExplorer.tsx(31,5): error TS1128: Declaration or statement expected.
+src/pages/DataExplorer.tsx(32,3): error TS1109: Expression expected.
+src/pages/DataExport.tsx(8,69): error TS1003: Identifier expected.
+src/pages/DataExport.tsx(8,105): error TS1002: Unterminated string literal.
+src/pages/DataExport.tsx(9,7): error TS1128: Declaration or statement expected.
+src/pages/DataExport.tsx(23,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/DataExport.tsx(24,3): error TS1128: Declaration or statement expected.
+src/pages/DataGovernance.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DataGovernancePage.tsx(74,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DataImport.tsx(9,69): error TS1003: Identifier expected.
+src/pages/DataImport.tsx(9,102): error TS1002: Unterminated string literal.
+src/pages/DataImport.tsx(10,7): error TS1128: Declaration or statement expected.
+src/pages/DataImport.tsx(21,5): error TS1128: Declaration or statement expected.
+src/pages/DataImport.tsx(22,3): error TS1109: Expression expected.
+src/pages/DataQualityDashboard.tsx(38,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DataQualityDashboard.tsx(116,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DataValidation.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DemandForecastingAI.tsx(23,51): error TS1003: Identifier expected.
+src/pages/DemandForecastingAI.tsx(23,145): error TS1002: Unterminated string literal.
+src/pages/DemandForecastingAI.tsx(24,9): error TS1128: Declaration or statement expected.
+src/pages/DemandForecastingAI.tsx(35,7): error TS1128: Declaration or statement expected.
+src/pages/DemandForecastingAI.tsx(37,7): error TS2657: JSX expressions must have one parent element.
+src/pages/DemandForecastingAI.tsx(80,5): error TS1128: Declaration or statement expected.
+src/pages/DemandForecastingAI.tsx(81,3): error TS1109: Expression expected.
+src/pages/detail/AdminAuditDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/AdminOverviewDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/AdminPermissionsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/AdminUsersDetail.tsx(50,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/AnalyticsDashboardDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/AnalyticsInsightsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/AnalyticsReportsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ComplianceAuditDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ComplianceControlsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/CompliancePoliciesDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ComplianceRiskDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ComplianceStandardsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/CRMAnalyticsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/CRMCampaignsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/CRMContactsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/CRMLeadsDetail.tsx(51,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/CRMPipelineDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/CRMSettingsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ERPAPDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ERPARDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ERPInventoryDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ERPQualityDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ERPSettingsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/FinanceBudgetsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/FinanceInvoicesDetail.tsx(51,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/FinanceLedgerDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/FinancePaymentsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/FinanceReportsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/FinanceSettingsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRAnalyticsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRAttendanceDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRCompensationDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HREmployeesDetail.tsx(51,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HREngagementDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRLeaveDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HROnboardingDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRPerformanceDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRPoliciesDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRRecruitmentDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRSuccessionDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/HRTrainingDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ManufacturingProductionDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ManufacturingQualityDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ManufacturingWorkOrdersDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingAnalyticsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingAutomationDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingBudgetDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingEmailDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingLeadsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingSegmentationDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingSettingsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/MarketingSocialDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ProjectsAnalyticsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ProjectsKanbanDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ProjectsResourcesDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ProjectsSettingsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ProjectsSprintsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ProjectsTimelineDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ServiceAnalyticsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ServiceCustomersDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ServiceKnowledgeDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ServiceQueueDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ServiceSettingsDetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/detail/ServiceSLADetail.tsx(44,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DeveloperPortal.tsx(669,7): error TS1003: Identifier expected.
+src/pages/DeveloperPortal.tsx(670,20): error TS1005: ';' expected.
+src/pages/DeveloperPortal.tsx(670,25): error TS1434: Unexpected keyword or identifier.
+src/pages/DeveloperPortal.tsx(670,30): error TS1434: Unexpected keyword or identifier.
+src/pages/DeveloperPortal.tsx(670,34): error TS1434: Unexpected keyword or identifier.
+src/pages/DeveloperPortal.tsx(671,11): error TS1128: Declaration or statement expected.
+src/pages/DeveloperPortal.tsx(672,9): error TS1109: Expression expected.
+src/pages/DeveloperPortal.tsx(677,7): error TS1128: Declaration or statement expected.
+src/pages/DeveloperPortal.tsx(679,7): error TS2657: JSX expressions must have one parent element.
+src/pages/DeveloperPortal.tsx(1021,5): error TS1128: Declaration or statement expected.
+src/pages/DeveloperPortal.tsx(1022,3): error TS1109: Expression expected.
+src/pages/DeveloperTools.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/DeviceManagement.tsx(17,49): error TS1003: Identifier expected.
+src/pages/DeviceManagement.tsx(17,101): error TS1002: Unterminated string literal.
+src/pages/DeviceManagement.tsx(18,7): error TS1128: Declaration or statement expected.
+src/pages/DeviceManagement.tsx(20,7): error TS2657: JSX expressions must have one parent element.
+src/pages/DeviceManagement.tsx(73,5): error TS1128: Declaration or statement expected.
+src/pages/DeviceManagement.tsx(74,3): error TS1109: Expression expected.
+src/pages/eam/PermitToWork.tsx(111,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Email.tsx(51,107): error TS1003: Identifier expected.
+src/pages/Email.tsx(51,171): error TS1002: Unterminated string literal.
+src/pages/Email.tsx(52,9): error TS1128: Declaration or statement expected.
+src/pages/Email.tsx(57,7): error TS1128: Declaration or statement expected.
+src/pages/Email.tsx(107,5): error TS1128: Declaration or statement expected.
+src/pages/Email.tsx(108,3): error TS1109: Expression expected.
+src/pages/EmailManagement.tsx(60,5): error TS2657: JSX expressions must have one parent element.
+src/pages/EmailManagement.tsx(64,11): error TS1003: Identifier expected.
+src/pages/EmailManagement.tsx(65,9): error TS1005: ')' expected.
+src/pages/EmailManagement.tsx(70,7): error TS1128: Declaration or statement expected.
+src/pages/EmailManagement.tsx(138,5): error TS1128: Declaration or statement expected.
+src/pages/EmailManagement.tsx(139,3): error TS1109: Expression expected.
+src/pages/EmployeeDirectory.tsx(37,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/EmployeeEngagement.tsx(7,25): error TS1005: ')' expected.
+src/pages/EmployeeEngagement.tsx(7,34): error TS1434: Unexpected keyword or identifier.
+src/pages/EmployeeEngagement.tsx(7,44): error TS1128: Declaration or statement expected.
+src/pages/EmployeeEngagement.tsx(7,130): error TS1005: ';' expected.
+src/pages/EmployeeEngagement.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/EmployeeEngagement.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/enterprise/EnterpriseDashboard.tsx(63,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/enterprise/Mappings.tsx(95,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/EnvironmentManagement.tsx(146,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Epics.tsx(12,5): error TS2657: JSX expressions must have one parent element.
+src/pages/Epics.tsx(14,8): error TS1003: Identifier expected.
+src/pages/Epics.tsx(15,7): error TS1005: ')' expected.
+src/pages/Epics.tsx(51,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/Epics.tsx(52,3): error TS1128: Declaration or statement expected.
+src/pages/epm/BudgetAllocationWorkbench.tsx(148,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/epm/BudgetBalanceDrillDown.tsx(99,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/epm/BudgetControlRules.tsx(123,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/epm/BudgetReconciliation.tsx(105,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/epm/BudgetWorkflow.tsx(125,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/epm/ScenarioComparison.tsx(145,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/epm/VarianceAnalysisWorkbench.tsx(82,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ExpenseCalculators.tsx(127,19): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/ExpenseCalculators.tsx(128,13): error TS1005: ')' expected.
+src/pages/ExpenseCalculators.tsx(384,9): error TS1128: Declaration or statement expected.
+src/pages/ExpenseCalculators.tsx(385,3): error TS1109: Expression expected.
+src/pages/ExpensesDetail.tsx(375,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ExportManager.tsx(13,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ExternalSupplierRegistration.tsx(94,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/FacultyManagement.tsx(20,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/FBDemandPlanning.tsx(48,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/FeatureFlags.tsx(129,35): error TS1003: Identifier expected.
+src/pages/FeatureFlags.tsx(129,37): error TS1002: Unterminated string literal.
+src/pages/FeatureFlags.tsx(130,13): error TS1434: Unexpected keyword or identifier.
+src/pages/FeatureFlags.tsx(130,21): error TS1434: Unexpected keyword or identifier.
+src/pages/FeatureFlags.tsx(130,29): error TS1434: Unexpected keyword or identifier.
+src/pages/FeatureFlags.tsx(130,38): error TS1434: Unexpected keyword or identifier.
+src/pages/FeatureFlags.tsx(130,42): error TS1434: Unexpected keyword or identifier.
+src/pages/FeatureFlags.tsx(130,49): error TS1434: Unexpected keyword or identifier.
+src/pages/FeatureFlags.tsx(131,11): error TS1128: Declaration or statement expected.
+src/pages/FeatureFlags.tsx(132,9): error TS1109: Expression expected.
+src/pages/FeatureFlags.tsx(143,7): error TS1128: Declaration or statement expected.
+src/pages/FeatureFlags.tsx(146,12): error TS1005: ';' expected.
+src/pages/FeatureFlags.tsx(152,9): error TS1109: Expression expected.
+src/pages/FeatureFlags.tsx(152,10): error TS1005: ':' expected.
+src/pages/FeatureFlags.tsx(160,7): error TS1128: Declaration or statement expected.
+src/pages/FeatureFlags.tsx(163,12): error TS1005: ';' expected.
+src/pages/FeatureFlags.tsx(164,9): error TS2657: JSX expressions must have one parent element.
+src/pages/FeatureFlags.tsx(184,7): error TS1128: Declaration or statement expected.
+src/pages/FeatureFlags.tsx(321,5): error TS1128: Declaration or statement expected.
+src/pages/FeatureFlags.tsx(322,3): error TS1109: Expression expected.
+src/pages/FieldValidation.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Finance.tsx(20,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/AccountCertPortal.tsx(107,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ap/APAICaptureUpload.tsx(111,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ap/APDashboard.tsx(137,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ap/APInvoiceEntry.tsx(451,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ap/APQuickPayment.tsx(116,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/finance/ap/APQuickPayment.tsx(126,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ap/APQuickPayment.tsx(127,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ap/APQuickPayment.tsx(239,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/finance/ap/APQuickPayment.tsx(241,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/finance/ap/APQuickPayment.tsx(242,1): error TS1005: '</' expected.
+src/pages/finance/ap/APWithholdingTax.tsx(104,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ap/CreatePPR.tsx(160,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ar/ArAnalytics.tsx(74,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ar/ARCustomers.tsx(181,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ar/ArDocumentSequencingSetup.tsx(123,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ar/ArDunningWorkbench.tsx(124,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/ar/ArPeriodClose.tsx(92,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/cash/BankReconciliationWorkbench.tsx(252,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/cash/CashForecastingView.tsx(102,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/cash/CashManagementDashboard.tsx(145,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/cash/CashPositionDashboard.tsx(42,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/cash/CurrencyRevaluation.tsx(129,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/cash/CurrencyRevaluationView.tsx(109,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/cash/ZBAManagement.tsx(113,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/FixedAssetWorkbench.tsx(138,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/gl/GLDashboard.tsx(117,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/NettingCenter.tsx(69,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/finance/TaxProvisionWorkbench.tsx(285,11): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/FinancialAnalytics.tsx(22,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/FinancialConsolidation.tsx(55,5): error TS1003: Identifier expected.
+src/pages/FinancialConsolidation.tsx(55,17): error TS1005: ')' expected.
+src/pages/FinancialConsolidation.tsx(55,21): error TS1005: ';' expected.
+src/pages/FinancialConsolidation.tsx(55,90): error TS1002: Unterminated string literal.
+src/pages/FinancialConsolidation.tsx(56,9): error TS1128: Declaration or statement expected.
+src/pages/FinancialConsolidation.tsx(58,7): error TS1128: Declaration or statement expected.
+src/pages/FinancialConsolidation.tsx(60,7): error TS2657: JSX expressions must have one parent element.
+src/pages/FinancialConsolidation.tsx(150,5): error TS1128: Declaration or statement expected.
+src/pages/FinancialConsolidation.tsx(151,3): error TS1109: Expression expected.
+src/pages/FinancialReports.tsx(13,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/FinancialReportsDashboard.tsx(16,49): error TS1003: Identifier expected.
+src/pages/FinancialReportsDashboard.tsx(16,91): error TS1002: Unterminated string literal.
+src/pages/FinancialReportsDashboard.tsx(17,7): error TS1128: Declaration or statement expected.
+src/pages/FinancialReportsDashboard.tsx(19,7): error TS2657: JSX expressions must have one parent element.
+src/pages/FinancialReportsDashboard.tsx(63,5): error TS1128: Declaration or statement expected.
+src/pages/FinancialReportsDashboard.tsx(64,3): error TS1109: Expression expected.
+src/pages/fixed-assets/AssetWorkbench.tsx(122,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/FixedAssetsPage.tsx(18,56): error TS1003: Identifier expected.
+src/pages/FixedAssetsPage.tsx(18,58): error TS1002: Unterminated string literal.
+src/pages/FixedAssetsPage.tsx(19,48): error TS1005: ';' expected.
+src/pages/FixedAssetsPage.tsx(19,68): error TS1005: ';' expected.
+src/pages/FixedAssetsPage.tsx(19,81): error TS1005: ';' expected.
+src/pages/FixedAssetsPage.tsx(19,100): error TS1005: ';' expected.
+src/pages/FixedAssetsPage.tsx(19,118): error TS1109: Expression expected.
+src/pages/FixedAssetsPage.tsx(20,21): error TS2657: JSX expressions must have one parent element.
+src/pages/FixedAssetsPage.tsx(24,17): error TS1128: Declaration or statement expected.
+src/pages/FixedAssetsPage.tsx(25,13): error TS1109: Expression expected.
+src/pages/FixedAssetsPage.tsx(27,13): error TS2657: JSX expressions must have one parent element.
+src/pages/FixedAssetsPage.tsx(30,9): error TS1128: Declaration or statement expected.
+src/pages/FixedAssetsPage.tsx(31,3): error TS1109: Expression expected.
+src/pages/ForecastDashboard.tsx(60,49): error TS1003: Identifier expected.
+src/pages/ForecastDashboard.tsx(60,99): error TS1002: Unterminated string literal.
+src/pages/ForecastDashboard.tsx(61,7): error TS1128: Declaration or statement expected.
+src/pages/ForecastDashboard.tsx(63,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ForecastDashboard.tsx(148,5): error TS1128: Declaration or statement expected.
+src/pages/ForecastDashboard.tsx(149,3): error TS1109: Expression expected.
+src/pages/FormPage.tsx(38,14): error TS17008: JSX element 'Button' has no corresponding closing tag.
+src/pages/FormPage.tsx(46,11): error TS17002: Expected corresponding JSX closing tag for 'header'.
+src/pages/FormPage.tsx(47,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/FormPage.tsx(49,7): error TS1005: ')' expected.
+src/pages/FormPage.tsx(77,5): error TS1128: Declaration or statement expected.
+src/pages/FormPage.tsx(78,3): error TS1109: Expression expected.
+src/pages/FormShowcase.tsx(36,64): error TS1003: Identifier expected.
+src/pages/FormShowcase.tsx(36,66): error TS1002: Unterminated string literal.
+src/pages/FormShowcase.tsx(37,28): error TS1005: ';' expected.
+src/pages/FormShowcase.tsx(37,33): error TS1434: Unexpected keyword or identifier.
+src/pages/FormShowcase.tsx(37,44): error TS1434: Unexpected keyword or identifier.
+src/pages/FormShowcase.tsx(37,51): error TS1434: Unexpected keyword or identifier.
+src/pages/FormShowcase.tsx(38,9): error TS1128: Declaration or statement expected.
+src/pages/FormShowcase.tsx(39,7): error TS1109: Expression expected.
+src/pages/FormShowcase.tsx(76,5): error TS1128: Declaration or statement expected.
+src/pages/FormShowcase.tsx(77,3): error TS1109: Expression expected.
+src/pages/GeneralLedgerDetail.tsx(25,6): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/GeneralLedgerDetail.tsx(26,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/GeneralLedgerDetail.tsx(55,11): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/GeneralLedgerDetail.tsx(57,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/GeneralLedgerDetail.tsx(58,1): error TS1005: '</' expected.
+src/pages/gl/AuditLogs.tsx(17,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/CloseDashboard.tsx(181,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/config/sla/AccountingHubWorkbench.tsx(28,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/ConfigurationHub.tsx(188,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/ConsolidationResultsViewer.tsx(104,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/ConsolidationWorkbench.tsx(159,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/CVRManager.tsx(55,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/DataAccessManager.tsx(83,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/EliminationJournalReview.tsx(66,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/EliminationRuleBuilder.tsx(226,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/FxTranslationDashboard.tsx(148,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/JournalWizard.tsx(358,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/LedgerControlSetup.tsx(61,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/LedgerSetManager.tsx(157,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/PostingRulesManager.tsx(174,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/SlaReconciliation.tsx(43,13): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/gl/SlaReconciliation.tsx(44,9): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/pages/gl/SlaReconciliation.tsx(109,11): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/gl/SlaReconciliation.tsx(110,5): error TS1005: '}' expected.
+src/pages/gl/SlaReconciliation.tsx(110,6): error TS1003: Identifier expected.
+src/pages/gl/SlaReconciliation.tsx(111,1): error TS1003: Identifier expected.
+src/pages/gl/SlaRules.tsx(37,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/TransferRuleBuilder.tsx(214,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/ValidationControls.tsx(52,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/gl/VarianceAnalysis.tsx(63,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/GoodsReceiptPage.tsx(15,71): error TS1003: Identifier expected.
+src/pages/GoodsReceiptPage.tsx(15,112): error TS1002: Unterminated string literal.
+src/pages/GoodsReceiptPage.tsx(16,7): error TS1128: Declaration or statement expected.
+src/pages/GoodsReceiptPage.tsx(18,7): error TS2657: JSX expressions must have one parent element.
+src/pages/GoodsReceiptPage.tsx(62,5): error TS1128: Declaration or statement expected.
+src/pages/GoodsReceiptPage.tsx(63,3): error TS1109: Expression expected.
+src/pages/GrowthMetrics.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Health.tsx(88,117): error TS1003: Identifier expected.
+src/pages/Health.tsx(88,173): error TS1002: Unterminated string literal.
+src/pages/Health.tsx(89,9): error TS1128: Declaration or statement expected.
+src/pages/Health.tsx(107,7): error TS1128: Declaration or statement expected.
+src/pages/Health.tsx(109,7): error TS2657: JSX expressions must have one parent element.
+src/pages/Health.tsx(270,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/Health.tsx(271,3): error TS1128: Declaration or statement expected.
+src/pages/HealthCheckDashboard.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/HR.tsx(63,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/absence/AbsencePlanSetup.tsx(347,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/AccrualTesting.tsx(98,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/AssignmentHistory.tsx(122,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/AttritionPrediction.tsx(134,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/benefits/BenefitsProgramSetup.tsx(184,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/benefits/BenefitsProgramSetup.tsx(193,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/benefits/BenefitsProgramSetup.tsx(214,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/benefits/BenefitsProgramSetup.tsx(369,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/benefits/BenefitsProgramSetup.tsx(371,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/benefits/BenefitsProgramSetup.tsx(372,1): error TS1005: '</' expected.
+src/pages/hr/DocumentOfRecords.tsx(76,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/DocumentOfRecords.tsx(85,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/DocumentOfRecords.tsx(104,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/DocumentOfRecords.tsx(234,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/DocumentOfRecords.tsx(236,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/DocumentOfRecords.tsx(237,1): error TS1005: '</' expected.
+src/pages/hr/GuidedJourneyWorkerTransfer.tsx(102,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/admin/AssessmentBuilder.tsx(77,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/admin/CommunityBrowser.tsx(83,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/learning/admin/CommunityBrowser.tsx(92,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/admin/CommunityBrowser.tsx(109,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/admin/CommunityBrowser.tsx(179,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/learning/admin/CommunityBrowser.tsx(181,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/learning/admin/CommunityBrowser.tsx(182,1): error TS1005: '</' expected.
+src/pages/hr/learning/admin/CourseCatalogAdmin.tsx(117,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/admin/CurriculumBuilder.tsx(74,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/instructor/InstructorDashboard.tsx(64,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/LearningDashboard.tsx(195,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/learning/manager/ManagerLearningDashboard.tsx(93,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/NineBoxGrid.tsx(131,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/OfferLetterTemplateBuilder.tsx(86,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/OfferLetterTemplateBuilder.tsx(96,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/OfferLetterTemplateBuilder.tsx(119,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/OfferLetterTemplateBuilder.tsx(220,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/OfferLetterTemplateBuilder.tsx(222,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/OfferLetterTemplateBuilder.tsx(223,1): error TS1005: '</' expected.
+src/pages/hr/payroll/PayrollCostingSetup.tsx(53,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/payroll/PayrollCostingSetup.tsx(62,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/payroll/PayrollCostingSetup.tsx(64,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/payroll/PayrollCostingSetup.tsx(242,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/payroll/PayrollCostingSetup.tsx(244,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/payroll/PayrollCostingSetup.tsx(245,1): error TS1005: '</' expected.
+src/pages/hr/payroll/PayslipGrossToNet.tsx(111,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/payroll/PayslipGrossToNet.tsx(121,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/payroll/PayslipGrossToNet.tsx(143,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/payroll/PayslipGrossToNet.tsx(306,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/payroll/PayslipGrossToNet.tsx(308,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/payroll/PayslipGrossToNet.tsx(309,1): error TS1005: '</' expected.
+src/pages/hr/payroll/RetroactivePayEngine.tsx(64,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/payroll/RetroEventGroupSetup.tsx(96,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/payroll/RetroEventGroupSetup.tsx(105,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/payroll/RetroEventGroupSetup.tsx(124,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/payroll/RetroEventGroupSetup.tsx(237,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/payroll/RetroEventGroupSetup.tsx(239,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/payroll/RetroEventGroupSetup.tsx(240,1): error TS1005: '</' expected.
+src/pages/hr/payroll/YTDBalanceUpload.tsx(73,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/performance/PerformanceCalibrationBoard.tsx(115,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/PerformanceTemplateBuilder.tsx(93,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/PerformanceTemplateBuilder.tsx(103,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/PerformanceTemplateBuilder.tsx(126,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/PerformanceTemplateBuilder.tsx(270,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/PerformanceTemplateBuilder.tsx(272,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/PerformanceTemplateBuilder.tsx(273,1): error TS1005: '</' expected.
+src/pages/hr/QuestionnaireBuilder.tsx(118,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/QuestionnaireBuilder.tsx(128,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/QuestionnaireBuilder.tsx(151,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/QuestionnaireBuilder.tsx(281,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/QuestionnaireBuilder.tsx(283,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/QuestionnaireBuilder.tsx(284,1): error TS1005: '</' expected.
+src/pages/hr/recruitment/RecruitmentCampaignBuilder.tsx(64,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/recruitment/RecruitmentPipelineBoard.tsx(127,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/BenefitsEnrollment.tsx(123,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/DelegationWorkbench.tsx(191,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/ESSDashboard.tsx(41,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/selfservice/ESSDashboard.tsx(45,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/ESSDashboard.tsx(97,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/ESSDashboard.tsx(194,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/selfservice/ESSDashboard.tsx(196,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/selfservice/ESSDashboard.tsx(197,1): error TS1005: '</' expected.
+src/pages/hr/selfservice/LifeEvents.tsx(78,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/MSSDashboard.tsx(71,8): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/selfservice/MSSDashboard.tsx(92,11): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/MSSDashboard.tsx(121,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/MSSDashboard.tsx(318,18): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/selfservice/MSSDashboard.tsx(320,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/selfservice/MSSDashboard.tsx(321,1): error TS1005: '</' expected.
+src/pages/hr/selfservice/MyTimeCard.tsx(181,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/PersonalDetails.tsx(137,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/selfservice/StatutoryForms.tsx(218,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/TimeRuleBuilder.tsx(70,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/TimeRuleBuilder.tsx(79,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/TimeRuleBuilder.tsx(103,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/TimeRuleBuilder.tsx(288,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/TimeRuleBuilder.tsx(290,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/TimeRuleBuilder.tsx(291,1): error TS1005: '</' expected.
+src/pages/hr/wfm/RepeatingTimePeriods.tsx(122,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/hr/wfm/RepeatingTimePeriods.tsx(131,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/wfm/RepeatingTimePeriods.tsx(154,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/hr/wfm/RepeatingTimePeriods.tsx(287,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/hr/wfm/RepeatingTimePeriods.tsx(289,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/hr/wfm/RepeatingTimePeriods.tsx(290,1): error TS1005: '</' expected.
+src/pages/hr/WorkforceStructureSetup.tsx(66,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Industries.tsx(147,5): error TS2657: JSX expressions must have one parent element.
+src/pages/Industries.tsx(149,10): error TS1003: Identifier expected.
+src/pages/Industries.tsx(152,7): error TS1005: ')' expected.
+src/pages/Industries.tsx(235,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/Industries.tsx(236,3): error TS1128: Declaration or statement expected.
+src/pages/industries/automotive/AutomotiveAfterSalesService.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveBIDashboards.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveCompliance.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveDealerInventory.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveFinanceInvoicing.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveHRWorkforce.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveMobileApp.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveQualityAnalytics.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveReporting.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveSalesCRM.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/automotive/AutomotiveSupplyChain.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingAIFraudDetection.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingBIDashboards.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingCRMEngagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingCustomerAccounts.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingDeposits.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingHRWorkforce.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingLoansCredit.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingMobileApp.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingPayments.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/banking/BankingRiskCompliance.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/education/AdmissionsEnrollment.tsx(16,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/education/EducationAnalytics.tsx(16,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/education/EducationAttendance.tsx(16,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/education/EducationBilling.tsx(16,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/education/EducationCRM.tsx(16,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/education/EducationEvents.tsx(16,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/education/EducationHR.tsx(16,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentAIAnalytics.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentBIDashboards.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentCitizenServices.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentCompliance.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentCRMEngagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentFinanceBudgeting.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentGrantsFunding.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentHRWorkforce.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentMobileApp.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentPermitsLicensing.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/government/GovernmentProjectsInfra.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/healthcare/HealthcareAIDiagnostics.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareAIDiagnostics.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareAIDiagnostics.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareAIDiagnostics.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareAIDiagnostics.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareAIDiagnostics.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareAppointments.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareAppointments.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareAppointments.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareAppointments.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareAppointments.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareAppointments.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareBIDashboard.tsx(51,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/healthcare/HealthcareBIDashboards.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareBIDashboards.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareBIDashboards.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareBIDashboards.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareBIDashboards.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareBIDashboards.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareBillingInsurance.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareBillingInsurance.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareBillingInsurance.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareBillingInsurance.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareBillingInsurance.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareBillingInsurance.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareCompliance.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareCompliance.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareCompliance.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareCompliance.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareCompliance.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareCompliance.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareCRMEngagement.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareCRMEngagement.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareCRMEngagement.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareCRMEngagement.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareCRMEngagement.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareCRMEngagement.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareHRWorkforce.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareHRWorkforce.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareHRWorkforce.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareHRWorkforce.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareHRWorkforce.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareHRWorkforce.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareLaboratory.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareLaboratory.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareLaboratory.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareLaboratory.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareLaboratory.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareLaboratory.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcareMobileApp.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcareMobileApp.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareMobileApp.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcareMobileApp.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcareMobileApp.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcareMobileApp.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcarePatientManagement.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcarePatientManagement.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcarePatientManagement.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcarePatientManagement.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcarePatientManagement.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcarePatientManagement.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/healthcare/HealthcarePharmacy.tsx(21,56): error TS1003: Identifier expected.
+src/pages/industries/healthcare/HealthcarePharmacy.tsx(21,60): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcarePharmacy.tsx(21,79): error TS1005: ';' expected.
+src/pages/industries/healthcare/HealthcarePharmacy.tsx(22,7): error TS2657: JSX expressions must have one parent element.
+src/pages/industries/healthcare/HealthcarePharmacy.tsx(57,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/industries/healthcare/HealthcarePharmacy.tsx(58,3): error TS1128: Declaration or statement expected.
+src/pages/industries/hospitality/HospitalityAIPricing.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityBIDashboards.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityBillingInvoicing.tsx(26,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityCompliance.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityCRMEngagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityGuestServices.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityHRWorkforce.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityMobileApp.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityPropertyManagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityReporting.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityReservations.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/HospitalityTravelPackages.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/hospitality/RevenueManagement.tsx(52,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceAIFraudDetection.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceBIDashboards.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceBillingPremiums.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceClaimsProcessing.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceCRMEngagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceCustomerAccounts.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceHRWorkforce.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceMobileApp.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsurancePolicyManagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceReporting.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceRiskCompliance.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/insurance/InsuranceUnderwriting.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaAdvertisingMarketing.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaAIRecommendations.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaBIDashboards.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaCompliance.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaCRMEngagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaDistribution.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaHRWorkforce.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaMobileApp.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaProductionWorkflows.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaReporting.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/media/MediaSubscriptionBilling.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailAIRecommendations.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailBIDashboards.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailCRMMarketing.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailCustomerManagement.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailHRWorkforce.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailInventoryWarehouse.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailPaymentsBilling.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailPOSOperations.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailPromotionsLoyalty.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/RetailSupplyChainProcurement.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/retail/StoreOperationsDashboard.tsx(71,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomAIOptimization.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomBIDashboard.tsx(52,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomBIDashboards.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomBillingInvoicing.tsx(26,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomCompliance.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomCRMEngagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomHRWorkforce.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomMobileApp.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomNetworkOperations.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomPlansPackages.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomReporting.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomServiceProvisioning.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/industries/telecom/TelecomSubscriberManagement.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/IndustrySetup.tsx(262,7): error TS2657: JSX expressions must have one parent element.
+src/pages/IndustrySetup.tsx(271,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/IndustrySetup.tsx(541,5): error TS1005: ')' expected.
+src/pages/IndustrySetup.tsx(542,3): error TS1109: Expression expected.
+src/pages/IndustrySetup.tsx(544,1): error TS1005: '}' expected.
+src/pages/InstalledApps.tsx(12,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/IntegrationManagement.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Integrations.tsx(22,52): error TS1003: Identifier expected.
+src/pages/Integrations.tsx(22,109): error TS1002: Unterminated string literal.
+src/pages/Integrations.tsx(23,7): error TS1128: Declaration or statement expected.
+src/pages/Integrations.tsx(90,5): error TS1128: Declaration or statement expected.
+src/pages/Integrations.tsx(91,3): error TS1109: Expression expected.
+src/pages/InternationalizationConfig.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Inventory.tsx(69,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/InvoiceDetail.tsx(9,5): error TS2657: JSX expressions must have one parent element.
+src/pages/InvoiceDetail.tsx(16,59): error TS1003: Identifier expected.
+src/pages/InvoiceDetail.tsx(23,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/InvoiceDetail.tsx(72,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/InvoiceGenerator.tsx(56,5): error TS2657: JSX expressions must have one parent element.
+src/pages/InvoiceGenerator.tsx(59,12): error TS1003: Identifier expected.
+src/pages/InvoiceGenerator.tsx(60,9): error TS1005: ')' expected.
+src/pages/InvoiceGenerator.tsx(65,7): error TS1128: Declaration or statement expected.
+src/pages/InvoiceGenerator.tsx(67,7): error TS2657: JSX expressions must have one parent element.
+src/pages/InvoiceGenerator.tsx(150,5): error TS1128: Declaration or statement expected.
+src/pages/InvoiceGenerator.tsx(151,3): error TS1109: Expression expected.
+src/pages/InvoiceList.tsx(32,5): error TS2657: JSX expressions must have one parent element.
+src/pages/InvoiceList.tsx(37,56): error TS1005: '}' expected.
+src/pages/InvoiceList.tsx(37,134): error TS17002: Expected corresponding JSX closing tag for 'Breadcrumb'.
+src/pages/InvoiceList.tsx(38,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/InvoiceList.tsx(40,7): error TS1005: ')' expected.
+src/pages/InvoiceList.tsx(42,7): error TS2657: JSX expressions must have one parent element.
+src/pages/InvoiceList.tsx(64,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/InvoiceList.tsx(65,3): error TS1128: Declaration or statement expected.
+src/pages/InvoicesDetail.tsx(25,6): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/InvoicesDetail.tsx(26,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/InvoicesDetail.tsx(33,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/InvoicesDetail.tsx(54,13): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/InvoicesDetail.tsx(56,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/InvoicesDetail.tsx(57,1): error TS1005: '</' expected.
+src/pages/ItemProfile.tsx(48,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/KnowledgeBase.tsx(7,3): error TS1109: Expression expected.
+src/pages/KnowledgeGraph.tsx(43,52): error TS1003: Identifier expected.
+src/pages/KnowledgeGraph.tsx(43,103): error TS1002: Unterminated string literal.
+src/pages/KnowledgeGraph.tsx(44,7): error TS1128: Declaration or statement expected.
+src/pages/KnowledgeGraph.tsx(45,7): error TS2657: JSX expressions must have one parent element.
+src/pages/KnowledgeGraph.tsx(62,5): error TS1128: Declaration or statement expected.
+src/pages/KnowledgeGraph.tsx(63,3): error TS1109: Expression expected.
+src/pages/KPIDashboard.tsx(41,71): error TS1003: Identifier expected.
+src/pages/KPIDashboard.tsx(41,111): error TS1002: Unterminated string literal.
+src/pages/KPIDashboard.tsx(42,7): error TS1128: Declaration or statement expected.
+src/pages/KPIDashboard.tsx(44,7): error TS2657: JSX expressions must have one parent element.
+src/pages/KPIDashboard.tsx(88,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/KPIDashboard.tsx(89,3): error TS1128: Declaration or statement expected.
+src/pages/lcm/LcmWorkbench.tsx(144,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/lcm/TradeOperationDetails.tsx(113,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/LeadDetail.tsx(41,34): error TS1003: Identifier expected.
+src/pages/LeadDetail.tsx(47,57): error TS1003: Identifier expected.
+src/pages/LeadDetail.tsx(47,58): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/LeadDetail.tsx(47,61): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/LeadDetail.tsx(47,64): error TS1002: Unterminated string literal.
+src/pages/LeadDetail.tsx(50,9): error TS1128: Declaration or statement expected.
+src/pages/LeadDetail.tsx(56,7): error TS1128: Declaration or statement expected.
+src/pages/LeadDetail.tsx(58,7): error TS2657: JSX expressions must have one parent element.
+src/pages/LeadDetail.tsx(90,5): error TS1128: Declaration or statement expected.
+src/pages/LeadDetail.tsx(91,3): error TS1109: Expression expected.
+src/pages/LeadScoringDashboard.tsx(67,51): error TS1003: Identifier expected.
+src/pages/LeadScoringDashboard.tsx(67,99): error TS1002: Unterminated string literal.
+src/pages/LeadScoringDashboard.tsx(68,9): error TS1128: Declaration or statement expected.
+src/pages/LeadScoringDashboard.tsx(79,7): error TS1128: Declaration or statement expected.
+src/pages/LeadScoringDashboard.tsx(81,7): error TS2657: JSX expressions must have one parent element.
+src/pages/LeadScoringDashboard.tsx(177,5): error TS1128: Declaration or statement expected.
+src/pages/LeadScoringDashboard.tsx(178,3): error TS1109: Expression expected.
+src/pages/learning/AssessmentBuilder.tsx(167,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/learning/CoursePlayer.tsx(117,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/learning/LearningCatalog.tsx(96,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/learning/LearningPathBuilder.tsx(134,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/leases/LeaseApprovalsWorkbench.tsx(73,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/leases/LeaseDisclosureReport.tsx(91,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/leases/LeaseModificationWizard.tsx(65,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/leases/LeasePortfolioWorkbench.tsx(67,10): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/leases/LeasePortfolioWorkbench.tsx(104,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/leases/LeasePortfolioWorkbench.tsx(178,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/leases/LeasePortfolioWorkbench.tsx(200,23): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/leases/LeasePortfolioWorkbench.tsx(202,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/leases/LeasePortfolioWorkbench.tsx(203,1): error TS1005: '</' expected.
+src/pages/leases/LeaseSchedulesView.tsx(123,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/LeaveRequest.tsx(18,5): error TS2657: JSX expressions must have one parent element.
+src/pages/LeaveRequest.tsx(23,53): error TS1005: '}' expected.
+src/pages/LeaveRequest.tsx(23,134): error TS17002: Expected corresponding JSX closing tag for 'Breadcrumb'.
+src/pages/LeaveRequest.tsx(24,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/LeaveRequest.tsx(26,7): error TS1005: ')' expected.
+src/pages/LeaveRequest.tsx(28,7): error TS2657: JSX expressions must have one parent element.
+src/pages/LeaveRequest.tsx(53,5): error TS1128: Declaration or statement expected.
+src/pages/LeaveRequest.tsx(54,3): error TS1109: Expression expected.
+src/pages/LeaveWorkflows.tsx(42,52): error TS1003: Identifier expected.
+src/pages/LeaveWorkflows.tsx(42,94): error TS1002: Unterminated string literal.
+src/pages/LeaveWorkflows.tsx(43,7): error TS1128: Declaration or statement expected.
+src/pages/LeaveWorkflows.tsx(45,7): error TS2657: JSX expressions must have one parent element.
+src/pages/LeaveWorkflows.tsx(63,5): error TS1128: Declaration or statement expected.
+src/pages/LeaveWorkflows.tsx(64,3): error TS1109: Expression expected.
+src/pages/LMSContent.tsx(19,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Localization.tsx(9,49): error TS1003: Identifier expected.
+src/pages/Localization.tsx(9,92): error TS1002: Unterminated string literal.
+src/pages/Localization.tsx(10,7): error TS1128: Declaration or statement expected.
+src/pages/Localization.tsx(23,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/Localization.tsx(24,3): error TS1128: Declaration or statement expected.
+src/pages/LoginHistory.tsx(16,71): error TS1003: Identifier expected.
+src/pages/LoginHistory.tsx(16,116): error TS1002: Unterminated string literal.
+src/pages/LoginHistory.tsx(17,7): error TS1128: Declaration or statement expected.
+src/pages/LoginHistory.tsx(19,7): error TS2657: JSX expressions must have one parent element.
+src/pages/LoginHistory.tsx(74,5): error TS1128: Declaration or statement expected.
+src/pages/LoginHistory.tsx(75,3): error TS1109: Expression expected.
+src/pages/maintenance/Asset360View.tsx(46,61): error TS1003: Identifier expected.
+src/pages/maintenance/Asset360View.tsx(46,64): error TS1003: Identifier expected.
+src/pages/maintenance/Asset360View.tsx(47,13): error TS2657: JSX expressions must have one parent element.
+src/pages/maintenance/Asset360View.tsx(165,9): error TS1128: Declaration or statement expected.
+src/pages/maintenance/Asset360View.tsx(166,5): error TS1109: Expression expected.
+src/pages/maintenance/FailureCodeConfig.tsx(62,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/MaintenanceWorkbench.tsx(74,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/PermitWorkflow.tsx(167,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/PermitWorkflow.tsx(418,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/maintenance/PermitWorkflow.tsx(421,1): error TS1005: '</' expected.
+src/pages/maintenance/PMDefinitionBuilder.tsx(88,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/PMScheduler.tsx(175,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/PMScheduler.tsx(392,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/maintenance/PMScheduler.tsx(395,1): error TS1005: '</' expected.
+src/pages/maintenance/ServiceRequestPortal.tsx(195,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/ServiceRequestPortal.tsx(488,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/maintenance/ServiceRequestPortal.tsx(491,1): error TS1005: '</' expected.
+src/pages/maintenance/TechnicianTaskView.tsx(168,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/WorkLibrary.tsx(129,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/maintenance/WorkLibrary.tsx(377,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/maintenance/WorkLibrary.tsx(380,1): error TS1005: '</' expected.
+src/pages/manufacturing/BatchGenealogy.tsx(90,9): error TS1005: ',' expected.
+src/pages/manufacturing/BatchGenealogy.tsx(91,5): error TS1128: Declaration or statement expected.
+src/pages/manufacturing/BatchGenealogy.tsx(108,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/BatchGenealogy.tsx(275,1): error TS1128: Declaration or statement expected.
+src/pages/manufacturing/ConstraintScheduler.tsx(102,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/ECOManagement.tsx(136,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/FormulaDesigner.tsx(319,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/LotGenealogy.tsx(101,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/ManufacturingDashboard.tsx(95,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/ManufacturingDashboard.tsx(165,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/MRPWorkbench.tsx(182,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/PhysicalInventory.tsx(112,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/ProductionGantt.tsx(135,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/RecipeManager.tsx(263,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/ResourceManager.tsx(241,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/ShopFloorTerminal.tsx(129,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/StandardOpLibrary.tsx(163,5): error TS1128: Declaration or statement expected.
+src/pages/manufacturing/WIPDashboard.tsx(110,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/manufacturing/WorkCenterManager.tsx(134,5): error TS1128: Declaration or statement expected.
+src/pages/MarketplaceAdmin.tsx(360,64): error TS1003: Identifier expected.
+src/pages/MarketplaceAdmin.tsx(360,66): error TS1002: Unterminated string literal.
+src/pages/MarketplaceAdmin.tsx(361,11): error TS1434: Unexpected keyword or identifier.
+src/pages/MarketplaceAdmin.tsx(361,38): error TS1005: ';' expected.
+src/pages/MarketplaceAdmin.tsx(361,48): error TS1005: ';' expected.
+src/pages/MarketplaceAdmin.tsx(361,58): error TS1434: Unexpected keyword or identifier.
+src/pages/MarketplaceAdmin.tsx(362,9): error TS1128: Declaration or statement expected.
+src/pages/MarketplaceAdmin.tsx(363,7): error TS1109: Expression expected.
+src/pages/MarketplaceAdmin.tsx(365,7): error TS2657: JSX expressions must have one parent element.
+src/pages/MarketplaceAdmin.tsx(929,5): error TS1128: Declaration or statement expected.
+src/pages/MarketplaceAdmin.tsx(930,3): error TS1109: Expression expected.
+src/pages/MarketplaceJobDetail.tsx(173,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/MarketplaceJobDetail.tsx(510,7): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/MatchRuleDetail.tsx(89,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/mdm/AdvancedMatchWorkbench.tsx(147,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/mdm/DuplicateDetectionWorkbench.tsx(121,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/mdm/MatchRuleBuilder.tsx(107,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/mdm/MDMAuditViewer.tsx(109,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/mdm/SurvivorshipRuleBuilder.tsx(102,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/MetricsAndMonitoring.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Migrations.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/MobileApps.tsx(17,69): error TS1003: Identifier expected.
+src/pages/MobileApps.tsx(17,125): error TS1002: Unterminated string literal.
+src/pages/MobileApps.tsx(18,7): error TS1128: Declaration or statement expected.
+src/pages/MobileApps.tsx(100,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/MobileApps.tsx(101,3): error TS1128: Declaration or statement expected.
+src/pages/MobileOptimization.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ModuleSettings.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/MultiTenancy.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/MyJobsDashboard.tsx(163,5): error TS2657: JSX expressions must have one parent element.
+src/pages/MyJobsDashboard.tsx(166,15): error TS1003: Identifier expected.
+src/pages/MyJobsDashboard.tsx(167,9): error TS1005: ')' expected.
+src/pages/MyJobsDashboard.tsx(172,7): error TS1128: Declaration or statement expected.
+src/pages/MyJobsDashboard.tsx(174,7): error TS2657: JSX expressions must have one parent element.
+src/pages/MyJobsDashboard.tsx(464,5): error TS1128: Declaration or statement expected.
+src/pages/MyJobsDashboard.tsx(465,3): error TS1109: Expression expected.
+src/pages/MyProposalsDashboard.tsx(92,5): error TS2657: JSX expressions must have one parent element.
+src/pages/MyProposalsDashboard.tsx(95,19): error TS1003: Identifier expected.
+src/pages/MyProposalsDashboard.tsx(96,9): error TS1005: ')' expected.
+src/pages/MyProposalsDashboard.tsx(102,7): error TS1128: Declaration or statement expected.
+src/pages/MyProposalsDashboard.tsx(104,7): error TS2657: JSX expressions must have one parent element.
+src/pages/MyProposalsDashboard.tsx(253,5): error TS1128: Declaration or statement expected.
+src/pages/MyProposalsDashboard.tsx(254,3): error TS1109: Expression expected.
+src/pages/NotificationCenter.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/NotificationSettings.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/OAuthManagement.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/OperationalAnalytics.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/operations/CarrierManifest.tsx(182,49): error TS2657: JSX expressions must have one parent element.
+src/pages/operations/CarrierManifest.tsx(198,29): error TS1005: ',' expected.
+src/pages/operations/CarrierManifest.tsx(198,31): error TS1003: Identifier expected.
+src/pages/operations/CarrierManifest.tsx(199,198): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/operations/CarrierManifest.tsx(200,27): error TS17015: Expected corresponding closing tag for JSX fragment.
+src/pages/operations/CarrierManifest.tsx(200,30): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/pages/operations/CarrierManifest.tsx(204,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/operations/CarrierManifest.tsx(205,16): error TS1005: ')' expected.
+src/pages/OpportunitiesDetail.tsx(76,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/OpportunityDetail.tsx(22,5): error TS2657: JSX expressions must have one parent element.
+src/pages/OpportunityDetail.tsx(29,61): error TS1003: Identifier expected.
+src/pages/OpportunityDetail.tsx(29,63): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/OpportunityDetail.tsx(32,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/OpportunityDetail.tsx(34,7): error TS1005: ')' expected.
+src/pages/OpportunityDetail.tsx(36,7): error TS2657: JSX expressions must have one parent element.
+src/pages/OpportunityDetail.tsx(77,5): error TS1128: Declaration or statement expected.
+src/pages/OpportunityDetail.tsx(78,3): error TS1109: Expression expected.
+src/pages/OpportunityList.tsx(125,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/OrderFulfillment.tsx(1,780): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/OrdersMfg.tsx(1,901): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/OrdersNetwork.tsx(1,806): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PagesIndex.tsx(47,97): error TS1003: Identifier expected.
+src/pages/PagesIndex.tsx(47,224): error TS1002: Unterminated string literal.
+src/pages/PagesIndex.tsx(48,9): error TS1128: Declaration or statement expected.
+src/pages/PagesIndex.tsx(50,9): error TS2657: JSX expressions must have one parent element.
+src/pages/PagesIndex.tsx(68,7): error TS1128: Declaration or statement expected.
+src/pages/PagesIndex.tsx(107,7): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/PagesIndex.tsx(108,3): error TS1128: Declaration or statement expected.
+src/pages/PartyDirectory.tsx(252,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PartyProfile.tsx(30,65): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PartyProfile.tsx(48,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PasswordPolicies.tsx(23,49): error TS1003: Identifier expected.
+src/pages/PasswordPolicies.tsx(23,104): error TS1002: Unterminated string literal.
+src/pages/PasswordPolicies.tsx(24,7): error TS1128: Declaration or statement expected.
+src/pages/PasswordPolicies.tsx(26,7): error TS2657: JSX expressions must have one parent element.
+src/pages/PasswordPolicies.tsx(91,5): error TS1128: Declaration or statement expected.
+src/pages/PasswordPolicies.tsx(92,3): error TS1109: Expression expected.
+src/pages/PaymentFlow.tsx(45,70): error TS1003: Identifier expected.
+src/pages/PaymentFlow.tsx(45,122): error TS1002: Unterminated string literal.
+src/pages/PaymentFlow.tsx(46,7): error TS1128: Declaration or statement expected.
+src/pages/PaymentFlow.tsx(48,7): error TS2657: JSX expressions must have one parent element.
+src/pages/PaymentFlow.tsx(66,5): error TS1128: Declaration or statement expected.
+src/pages/PaymentFlow.tsx(67,3): error TS1109: Expression expected.
+src/pages/PaymentScheduling.tsx(43,5): error TS2657: JSX expressions must have one parent element.
+src/pages/PaymentScheduling.tsx(46,17): error TS1003: Identifier expected.
+src/pages/PaymentScheduling.tsx(47,9): error TS1005: ')' expected.
+src/pages/PaymentScheduling.tsx(48,7): error TS1109: Expression expected.
+src/pages/PaymentScheduling.tsx(50,7): error TS2657: JSX expressions must have one parent element.
+src/pages/PaymentScheduling.tsx(68,5): error TS1128: Declaration or statement expected.
+src/pages/PaymentScheduling.tsx(69,3): error TS1109: Expression expected.
+src/pages/PayrollDetail.tsx(28,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PerformanceConfiguration.tsx(48,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PerformanceOptimization.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PlatformStatus.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PMManager.tsx(104,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/portal/PortalDashboard.tsx(93,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/portal/PortalInvoices.tsx(46,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/PredictiveLeadScoring.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ProcessDesigner.tsx(42,49): error TS1003: Identifier expected.
+src/pages/ProcessDesigner.tsx(42,102): error TS1002: Unterminated string literal.
+src/pages/ProcessDesigner.tsx(43,7): error TS1128: Declaration or statement expected.
+src/pages/ProcessDesigner.tsx(45,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ProcessDesigner.tsx(122,5): error TS1128: Declaration or statement expected.
+src/pages/ProcessDesigner.tsx(123,3): error TS1109: Expression expected.
+src/pages/processes/templates/ProcessPageTemplate.tsx(83,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ProcurementAutomation.tsx(7,25): error TS1005: ')' expected.
+src/pages/ProcurementAutomation.tsx(7,37): error TS1434: Unexpected keyword or identifier.
+src/pages/ProcurementAutomation.tsx(7,47): error TS1128: Declaration or statement expected.
+src/pages/ProcurementAutomation.tsx(7,137): error TS1005: ';' expected.
+src/pages/ProcurementAutomation.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/ProcurementAutomation.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/ProcurementManagement.tsx(37,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ProcurementSourcing.tsx(51,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ProductsDetail.tsx(49,22): error TS17008: JSX element 'Link' has no corresponding closing tag.
+src/pages/ProductsDetail.tsx(54,56): error TS1003: Identifier expected.
+src/pages/ProductsDetail.tsx(54,57): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/pages/ProductsDetail.tsx(54,58): error TS1002: Unterminated string literal.
+src/pages/ProjectBudgetManagement.tsx(74,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Projects.tsx(52,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/AccountingDashboard.tsx(82,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/BillingEventsManager.tsx(130,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/BillRateManager.tsx(233,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/BudgetConfiguration.tsx(136,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/BudgetForecastingDashboard.tsx(140,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/BurdenManager.tsx(85,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/BurdenRuleBuilder.tsx(107,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/CipConsolidationDashboard.tsx(107,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/CipWorkbench.tsx(168,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/CostBurdeningInterface.tsx(189,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/CostImportWorkbench.tsx(281,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/CrossChargeInvoicing.tsx(296,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/DraftInvoiceWorkbench.tsx(152,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/ErpIntegrationDashboard.tsx(146,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/ExpenditureTypeManager.tsx(63,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/FundsCheckInterface.tsx(109,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/InterprojectAllocation.tsx(272,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/ProjectFinancialDetail.tsx(63,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/ProjectList.tsx(142,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/projects/RevenueRecognitionDashboard.tsx(109,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/public/processes/pages/PublicProcessTemplate.tsx(15,6): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/public/processes/pages/PublicProcessTemplate.tsx(17,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/public/processes/pages/PublicProcessTemplate.tsx(23,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/public/processes/pages/PublicProcessTemplate.tsx(65,13): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/public/processes/pages/PublicProcessTemplate.tsx(67,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/public/processes/pages/PublicProcessTemplate.tsx(68,1): error TS1005: '</' expected.
+src/pages/PurchaseOrder.tsx(18,5): error TS2657: JSX expressions must have one parent element.
+src/pages/PurchaseOrder.tsx(23,49): error TS1005: '}' expected.
+src/pages/PurchaseOrder.tsx(23,134): error TS17002: Expected corresponding JSX closing tag for 'Breadcrumb'.
+src/pages/PurchaseOrder.tsx(24,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/PurchaseOrder.tsx(26,7): error TS1005: ')' expected.
+src/pages/PurchaseOrder.tsx(28,7): error TS2657: JSX expressions must have one parent element.
+src/pages/PurchaseOrder.tsx(55,5): error TS1128: Declaration or statement expected.
+src/pages/PurchaseOrder.tsx(56,3): error TS1109: Expression expected.
+src/pages/PurchaseOrdersDetail.tsx(18,5): error TS2657: JSX expressions must have one parent element.
+src/pages/PurchaseOrdersDetail.tsx(24,10): error TS17008: JSX element 'Link' has no corresponding closing tag.
+src/pages/PurchaseOrdersDetail.tsx(27,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/PurchaseOrdersDetail.tsx(51,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/QualityAssurance.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/QualityAssuranceHub.tsx(7,25): error TS1005: ')' expected.
+src/pages/QualityAssuranceHub.tsx(7,33): error TS1434: Unexpected keyword or identifier.
+src/pages/QualityAssuranceHub.tsx(7,42): error TS1128: Declaration or statement expected.
+src/pages/QualityAssuranceHub.tsx(7,122): error TS1005: ';' expected.
+src/pages/QualityAssuranceHub.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/QualityAssuranceHub.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/QualityControl.tsx(19,5): error TS2657: JSX expressions must have one parent element.
+src/pages/QualityControl.tsx(24,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/QualityControl.tsx(66,5): error TS1005: ')' expected.
+src/pages/QualityControl.tsx(67,3): error TS1109: Expression expected.
+src/pages/QuoteBuilder.tsx(46,66): error TS1003: Identifier expected.
+src/pages/QuoteBuilder.tsx(46,102): error TS1002: Unterminated string literal.
+src/pages/QuoteBuilder.tsx(47,9): error TS1128: Declaration or statement expected.
+src/pages/QuoteBuilder.tsx(49,7): error TS1128: Declaration or statement expected.
+src/pages/QuoteBuilder.tsx(51,7): error TS2657: JSX expressions must have one parent element.
+src/pages/QuoteBuilder.tsx(69,5): error TS1128: Declaration or statement expected.
+src/pages/QuoteBuilder.tsx(70,3): error TS1109: Expression expected.
+src/pages/QuotesAndOrders.tsx(52,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/QuotesDetail.tsx(48,22): error TS17008: JSX element 'Link' has no corresponding closing tag.
+src/pages/QuotesDetail.tsx(53,56): error TS1003: Identifier expected.
+src/pages/QuotesDetail.tsx(53,57): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/pages/QuotesDetail.tsx(53,58): error TS1002: Unterminated string literal.
+src/pages/RateLimiting.tsx(8,49): error TS1003: Identifier expected.
+src/pages/RateLimiting.tsx(8,80): error TS1002: Unterminated string literal.
+src/pages/RateLimiting.tsx(9,7): error TS1128: Declaration or statement expected.
+src/pages/RateLimiting.tsx(29,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/RateLimiting.tsx(30,3): error TS1128: Declaration or statement expected.
+src/pages/recruiting/BackgroundCheckStatus.tsx(135,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/recruitment/CandidateMatchingView.tsx(71,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/recruitment/InterviewScheduler.tsx(66,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/recruitment/OnboardingTracker.tsx(266,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/recruitment/RecruitmentPipelineBoard.tsx(68,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ReferenceDataDetail.tsx(86,65): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ReferenceDataDetail.tsx(156,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ReportBuilder.tsx(39,5): error TS2657: JSX expressions must have one parent element.
+src/pages/ReportBuilder.tsx(42,6): error TS1003: Identifier expected.
+src/pages/ReportBuilder.tsx(43,9): error TS1005: ')' expected.
+src/pages/ReportBuilder.tsx(44,7): error TS1109: Expression expected.
+src/pages/ReportBuilder.tsx(46,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ReportBuilder.tsx(90,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/ReportBuilder.tsx(91,3): error TS1128: Declaration or statement expected.
+src/pages/Reporting.tsx(20,101): error TS1003: Identifier expected.
+src/pages/Reporting.tsx(20,172): error TS1002: Unterminated string literal.
+src/pages/Reporting.tsx(21,9): error TS1128: Declaration or statement expected.
+src/pages/Reporting.tsx(26,7): error TS1128: Declaration or statement expected.
+src/pages/Reporting.tsx(28,7): error TS2657: JSX expressions must have one parent element.
+src/pages/Reporting.tsx(85,5): error TS1128: Declaration or statement expected.
+src/pages/Reporting.tsx(86,3): error TS1109: Expression expected.
+src/pages/ResourceAllocation.tsx(42,84): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/ResourceAllocation.tsx(43,7): error TS1005: ')' expected.
+src/pages/ResourceAllocation.tsx(45,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ResourceAllocation.tsx(97,5): error TS1128: Declaration or statement expected.
+src/pages/ResourceAllocation.tsx(98,3): error TS1109: Expression expected.
+src/pages/ResponseAnalytics.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/RevenueAssurance.tsx(49,13): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/RevenueAssurance.tsx(50,9): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/pages/RevenueAssurance.tsx(132,11): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/RevenueAssurance.tsx(133,5): error TS1005: '}' expected.
+src/pages/RevenueAssurance.tsx(133,6): error TS1003: Identifier expected.
+src/pages/RevenueAssurance.tsx(134,1): error TS1003: Identifier expected.
+src/pages/RevenueAuditConsole.tsx(314,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/RevenueAuditConsole.tsx(329,15): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/RevenueAuditConsole.tsx(331,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/RevenueAuditConsole.tsx(332,1): error TS1005: '</' expected.
+src/pages/RevenuePeriodClose.tsx(222,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/RevenueSourceEvents.tsx(538,1): error TS1128: Declaration or statement expected.
+src/pages/RevenueWaterfall.tsx(51,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/RiskManagement.tsx(54,95): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/RiskManagement.tsx(55,7): error TS1005: ')' expected.
+src/pages/RiskManagement.tsx(57,7): error TS2657: JSX expressions must have one parent element.
+src/pages/RiskManagement.tsx(156,5): error TS1128: Declaration or statement expected.
+src/pages/RiskManagement.tsx(157,3): error TS1109: Expression expected.
+src/pages/RoleAssignment.tsx(18,73): error TS1003: Identifier expected.
+src/pages/RoleAssignment.tsx(18,123): error TS1002: Unterminated string literal.
+src/pages/RoleAssignment.tsx(19,7): error TS1128: Declaration or statement expected.
+src/pages/RoleAssignment.tsx(21,7): error TS2657: JSX expressions must have one parent element.
+src/pages/RoleAssignment.tsx(58,5): error TS1128: Declaration or statement expected.
+src/pages/RoleAssignment.tsx(59,3): error TS1109: Expression expected.
+src/pages/RoleHierarchy.tsx(17,72): error TS1003: Identifier expected.
+src/pages/RoleHierarchy.tsx(17,117): error TS1002: Unterminated string literal.
+src/pages/RoleHierarchy.tsx(18,7): error TS1128: Declaration or statement expected.
+src/pages/RoleHierarchy.tsx(49,5): error TS1128: Declaration or statement expected.
+src/pages/RoleHierarchy.tsx(50,3): error TS1109: Expression expected.
+src/pages/RoleManagement.tsx(127,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/RoutingMaster.tsx(43,72): error TS1003: Identifier expected.
+src/pages/RoutingMaster.tsx(43,122): error TS1002: Unterminated string literal.
+src/pages/RoutingMaster.tsx(44,7): error TS1128: Declaration or statement expected.
+src/pages/RoutingMaster.tsx(46,7): error TS2657: JSX expressions must have one parent element.
+src/pages/RoutingMaster.tsx(115,5): error TS1128: Declaration or statement expected.
+src/pages/RoutingMaster.tsx(116,3): error TS1109: Expression expected.
+src/pages/saas/CustomerHealthDashboard.tsx(246,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/saas/MRRAnalyticsDashboard.tsx(39,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/saas/PlaybookBuilder.tsx(136,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/saas/UsageAnalyticsDashboard.tsx(63,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SalesActivities.tsx(17,49): error TS1003: Identifier expected.
+src/pages/SalesActivities.tsx(17,88): error TS1002: Unterminated string literal.
+src/pages/SalesActivities.tsx(18,7): error TS1128: Declaration or statement expected.
+src/pages/SalesActivities.tsx(20,7): error TS2657: JSX expressions must have one parent element.
+src/pages/SalesActivities.tsx(53,5): error TS1128: Declaration or statement expected.
+src/pages/SalesActivities.tsx(54,3): error TS1109: Expression expected.
+src/pages/SalesPipeline.tsx(27,5): error TS2657: JSX expressions must have one parent element.
+src/pages/SalesPipeline.tsx(32,46): error TS1005: '}' expected.
+src/pages/SalesPipeline.tsx(32,134): error TS17002: Expected corresponding JSX closing tag for 'Breadcrumb'.
+src/pages/SalesPipeline.tsx(33,11): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/SalesPipeline.tsx(35,7): error TS1005: ')' expected.
+src/pages/SalesPipeline.tsx(37,7): error TS2657: JSX expressions must have one parent element.
+src/pages/SalesPipeline.tsx(70,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/SalesPipeline.tsx(71,3): error TS1128: Declaration or statement expected.
+src/pages/ScheduledReports.tsx(12,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ScheduledTasks.tsx(41,73): error TS1003: Identifier expected.
+src/pages/ScheduledTasks.tsx(41,113): error TS1002: Unterminated string literal.
+src/pages/ScheduledTasks.tsx(42,7): error TS1128: Declaration or statement expected.
+src/pages/ScheduledTasks.tsx(44,7): error TS2657: JSX expressions must have one parent element.
+src/pages/ScheduledTasks.tsx(91,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/ScheduledTasks.tsx(92,3): error TS1128: Declaration or statement expected.
+src/pages/scm/CategoryManagement.tsx(58,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/scm/wms/MobileWarehouse.tsx(80,18): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/scm/wms/ShippingWorkbench.tsx(26,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/scm/wms/SlottingWorkbench.tsx(25,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/scm/wms/WavePlanning.tsx(82,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/scm/wms/YardManagement.tsx(72,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SCMOverview.tsx(186,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SecurityAudit.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SecurityProfiles.tsx(196,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SemanticSearch.tsx(46,52): error TS1003: Identifier expected.
+src/pages/SemanticSearch.tsx(46,91): error TS1002: Unterminated string literal.
+src/pages/SemanticSearch.tsx(47,7): error TS1128: Declaration or statement expected.
+src/pages/SemanticSearch.tsx(48,7): error TS2657: JSX expressions must have one parent element.
+src/pages/SemanticSearch.tsx(65,5): error TS1128: Declaration or statement expected.
+src/pages/SemanticSearch.tsx(66,3): error TS1109: Expression expected.
+src/pages/ServiceLevelConfig.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ServiceProvisioningOrder.tsx(52,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ServiceRequestPortal.tsx(79,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ServiceTicket.tsx(32,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ServiceTicketsDetail.tsx(26,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ShipmentOrderManagement.tsx(59,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ShopFloor.tsx(12,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/sla/AdrBuilder.tsx(118,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/sla/ManualJournalEntry.tsx(111,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/sla/MappingSetWorkbench.tsx(39,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/sla/SlaDashboard.tsx(77,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/sla/SlaReconciliationWorkbench.tsx(39,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Sprints.tsx(28,44): error TS1003: Identifier expected.
+src/pages/Sprints.tsx(28,89): error TS1002: Unterminated string literal.
+src/pages/Sprints.tsx(29,7): error TS1128: Declaration or statement expected.
+src/pages/Sprints.tsx(31,7): error TS2657: JSX expressions must have one parent element.
+src/pages/Sprints.tsx(60,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/Sprints.tsx(61,3): error TS1128: Declaration or statement expected.
+src/pages/SSO.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SSPManager.tsx(191,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/StockIssue.tsx(43,70): error TS1003: Identifier expected.
+src/pages/StockIssue.tsx(43,115): error TS1002: Unterminated string literal.
+src/pages/StockIssue.tsx(44,7): error TS1128: Declaration or statement expected.
+src/pages/StockIssue.tsx(46,7): error TS2657: JSX expressions must have one parent element.
+src/pages/StockIssue.tsx(115,5): error TS1128: Declaration or statement expected.
+src/pages/StockIssue.tsx(116,3): error TS1109: Expression expected.
+src/pages/StockTransfer.tsx(43,73): error TS1003: Identifier expected.
+src/pages/StockTransfer.tsx(43,111): error TS1002: Unterminated string literal.
+src/pages/StockTransfer.tsx(44,7): error TS1128: Declaration or statement expected.
+src/pages/StockTransfer.tsx(46,7): error TS2657: JSX expressions must have one parent element.
+src/pages/StockTransfer.tsx(115,5): error TS1128: Declaration or statement expected.
+src/pages/StockTransfer.tsx(116,3): error TS1109: Expression expected.
+src/pages/Stories.tsx(36,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/StudentManagement.tsx(65,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SubscriptionManagement.tsx(146,5): error TS2657: JSX expressions must have one parent element.
+src/pages/SubscriptionManagement.tsx(147,43): error TS1003: Identifier expected.
+src/pages/SubscriptionManagement.tsx(150,7): error TS1005: ')' expected.
+src/pages/SubscriptionManagement.tsx(153,12): error TS1005: ';' expected.
+src/pages/SubscriptionManagement.tsx(154,9): error TS2657: JSX expressions must have one parent element.
+src/pages/SubscriptionManagement.tsx(170,7): error TS1128: Declaration or statement expected.
+src/pages/SubscriptionManagement.tsx(173,13): error TS1005: ';' expected.
+src/pages/SubscriptionManagement.tsx(205,7): error TS1128: Declaration or statement expected.
+src/pages/SubscriptionManagement.tsx(208,12): error TS1005: ';' expected.
+src/pages/SubscriptionManagement.tsx(209,18): error TS1005: ',' expected.
+src/pages/SubscriptionManagement.tsx(296,7): error TS1128: Declaration or statement expected.
+src/pages/SubscriptionManagement.tsx(297,3): error TS1109: Expression expected.
+src/pages/supplier-portal/Dashboard.tsx(176,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SupplierCollaborationPortal.tsx(59,51): error TS1003: Identifier expected.
+src/pages/SupplierCollaborationPortal.tsx(59,129): error TS1002: Unterminated string literal.
+src/pages/SupplierCollaborationPortal.tsx(60,9): error TS1128: Declaration or statement expected.
+src/pages/SupplierCollaborationPortal.tsx(66,7): error TS1128: Declaration or statement expected.
+src/pages/SupplierCollaborationPortal.tsx(230,5): error TS1128: Declaration or statement expected.
+src/pages/SupplierCollaborationPortal.tsx(231,3): error TS1109: Expression expected.
+src/pages/suppliers/ContractObligations.tsx(138,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/supply-chain/PartnerList.tsx(83,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/supply-chain/ShipmentList.tsx(87,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SupplyChainOptimization.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/SustainabilityReporting.tsx(7,25): error TS1005: ')' expected.
+src/pages/SustainabilityReporting.tsx(7,40): error TS1434: Unexpected keyword or identifier.
+src/pages/SustainabilityReporting.tsx(7,49): error TS1128: Declaration or statement expected.
+src/pages/SustainabilityReporting.tsx(7,127): error TS1005: ';' expected.
+src/pages/SustainabilityReporting.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/SustainabilityReporting.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/SystemHealth.tsx(10,5): error TS2657: JSX expressions must have one parent element.
+src/pages/SystemHealth.tsx(15,9): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/SystemHealth.tsx(35,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/tax/TaxCalculator.tsx(108,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/tax/TaxCodeBuilder.tsx(35,5): error TS1109: Expression expected.
+src/pages/tax/TaxCodeBuilder.tsx(40,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/tax/TaxDashboardTab.tsx(59,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/tax/TaxJurisdictionManager.tsx(44,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/tax/TaxReportingDashboard.tsx(41,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/tax/TaxRuleEngine.tsx(43,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/TeamCollaboration.tsx(52,5): error TS2657: JSX expressions must have one parent element.
+src/pages/TeamCollaboration.tsx(55,12): error TS1003: Identifier expected.
+src/pages/TeamCollaboration.tsx(56,9): error TS1005: ')' expected.
+src/pages/TeamCollaboration.tsx(57,7): error TS1109: Expression expected.
+src/pages/TeamCollaboration.tsx(59,7): error TS2657: JSX expressions must have one parent element.
+src/pages/TeamCollaboration.tsx(79,5): error TS1128: Declaration or statement expected.
+src/pages/TeamCollaboration.tsx(80,3): error TS1109: Expression expected.
+src/pages/TemplateLibrary.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/TenantAdmin.tsx(59,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/ThirdPartyApps.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/TimesheetManagement.tsx(106,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/TimeTracking.tsx(8,49): error TS1003: Identifier expected.
+src/pages/TimeTracking.tsx(8,89): error TS1002: Unterminated string literal.
+src/pages/TimeTracking.tsx(9,7): error TS1128: Declaration or statement expected.
+src/pages/TimeTracking.tsx(14,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/TimeTracking.tsx(15,3): error TS1128: Declaration or statement expected.
+src/pages/TrainingAcademy.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/transportation/CarrierManager.tsx(126,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/transportation/CarrierScorecardDashboard.tsx(197,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/transportation/FreightAudit.tsx(85,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/transportation/FreightSettlementConsole.tsx(200,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/transportation/RoutePlanningWorkbench.tsx(110,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/UATAutomation.tsx(88,52): error TS1003: Identifier expected.
+src/pages/UATAutomation.tsx(88,54): error TS1002: Unterminated string literal.
+src/pages/UATAutomation.tsx(89,24): error TS1005: ';' expected.
+src/pages/UATAutomation.tsx(89,29): error TS1434: Unexpected keyword or identifier.
+src/pages/UATAutomation.tsx(89,42): error TS1005: '(' expected.
+src/pages/UATAutomation.tsx(89,60): error TS1005: ')' expected.
+src/pages/UATAutomation.tsx(90,9): error TS1128: Declaration or statement expected.
+src/pages/UATAutomation.tsx(91,7): error TS1109: Expression expected.
+src/pages/UATAutomation.tsx(95,9): error TS2657: JSX expressions must have one parent element.
+src/pages/UATAutomation.tsx(146,7): error TS1128: Declaration or statement expected.
+src/pages/UATAutomation.tsx(246,5): error TS1128: Declaration or statement expected.
+src/pages/UATAutomation.tsx(247,3): error TS1109: Expression expected.
+src/pages/VendorInvoiceEntry.tsx(43,5): error TS2657: JSX expressions must have one parent element.
+src/pages/VendorInvoiceEntry.tsx(45,74): error TS1003: Identifier expected.
+src/pages/VendorInvoiceEntry.tsx(46,9): error TS1005: ')' expected.
+src/pages/VendorInvoiceEntry.tsx(51,7): error TS1128: Declaration or statement expected.
+src/pages/VendorInvoiceEntry.tsx(53,7): error TS2657: JSX expressions must have one parent element.
+src/pages/VendorInvoiceEntry.tsx(72,5): error TS1128: Declaration or statement expected.
+src/pages/VendorInvoiceEntry.tsx(73,3): error TS1109: Expression expected.
+src/pages/VendorsDetail.tsx(25,6): error TS17008: JSX element 'StandardPage' has no corresponding closing tag.
+src/pages/VendorsDetail.tsx(26,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/VendorsDetail.tsx(33,10): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/VendorsDetail.tsx(54,13): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/VendorsDetail.tsx(56,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/pages/VendorsDetail.tsx(57,1): error TS1005: '</' expected.
+src/pages/VoiceOfCustomer.tsx(7,25): error TS1005: ')' expected.
+src/pages/VoiceOfCustomer.tsx(7,31): error TS1434: Unexpected keyword or identifier.
+src/pages/VoiceOfCustomer.tsx(7,34): error TS1434: Unexpected keyword or identifier.
+src/pages/VoiceOfCustomer.tsx(7,42): error TS1128: Declaration or statement expected.
+src/pages/VoiceOfCustomer.tsx(7,125): error TS1005: ';' expected.
+src/pages/VoiceOfCustomer.tsx(12,9): error TS17002: Expected corresponding JSX closing tag for 'div'.
+src/pages/VoiceOfCustomer.tsx(13,3): error TS1128: Declaration or statement expected.
+src/pages/Warehouse.tsx(69,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/WebhookEvents.tsx(10,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/WebhookManagement.tsx(11,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/Webhooks.tsx(18,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/WebsiteBuilder.tsx(49,5): error TS2657: JSX expressions must have one parent element.
+src/pages/WebsiteBuilder.tsx(52,26): error TS1003: Identifier expected.
+src/pages/WebsiteBuilder.tsx(53,9): error TS1005: ')' expected.
+src/pages/WebsiteBuilder.tsx(58,7): error TS1128: Declaration or statement expected.
+src/pages/WebsiteBuilder.tsx(60,7): error TS2657: JSX expressions must have one parent element.
+src/pages/WebsiteBuilder.tsx(121,5): error TS1128: Declaration or statement expected.
+src/pages/WebsiteBuilder.tsx(122,3): error TS1109: Expression expected.
+src/pages/WebsiteManagement.tsx(49,79): error TS17002: Expected corresponding JSX closing tag for 'StandardPage'.
+src/pages/WebsiteManagement.tsx(50,7): error TS1005: ')' expected.
+src/pages/WebsiteManagement.tsx(52,7): error TS2657: JSX expressions must have one parent element.
+src/pages/WebsiteManagement.tsx(130,5): error TS1128: Declaration or statement expected.
+src/pages/WebsiteManagement.tsx(131,3): error TS1109: Expression expected.
+src/pages/wfm/AbsenceManagement.tsx(58,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wfm/AccrualTesting.tsx(76,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wfm/AIWorkforceInsights.tsx(80,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wfm/HolidayCalendar.tsx(65,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wfm/PayrollTransfer.tsx(85,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wfm/SkillTracking.tsx(42,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wfm/WfmAnalytics.tsx(86,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/WIPTracking.tsx(47,5): error TS2657: JSX expressions must have one parent element.
+src/pages/WIPTracking.tsx(50,5): error TS1003: Identifier expected.
+src/pages/WIPTracking.tsx(51,9): error TS1005: ')' expected.
+src/pages/WIPTracking.tsx(53,7): error TS1128: Declaration or statement expected.
+src/pages/WIPTracking.tsx(55,7): error TS2657: JSX expressions must have one parent element.
+src/pages/WIPTracking.tsx(125,5): error TS1128: Declaration or statement expected.
+src/pages/WIPTracking.tsx(126,3): error TS1109: Expression expected.
+src/pages/wms/CycleCountManager.tsx(45,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wms/LaborManagement.tsx(27,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wms/WavePlanning.tsx(54,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/wms/YardManagement.tsx(20,14): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/WorkflowBuilder.tsx(70,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/WorkflowTemplates.tsx(64,8): error TS17008: JSX element 'div' has no corresponding closing tag.
+src/pages/WorkOrder.tsx(36,8): error TS17008: JSX element 'div' has no corresponding closing tag.

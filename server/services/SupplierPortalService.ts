@@ -1,6 +1,8 @@
 import { db } from "../db";
 import { supplierOnboardingRequests, supplierUserIdentities, suppliers, supplierSites } from "../../shared/schema/scm";
 import { eq } from "drizzle-orm";
+import { partyService } from "./PartyService";
+
 
 export class SupplierPortalService {
     /**
@@ -33,12 +35,27 @@ export class SupplierPortalService {
         if (!request) throw new Error("Registration request not found");
         if (request.status !== 'PENDING') throw new Error("Request is already processed");
 
-        // 1. Create the Supplier in Master Table
+        // 1. Create the Party (Organization)
+        const { party } = await partyService.createOrganization(
+            {
+                partyName: request.companyName,
+                partyNumber: `SUP-${Date.now()}`, // Temporary gen logic
+                email: request.contactEmail,
+                partyType: 'ORGANIZATION'
+            },
+            {
+                organizationName: request.companyName,
+                taxReference: request.taxId
+            }
+        );
+
+        // 2. Create the Supplier in Master Table
         const [newSupplier] = await db.insert(suppliers).values({
             name: request.companyName,
             email: request.contactEmail,
             phone: request.phone,
-            status: 'active'
+            status: 'active',
+            partyId: party.id // TCA Linkage
         }).returning();
 
         // 2. Create the Primary Headquarters Site

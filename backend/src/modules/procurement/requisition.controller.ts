@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { RequisitionService } from './requisition.service';
-import { ApprovalService } from './approval.service';
+import { ProcurementApprovalService } from './approval.service';
 
 @Controller('procurement/requisitions')
 export class RequisitionController {
     constructor(
         private readonly reqService: RequisitionService,
-        private readonly approvalService: ApprovalService
+        private readonly approvalService: ProcurementApprovalService
     ) { }
 
     @Post()

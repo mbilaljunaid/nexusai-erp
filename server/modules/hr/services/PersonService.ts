@@ -4,8 +4,12 @@ import {
     insertPersonSchema, insertWorkRelationshipSchema, insertAssignmentSchema,
     hrJobs, hrOrganizations, hrAuditLogs
 } from "@shared/schema";
+import { AuditLogService } from "./AuditLogService";
 import { eq, and, like, or, sql, desc, count, ilike, lte, gte, isNull, inArray } from "drizzle-orm";
 import { AorService } from "./AorService";
+import { ComplianceEngineService } from "./ComplianceEngineService";
+import { MaskPII } from "../../../common/decorators/MaskPII";
+import { DateTrackService } from "./DateTrackService";
 
 // Types for Paginated Response
 export interface PaginatedResult<T> {
@@ -16,25 +20,59 @@ export interface PaginatedResult<T> {
 }
 
 export class PersonService {
+    private static maskSensitiveData(person: any, hasFullAccess: boolean) {
+        if (!person) return person;
+        const maskedPerson = { ...person };
+        if (!hasFullAccess) {
+            if (maskedPerson.dateOfBirth) maskedPerson.dateOfBirth = "1900-01-01"; // Generic mask for date type consistency
+            if (maskedPerson.nationalId) {
+                const nid = String(maskedPerson.nationalId);
+                maskedPerson.nationalId = "***-**-" + nid.slice(-4);
+            }
+        }
+        return maskedPerson;
+    }
 
-    // --- AUDIT HELPER ---
+    private static async hasAorAccess(requesterId: string, personId: string, tenantId: string): Promise<boolean> {
+        if (!requesterId || requesterId === "system") return true;
+        if (requesterId === personId) return true; // Self-access
+
+        const userAors = await AorService.getAorForUser(requesterId, tenantId);
+        // If user has no AORs, currently we assume Admin (View All). 
+        // In a final hardened system, we'd check for a specific 'SUPER_USER' role here.
+        if (userAors.length === 0) return true;
+
+        const personAss = await db.select()
+            .from(hrAssignments)
+            .leftJoin(hrWorkRelationships, eq(hrAssignments.workRelationshipId, hrWorkRelationships.id))
+            .where(and(
+                eq(hrAssignments.personId, personId),
+                eq(hrAssignments.assignmentStatus, "ACTIVE"),
+                eq(hrAssignments.primaryAssignmentFlag, true)
+            )).limit(1);
+
+        if (!personAss.length) return false;
+        const asg = personAss[0].hr_assignments;
+        const rel = personAss[0].hr_work_relationships;
+
+        return userAors.some(a => {
+            if (a.scopeType === 'DEPARTMENT' && a.scopeValueId === asg.departmentId) return true;
+            if (a.scopeType === 'LOCATION' && a.scopeValueId === asg.locationId) return true;
+            if (a.scopeType === 'LEGAL_EMPLOYER' && rel && a.scopeValueId === rel.legalEmployerId) return true;
+            return false;
+        });
+    }
+
+    // Audit helper now uses the centralized service
     private static async logAudit(tx: any, params: {
         tenantId: string,
         actorId: string,
-        entityType: "PERSON" | "WORK_RELATIONSHIP" | "ASSIGNMENT",
+        entityType: string,
         entityId: string,
-        action: "HIRE" | "TERMINATE" | "TRANSFER" | "CREATE" | "UPDATE",
+        action: string,
         changes?: Record<string, any>
     }) {
-        await tx.insert(hrAuditLogs).values({
-            tenantId: params.tenantId,
-            actorId: params.actorId,
-            entityType: params.entityType,
-            entityId: params.entityId,
-            action: params.action,
-            changes: params.changes || {},
-            timestamp: new Date()
-        });
+        await AuditLogService.log(params, tx);
     }
 
     // HIRE WORKER
@@ -79,6 +117,24 @@ export class PersonService {
             });
             const [assignment] = await tx.insert(hrAssignments).values(assignmentData).returning();
             await this.logAudit(tx, { tenantId, actorId, entityType: "ASSIGNMENT", entityId: assignment.id, action: "CREATE", changes: assignmentData });
+
+            // DateTrack: write INITIAL history snapshot
+            await DateTrackService.writeHistory({
+                assignment: { ...assignment },
+                mode: "INITIAL",
+                effectiveDate: assignment.effectiveStartDate ?? new Date().toISOString().split('T')[0],
+                effectiveEndDate: null,
+                actorId,
+                tenantId,
+                changeReason: "Worker Hire",
+            }, tx as any);
+
+            // 4. Evaluate Compliance
+            await ComplianceEngineService.evaluateTransaction(tenantId, "PERSON", person.id, {
+                ...personData,
+                assignment: assignmentData,
+                workRelationship: relationshipData
+            });
 
             return { person, relationship, assignment };
         });
@@ -138,6 +194,29 @@ export class PersonService {
             await this.logAudit(tx, {
                 tenantId, actorId, entityType: "ASSIGNMENT", entityId: "ALL_ACTIVE", action: "TERMINATE",
                 changes: { effectiveEndDate: terminationDate }
+            });
+
+            // DateTrack: write TERMINATE snapshot for all affected assignments
+            const terminatedAsgs = await tx.select().from(hrAssignments)
+                .where(eq(hrAssignments.workRelationshipId, relationshipId));
+            for (const asg of terminatedAsgs) {
+                await DateTrackService.writeHistory({
+                    assignment: { ...asg },
+                    mode: "TERMINATE",
+                    effectiveDate: terminationDate,
+                    effectiveEndDate: terminationDate,
+                    actorId,
+                    tenantId,
+                    changeReason: data.reason ?? "Termination",
+                }, tx as any);
+            }
+
+            // 4. Evaluate Compliance (Termination)
+            await ComplianceEngineService.evaluateTransaction(tenantId, "WORK_RELATIONSHIP", relationshipId, {
+                personId,
+                terminationDate,
+                reason: data.reason,
+                status: "TERMINATED"
             });
 
             return updatedRel;
@@ -201,13 +280,51 @@ export class PersonService {
                 changes: { from: currentAsg.id, to: newAsg.id, reason: data.reason, ...data }
             });
 
+            // DateTrack: write UPDATE snapshot. End-dated OLD assignment history entry first.
+            await DateTrackService.writeHistory({
+                assignment: { ...currentAsg },
+                mode: "UPDATE",
+                effectiveDate: currentAsg.effectiveStartDate ?? effectiveDate,
+                effectiveEndDate: endDateStr,
+                actorId,
+                tenantId,
+                changeReason: `Transfer — ended prior period`,
+            }, tx as any);
+
+            // DateTrack: write the NEW forward assignment snapshot
+            await DateTrackService.writeHistory({
+                assignment: { ...newAsg },
+                mode: "UPDATE",
+                effectiveDate: effectiveDate,
+                effectiveEndDate: null,
+                actorId,
+                tenantId,
+                changeReason: data.reason ?? "Transfer",
+            }, tx as any);
+
+            // 4. Evaluate Compliance (Transfer)
+            await ComplianceEngineService.evaluateTransaction(tenantId, "ASSIGNMENT", newAsg.id, {
+                ...newAsgData,
+                reason: data.reason
+            });
+
             return newAsg;
         });
     }
 
+    /**
+     * Centralized masking logic for PII fields.
+     */
+    private static maskResults(data: any[], currentUserId: string, tenantId: string, isAdminOverride: boolean = false) {
+        if (isAdminOverride) return data;
+
+        // This is a simplified version; in production, we would pre-fetch AORs 
+        // to avoid N+1 masking calls.
+        return data.map(person => this.maskSensitiveData(person, false));
+    }
+
     // PAGINATED SEARCH
-    // Updated search with AOR
-    // Updated search with AOR & Effective Dating
+    @MaskPII(['nationalId', 'dateOfBirth'], 4, 0)
     static async searchPersons(
         tenantId: string,
         query?: string,
@@ -218,15 +335,20 @@ export class PersonService {
     ): Promise<PaginatedResult<any>> {
         const searchTerm = query ? `%${query}%` : "%";
         const offset = (page - 1) * limit;
-        const refDate = new Date(effectiveDate); // Use this for comparisons
+        const refDate = new Date(effectiveDate);
 
-        // AOR Security Check
+        // 1. AOR Security Check (Filter)
         const aorConditions = [];
-        if (currentUserId) {
+        let isAdminOverride = false;
+
+        if (currentUserId && currentUserId !== "system") {
             const userAors = await AorService.getAorForUser(currentUserId, tenantId);
 
-            // If user has AORs, restrict access. If no AORs, assume Admin (View All) for now to prevent lockout.
-            if (userAors.length > 0) {
+            // Tier-1 Rule: If user has NO AORs and is NOT a system user, 
+            // we check for an admin override (simplified here to length check).
+            if (userAors.length === 0) {
+                isAdminOverride = true;
+            } else {
                 const deptIds = userAors.filter(a => a.scopeType === 'DEPARTMENT').map(a => a.scopeValueId);
                 const locIds = userAors.filter(a => a.scopeType === 'LOCATION').map(a => a.scopeValueId);
                 const leIds = userAors.filter(a => a.scopeType === 'LEGAL_EMPLOYER').map(a => a.scopeValueId);
@@ -257,20 +379,15 @@ export class PersonService {
             .from(hrPersons)
             .leftJoin(hrWorkRelationships, and(
                 eq(hrWorkRelationships.personId, hrPersons.id),
-                eq(hrWorkRelationships.primaryFlag, true),
-                lte(hrWorkRelationships.dateStart, refDate.toISOString().split('T')[0]),
-                or(isNull(hrWorkRelationships.terminationDate), gte(hrWorkRelationships.terminationDate, refDate.toISOString().split('T')[0]))
+                eq(hrWorkRelationships.primaryFlag, true)
             ))
             .leftJoin(hrAssignments, and(
                 eq(hrAssignments.workRelationshipId, hrWorkRelationships.id),
-                eq(hrAssignments.primaryAssignmentFlag, true),
-                lte(hrAssignments.effectiveStartDate, refDate.toISOString().split('T')[0]),
-                or(isNull(hrAssignments.effectiveEndDate), gte(hrAssignments.effectiveEndDate, refDate.toISOString().split('T')[0]))
+                eq(hrAssignments.primaryAssignmentFlag, true)
             ))
-            // We might need Org/Jobs joins if we filter by them later, but for AOR (deptId is on Assignment), we just need Assignment.
             .where(whereClause);
 
-        const data = await db.select({
+        const rawData = await db.select({
             id: hrPersons.id,
             personNumber: hrPersons.personNumber,
             firstName: hrPersons.firstName,
@@ -278,22 +395,18 @@ export class PersonService {
             email: hrPersons.email,
             department: hrOrganizations.name,
             job: hrJobs.name,
-            assignmentStatus: hrAssignments.assignmentStatus
+            assignmentStatus: hrAssignments.assignmentStatus,
+            nationalId: hrPersons.nationalId, // Include for masking
+            dateOfBirth: hrPersons.dateOfBirth // Include for masking
         })
             .from(hrPersons)
             .leftJoin(hrWorkRelationships, and(
                 eq(hrWorkRelationships.personId, hrPersons.id),
-                eq(hrWorkRelationships.primaryFlag, true),
-                // Work Rel effective check
-                lte(hrWorkRelationships.dateStart, refDate.toISOString().split('T')[0]),
-                or(isNull(hrWorkRelationships.terminationDate), gte(hrWorkRelationships.terminationDate, refDate.toISOString().split('T')[0]))
+                eq(hrWorkRelationships.primaryFlag, true)
             ))
             .leftJoin(hrAssignments, and(
                 eq(hrAssignments.workRelationshipId, hrWorkRelationships.id),
-                eq(hrAssignments.primaryAssignmentFlag, true),
-                // Assignment effective check
-                lte(hrAssignments.effectiveStartDate, refDate.toISOString().split('T')[0]),
-                or(isNull(hrAssignments.effectiveEndDate), gte(hrAssignments.effectiveEndDate, refDate.toISOString().split('T')[0]))
+                eq(hrAssignments.primaryAssignmentFlag, true)
             ))
             .leftJoin(hrOrganizations, eq(hrAssignments.departmentId, hrOrganizations.id))
             .leftJoin(hrJobs, eq(hrAssignments.jobId, hrJobs.id))
@@ -301,8 +414,11 @@ export class PersonService {
             .limit(limit)
             .offset(offset);
 
+        // 2. Data Privacy Masking (Field-Level) - Handled by @MaskPII
+        // const maskedData = this.maskResults(rawData, currentUserId || "guest", tenantId, isAdminOverride);
+
         return {
-            data,
+            data: rawData,
             total: totalCount.count,
             page,
             limit
@@ -310,12 +426,42 @@ export class PersonService {
     }
 
     // GET FULL PROFILE
-    static async getPersonProfile(personId: string, tenantId: string) {
-        const person = await db.query.hrPersons.findFirst({
+    @MaskPII(['nationalId', 'dateOfBirth'], 2, 1)
+    static async getPersonProfile(personId: string, tenantId: string, currentUserId?: string) {
+        const personData = await db.query.hrPersons.findFirst({
             where: and(eq(hrPersons.id, personId), eq(hrPersons.tenantId, tenantId)),
         });
 
-        if (!person) return null;
+        if (!personData) return null;
+
+        const hasAccess = currentUserId ? await AorService.hasAccess(currentUserId, personId, tenantId) : true;
+        // Manual masking removed in favor of Decorator
+        const person = personData;
+        // Note: AorService.hasAccess usage here is just to pre-check? 
+        // Actually, for getPersonProfile which returns `{person, relationships...}`,
+        // The decorator will inspect `result.person`.
+
+        // HOWEVER, we might want to restrict the WHOLE object if no access?
+        // The requirement is "Field-Level Masking". Row-level access is often a filter.
+        // If strictly filtering, `hasAccess` should throw or return null.
+        // But the previous implementation returned masked data for those without full access?
+        // Let's look at `maskSensitiveData` implementation at top of file (to be removed/ignored).
+        // It only masked DOB/NID. It didn't hide the record. 
+        // So Row Level Security (RLS) acts as "View Only Public Info" vs "View Private Info"?
+        // Typically RLS hides the row entirely.
+        // But `PersonService` seems to treat it as "Partial View" if in Directory.
+        // Re-reading `searchPersons` logic:
+        // "1. AOR Security Check (Filter)" -> It filters the query! 
+        // So searchPersons strictly hides rows you don't have access to via AOR.
+        // BUT getPersonProfile didn't seem to have that strict filter in the Query?
+        // It fetched `findingFirst`. Then called `hasAorAccess`.
+
+        // Let's assume the decorator handles the FIELD masking.
+        // The ROW filtering should happen in the Service Logic ideally.
+        // In SearchPersons, it IS happening in the query.
+        // In GetPersonProfile, it was NOT preventing return, just masking.
+        // So the decorator matches that behavior.
+
 
         const relationships = await db.select().from(hrWorkRelationships)
             .where(eq(hrWorkRelationships.personId, personId));
@@ -326,8 +472,8 @@ export class PersonService {
         return { person, relationships, assignments };
     }
 
-    static async getRecentTransactions(tenantId: string, limit: number = 50) {
-        return db.select({
+    static async getRecentTransactions(tenantId: string, limit: number = 50, currentUserId?: string) {
+        const rawData = await db.select({
             id: hrAssignments.id,
             updatedAt: hrAssignments.updatedAt,
             updatedBy: hrAssignments.updatedBy,
@@ -336,7 +482,9 @@ export class PersonService {
             assignmentStatus: hrAssignments.assignmentStatus,
             assignmentNumber: hrAssignments.assignmentNumber,
             dept: hrOrganizations.name,
-            job: hrJobs.name
+            job: hrJobs.name,
+            nationalId: hrPersons.nationalId, // For masking
+            dateOfBirth: hrPersons.dateOfBirth // For masking
         })
             .from(hrAssignments)
             .leftJoin(hrPersons, eq(hrAssignments.personId, hrPersons.id))
@@ -345,6 +493,9 @@ export class PersonService {
             .where(eq(hrAssignments.tenantId, tenantId))
             .orderBy(desc(hrAssignments.updatedAt))
             .limit(limit);
+
+        // Apply AOR Masking
+        return this.maskResults(rawData, currentUserId || "guest", tenantId);
     }
 
     // ANALYTICS & DATA QUALITY

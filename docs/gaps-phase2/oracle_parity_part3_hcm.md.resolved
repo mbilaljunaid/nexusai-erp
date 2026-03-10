@@ -1,0 +1,242 @@
+# NexusAI vs Oracle Fusion: Module-by-Module Parity Assessment
+## PART 3: Human Capital Management (HCM) Suite
+*Page / Form / Field / Granular Level Comparison*
+
+Legend: ✅ = Exists in NexusAI | ⚠️ = Partial / Simplified | ❌ = Missing entirely
+
+> **Last Deep-Review:** March 9, 2026 — Phase 10 audit complete. Verified against live codebase. All components through Phase 10 reflected below. Phase 10 additions: `PayrollDefinitionSetup`, `EmploymentContractManager`, `PositionBudgetingWorkbench`, `HRJourneyTemplateBuilder`. PayrollWorkbench enhanced with all 5 missing Oracle PayRun fields.
+
+---
+
+## Module 18 — Core Human Resources (Global HR)
+**Oracle Equivalent:** Oracle Global Human Resources Cloud
+
+### NexusAI Pages Currently Existing
+- ✅ [HR.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/HR.tsx) — Core HR landing
+- ✅ [EmployeeDirectory.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/EmployeeDirectory.tsx) (2.7KB)
+- ✅ [OrgChart.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OrgChart.tsx)
+- ✅ `hr/` sub-directory — **49 pages** (most comprehensive HR section)
+- ✅ [HRReports.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/HRReports.tsx) (8.2KB) / [HRAnalyticsDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/HRAnalyticsDashboard.tsx) (10.3KB)
+- ✅ [Attendance.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Attendance.tsx) / [AttendanceDashboard.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/AttendanceDashboard.tsx)
+- ✅ [OnboardingAutomation.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OnboardingAutomation.tsx)
+- ✅ Schemas: [hr_worker.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_worker.ts), [hr_structures.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_structures.ts), [hr_compliance.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_compliance.ts), [hr_delegation.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_delegation.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Hire Flow (New Person Wizard)** | ✅ Built | `src/pages/hr/HireFlowWizard.tsx` — 5-step guided wizard: Personal Info → Work Relationship → Assignment → Compensation → Review. |
+| **DateTrack (Effective Dating on all forms)** | ⚠️ Partial | UI layer built: `src/pages/hr/EffectiveDatingPanel.tsx` — Create/Correct/Future-date modes + full assignment history table. Schema-level DateTrack rows require a DB migration. |
+| **Assignment Form (Full Oracle)** | ⚠️ Partial | Basic assignment exists. Oracle's Assignment form has: Grade, Step, Grade Ladder, Probation End Date, Working Hours, Full-Time/Part-Time indicator, Manager (with DateTrack). |
+| **Manager Self-Service (MSS) Guided Transactions** | ✅ Built | `src/pages/hr/GuidedJourneyWorkerTransfer.tsx` exists. |
+| **Employment Contracts** | ✅ Built | `src/pages/hr/EmploymentContractManager.tsx` — Contract type (Fixed Term/Permanent/Zero-Hours/Agency), start/end date, renewal alert threshold, jurisdiction field, e-sign upload, status by worker (Active/Expiring/Expired). |
+| **Position Management** | ✅ Built | `src/pages/hr/PositionBudgetingWorkbench.tsx` — Position FTE budget vs actual headcount, dept roll-up tree, vacancy approval/freeze workflow, utilisation progress bars. |
+| **HR Help Desk (Journeys / HR Service Delivery)** | ✅ Built | `src/pages/hr/HRJourneyTemplateBuilder.tsx` — Journey templates with trigger events (Hire/Transfer/Termination/Life Event), ordered task checklist builder (day-offset due dates, assignee types), preview mode. |
+| **Person Spotlight View** | ✅ Built | `src/pages/hr/PersonSpotlight.tsx` exists. |
+| **Seniority / Length of Service Calculations** | ✅ Built | `src/pages/hr/SeniorityTracking.tsx` exists. Break-in-service rules, calculation modes, and service history table. |
+
+### Key Field-Level Gaps (Worker / Assignment Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Person Number / Name (First/Middle/Last) | ✅ |
+| Date of Birth | ✅ |
+| National Identifier (SSN, NIN) | ⚠️ Exists but no format validation |
+| Gender / Pronouns | ⚠️ Gender exists |
+| Person Type (Employee / Contingent) | ✅ |
+| Legal Employer | ✅ |
+| Business Unit | ✅ |
+| Department | ✅ |
+| Job / Position | ✅ |
+| Grade / Step / Grade Ladder | ✅ Built | `hrGradeSteps` table added to `hr_structures.ts`. See `GradeLadderSetup.tsx`. |
+| Assignment Category (Full/Part Time) | ⚠️ |
+| Probation End Date | ✅ Built | `probationEndDate` column added to `hrAssignments` in `hr_worker.ts`. |
+| Effective Start/End Date (DateTrack) | ❌ **CRITICAL** — DB migration required |
+| Manager (as of date) | ⚠️ Manager field exists, no DateTrack |
+| Work Location | ✅ |
+| Working Hours / Schedule | ✅ Built | `workingHoursPerWeek` column added to `hrAssignments`. |
+
+---
+
+## Module 19 — Global Payroll
+**Oracle Equivalent:** Oracle Global Payroll / Payroll Connect
+
+### NexusAI Pages Currently Existing
+- ✅ [PayrollEngine.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollEngine.tsx) (5KB) — Run payroll UI
+- ✅ [PayrollProcessing.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollProcessing.tsx) (4.7KB)
+- ✅ [PayrollRuns.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollRuns.tsx) (2.7KB) — List of payroll runs
+- ✅ [PayrollDetail.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PayrollDetail.tsx)
+- ✅ `rewards/` sub-directory — 5 pages (payroll, benefits, comp)
+- ✅ Schemas: [rewards_payroll.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/rewards_payroll.ts), [hr_payroll_ext.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_payroll_ext.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Payroll Definition Setup** | ✅ Built | `src/pages/hr/payroll/PayrollDefinitionSetup.tsx` — pay frequency (Weekly/Bi-Weekly/Semi-Monthly/Monthly), cut-off date rules (Period End / N Days Before), first period start date, auto-generate period calendar, consolidation group assignment, element set linking. |
+| **Element Setup & Entry (FastFormula)** | ✅ Built | `src/pages/hr/payroll/ElementConfiguration.tsx` exists. |
+| **Retro-Pay Engine** | ✅ Built | `src/pages/hr/payroll/RetroactivePayEngine.tsx` exists. |
+| **Payroll Flow Submission UI** | ✅ Built | `src/pages/hr/payroll/PayrollWorkbench.tsx` exists. Enhanced with 5 missing Oracle fields: Consolidation Group, Run Type, Element Entry Override, Retro-Pay Indicator, GL Cost Allocation Mode. |
+| **Costing & GL Transfer** | ✅ Built | `src/pages/hr/payroll/PayrollCostingSetup.tsx` exists. |
+| **Tax Filing (Statutory Reports)** | ✅ Built | `src/pages/hr/payroll/StatutoryTaxFiling.tsx` exists. |
+| **Employee Pay Slip PDF** | ✅ Built | `src/pages/rewards/MyPayslips.tsx` and `PayslipView.tsx` exist. |
+| **Off-Cycle Payment Run** | ✅ Built | `src/pages/hr/payroll/OffCyclePayment.tsx` exists. |
+| **Payroll Simulation** | ✅ Built | `src/pages/hr/payroll/PayrollSimulator.tsx` exists. |
+
+### Key Field-Level Gaps (PayRun Form)
+| Oracle Field | NexusAI Status |
+|---|---|
+| Payroll Definition | ✅ Built |
+| Payroll Period | ✅ |
+| Process Date | ✅ |
+| Consolidation Group | ✅ Built — added to PayrollWorkbench form (Phase 10) |
+| Run Type (Regular / Supplemental / Report) | ✅ Built — added to PayrollWorkbench form (Phase 10) |
+| Element Entry Override | ✅ Built — added to PayrollWorkbench form (Phase 10) |
+| Retro-Pay Indicator | ✅ Built — added to PayrollWorkbench form (Phase 10) |
+| GL Cost Allocation (per employee) | ✅ Built — GL Cost Allocation Mode added to PayrollWorkbench form (Phase 10) |
+
+---
+
+## Module 20 — Time & Labor (WFM)
+**Oracle Equivalent:** Oracle Fusion Time and Labor / Absence Management
+
+### NexusAI Pages Currently Existing
+- ✅ `wfm/` sub-directory — **18 pages** (very extensive)
+- ✅ [TimesheetManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TimesheetManagement.tsx) (5.9KB)
+- ✅ [TimeAttendance.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/TimeAttendance.tsx)
+- ✅ [WorkforceScheduling.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/WorkforceScheduling.tsx) (6.2KB)
+- ✅ [LeaveRequest.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeaveRequest.tsx) / [LeaveApproval.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeaveApproval.tsx) / [LeaveWorkflows.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/LeaveWorkflows.tsx)
+- ✅ Schema: [time_labor.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/time_labor.ts) (11.5KB), [time_rules.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/time_rules.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Web Clock / Badge Integration** | ✅ Built | `src/pages/wfm/TimeClock.tsx` exists. |
+| **Time Entry Rules (Overtime / Double-Time)** | ✅ Built | `src/pages/hr/TimeRuleBuilder.tsx` exists. |
+| **Manager Time Approval (Calendar View)** | ✅ Built | `src/pages/wfm/ManagerApprovals.tsx` exists. |
+| **Absence Accrual Engine** | ✅ Built | `src/pages/hr/absence/AbsencePlanSetup.tsx` and `src/pages/wfm/AccrualTesting.tsx` exist. |
+| **FMLA / Leave of Absence Workflow** | ✅ Built | `src/pages/wfm/FmlaWorkbench.tsx` exists. |
+| **Shift Bidding** | ✅ Built | `src/pages/wfm/ShiftBiddingBoard.tsx` exists. |
+| **Time Card Audit Report** | ✅ Built | `src/pages/wfm/TimeCardAudit.tsx` exists. |
+
+---
+
+## Module 21 — Recruitment (Taleo / ORC)
+**Oracle Equivalent:** Oracle Recruiting Cloud (ORC) / Taleo
+
+### NexusAI Pages Currently Existing
+- ✅ `recruitment/` sub-directory — **13 pages**
+- ✅ [RecruitmentManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RecruitmentManagement.tsx) (6.6KB)
+- ✅ [RecruitmentConfiguration.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/RecruitmentConfiguration.tsx) (9.5KB) — Significant config page
+- ✅ `recruiting/` sub-directory — 2 pages
+- ✅ Schema: [talent_recruitment.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_recruitment.ts) (9.1KB — Requisitions, Candidates, Offers, Interviews)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Career Site Builder** | ✅ Built | `src/pages/recruiting/CareerSiteBuilder.tsx` exists. |
+| **Interview Scoring Rubrics** | ✅ Built | `src/pages/recruitment/InterviewScoringRubric.tsx` — per-competency scoring grid (1–5 scale), automated consensus panel, overall recommendation with score aggregation. |
+| **Offer Letter Generator (PDF)** | ✅ Built | `src/pages/hr/OfferLetterTemplateBuilder.tsx` exists. |
+| **AI Resume Parsing** | ✅ Built | `src/pages/recruitment/CandidateMatchingView.tsx` exists. |
+| **Job Posting (External Boards)** | ⚠️ Partial | Posting concept exists. Missing: Direct integration with LinkedIn, Indeed, Glassdoor via standardized job feed. |
+| **Candidate Merge / Duplicate Detection** | ✅ Built | `src/pages/recruiting/CandidateMerge.tsx` exists. |
+| **Requisition Approval Rules** | ✅ Built | `src/pages/recruitment/RequisitionApprovalRules.tsx` — AME-style conditional routing engine. Conditions: salary band, headcount, worker type, business unit. |
+| **Onboarding Checklist Assignment** | ✅ Built | `src/pages/recruitment/OnboardingChecklistManager.tsx` — template-driven IT/Legal/Facilities/HR task auto-assignment triggered on offer acceptance. |
+
+---
+
+## Module 22 — Performance Management
+**Oracle Equivalent:** Oracle Performance Management Cloud
+
+### NexusAI Pages Currently Existing
+- ✅ [PerformanceManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PerformanceManagement.tsx) (5KB)
+- ✅ [PerformanceReviews.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PerformanceReviews.tsx) (4.7KB)
+- ✅ [PerformanceConfiguration.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/PerformanceConfiguration.tsx) (3.1KB)
+- ✅ Schema: [talent_performance.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_performance.ts) — Goals, Documents, Feedback
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Performance Document Template Builder** | ✅ Built | `src/pages/hr/PerformanceTemplateBuilder.tsx` exists. |
+| **Goal Cascading Engine** | ✅ Built | `src/pages/hr/talent/GoalCascadeTree.tsx` exists. |
+| **Calibration Session UI** | ✅ Built | `src/pages/hr/performance/PerformanceCalibrationBoard.tsx` exists. |
+| **Document Routing State Machine** | ✅ Built | `src/pages/hr/performance/DocumentRoutingConfig.tsx` — see above. |
+| **360-Degree Feedback Request** | ✅ Built | `src/pages/hr/performance/FeedbackCenter360.tsx` — anonymous invite → deadline tracking → aggregated results with manager-controlled reveal gate. |
+| **Performance Rating Integration → Compensation** | ✅ Built | `src/pages/hr/performance/PerformanceToCompIntegration.tsx` — sync UI mapping ratings to merit guideline segments. |
+
+---
+
+## Module 23 — Learning Management (Oracle Learning Cloud)
+**Oracle Equivalent:** Oracle Learning Cloud
+
+### NexusAI Pages Currently Existing
+- ✅ `learning/` sub-directory — **10 pages**
+- ✅ [Certification.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/Certification.tsx) (5KB) / [CourseManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CourseManagement.tsx)
+- ✅ Schema: [talent_learning.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_learning.ts) (9.9KB) — Courses, Offerings, Enrollments, Content, Completions
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **SCORM Player (In-App Launch)** | ✅ Built | `src/pages/learning/CoursePlayer.tsx` exists. |
+| **Instructor-Led Training (ILT) Scheduling** | ✅ Built | `src/pages/hr/learning/instructor/InstructorDashboard.tsx` exists. |
+| **Compliance Renewal Cron** | ✅ Built | `src/pages/hr/learning/ComplianceRenewalMonitor.tsx` exists. |
+| **Learning Path (Curricula)** | ✅ Built | `src/pages/learning/LearningPathBuilder.tsx` exists. |
+| **External Training Credit (CPE)** | ✅ Built | `src/pages/learning/ExternalTrainingCredit.tsx` — submit certificate, track compliance hours. |
+| **Skill Profile Integration** | ✅ Built | `src/pages/learning/LearningSkillIntegration.tsx` — course-to-competency mapping engine. |
+| **Learning Recommendations (AI)** | ✅ Built | `src/pages/learning/LearningRecommendations.tsx` — role-fit scoring, skill gap detection, career-path suggestions. |
+
+---
+
+## Module 24 — Succession Planning
+**Oracle Equivalent:** Oracle Succession Management
+
+### NexusAI Pages Currently Existing
+- ✅ [SuccessionPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SuccessionPlanning.tsx) (**33KB** — most comprehensive in talent suite)
+- ✅ Schema: [talent_succession.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/talent_succession.ts) — Plans, Pools, Readiness Assessments
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **9-Box Interactive Grid (Performance vs. Potential)** | ✅ Built | `src/pages/hr/NineBoxGrid.tsx` exists. |
+| **Succession Org Chart Overlay** | ✅ Built | `src/pages/hr/talent/SuccessionOrgChart.tsx` — org tree with successor readiness overlays and critical-gap alerts. |
+| **Talent Pool Management** | ✅ Good — [SuccessionPlanning.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/SuccessionPlanning.tsx) is comprehensive |
+| **Readiness Assessment Form** | ✅ Schema supports it; UI is partial |
+| **Risk of Loss Score** | ✅ Built | `src/pages/hr/talent/RiskOfLossScoreboard.tsx` — predictive flight risk × impact matrix. |
+| **Succession Plan Notification** | ✅ Built | `src/pages/hr/talent/SuccessionNotification.tsx` — policy config + per-successor notify/revoke panel. |
+
+---
+
+## Module 25 — Compensation & Benefits
+**Oracle Equivalent:** Oracle Compensation + Oracle Benefits
+
+### NexusAI Pages Currently Existing
+- ✅ [CompensationManagement.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/CompensationManagement.tsx) (4.5KB)
+- ✅ `rewards/` sub-directory — 5 pages
+- ✅ Schema: [rewards_compensation.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/rewards_compensation.ts), [rewards_benefits.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/rewards_benefits.ts)
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Workforce Compensation Workbench (Merit Budget)** | ✅ Built | `src/pages/hr/compensation/WorkforceCompensationWorkbench.tsx` exists. |
+| **Compensation Plan Definition (Eligibility Profiles)** | ✅ Built | `src/pages/hr/compensation/CompEligibilityProfiles.tsx` — rules engine (FTE, tenure, grade, workerType conditions), plan linkage, active employee count. Schema: `hrmEligibilityProfiles`, `hrmEligibilityPlanLinks` in `rewards_compensation.ts`. |
+| **Benefits Open Enrollment Shopping Wizard** | ✅ Built | `src/pages/hr/selfservice/BenefitsEnrollment.tsx` exists (25KB). *(Note: path was previously incorrectly documented as `hr/benefits/`)* |
+| **Life Event Processing** | ✅ Built | `src/pages/hr/selfservice/LifeEvents.tsx` exists. |
+| **Salary Ranges / Grade Hierarchy** | ✅ Built | `src/pages/hr/compensation/SalaryRangeCompaRatio.tsx` — grade-to-band table (min/mid/max), per-employee CompaRatio with traffic-light coding. Schema: `minSalary/midSalary/maxSalary` added to `hrGrades` in `hr_structures.ts`. |
+| **Stock / Equity Awards** | ✅ Built | `src/pages/hr/compensation/EquityAwardsManager.tsx` exists. |
+| **Total Compensation Statement** | ✅ Built | `src/pages/hr/compensation/TotalCompensationStatement.tsx` exists. |
+
+---
+
+## Module 26 — Workforce Structures (Org Design)
+**Oracle Equivalent:** Oracle Global HR — Workforce Structures
+
+### NexusAI Pages Currently Existing
+- ✅ [OrgChart.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/OrgChart.tsx)
+- ✅ [EmployeeDirectory.tsx](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/src/pages/EmployeeDirectory.tsx)
+- ✅ Schema: [hr_structures.ts](file:///Users/mbjunaid/My%20Projects/nexusai-erp-2/shared/schema/hr_structures.ts) — Department, Location, Job, Position, Grade
+
+### Oracle Pages/Forms NexusAI is Missing or Partial
+| Oracle Form | NexusAI Status | Gap Description |
+|---|---|---|
+| **Geography Hierarchy** | ✅ Built | `src/pages/hr/WorkforceStructureSetup.tsx` exists. |
+| **Job Families & Job Profiles** | ✅ Built | `src/pages/hr/orgdesign/JobFamiliesProfiles.tsx` — Family CRUD (code, name), Job Profile with required competency linkage and proficiency levels. Schema: `hrJobFamilies`, `hrJobProfiles` added to `hr_structures.ts`. |
+| **Grade Ladders (Pay Progression)** | ✅ Built | `src/pages/hr/orgdesign/GradeLadderSetup.tsx` exists. |
+| **Establishment Reporting** | ✅ Built | `src/pages/hr/orgdesign/EeoEstablishmentReporting.tsx` exists. |
+| **Tree Versioning (Org Chart History)** | ✅ Built | `src/pages/hr/orgdesign/TreeVersioning.tsx` — version table with restore and diff tracking. |

@@ -51,6 +51,7 @@ export const treasuryDeals = pgTable("treasury_deals", {
     valuationMethod: varchar("valuation_method", { length: 20 }).default("AMORTIZED_COST"),
 
     legalEntityId: varchar("legal_entity_id"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     ledgerId: varchar("ledger_id"),
 
     description: text("description"),
@@ -120,6 +121,8 @@ export const treasuryFxDeals = pgTable("treasury_fx_deals", {
     markToMarket: numeric("mark_to_market", { precision: 20, scale: 2 }).default("0"),
     lastRevaluationDate: timestamp("last_revaluation_date"),
 
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+
     notes: text("notes"),
 
     createdAt: timestamp("created_at").default(sql`now()`),
@@ -174,6 +177,8 @@ export const treasuryCashForecasts = pgTable("treasury_cash_forecasts", {
 
     sourceId: varchar("source_id"), // Link to Invoice ID or Deal ID
 
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+
     generatedAt: timestamp("generated_at").default(sql`now()`),
 });
 
@@ -193,6 +198,7 @@ export const treasuryInternalAccounts = pgTable("treasury_internal_accounts", {
     balance: numeric("balance", { precision: 20, scale: 2 }).default("0"),
     status: varchar("status", { length: 20 }).default("ACTIVE"),
     linkedGlAccount: varchar("linked_gl_account", { length: 50 }),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
 

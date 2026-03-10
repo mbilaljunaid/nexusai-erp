@@ -2,7 +2,7 @@
 import { db } from "../db";
 import { arInvoices, arCustomerAccounts, arCustomers } from "@shared/schema";
 import { eq, and, isNotNull, desc } from "drizzle-orm";
-import { openai } from "./ai";
+import { callAISimple, getCapabilityPrompt } from "./nexus-ai-gateway";
 
 interface AiPrediction {
     invoiceId: string;
@@ -129,16 +129,18 @@ export class ArAiService {
             4. Do not use placeholders; use the data provided.
             `;
 
-            const response = await openai.chat.completions.create({
-                model: "gpt-4o",
-                messages: [
-                    { role: "system", content: "You are an expert accounts receivable and collections assistant." },
-                    { role: "user", content: prompt }
-                ],
-                temperature: 0.7
-            });
+            const systemPrompt = await getCapabilityPrompt(
+                "AR Collection Officer",
+                "You are an expert accounts receivable and collections assistant."
+            );
 
-            return response.choices[0].message.content || "Failed to generate email content.";
+            const emailContent = await callAISimple(
+                prompt,
+                systemPrompt,
+                { temperature: 0.7 }
+            );
+
+            return emailContent || "Failed to generate email content.";
         } catch (error) {
             console.error("[AR-AI] Email Generation Failed:", error);
             // Fallback

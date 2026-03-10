@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
+import { Pool } from "pg";
 import * as schema from "../shared/schema";
 
 // Initialize database connection
@@ -10,7 +10,7 @@ if (!databaseUrl) {
 }
 
 // Use pg.Pool for connection pooling and standard TCP connection
-const pool = new pg.Pool({
+const pool = new Pool({
   connectionString: databaseUrl,
   max: 10, // Default pool size
 });

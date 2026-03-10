@@ -1,16 +1,21 @@
 // Accounts Payable (AP) API Routes
 import express from "express";
 import { apService } from "../services/ap";
+import { ApMatchingService } from "../services/apMatching";
+import { ApTaxService } from "../services/apTax";
 import { storage } from "../storage";
 import { db } from "../db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import {
+    apSuppliers, apInvoices,
     insertApSupplierSchema, insertApInvoiceSchema, insertApPaymentSchema,
     insertApInvoiceLineSchema, insertApPaymentBatchSchema,
-    slaJournalHeaders, slaJournalLines
+    slaJournalHeaders, slaJournalLines,
+    apWhtGroups, apWhtRates, insertApWhtGroupSchema, insertApWhtRateSchema, apSupplierSites
 } from "@shared/schema";
 import { z } from "zod";
 import multer from "multer";
+import { uploadInvoiceAttachment } from "../middleware/uploadMiddleware";
 import { aiService } from "../services/ai";
 import { treasuryService } from "../services/TreasuryService";
 
@@ -48,6 +53,45 @@ apRouter.post("/system-parameters", async (req, res) => {
     }
 });
 
+// --- Payment Terms ---
+apRouter.get("/payment-terms", async (_req, res) => {
+    try {
+        const terms = await storage.listApPaymentTerms();
+        res.json(terms);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.get("/payment-terms/:id", async (req, res) => {
+    try {
+        const term = await storage.getApPaymentTerm(req.params.id);
+        if (!term) return res.status(404).json({ error: "Payment term not found" });
+        res.json(term);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/payment-terms", async (req, res) => {
+    try {
+        const term = await storage.createApPaymentTerm(req.body);
+        res.status(201).json(term);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+apRouter.put("/payment-terms/:id", async (req, res) => {
+    try {
+        const term = await storage.updateApPaymentTerm(req.params.id, req.body);
+        if (!term) return res.status(404).json({ error: "Payment term not found" });
+        res.json(term);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
 // --- Distribution Sets ---
 apRouter.get("/distribution-sets", async (_req, res) => {
     const sets = await apService.getDistributionSets();
@@ -65,8 +109,15 @@ apRouter.post("/distribution-sets", async (req, res) => {
 
 // Schema for the compound payload
 const createInvoiceSchema = z.object({
-    header: insertApInvoiceSchema,
-    lines: z.array(insertApInvoiceLineSchema),
+    header: insertApInvoiceSchema.omit({ invoiceDate: true, dueDate: true, transactionDate: true, termsDate: true }).extend({
+        invoiceDate: z.coerce.date(),
+        dueDate: z.coerce.date().optional(),
+        transactionDate: z.coerce.date().optional(),
+        termsDate: z.coerce.date().optional()
+    }),
+    lines: z.array(insertApInvoiceLineSchema.omit({ invoiceId: true }).extend({
+        invoiceId: z.string().optional()
+    })),
 });
 
 // Seed demo data
@@ -82,7 +133,23 @@ apRouter.post("/seed", async (req, res) => {
 
 // Supplier CRUD
 apRouter.get("/suppliers", async (req, res) => {
-    const list = await storage.listApSuppliers();
+    const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+    const buCondition = entBusinessUnitId
+        ? eq(apInvoices.entBusinessUnitId, entBusinessUnitId)
+        : undefined;
+
+    const list = await db.select({
+        ...apSuppliers,
+        totalBalance: sql<number>`COALESCE(SUM(CASE WHEN ${apInvoices.paymentStatus} = 'UNPAID' THEN ${apInvoices.invoiceAmount} ELSE 0 END), 0)`
+    })
+        .from(apSuppliers)
+        .leftJoin(apInvoices, and(
+            eq(apInvoices.supplierId, apSuppliers.id),
+            ...(buCondition ? [buCondition] : [])
+        ))
+        .groupBy(apSuppliers.id)
+        .orderBy(apSuppliers.createdAt);
+
     res.json(list);
 });
 
@@ -92,10 +159,35 @@ apRouter.get("/suppliers/:id", async (req, res) => {
     res.json(sup);
 });
 
+// Supplier Sites
+apRouter.get("/suppliers/:id/sites", async (req, res) => {
+    try {
+        const sites = await db.select().from(apSupplierSites).where(eq(apSupplierSites.supplierId, req.params.id));
+        res.json(sites);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 apRouter.post("/suppliers", async (req, res) => {
     const parse = insertApSupplierSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);
     const created = await storage.createApSupplier(parse.data as any);
+
+    // Optionally create a default payment site with banking details
+    const { siteName, address, iban, swiftCode } = req.body;
+    if (iban || swiftCode || siteName || address) {
+        await db.insert(apSupplierSites).values({
+            supplierId: (created as any).id,
+            siteName: siteName || "HEADQUARTERS",
+            address: address || null,
+            iban: iban || null,
+            swiftCode: swiftCode || null,
+            isPaySite: true,
+            isPurchasingSite: true
+        });
+    }
+
     res.status(201).json(created);
 });
 
@@ -124,12 +216,29 @@ apRouter.post("/suppliers/:id/hold", async (req, res) => {
 // Invoice CRUD
 apRouter.get("/invoices", async (req, res) => {
     try {
-        const { limit, offset } = req.query;
-        const list = await apService.listInvoices(
-            limit ? Number(limit) : undefined,
-            offset ? Number(offset) : undefined
-        );
-        const total = await apService.getInvoicesCount();
+        const { limit, offset, status, validationStatus, invoiceNumber, supplierId, businessUnitId, fromDate, toDate } = req.query;
+
+        const filters: Record<string, any> = {};
+        if (invoiceNumber) filters.invoiceNumber = invoiceNumber;
+        if (supplierId) filters.supplierId = supplierId;
+        if (businessUnitId) filters.businessUnitId = businessUnitId;
+        if (fromDate) filters.fromDate = fromDate;
+        if (toDate) filters.toDate = toDate;
+
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+
+        const tenantId = (req as any).tenantId || (req.user as any)?.tenantId || "default";
+
+        const list = await storage.listApInvoices({ // Updated to use storage direct call with options
+            limit: limit ? Number(limit) : undefined,
+            offset: offset ? Number(offset) : undefined,
+            status: status as string | undefined,
+            validationStatus: validationStatus as string | undefined,
+            tenantId,
+            entBusinessUnitId: entBusinessUnitId,
+            filters
+        });
+        const total = await storage.getApInvoicesCount(entBusinessUnitId, tenantId); // Count could be updated to apply filters later if needed
         res.json({ data: list, total });
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -150,7 +259,8 @@ apRouter.post("/invoices", async (req, res) => {
     if (!parse.success) return res.status(400).json(parse.error);
 
     try {
-        const created = await apService.createInvoice(parse.data);
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const created = await apService.createInvoice({ ...parse.data, entBusinessUnitId });
         res.status(201).json(created);
     } catch (e) {
         res.status(500).json({ error: e instanceof Error ? e.message : "Unknown error" });
@@ -167,7 +277,7 @@ apRouter.put("/invoices/:id", async (req, res) => {
 
 apRouter.post("/invoices/:id/validate", async (req, res) => {
     try {
-        const result = await apService.validateInvoice(parseInt(req.params.id));
+        const result = await apService.validateInvoice(req.params.id);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -176,8 +286,40 @@ apRouter.post("/invoices/:id/validate", async (req, res) => {
 
 apRouter.post("/invoices/:id/match", async (req, res) => {
     try {
-        const result = await apService.matchInvoiceToPO(parseInt(req.params.id), req.body);
-        res.json(result);
+        const { lineMatches } = req.body; // Expect array of { invoiceLineId, poLineId }
+
+        if (!lineMatches || !Array.isArray(lineMatches)) {
+            return res.status(400).json({ error: "No lineMatches provided." });
+        }
+
+        const results = [];
+        for (const match of lineMatches) {
+            const result = await ApMatchingService.matchInvoiceLine(match.invoiceLineId, match.poLineId);
+            results.push(result);
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(400).json({ error: e.message });
+    }
+});
+
+// Calculate and generate Tax Distributions for an Invoice
+apRouter.post("/invoices/:id/calculate-tax", async (req, res) => {
+    try {
+        const { invoiceLineIds } = req.body;
+
+        if (!invoiceLineIds || !Array.isArray(invoiceLineIds)) {
+            return res.status(400).json({ error: "No invoiceLineIds provided." });
+        }
+
+        const results = [];
+        for (const lineId of invoiceLineIds) {
+            const result = await ApTaxService.calculateAndDistributeTax(req.params.id, lineId);
+            results.push(result);
+        }
+
+        res.json(results);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
     }
@@ -185,15 +327,37 @@ apRouter.post("/invoices/:id/match", async (req, res) => {
 
 apRouter.get("/invoices/:id/holds", async (req, res) => {
     try {
-        const holds = await apService.getInvoiceHolds(parseInt(req.params.id));
+        const holds = await apService.getInvoiceHolds(req.params.id);
         res.json(holds);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
     }
 });
 
+apRouter.post("/invoices/:id/attachment", uploadInvoiceAttachment, async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const fileUrl = `/uploads/ap_invoices/${req.file.filename}`;
+
+        // Update invoice record with drizzle
+        const [updated] = await db.update(apInvoices)
+            .set({ documentUrl: fileUrl })
+            .where(eq(apInvoices.id, req.params.id as any))
+            .returning();
+
+        if (!updated) return res.status(404).json({ error: "Invoice not found" });
+
+        res.json({ documentUrl: fileUrl, invoice: updated });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 apRouter.post("/invoices/:id/accounting", async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     try {
         const journal = await apService.generateAccounting(id);
         res.json(journal);
@@ -227,7 +391,7 @@ apRouter.get("/invoices/:id/accounting", async (req, res) => {
 
 apRouter.post("/holds/:id/release", async (req, res) => {
     try {
-        const hold = await apService.releaseHold(parseInt(req.params.id), req.body.releaseCode);
+        const hold = await apService.releaseHold(req.params.id as string, req.body.releaseCode);
         res.json(hold);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -243,15 +407,18 @@ apRouter.delete("/invoices/:id", async (req, res) => {
 apRouter.post("/payments/apply", async (req, res) => {
     const parse = insertApPaymentSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);
-    const payment = await apService.applyPayment(req.body.invoiceId, parse.data as any);
+    const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+    const paymentData = { ...parse.data, ...(entBusinessUnitId ? { entBusinessUnitId } : {}) } as any;
+    const payment = await apService.applyPayment(req.body.invoiceId, paymentData);
     if (!payment) return res.status(404).json({ error: "Invoice not found for payment" });
     res.status(201).json(payment);
 });
 
 // --- PPR (Payment Process Request) Routes ---
 
-apRouter.get("/payment-batches", async (_req, res) => {
-    const list = await apService.listPaymentBatches();
+apRouter.get("/payment-batches", async (req, res) => {
+    const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+    const list = await apService.listPaymentBatches(entBusinessUnitId);
     res.json(list);
 });
 
@@ -259,7 +426,8 @@ apRouter.post("/payment-batches", async (req, res) => {
     const parse = insertApPaymentBatchSchema.safeParse(req.body);
     if (!parse.success) return res.status(400).json(parse.error);
     try {
-        const batch = await apService.createPaymentBatch(parse.data as any);
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const batch = await apService.createPaymentBatch({ ...parse.data as any, ...(entBusinessUnitId ? { entBusinessUnitId } : {}) });
         res.status(201).json(batch);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -268,7 +436,7 @@ apRouter.post("/payment-batches", async (req, res) => {
 
 apRouter.post("/payment-batches/:id/select", async (req, res) => {
     try {
-        const result = await apService.selectInvoicesForBatch(parseInt(req.params.id));
+        const result = await apService.selectInvoicesForBatch(req.params.id);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -277,7 +445,7 @@ apRouter.post("/payment-batches/:id/select", async (req, res) => {
 
 apRouter.post("/payment-batches/:id/confirm", async (req, res) => {
     try {
-        const result = await apService.confirmPaymentBatch(parseInt(req.params.id));
+        const result = await apService.confirmPaymentBatch(req.params.id);
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -286,7 +454,8 @@ apRouter.post("/payment-batches/:id/confirm", async (req, res) => {
 
 apRouter.get("/payment-batches/:id/payments", async (req, res) => {
     try {
-        const payments = await apService.getBatchPayments(parseInt(req.params.id));
+        const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
+        const payments = await apService.getBatchPayments(req.params.id, entBusinessUnitId);
         res.json(payments);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -295,7 +464,7 @@ apRouter.get("/payment-batches/:id/payments", async (req, res) => {
 
 apRouter.get("/payment-batches/:id/iso20022", async (req, res) => {
     try {
-        const batchId = parseInt(req.params.id);
+        const batchId = req.params.id;
         const xml = await treasuryService.generateISO20022(batchId);
 
         res.setHeader("Content-Disposition", `attachment; filename=ISO20022_BCH_${batchId}.xml`);
@@ -319,8 +488,41 @@ apRouter.get("/reports/audit-trail", async (req, res) => {
 
 apRouter.get("/reports/aging", async (_req, res) => {
     try {
-        const aging = await apService.getAgingReport();
+        const entBusinessUnitId = _req.headers["x-business-unit-id"] as string | undefined;
+        const aging = await apService.getAgingReport(entBusinessUnitId);
         res.json(aging);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.get("/reports/1099", async (_req, res) => {
+    try {
+        const entBusinessUnitId = _req.headers["x-business-unit-id"] as string | undefined;
+        const buCondition = entBusinessUnitId
+            ? eq(apInvoices.entBusinessUnitId, entBusinessUnitId)
+            : undefined;
+
+        const list = await db.select({
+            supplierId: apSuppliers.id,
+            supplierNumber: apSuppliers.supplierNumber,
+            supplierName: apSuppliers.name,
+            taxId: apSuppliers.taxId,
+            totalPaid: sql<number>`SUM(${apInvoices.invoiceAmount})`,
+            boxNumber: sql<string>`'Box 7 - Nonemployee Compensation'`
+        })
+            .from(apInvoices)
+            .innerJoin(apSuppliers, eq(apInvoices.supplierId, apSuppliers.id))
+            .where(and(
+                eq(apInvoices.paymentStatus, 'PAID'),
+                sql`${apSuppliers.taxId} IS NOT NULL`,
+                sql`${apSuppliers.taxOrganizationType} != 'Corporation'`,
+                ...(buCondition ? [buCondition] : [])
+            ))
+            .groupBy(apSuppliers.id)
+            .orderBy(sql`SUM(${apInvoices.invoiceAmount}) DESC`);
+
+        res.json(list);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
     }
@@ -350,7 +552,7 @@ apRouter.post("/periods/:id/close", async (req, res) => {
 
 apRouter.get("/invoices/:id/available-prepayments", async (req, res) => {
     try {
-        const invoiceId = parseInt(req.params.id);
+        const invoiceId = req.params.id;
         const invoice = await apService.getInvoice(req.params.id);
         if (!invoice) return res.status(404).send("Invoice not found");
 
@@ -363,7 +565,7 @@ apRouter.get("/invoices/:id/available-prepayments", async (req, res) => {
 
 apRouter.get("/invoices/:id/prepay-applications", async (req, res) => {
     try {
-        const results = await apService.getPrepayApplications(parseInt(req.params.id));
+        const results = await apService.getPrepayApplications(req.params.id);
         res.json(results);
     } catch (e: any) {
         res.status(500).json({ error: e.message });
@@ -373,7 +575,7 @@ apRouter.get("/invoices/:id/prepay-applications", async (req, res) => {
 apRouter.post("/invoices/:id/apply-prepayment", async (req, res) => {
     try {
         const { prepayId, amount } = req.body;
-        const result = await apService.applyPrepayment(parseInt(req.params.id), prepayId, amount, "system");
+        const result = await apService.applyPrepayment(req.params.id, prepayId, amount, "system");
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -382,7 +584,7 @@ apRouter.post("/invoices/:id/apply-prepayment", async (req, res) => {
 
 apRouter.delete("/prepay-applications/:id", async (req, res) => {
     try {
-        const result = await apService.unapplyPrepayment(parseInt(req.params.id), "system");
+        const result = await apService.unapplyPrepayment(req.params.id, "system");
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
@@ -404,6 +606,163 @@ apRouter.post("/payments/:id/clear", async (req, res) => {
         res.json(result);
     } catch (e: any) {
         res.status(400).json({ error: e.message });
+    }
+});
+
+// --- Bulk Operations ---
+apRouter.post("/invoices/bulk-approve", async (req, res) => {
+    try {
+        const { invoiceIds } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+
+        const results = { success: 0, failed: 0, errors: [] as any[] };
+
+        for (const invoiceId of invoiceIds) {
+            try {
+                await apService.approveInvoice(invoiceId, req.user?.id || "system");
+                results.success++;
+            } catch (error: any) {
+                results.failed++;
+                results.errors.push({ invoiceId, error: error.message });
+            }
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/bulk-reject", async (req, res) => {
+    try {
+        const { invoiceIds, reason } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+        if (!reason) {
+            return res.status(400).json({ error: "reason required" });
+        }
+
+        const results = { success: 0, failed: 0, errors: [] as any[] };
+
+        for (const invoiceId of invoiceIds) {
+            try {
+                await apService.rejectInvoice(invoiceId, reason, req.user?.id || "system");
+                results.success++;
+            } catch (error: any) {
+                results.failed++;
+                results.errors.push({ invoiceId, error: error.message });
+            }
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/bulk-export", async (req, res) => {
+    try {
+        const { invoiceIds, format = "excel" } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+
+        const invoices = await apService.getInvoicesByIds(invoiceIds);
+
+        if (format === "excel") {
+            // Mock Excel export (in production, use a library like xlsx)
+            const csvData = invoices.map(inv => ({
+                InvoiceNumber: inv.invoiceNumber,
+                Supplier: inv.supplier?.name || "",
+                Amount: inv.invoiceAmount,
+                Status: inv.invoiceStatus,
+                InvoiceDate: inv.invoiceDate,
+                DueDate: inv.dueDate
+            }));
+
+            const csv = [
+                Object.keys(csvData[0]).join(","),
+                ...csvData.map(row => Object.values(row).join(","))
+            ].join("\n");
+
+            res.setHeader("Content-Type", "text/csv");
+            res.setHeader("Content-Disposition", "attachment; filename=ap-invoices.csv");
+            res.send(csv);
+        } else {
+            res.json(invoices);
+        }
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/invoices/bulk-status-update", async (req, res) => {
+    try {
+        const { invoiceIds, status } = req.body;
+        if (!Array.isArray(invoiceIds) || invoiceIds.length === 0) {
+            return res.status(400).json({ error: "invoiceIds array required" });
+        }
+        if (!status) {
+            return res.status(400).json({ error: "status required" });
+        }
+
+        const results = { success: 0, failed: 0, errors: [] as any[] };
+
+        for (const invoiceId of invoiceIds) {
+            try {
+                await apService.updateInvoiceStatus(invoiceId, status);
+                results.success++;
+            } catch (error: any) {
+                results.failed++;
+                results.errors.push({ invoiceId, error: error.message });
+            }
+        }
+
+        res.json(results);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+
+apRouter.get("/wht-groups", async (req, res) => {
+    try {
+        const groups = await db.select().from(apWhtGroups).orderBy(apWhtGroups.groupName);
+        res.json(groups);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/wht-groups", async (req, res) => {
+    try {
+        const parse = insertApWhtGroupSchema.parse(req.body);
+        const [group] = await db.insert(apWhtGroups).values(parse).returning();
+        res.json(group);
+    } catch (e: any) {
+        res.status(400).json({ error: e.errors || e.message });
+    }
+});
+
+apRouter.get("/wht-groups/:id/rates", async (req, res) => {
+    try {
+        const rates = await db.select().from(apWhtRates).where(eq(apWhtRates.groupId, req.params.id)).orderBy(apWhtRates.priority);
+        res.json(rates);
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+apRouter.post("/wht-groups/:id/rates", async (req, res) => {
+    try {
+        const parse = insertApWhtRateSchema.parse({ ...req.body, groupId: req.params.id });
+        const [rate] = await db.insert(apWhtRates).values(parse).returning();
+        res.json(rate);
+    } catch (e: any) {
+        res.status(400).json({ error: e.errors || e.message });
     }
 });
 

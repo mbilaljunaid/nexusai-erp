@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { orderManagementService } from "../server/modules/order/OrderManagementService";
 import { dropShipService } from "../server/modules/order/DropShipService";
-import { procurementService } from "../server/modules/scm/ProcurementService";
+import { procurementService } from "../server/modules/scm/services/ProcurementService";
 import { fulfillmentService } from "../server/modules/order/FulfillmentService";
 import { reservationService } from "../server/modules/order/ReservationService";
 import { backToBackService } from "../server/modules/order/BackToBackService";
-import { manufacturingService } from "../server/services/ManufacturingService";
+// import { manufacturingService } from "../server/services/ManufacturingService";
 import { db } from "../server/db";
 import { omOrderHeaders, omOrderLines } from "../shared/schema/order_management";
 import { cstTransactions } from "../shared/schema/costing";
@@ -76,7 +76,7 @@ async function verifyCOGS() {
 
         // 4. Verify COGS Transaction
         const cogs = await db.select().from(cstTransactions)
-            .where(eq(cstTransactions.sourceId, order.id))
+            .where(eq((cstTransactions as any).sourceId, order.id))
             .execute();
 
         if (cogs.length === 0) throw new Error("No COGS transaction found.");
@@ -104,13 +104,16 @@ async function verifyBackToBack() {
         const result = await backToBackService.generateWorkOrders(order.id);
         if (!result.success) throw new Error(`WO Generation Failed: ${result.message}`);
 
-        console.log(`   Work Orders Generated: ${result.workOrders.length}`);
+        console.log(`   Work Orders Generated: ${result.workOrders?.length ?? 0}`);
 
         // 3. Verify WO in DB
         // listWorkOrders in ManufacturingService has a subquery that fails if inventory missing.
         // We verify directly against DB to confirm creation success.
 
         const { productionOrders } = await import("../shared/schema");
+        if (!result.workOrders || result.workOrders.length === 0) {
+            throw new Error("No work orders generated");
+        }
         const wos = await db.select().from(productionOrders)
             .where(eq(productionOrders.orderNumber, result.workOrders[0].orderNumber));
 

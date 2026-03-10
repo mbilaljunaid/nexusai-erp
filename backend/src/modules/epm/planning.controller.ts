@@ -1,0 +1,56 @@
+
+import { Controller, Get, Post, Body, Param, Query, Logger } from '@nestjs/common';
+import { EpmPlanningService } from './planning.service';
+import { DriverService } from './driver.service';
+import { WorkforceService } from './workforce.service';
+import { BudgetControlService } from './budget-control.service';
+import { EPMFoundationService } from './epm-foundation.service';
+
+@Controller('api/epm')
+export class PlanningController {
+    private readonly logger = new Logger(PlanningController.name);
+
+    constructor(
+        private readonly planningService: EpmPlanningService,
+        private readonly driverService: DriverService,
+        private readonly workforceService: WorkforceService,
+        private readonly controlService: BudgetControlService,
+        private readonly foundationService: EPMFoundationService
+    ) { }
+
+    @Get('versions')
+    async getVersions(@Query('scenario') scenarioCode: string) {
+        if (scenarioCode) {
+            return this.foundationService.getVersions(scenarioCode);
+        }
+        return this.foundationService.getScenarios();
+    }
+
+    @Get('plan-units')
+    async getPlanUnits(
+        @Query('versionId') versionId: string,
+        @Query('entity') entityId?: string
+    ) {
+        return this.planningService.getPlanUnits(versionId, entityId);
+    }
+
+    @Post('calculate/driver')
+    async applyDriver(
+        @Body() body: { versionId: string, driverName: string, value: number }
+    ) {
+        this.logger.log(`Received Driver Apply Request: ${JSON.stringify(body)}`);
+        return this.planningService.applyDriver(body.versionId, body.driverName, body.value);
+    }
+
+    @Post('calculate/wfp')
+    async runWorkforcePlanning(
+        @Body() body: { versionId: string, scenarioId: string }
+    ) {
+        return this.workforceService.runCalculation(body.versionId, body.scenarioId);
+    }
+
+    @Post('publish')
+    async publishBudget(@Body() body: { versionId: string }) {
+        return this.controlService.publishToGL(body.versionId);
+    }
+}

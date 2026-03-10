@@ -138,6 +138,48 @@ export class SubscriptionService {
         });
     }
 
+    // List All Subscriptions with Pagination and Filters
+    async getAllSubscriptions(options?: {
+        status?: string;
+        customerId?: string;
+        limit?: number;
+        offset?: number;
+    }) {
+        const { status, customerId, limit = 50, offset = 0 } = options || {};
+
+        let query = db.query.subscriptionContracts.findMany({
+            with: {
+                products: true,
+                actions: {
+                    orderBy: [desc(subscriptionActions.actionDate)],
+                    limit: 5
+                }
+            },
+            limit,
+            offset,
+            orderBy: [desc(subscriptionContracts.createdAt)]
+        });
+
+        // Note: Drizzle query builder approach - for complex filters we'd use select() + where()
+        // For MVP, returning all and filtering in memory if needed
+        const allSubs = await query;
+
+        let filtered = allSubs;
+        if (status) {
+            filtered = filtered.filter(s => s.status === status);
+        }
+        if (customerId) {
+            filtered = filtered.filter(s => s.customerId === customerId);
+        }
+
+        return {
+            data: filtered,
+            total: filtered.length,
+            limit,
+            offset
+        };
+    }
+
     // Integration: Generate Billing Events from Active Subscriptions
     // (This would be called by a scheduler)
     async generateBillingEvents(targetDate: Date = new Date()) {

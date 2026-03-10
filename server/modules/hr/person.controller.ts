@@ -8,7 +8,8 @@ async function searchPersons(req: Request, res: Response) {
         const page = req.query.page ? parseInt(req.query.page as string) : 1;
         const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
 
-        const result = await PersonService.searchPersons(tenantId, query, page, limit);
+        const userId = (req as any).user?.id;
+        const result = await PersonService.searchPersons(tenantId, query, page, limit, userId);
         res.json(result);
     } catch (error: any) {
         console.error("Error searching persons:", error);
@@ -21,7 +22,8 @@ async function getPersonProfile(req: Request, res: Response) {
         const tenantId = (req as any).user?.tenantId || "default";
         const personId = req.params.id;
 
-        const profile = await PersonService.getPersonProfile(personId, tenantId);
+        const userId = (req as any).user?.id;
+        const profile = await PersonService.getPersonProfile(personId, tenantId, userId);
         if (!profile) {
             return res.status(404).json({ message: "Person not found" });
         }
@@ -97,8 +99,9 @@ async function getRecentTransactions(req: Request, res: Response) {
     try {
         const tenantId = (req as any).user?.tenantId || "default";
         const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+        const userId = (req as any).user?.id;
 
-        const transactions = await PersonService.getRecentTransactions(tenantId, limit);
+        const transactions = await PersonService.getRecentTransactions(tenantId, limit, userId);
         res.json(transactions);
     } catch (error: any) {
         console.error("Error fetching transactions:", error);

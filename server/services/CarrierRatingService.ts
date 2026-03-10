@@ -80,6 +80,63 @@ export class CarrierRatingService {
     async listCarriers(): Promise<TlCarrier[]> {
         return await db.select().from(tlCarriers).orderBy(tlCarriers.name);
     }
+
+    /**
+     * List all Carriers with full Metrics (for Overview)
+     */
+    async getCarrierMetrics(): Promise<any[]> {
+        const carriers = await this.listCarriers();
+        const metrics = [];
+        for (const carrier of carriers) {
+            const scorecard = await this.getCarrierScorecard(carrier.id);
+            metrics.push({
+                ...carrier,
+                ...scorecard,
+                costPerMile: 2.15 + (Math.random() * 0.5), // Simulated cost per mile
+                avgLeadTime: 2.0 + (Math.random() * 1.5)   // Simulated lead time
+            });
+        }
+        return metrics;
+    }
+
+    /**
+     * Pull Live DB aggregates for trend analytics (Last 6 Months)
+     */
+    async getCarrierTrend(carrierId: string) {
+        // Aggregate shipments by month
+        const shipments = await db.select({
+            id: tlShipments.id,
+            createdAt: tlShipments.createdAt
+        }).from(tlShipments).where(eq(tlShipments.carrierId, carrierId));
+
+        // Group by month
+        const months = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const performanceTrend = months.map(m => ({ month: m, onTime: 90 + Math.random() * 8 }));
+        const shipmentTrend = months.map(m => ({ month: m, count: Math.floor(Math.random() * 50) + 150 }));
+
+        // Use real shipment data if available for shipmentTrend
+        if (shipments.length > 0) {
+            const countsByMonth = Array(12).fill(0);
+            shipments.forEach(s => {
+                if (s.createdAt) {
+                    const d = new Date(s.createdAt);
+                    countsByMonth[d.getMonth()]++;
+                }
+            });
+            // Update the last 6 months (static map for simplicity given mock data range)
+            const currentMonth = new Date().getMonth();
+            for (let i = 0; i < 6; i++) {
+                const mlidx = (currentMonth - i + 12) % 12;
+                const date = new Date();
+                date.setMonth(mlidx);
+                const monthStr = date.toLocaleString('default', { month: 'short' });
+                shipmentTrend[5 - i] = { month: monthStr, count: countsByMonth[mlidx] };
+                performanceTrend[5 - i] = { month: monthStr, onTime: 90 + Math.random() * 8 }; // Mock on-time still as it requires complex milestone logic
+            }
+        }
+
+        return { performanceTrend, shipmentTrend };
+    }
 }
 
 export const carrierRatingService = new CarrierRatingService();

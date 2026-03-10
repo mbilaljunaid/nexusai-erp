@@ -12,7 +12,9 @@ export const maintServiceRequests = pgTable("maint_service_requests", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
     requestNumber: varchar("request_number", { length: 50 }).notNull().unique(), // SR-2026-X
 
+    title: varchar("title", { length: 255 }).default(''),
     description: text("description").notNull(),
+    location: varchar("location", { length: 255 }),
     priority: varchar("priority", { length: 20 }).default("NORMAL"), // LOW, NORMAL, HIGH, CRITICAL
     status: varchar("status", { length: 20 }).default("NEW"), // NEW, IN_REVIEW, CONVERTED, REJECTED, CLOSED
 

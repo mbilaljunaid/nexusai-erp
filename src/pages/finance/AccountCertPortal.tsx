@@ -1,0 +1,211 @@
+import { cn } from "@/lib/utils";
+import React, { useState, useEffect } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { CheckCircle, Clock, AlertTriangle, XCircle, FileText, ChevronUp, ChevronDown } from 'lucide-react';
+import { StandardPage } from '@/components/layout/StandardPage';
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatNumber } from '@/lib/formatters';
+import { Button } from "@/components/ui/button";
+
+interface Certification {
+    id: string;
+    account_id: string;
+    period_name: string;
+    status: 'Pending' | 'In-Review' | 'Certified' | 'Escalated' | 'Rejected';
+    balance_per_gl: number;
+    balance_per_sub: number;
+    variance: number;
+    preparer_email: string;
+    reviewer_email: string;
+    certified_at: string | null;
+    escalation_reason: string | null;
+}
+
+interface Summary { status: string; count: number; total_variance: number; }
+
+const STATUS_CONFIG: Record<string, { className: string; border: string; text: string; icon: any }> = {
+    'Pending': { className: 'bg-muted text-muted-foreground', border: 'border-gray-500', text: 'text-muted-foreground', icon: Clock },
+    'In-Review': { className: 'bg-amber-100 text-amber-600', border: 'border-amber-600', text: 'text-amber-600', icon: Clock },
+    'Certified': { className: 'bg-emerald-100 text-emerald-600', border: 'border-emerald-600', text: 'text-emerald-600', icon: CheckCircle },
+    'Escalated': { className: 'bg-red-100 text-red-600', border: 'border-red-600', text: 'text-red-600', icon: AlertTriangle },
+    'Rejected': { className: 'bg-purple-100 text-purple-600', border: 'border-purple-600', text: 'text-purple-600', icon: XCircle },
+};
+
+async function fetchCerts(period: string): Promise<Certification[]> {
+    const res = await fetch(`/api/finance/account-certs?period=${period}`);
+    if (!res.ok) throw new Error('Failed to load certifications');
+    return res.json();
+}
+
+async function fetchSummary(period: string): Promise<Summary[]> {
+    const res = await fetch(`/api/finance/account-certs/summary?period=${period}`);
+    if (!res.ok) throw new Error('Failed to load summary');
+    return res.json();
+}
+
+export default function AccountCertPortal() {
+    const [period, setPeriod] = useState(() => {
+        const now = new Date();
+        const mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now.getMonth()];
+        return `${mon}-${now.getFullYear()}`;
+    });
+    const [sortField, setSortField] = useState<'variance' | 'status'>('variance');
+    const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+    const [actionTarget, setActionTarget] = useState<string | null>(null);
+
+    const qc = useQueryClient();
+    const { data: certs = [], isLoading } = useQuery<any>({
+        queryKey: ['account-certs', period],
+        queryFn: () => fetchCerts(period),
+    });
+    const { data: summary = [] } = useQuery<any>({
+        queryKey: ['account-certs-summary', period],
+        queryFn: () => fetchSummary(period),
+    });
+
+    const certifyMutation = useMutation({
+        mutationFn: (certId: string) =>
+            fetch(`/api/finance/account-certs/${certId}/certify`, { method: 'POST' }).then(r => r.json()),
+        onSuccess: () => qc.invalidateQueries({ queryKey: ['account-certs'] }),
+    });
+
+    const sorted = [...certs].sort((a, b) => {
+        const v = sortField === 'variance'
+            ? Math.abs(b.variance) - Math.abs(a.variance)
+            : a.status.localeCompare(b.status);
+        return sortDir === 'desc' ? v : -v;
+    });
+
+    const totalVariance = certs.reduce((sum, c) => sum + Math.abs(c.variance), 0);
+    const certifiedPct = certs.length ? Math.round(certs.filter(c => c.status === 'Certified').length / certs.length * 100) : 0;
+
+    const certColumns: SpreadsheetColumn<Certification>[] = [
+        { id: "account_id", header: "Account", width: "120px", cell: (row) => <div className="account-code">{row.account_id}</div> },
+        { id: "status", header: "Status", width: "150px", cell: (row) => { const cfg = STATUS_CONFIG[row.status]; const Icon = cfg.icon; return <span className={cn(`status-badge ${cfg.className}`)}><Icon size={12} /> {row.status}</span>; } },
+        { id: "variance", header: <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => { setSortField('variance'); setSortDir(d => d === 'asc' ? 'desc' : 'asc'); }}>
+        <div className="sortable-col">Variance{sortField === 'variance' && (sortDir === 'desc' ? <ChevronDown className="h-3.5 w-3.5"  /> : <ChevronUp className="h-3.5 w-3.5"  />)}</div>
+        </Button>, width: "120px", cell: (row) => <div className={cn(`variance-cell ${Math.abs(row.variance) > 1000 ? 'high-variance' : ''}`)}>{row.variance >= 0 ? '+' : ''}{formatNumber(row.variance, 2)}</div> },
+        { id: "gl_balance", header: "GL Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_gl, 2) },
+        { id: "sub_balance", header: "Sub Balance", width: "120px", cell: (row) => formatNumber(row.balance_per_sub, 2) },
+        { id: "preparer", header: "Preparer", width: "150px", cell: (row) => <div className="email-cell">{row.preparer_email}</div> },
+        { id: "reviewer", header: "Reviewer", width: "150px", cell: (row) => <div className="email-cell">{row.reviewer_email}</div> },
+        {
+            id: "actions", header: "Actions", width: "120px", cell: (row) => <div className="actions-cell">{row.status === 'In-Review' && <Button variant="default" className="btn-certify" onClick={() => certifyMutation.mutate(row.id)} disabled={certifyMutation.isPending} aria-label={`Certify account ${row.account_id}`}>Certify</Button>}{row.escalation_reason && (
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <span className="escalation-tooltip">
+                                <AlertTriangle className="h-3.5 w-3.5"  color="#dc2626" />
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{row.escalation_reason}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            )}</div>
+        }
+    ];
+
+    return (
+        <StandardPage
+            title="Account Reconciliation Certification"
+            description="SOX sign-off portal — preparer → reviewer → certified"
+            actions={
+                <Select value={period} onValueChange={setPeriod}>
+                    <SelectTrigger className="period-select" aria-label="Select period">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
+                            <SelectItem key={m} value={`${m}-2026`}>{m}-2026</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            }
+        >
+            <div className="account-cert-portal">
+
+                {/* Summary KPIs */}
+                <div className="cert-kpis">
+                    <div className="kpi-card">
+                        <div className="kpi-value">{certifiedPct}%</div>
+                        <div className="kpi-label">Certified</div>
+                        <div className="kpi-progress">
+                            <style>{`
+                                .cert-pct-bar { width: ${certifiedPct}%; }
+                            `}</style>
+                            <div className="kpi-bar cert-pct-bar" />
+                        </div>
+                    </div>
+                    <div className="kpi-card">
+                        <div className="kpi-value">{certs.length}</div>
+                        <div className="kpi-label">Total Accounts</div>
+                    </div>
+                    <div className="kpi-card">
+                        <div className="kpi-value kpi-red">
+                            ${formatNumber(totalVariance, 0)}
+                        </div>
+                        <div className="kpi-label">Total Variance</div>
+                    </div>
+                    {summary.map(s => {
+                        const cfg = STATUS_CONFIG[s.status as keyof typeof STATUS_CONFIG];
+                        const Icon = cfg?.icon ?? Clock;
+                        return (
+                            <div key={s.status} className={cn(`kpi-status-card ${cfg?.border}`)}>
+                                <Icon size={18} className={cfg?.text} />
+                                <div className={cn(`kpi-status-count ${cfg?.text}`)}>{s.count}</div>
+                                <div className="kpi-status-label">{s.status}</div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Table */}
+                <div className="h-[600px] mt-5">
+                    <InteractiveSpreadsheet
+                        columns={certColumns}
+                        data={sorted}
+                        onChange={() => { }}
+                        containerHeight="100%"
+                    />
+                </div>
+
+                <style>{`
+                .account-cert-portal { max-width: 1400px; margin: 0 auto; font-family: 'Inter', sans-serif; }
+                .period-select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background: #fff; }
+                .cert-kpis { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+                .kpi-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 20px; min-width: 140px; }
+                .kpi-value { font-size: 28px; font-weight: 800; color: #111827; }
+                .kpi-value.kpi-red { color: #dc2626; }
+                .kpi-label { font-size: 12px; color: #6b7280; margin-top: 4px; }
+                .kpi-progress { height: 4px; background: #e5e7eb; border-radius: 2px; margin-top: 8px; }
+                .kpi-bar { height: 4px; background: #059669; border-radius: 2px; transition: width 0.3s; }
+                .kpi-status-card { display: flex; flex-direction: column; align-items: center; gap: 4px; background: #fff; border: 2px solid; border-radius: 12px; padding: 12px 16px; min-width: 80px; }
+                .kpi-status-count { font-size: 22px; font-weight: 700; }
+                .kpi-status-label { font-size: 11px; color: #6b7280; }
+                .cert-table-wrapper { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: auto; }
+                .cert-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+                .cert-table thead { background: #f9fafb; }
+                .cert-table th { padding: 12px 16px; text-align: left; font-weight: 600; color: #374151; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+                .sortable-col { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; }
+                .cert-row:hover { background: #f9fafb; }
+                .cert-table td { padding: 12px 16px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+                .account-code { font-family: monospace; font-weight: 600; color: #1d4ed8; }
+                .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; }
+                .variance-cell { font-family: monospace; }
+                .high-variance { color: #dc2626; font-weight: 700; }
+                .email-cell { font-size: 12px; color: #6b7280; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+                .actions-cell { display: flex; align-items: center; gap: 8px; }
+                .btn-certify { padding: 5px 14px; background: #059669; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+                .btn-certify:hover { background: #047857; }
+                .btn-certify:disabled { background: #9ca3af; cursor: not-allowed; }
+                .loading-cell, .empty-cell { text-align: center; padding: 40px; color: #9ca3af; }
+                .escalation-tooltip { cursor: help; }
+            `}</style>
+            </div>
+        </StandardPage>
+    );
+}

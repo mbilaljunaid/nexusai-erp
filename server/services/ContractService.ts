@@ -89,21 +89,22 @@ export class ContractService {
             );
     }
 
-    async getAllContracts(accountId?: string, page = 1, limit = 50) {
+    async getAllContracts(accountId?: string, page = 1, limit = 50, entBusinessUnitId?: string) {
         const offset = (page - 1) * limit;
 
-        let query = db.select().from(procurementContracts);
+        const conditions = [];
+        if (entBusinessUnitId) conditions.push(eq(procurementContracts.entBusinessUnitId, entBusinessUnitId));
 
-        // if (accountId) {
-        //     // TODO: Filter by account if column exists? Currently usage in original code was unclear unless customerId existed.
-        //     // procurementContracts is linked to supplier (supplierId). accountId might be supplierId
-        //     query = query.where(eq(procurementContracts.supplierId, parseInt(accountId)));
-        // }
+        let query = db.select().from(procurementContracts);
+        let countQuery = db.select().from(procurementContracts);
+
+        if (conditions.length > 0) {
+            query = query.where(and(...conditions)) as any;
+            countQuery = countQuery.where(and(...conditions)) as any;
+        }
 
         const data = await query.limit(limit).offset(offset);
-
-        // Get total count (simplified)
-        const all = await db.select().from(procurementContracts);
+        const all = await countQuery;
 
         return { data, total: all.length, page, limit };
     }

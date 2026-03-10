@@ -1,0 +1,32 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+
+export default function SLATracking() {
+  return (
+    <StandardPage
+      title="SLA Tracalation"
+      description="Monitor service level agreements"
+    >
+
+      <Card>
+        <CardHeader><CardTitle className="text-base">Active SLAs</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          {[
+            { tier: "Premium", response: "1 hour", resolution: "4 hours", current: "0.5h", status: "On Track" },
+            { tier: "Standard", response: "2 hours", resolution: "8 hours", current: "1.2h", status: "On Track" },
+            { tier: "Basic", response: "4 hours", resolution: "24 hours", current: "2h", status: "Warning" },
+          ].map((sla, idx) => (
+            <div key={idx} className="p-3 border rounded">
+              <p className="font-semibold">{sla.tier}</p>
+              <p className="text-sm text-muted-foreground">Response: {sla.response} • Resolution: {sla.resolution}</p>
+              <p className="text-sm mt-1">Current: {sla.current}</p>
+              <StatusBadge status={sla.status} className="mt-2" />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </StandardPage>
+  );
+}

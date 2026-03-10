@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, jsonb, integer } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 
@@ -21,5 +21,34 @@ export const hrAuditLogs = pgTable("hr_audit_logs", {
     timestamp: timestamp("timestamp").default(sql`now()`),
 });
 
+export const hrAuditApprovals = pgTable("hr_audit_approvals", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    formId: varchar("form_id").notNull(), // e.g. "PERSONAL_DATA_CHANGE"
+    recordId: varchar("record_id").notNull(), // e.g. personId
+
+    requestedBy: varchar("requested_by").notNull(),
+    requestedAt: timestamp("requested_at").default(sql`now()`),
+
+    status: varchar("status").default("pending"), // pending, approved, rejected
+
+    approvers: jsonb("approvers").notNull(), // [{ userId, approved, approvedAt, notes }]
+    requiredApprovals: integer("required_approvals").default(1),
+    currentApprovals: integer("current_approvals").default(0),
+
+    rejectionReason: varchar("rejection_reason"),
+
+    // Escalation & Multi-step support
+    stepOrder: integer("step_order").default(1),
+    escalationRuleId: varchar("escalation_rule_id"),
+    statusHistory: jsonb("status_history"), // Log of status changes
+
+    metadata: jsonb("metadata"), // Extra context
+});
+
 export const insertHrAuditLogSchema = createInsertSchema(hrAuditLogs);
+export const insertHrAuditApprovalsSchema = createInsertSchema(hrAuditApprovals);
+
 export type HrAuditLog = typeof hrAuditLogs.$inferSelect;
+export type HrAuditApproval = typeof hrAuditApprovals.$inferSelect;

@@ -61,7 +61,12 @@ export class RevenueController {
             const limit = parseInt(req.query.limit as string) || 50;
             const offset = (page - 1) * limit;
 
-            const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(revenueContracts);
+            const entBusinessUnitId = req.headers["x-business-unit-id"] as string;
+            const baseConditions = entBusinessUnitId ? [eq(revenueContracts.entBusinessUnitId, entBusinessUnitId)] : [];
+
+            const [{ count }] = await db.select({ count: sql<number>`count(*)` })
+                .from(revenueContracts)
+                .where(and(...baseConditions));
             const contracts = await db.select({
                 ...revenueContracts,
                 customerName: accounts.name,
@@ -70,6 +75,7 @@ export class RevenueController {
                 .from(revenueContracts)
                 .leftJoin(accounts, eq(revenueContracts.customerId, accounts.id))
                 .leftJoin(glLedgers, eq(revenueContracts.ledgerId, glLedgers.id))
+                .where(and(...baseConditions))
                 .orderBy(desc(revenueContracts.createdAt))
                 .limit(limit)
                 .offset(offset);
@@ -143,7 +149,10 @@ export class RevenueController {
 
     async getEvents(req: Request, res: Response) {
         try {
+            const entBusinessUnitId = req.headers["x-business-unit-id"] as string;
+            const baseConditions = entBusinessUnitId ? [eq(revenueSourceEvents.entBusinessUnitId, entBusinessUnitId)] : [];
             const events = await db.select().from(revenueSourceEvents)
+                .where(and(...baseConditions))
                 .orderBy(desc(revenueSourceEvents.eventDate))
                 .limit(100);
             res.json(events);
@@ -170,6 +179,7 @@ export class RevenueController {
                 referenceNumber: req.body.referenceNumber,
                 legalEntityId: req.body.legalEntityId || "CORE",
                 orgId: req.body.orgId || "OU-01",
+                entBusinessUnitId: req.headers["x-business-unit-id"] as string || undefined,
                 processingStatus: "Pending"
             }).returning();
             res.status(201).json(event);
@@ -180,8 +190,13 @@ export class RevenueController {
 
     async processEventsJob(req: Request, res: Response) {
         try {
+            const entBusinessUnitId = req.headers["x-business-unit-id"] as string;
+            const baseConditions: any[] = [eq(revenueSourceEvents.processingStatus, "Pending")];
+            if (entBusinessUnitId) {
+                baseConditions.push(eq(revenueSourceEvents.entBusinessUnitId, entBusinessUnitId));
+            }
             const pendingEvents = await db.select().from(revenueSourceEvents)
-                .where(eq(revenueSourceEvents.processingStatus, "Pending"))
+                .where(and(...baseConditions))
                 .orderBy(revenueSourceEvents.eventDate); // FIFO
 
             const results = [];
@@ -264,6 +279,36 @@ export class RevenueController {
                 .leftJoin(products, eq(revenueSspLines.itemId, products.id))
                 .where(eq(revenueSspLines.bookId, req.params.id));
             res.json(lines);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async updateSspLine(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const [updated] = await db.update(revenueSspLines)
+                .set({
+                    itemId: req.body.itemId,
+                    itemGroup: req.body.itemGroup,
+                    sspValue: req.body.sspValue?.toString(),
+                    minQuantity: req.body.minQuantity?.toString(),
+                    maxQuantity: req.body.maxQuantity?.toString(),
+                    region: req.body.region
+                })
+                .where(eq(revenueSspLines.id, id))
+                .returning();
+            res.json(updated);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async deleteSspLine(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            await db.delete(revenueSspLines).where(eq(revenueSspLines.id, id));
+            res.json({ message: "SSP line deleted successfully" });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
@@ -410,6 +455,17 @@ export class RevenueController {
             const { id } = req.params;
             const result = await revenueService.runPeriodCloseSweep(id);
             res.json({ message: "Period Close Sweep completed successfully", ...result });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async autoSweepPeriod(req: Request, res: Response) {
+        try {
+            const periods = await db.select().from(revenuePeriods).where(eq(revenuePeriods.status, "Open")).orderBy(desc(revenuePeriods.startDate)).limit(1);
+            if (!periods.length) return res.status(404).json({ error: "No open periods found to sweep" });
+            const result = await revenueService.runPeriodCloseSweep(periods[0].id);
+            res.json({ message: "Auto sweep completed successfully", ...result });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }

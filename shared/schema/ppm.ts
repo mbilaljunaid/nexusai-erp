@@ -20,6 +20,7 @@ export const ppmProjects = pgTable("ppm_projects", {
     burdenScheduleId: varchar("burden_schedule_id"), // Default schedule for project
     budget: numeric("budget", { precision: 18, scale: 2 }).default("0.00"), // Planned Value (BAC)
     percentComplete: numeric("percent_complete", { precision: 5, scale: 2 }).default("0.00"), // For EV calculation
+    entBusinessUnitId: varchar("ent_business_unit_id"), // Enterprise Scoping – Business Unit
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 

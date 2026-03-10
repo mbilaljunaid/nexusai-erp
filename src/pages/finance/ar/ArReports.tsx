@@ -1,0 +1,248 @@
+import { cn } from "@/lib/utils";
+
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { apiRequest } from "@/lib/queryClient";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Download, RefreshCw, Calculator, FileText } from "lucide-react";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { StandardPage } from '@/components/layout/StandardPage';
+import { formatCurrency } from "@/lib/formatters";
+
+export default function ArReports() {
+    const { data: aging, refetch: refetchAging } = useQuery<any>({
+        queryKey: ["/api/ar/reports/aging"],
+        queryFn: async () => {
+            try { return await (await apiRequest("GET", "/api/ar/reports/aging")).json(); }
+            catch { return {}; }
+        }
+    });
+
+    const { data: recon, refetch: refetchRecon } = useQuery<any>({
+        queryKey: ["/api/ar/reports/reconciliation"],
+        queryFn: async () => {
+            try { return await (await apiRequest("GET", "/api/ar/reports/reconciliation")).json(); }
+            catch { return {}; }
+        }
+    });
+
+    const { toast } = useToast();
+    const [statementCustomerId, setStatementCustomerId] = useState("");
+    const [statementData, setStatementData] = useState<any[] | null>(null);
+
+    const statementMutation = useMutation({
+        mutationFn: async (customerId: string) => {
+            const res = await apiRequest("GET", `/api/ar/reports/statement/${customerId}`);
+            return res.json();
+        },
+        onSuccess: (data) => {
+            setStatementData(data.transactions || []);
+            toast({ title: "Statement Generated", description: `Successfully generated statement for customer ${statementCustomerId}` });
+        }
+    });
+
+    const [revalPeriod, setRevalPeriod] = useState("2026-02");
+    const [revalResult, setRevalResult] = useState<string | null>(null);
+
+    const revalMutation = useMutation({
+        mutationFn: async (period: string) => {
+            const res = await apiRequest("POST", "/api/ar/reports/revaluation", { period });
+            return res.json();
+        },
+        onSuccess: (data) => {
+            setRevalResult(`Unrealized Gain: ${formatCurrency(data.gainLoss)}`);
+            toast({ title: "Revaluation Complete", description: data.message });
+        }
+    });
+
+    return (
+        <StandardPage
+            title="AR Reporting & Analytics"
+            actions={
+                <Button variant="outline">
+                    <Download className="mr-2 h-4 w-4" /> Export All
+                </Button>
+            }
+        >
+            <Tabs defaultValue="aging">
+                <TabsList>
+                    <TabsTrigger value="aging">Aging Analysis</TabsTrigger>
+                    <TabsTrigger value="reconciliation">Reconciliation</TabsTrigger>
+                    <TabsTrigger value="statements">Customer Statements</TabsTrigger>
+                    <TabsTrigger value="revaluation">FX Revaluation</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="aging" className="space-y-4">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle>7-Bucket Aging Report</CardTitle>
+                            <Button size="sm" variant="ghost" onClick={() => refetchAging()}>
+                                <RefreshCw className="h-4 w-4" />
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Current</TableHead>
+                                        <TableHead>1-30 Days</TableHead>
+                                        <TableHead>31-60 Days</TableHead>
+                                        <TableHead>61-90 Days</TableHead>
+                                        <TableHead>91-180 Days</TableHead>
+                                        <TableHead>180-360 Days</TableHead>
+                                        <TableHead>&gt; 360 Days</TableHead>
+                                        <TableHead className="text-right">Total</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell>{formatCurrency(aging?.current ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days1_30 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days31_60 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days61_90 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days91_180 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.days180_360 ?? 0)}</TableCell>
+                                        <TableCell>{formatCurrency(aging?.over360 ?? 0)}</TableCell>
+                                        <TableCell className="text-right font-bold">{formatCurrency(aging?.total ?? 0)}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="reconciliation">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>AR to GL Reconciliation</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid gap-4 md:grid-cols-3">
+                                <div className="p-4 border rounded bg-slate-500/10">
+                                    <div className="text-sm text-muted-foreground">Subledger Balance</div>
+                                    <div className="text-2xl font-bold">{formatCurrency(recon?.subledgerBalance ?? 0)}</div>
+                                </div>
+                                <div className="p-4 border rounded bg-slate-500/10">
+                                    <div className="text-sm text-muted-foreground">GL Control Account</div>
+                                    <div className="text-2xl font-bold">{formatCurrency(recon?.glBalance ?? 0)}</div>
+                                </div>
+                                <div className={cn(`p-4 border rounded ${recon?.difference === 0 ? 'bg-emerald-500/10 border-emerald-200' : 'bg-red-500/10 border-red-200'}`)}>
+                                    <div className="text-sm text-muted-foreground">Difference</div>
+                                    <div className={cn(`text-2xl font-bold ${recon?.difference === 0 ? 'text-emerald-700' : 'text-red-700'}`)}>
+                                        {formatCurrency(recon?.difference ?? 0)}
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="statements">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Customer Statements</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-end gap-4">
+                                <div className="space-y-2 flex-1 max-w-sm">
+                                    <Label>Customer Number</Label>
+                                    <Input
+                                        placeholder="Enter Customer Number"
+                                        value={statementCustomerId}
+                                        onChange={e => setStatementCustomerId(e.target.value)}
+                                        data-testid="input-statement-customer"
+                                    />
+                                </div>
+                                <Button
+                                    onClick={() => statementMutation.mutate(statementCustomerId)}
+                                    disabled={!statementCustomerId || statementMutation.isPending}
+                                    data-testid="btn-generate-statement"
+                                >
+                                    <FileText className="w-4 h-4 mr-2" />
+                                    Generate Statement
+                                </Button>
+                            </div>
+
+                            {statementData && (
+                                <Table className="mt-6">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Date</TableHead>
+                                            <TableHead>Description</TableHead>
+                                            <TableHead className="text-right">Amount</TableHead>
+                                            <TableHead className="text-right">Running Balance</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {statementData.map((row, i) => (
+                                            <TableRow key={i}>
+                                                <TableCell>{row.date}</TableCell>
+                                                <TableCell>{row.description}</TableCell>
+                                                <TableCell className={cn(`text-right ${row.amount < 0 ? 'text-emerald-600' : ''}`)}>
+                                                    {formatCurrency(row.amount)}
+                                                </TableCell>
+                                                <TableCell className="text-right font-semibold">{formatCurrency(row.balance)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="revaluation">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>AR Balances FX Revaluation</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <p className="text-sm text-muted-foreground">
+                                Revalue open foreign currency invoices against the current period-end exchange rates to post unrealized gains and losses to the GL.
+                            </p>
+
+                            <div className="flex items-end gap-4">
+                                <div className="space-y-2 max-w-xs">
+                                    <Label>Accounting Period</Label>
+                                    <Input
+                                        type="month"
+                                        value={revalPeriod}
+                                        onChange={e => setRevalPeriod(e.target.value)}
+                                        data-testid="input-reval-period"
+                                    />
+                                </div>
+                                <Button
+                                    onClick={() => revalMutation.mutate(revalPeriod)}
+                                    disabled={!revalPeriod || revalMutation.isPending}
+                                    data-testid="btn-run-revaluation"
+                                >
+                                    <Calculator className="w-4 h-4 mr-2" />
+                                    Run AR FX Revaluation
+                                </Button>
+                            </div>
+
+                            {revalResult && (
+                                <div className="p-4 bg-emerald-500/10 border border-emerald-200 rounded-md text-emerald-800 font-medium">
+                                    {revalResult}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
+        </StandardPage>
+    );
+}

@@ -53,9 +53,9 @@ export class CashService {
         return updated;
     }
 
-    async listBankAccounts(userId?: string) {
+    async listBankAccounts(userId?: string, entLegalEntityId?: string, entBusinessUnitId?: string) {
         if (!userId) {
-            return await storage.listCashBankAccounts();
+            return await storage.listCashBankAccounts(entLegalEntityId, entBusinessUnitId);
         }
 
         // Security: Filter by Data Access Set
@@ -73,26 +73,28 @@ export class CashService {
             return [];
         }
 
-        return await db
-            .select()
-            .from(cashBankAccounts)
-            .where(inArray(cashBankAccounts.ledgerId, allowedLedgers));
+        let query = db.select().from(cashBankAccounts).where(inArray(cashBankAccounts.ledgerId, allowedLedgers));
+        if (entLegalEntityId) {
+            query = query.where(eq(cashBankAccounts.entLegalEntityId, entLegalEntityId)) as any;
+        }
+
+        return await query;
     }
 
     async getBankAccount(id: string) {
         return await storage.getCashBankAccount(id);
     }
 
-    async listStatementLines(accountId: string, limit?: number, offset?: number) {
-        return await storage.listCashStatementLines(accountId, limit, offset);
+    async listStatementLines(accountId: string, limit?: number, offset?: number, legalEntityId?: string) {
+        return await storage.listCashStatementLines(accountId, limit, offset, undefined, legalEntityId);
     }
 
     async getStatementLinesCount(accountId: string): Promise<number> {
         return await storage.getCashStatementLinesCount(accountId);
     }
 
-    async listTransactions(accountId: string, limit?: number, offset?: number) {
-        return await storage.listCashTransactions(accountId, limit, offset);
+    async listTransactions(accountId: string, limit?: number, offset?: number, legalEntityId?: string) {
+        return await storage.listCashTransactions(accountId, limit, offset, undefined, legalEntityId);
     }
 
     async getTransactionsCount(accountId: string): Promise<number> {
@@ -150,8 +152,8 @@ export class CashService {
         }
     }
 
-    async getCashPosition() {
-        const accounts = await this.listBankAccounts();
+    async getCashPosition(entLegalEntityId?: string, entBusinessUnitId?: string) {
+        const accounts = await this.listBankAccounts(undefined, entLegalEntityId, entBusinessUnitId); // Hacky as listBankAccounts signature is (userId, entLegalEntityId)
         let totalBalance = 0;
         let totalIntradayBalance = 0;
         let totalUnreconciledAmount = 0;
@@ -162,7 +164,7 @@ export class CashService {
             const balance = Number(account.currentBalance);
             totalBalance += balance;
 
-            const statementLines = await storage.listCashStatementLines(account.id);
+            const statementLines = await storage.listCashStatementLines(account.id, undefined, undefined, entBusinessUnitId, entLegalEntityId);
             const unreconciled = statementLines.filter(l => !l.reconciled);
             const unreconciledAmount = unreconciled.reduce((sum, l) => sum + Number(l.amount), 0);
 
@@ -557,8 +559,8 @@ export class CashService {
         return structure;
     }
 
-    async listZbaStructures() {
-        return await storage.listCashZbaStructures();
+    async listZbaStructures(legalEntityId?: string) {
+        return await storage.listCashZbaStructures(legalEntityId);
     }
 
     async approveZbaStructure(id: string, userId: string) {
@@ -598,19 +600,6 @@ export class CashService {
 
     async deleteForecast(id: string) {
         await db.delete(cashForecasts).where(eq(cashForecasts.id, id));
-    }
-
-    async createTransaction(data: any) {
-        return await storage.createCashTransaction({
-            bankAccountId: String(data.bankAccountId),
-            sourceModule: data.sourceModule || 'GL',
-            sourceId: String(data.sourceId || "MANUAL"),
-            amount: String(data.amount),
-            transactionDate: data.date || new Date(),
-            reference: data.reference || `TXN-${Date.now()}`,
-            description: data.description,
-            status: data.status || "Unreconciled" as any
-        });
     }
 }
 

@@ -12,6 +12,7 @@ export const employees = pgTable("employees", {
     department: varchar("department"),
     hireDate: timestamp("hire_date"),
     status: varchar("status").default("active"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -35,6 +36,7 @@ export const payroll = pgTable("payroll", {
     deductions: numeric("deductions", { precision: 18, scale: 2 }).default("0"),
     netPay: numeric("net_pay", { precision: 18, scale: 2 }),
     payPeriod: varchar("pay_period"),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -60,6 +62,7 @@ export const payrollConfigs = pgTable("payroll_configs", {
     benefitSettings: jsonb("benefit_settings"),
     overtimeRules: jsonb("overtime_rules"),
     isActive: boolean("is_active").default(true),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
     updatedAt: timestamp("updated_at").default(sql`now()`),
 });
@@ -88,6 +91,7 @@ export const timeEntries = pgTable("time_entries", {
     billableFlag: boolean("billable_flag").default(false),
     costRate: numeric("cost_rate", { precision: 18, scale: 2 }), // Hourly cost
     status: varchar("status").default("SUBMITTED"), // SUBMITTED, APPROVED, PROCESSED
+    entLegalEntityId: varchar("ent_legal_entity_id"),
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
@@ -103,5 +107,28 @@ export const insertTimeEntrySchema = createInsertSchema(timeEntries).extend({
     status: z.string().optional(),
 });
 
-export type InsertTimeEntry = z.infer<typeof insertTimeEntrySchema>;
-export type TimeEntry = typeof timeEntries.$inferSelect;
+
+export const leaveRequests = pgTable("leave_requests", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    employeeId: varchar("employee_id").notNull(),
+    leaveType: varchar("leave_type").notNull(), // Annual, Sick, Unpaid
+    startDate: timestamp("start_date").notNull(),
+    endDate: timestamp("end_date").notNull(),
+    reason: varchar("reason"),
+    status: varchar("status").default("PENDING"), // PENDING, APPROVED, REJECTED
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
+export const insertLeaveRequestSchema = createInsertSchema(leaveRequests).extend({
+    employeeId: z.string().min(1),
+    leaveType: z.string().min(1),
+    startDate: z.date(),
+    endDate: z.date(),
+    reason: z.string().optional(),
+    status: z.string().optional(),
+});
+
+export type InsertLeaveRequest = z.infer<typeof insertLeaveRequestSchema>;
+export type LeaveRequest = typeof leaveRequests.$inferSelect;
+

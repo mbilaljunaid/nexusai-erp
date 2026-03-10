@@ -1,0 +1,71 @@
+import { useQuery } from "@tanstack/react-query";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles } from "lucide-react";
+
+export default function LogisticsOptimization() {
+  const { data: predictions = [], isLoading } = useQuery<any[]>({
+    queryKey: ["/api/logistics-optimization"],
+    queryFn: () => fetch("/api/logistics-optimization").then(r => r.json()),
+  });
+
+  const optimized = predictions.filter((p: any) => p.status === "optimized").length;
+
+  return (
+    <StandardPage
+      title="AI & Logistics Optimization"
+      description="ETA prediction, fuel optimization, fleet forecasting, route optimization, risk prediction"
+    >
+      <div className="grid grid-cols-4 gap-3">
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">Models</p>
+            <p className="text-2xl font-bold">{predictions.length}</p>
+          </CardContent>
+        </Card>
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">Optimized</p>
+            <p className="text-2xl font-bold text-green-600">{optimized}</p>
+          </CardContent>
+        </Card>
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">Pending</p>
+            <p className="text-2xl font-bold text-yellow-600">{predictions.filter((p: any) => p.status === "pending").length}</p>
+          </CardContent>
+        </Card>
+        <Card className="p-3">
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground">Optimization %</p>
+            <p className="text-2xl font-bold">{predictions.length > 0 ? ((optimized / predictions.length) * 100).toFixed(0) : 0}%</p>
+          </CardContent>
+        </Card>
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">AI Models</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {isLoading ? (
+            <TableSkeleton rows={4} />
+          ) : predictions.length === 0 ? (
+            <p className="text-muted-foreground text-center py-4">No data</p>
+          ) : (
+            predictions.slice(0, 10).map((p: any) => (
+              <div key={p.id} className="p-2 border rounded text-sm hover-elevate flex items-center justify-between" data-testid={`pred-${p.id}`}>
+                <div className="flex-1">
+                  <p className="font-semibold">{p.modelId}</p>
+                  <p className="text-xs text-muted-foreground">{p.type}</p>
+                </div>
+                <Badge variant={p.status === "optimized" ? "default" : "secondary"} className="text-xs">{p.status}</Badge>
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
+    </StandardPage>
+  );
+}

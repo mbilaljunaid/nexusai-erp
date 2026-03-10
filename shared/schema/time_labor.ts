@@ -30,6 +30,8 @@ export const hrmTimeSheets = pgTable("hrm_time_sheets", {
 
     personId: varchar("person_id").notNull().references(() => hrPersons.id),
     periodId: varchar("period_id").notNull().references(() => hrmTimePeriods.id),
+    entLegalEntityId: varchar("ent_legal_entity_id"),
+    entBusinessUnitId: varchar("ent_business_unit_id"),
 
     status: varchar("status").default("DRAFT"), // DRAFT, SUBMITTED, APPROVED, REJECTED
 

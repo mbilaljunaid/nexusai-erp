@@ -1,0 +1,272 @@
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/dateUtils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Download, RefreshCw, Trash2, Copy, Zap } from "lucide-react";
+import { Header, Footer } from "@/components/Navigation";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+
+export default function DemoManagement() {
+  const { toast } = useToast();
+  const [industries, setIndustries] = useState<string[]>([]);
+  const [demos, setDemos] = useState<any[]>([]);
+  const [selectedIndustry, setSelectedIndustry] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [resetDemoId, setResetDemoId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchIndustries();
+    fetchDemos();
+  }, []);
+
+  const fetchIndustries = async () => {
+    try {
+      const res = await fetch("/api/demos/industries");
+      const data = await res.json();
+      setIndustries(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setIndustries([]);
+    }
+  };
+
+  const fetchDemos = async () => {
+    try {
+      const res = await fetch("/api/demos/list", {
+        headers: { "x-user-role": "admin" },
+      });
+      const data = await res.json();
+      setDemos(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setDemos([]);
+    }
+  };
+
+  const createDemo = async (seedData = false) => {
+    if (!selectedIndustry || !email) {
+      toast({ variant: 'destructive', description: "Please select industry and enter email" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // First seed the data if requested
+      if (seedData) {
+        const seedRes = await fetch(`/api/demos/seed/${selectedIndustry}`, {
+          method: "POST",
+          headers: { "x-user-role": "admin" },
+        });
+        const seedData = await seedRes.json();
+      }
+
+      const res = await fetch("/api/demos/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, company: selectedIndustry, industry: selectedIndustry }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const username = `demo_${selectedIndustry.toLowerCase().replace(/\s+/g, "_")}`;
+        const password = `Demo@${new Date().getFullYear()}`;
+
+        toast({ title: "Demo created!", description: `Username: ${username}\nPassword: ${password}\n\nEmail sent to: ${email}` });
+
+        // Send credentials
+        await fetch("/api/demos/send-credentials", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            industry: selectedIndustry,
+            demoLink: `${window.location.origin}/demo-access/${data.id}`,
+            username,
+            password,
+          }),
+        });
+
+        fetchDemos();
+        setEmail("");
+      }
+    } catch (e) {
+      toast({ variant: 'destructive', description: "Failed to create demo" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const performReset = async () => {
+    if (!resetDemoId) return;
+    try {
+      await fetch(`/api/demos/${resetDemoId}/reset`, {
+        method: "POST",
+        headers: { "x-user-role": "admin" },
+      });
+      fetchDemos();
+    } catch (e) {
+      toast({ variant: 'destructive', description: "Failed to reset demo" });
+    } finally {
+      setResetDemoId(null);
+    }
+  };
+
+  return (
+    <StandardPage title="Demo Management">
+      <Header />
+      <div className="flex-1">
+        <div className="max-w-6xl mx-auto px-4 py-20">
+
+          <p className="text-muted-foreground mb-8">Create and manage demo environments for all industries</p>
+
+          <Tabs defaultValue="create" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="create">Create Demo</TabsTrigger>
+              <TabsTrigger value="active">Active Demos</TabsTrigger>
+            </TabsList>
+
+            {/* Create Demo Tab */}
+            <TabsContent value="create">
+              <Card className="public-card p-6">
+                <h2 className="text-2xl font-bold mb-6">Create New Demo Environment</h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label className="block text-sm font-semibold mb-2">Select Industry</Label>
+                    <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+                      <SelectTrigger data-testid="select-industry">
+                        <SelectValue placeholder="-- Choose Industry --" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {industries.map((ind) => (
+                          <SelectItem key={ind} value={ind}>{ind}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="block text-sm font-semibold mb-2">User Email</Label>
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="user@company.com"
+                      data-testid="input-demo-email"
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => createDemo(false)}
+                      disabled={loading}
+                      className="flex-1 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.9)] text-white"
+                      data-testid="button-create-demo"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      {loading ? "Creating..." : "Create Demo"}
+                    </Button>
+                    <Button
+                      onClick={() => createDemo(true)}
+                      disabled={loading}
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                      data-testid="button-create-demo-seeded"
+                    >
+                      <Zap className="w-4 h-4 mr-2" />
+                      {loading ? "Seeding..." : "Seed Data"}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="mt-8 p-4 rounded-lg text-sm bg-muted/50 text-muted-foreground">
+                  <p className="font-semibold mb-2">What happens:</p>
+                  <ul className="space-y-1 list-disc list-inside">
+                    <li>Demo environment created with full sample data</li>
+                    <li>Credentials generated and sent to email</li>
+                    <li>Fully operational for 30 days</li>
+                    <li>All modules pre-configured for industry</li>
+                  </ul>
+                </div>
+              </Card>
+            </TabsContent>
+
+            {/* Active Demos Tab */}
+            <TabsContent value="active">
+              <Card className="public-card p-6">
+                <h2 className="text-2xl font-bold mb-6">Active Demo Environments</h2>
+
+                {demos.length === 0 ? (
+                  <p className="text-muted-foreground/70">No active demos yet</p>
+                ) : (
+                  <div className="space-y-4">
+                    {demos.map((demo) => (
+                      <Card key={demo.id} className="public-card p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg">{demo.industry}</h3>
+                            <p className="text-sm text-muted-foreground" >ID: {demo.id}</p>
+                            <p className="text-sm text-muted-foreground" >Created: {formatDate(demo.createdAt)}</p>
+                            <div className="mt-3 flex gap-2">
+                              <span className={cn(`px-3 py-1 rounded text-xs font-semibold ${demo.status === "active" ? "bg-green-600/20 text-green-300" : "bg-slate-600/20 text-slate-300"
+                                }`)}>
+                                {demo.status.toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" data-testid={`button-copy-demo-${demo.id}`}>
+                              <Copy className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => setResetDemoId(demo.id)} data-testid={`button-reset-demo-${demo.id}`}>
+                              <RefreshCw className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" className="text-red-400" data-testid={`button-delete-demo-${demo.id}`}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            </TabsContent>
+          </Tabs>
+
+          <AlertDialog open={!!resetDemoId} onOpenChange={(open) => !open && setResetDemoId(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset Demo Environment</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to reset this demo environment? All custom data will be cleared and the environment will be restored to its initial state. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={performReset} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Reset Environment
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
+      <Footer />
+    </StandardPage>
+  );
+}

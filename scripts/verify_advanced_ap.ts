@@ -40,8 +40,8 @@ async function verifyAdvancedFeatures() {
 
         // 4. Validate and check WHT
         console.log("- Validating invoice to trigger WHT calculation...");
-        const result = await apService.validateInvoice(invoice.id);
-        console.log(`- Validation Status: ${result.status}`);
+        const result: any = await apService.validateInvoice(invoice.id);
+        console.log(`- Validation Status: ${result.validationStatus || result.invoiceStatus}`);
 
         const [updatedInvoice] = await db.select().from(apInvoices).where(eq(apInvoices.id, invoice.id));
         console.log(`- Calculated WHT Amount: $${updatedInvoice.withholdingTaxAmount}`);

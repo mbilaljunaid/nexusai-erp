@@ -6,6 +6,10 @@ export interface AuthenticatedRequest extends Request {
     userId?: string;
     role?: string;
     user?: any;
+    activeBuId?: string;
+    activeLeId?: string;
+    activeInvOrgId?: string;
+    activeLedgerId?: string;
 }
 
 // RBAC Enforcement Middleware
@@ -16,6 +20,11 @@ export const enforceRBAC = (requiredPermission?: string) => {
         const tenantId = req.headers["x-tenant-id"] as string;
         const userId = req.headers["x-user-id"] as string;
 
+        // Extract Enterprise Contexts
+        req.activeBuId = req.headers["x-business-unit-id"] as string | undefined;
+        req.activeLeId = req.headers["x-legal-entity-id"] as string | undefined;
+        req.activeInvOrgId = req.headers["x-inventory-org-id"] as string | undefined;
+        req.activeLedgerId = req.headers["x-ledger-id"] as string | undefined;
 
         // If user is already authenticated via session (Platform Auth)
         // @ts-ignore

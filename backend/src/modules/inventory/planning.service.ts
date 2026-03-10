@@ -1,59 +1,59 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Item } from './entities/item.entity';
-import { InventoryOrganization } from './entities/inventory-organization.entity';
+
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../../../../shared/schema/index';
+import { eq, and, isNotNull, lt } from 'drizzle-orm';
 
 @Injectable()
-export class PlanningService {
-    private readonly logger = new Logger(PlanningService.name);
+export class InventoryPlanningService {
+    private readonly logger = new Logger(InventoryPlanningService.name);
 
     constructor(
-        @InjectRepository(Item)
-        private itemRepo: Repository<Item>,
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>,
     ) { }
 
     async runMinMaxPlanning(organizationId: string): Promise<any[]> {
         // 1. Fetch all items with Min-Max definition in the Org
-        // Note: In real world, we check OnHandBalance aggregate, but for MVP we use Item.quantityOnHand 
-        // which we are keeping synchronized in InventoryTransactionService.
-
-        const items = await this.itemRepo.find({
-            where: { organization: { id: organizationId } }
+        // Note: Drizzle query. We assume minQuantity IS NOT NULL check
+        const items = await this.db.query.inventory.findMany({
+            where: and(
+                eq(schema.inventory.organizationId, organizationId),
+                isNotNull(schema.inventory.minQuantity)
+            )
         });
 
         const replenishmentSuggestions: any[] = [];
 
         for (const item of items) {
-            // Check if Item is plannable
-            if (item.minQuantity !== undefined && item.minQuantity !== null) {
-                const onHand = Number(item.quantityOnHand || 0);
-                const minQty = Number(item.minQuantity);
+            const onHand = Number(item.quantityOnHand || 0);
+            const minQty = Number(item.minQuantity);
 
-                if (onHand < minQty) {
-                    // Trigger Replenishment
-                    // Calculate Order Qty
-                    let orderQty = 0;
-                    if (item.maxQuantity) {
-                        orderQty = Number(item.maxQuantity) - onHand;
-                    } else if (item.reorderQuantity) {
-                        orderQty = Number(item.reorderQuantity);
-                    } else {
-                        // Default to Min Qty delta if no Max/Fixed specified (Simple Restock)
-                        orderQty = minQty - onHand;
-                    }
+            if (onHand < minQty) {
+                // Trigger Replenishment
+                // Calculate Order Qty
+                let orderQty = 0;
+                if (item.maxQuantity && Number(item.maxQuantity) > 0) {
+                    orderQty = Number(item.maxQuantity) - onHand;
+                    // } else if (item.reorderQuantity) { // Missing in schema currently, fallback
+                    //     orderQty = Number(item.reorderQuantity);
+                } else {
+                    // Default to Min Qty delta if no Max specified (Simple Restock to Min seems wrong, usually restock to Max or Min+Delta)
+                    // Implementing simple "Bring back to Min" + Safety or just Min - OnHand?
+                    // Legacy code: orderQty = minQty - onHand (if no max/reorder)
+                    orderQty = minQty - onHand;
+                }
 
-                    if (orderQty > 0) {
-                        replenishmentSuggestions.push({
-                            itemId: item.id,
-                            itemNumber: item.itemNumber,
-                            description: item.description,
-                            currentOnHand: onHand,
-                            minQuantity: minQty,
-                            maxQuantity: item.maxQuantity,
-                            suggestedOrderQuantity: orderQty
-                        });
-                    }
+                if (orderQty > 0) {
+                    replenishmentSuggestions.push({
+                        itemId: item.id,
+                        itemNumber: item.itemNumber,
+                        description: item.description,
+                        currentOnHand: onHand,
+                        minQuantity: minQty,
+                        maxQuantity: item.maxQuantity,
+                        suggestedOrderQuantity: orderQty
+                    });
                 }
             }
         }

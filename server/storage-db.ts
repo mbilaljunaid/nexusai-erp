@@ -5,7 +5,7 @@
 
 import { db } from "./db";
 // duplicate import removed
-import { eq, and, sql, desc } from "drizzle-orm";
+import { eq, and, sql, desc, count } from "drizzle-orm";
 import {
   invoices as invoicesTable,
   leads as leadsTable,
@@ -42,15 +42,19 @@ import {
   cashTransactions as cashTransactionsTable,
   cashReconciliationRules as cashReconciliationRulesTable,
   cashMatchingGroups as cashMatchingGroupsTable,
-  cashBankAccounts as cashBankAccountsTable,
   glJournalApprovals as glJournalApprovalsTable,
   arInvoices as arInvoicesTable,
+  arInvoiceLines as arInvoiceLinesTable,
   arReceipts as arReceiptsTable,
   arCustomers as arCustomersTable,
+  arCustomerAccounts as arCustomerAccountsTable,
+  arCustomerSites as arCustomerSitesTable,
+  arCustomerContacts as arCustomerContactsTable,
   apSuppliers as apSuppliersTable,
   apInvoices as apInvoicesTable,
   apPayments as apPaymentsTable,
   apApprovals as apApprovalsTable,
+  apPaymentTerms as apPaymentTermsTable,
   type GlSegmentValue,
   type InsertGlSegmentValue,
   type GlCodeCombination,
@@ -62,8 +66,25 @@ import {
   type GlJournalBatch,
   type GlJournalApproval,
   arSystemOptions as arSystemOptionsTable,
+  arDocumentSequences as arDocumentSequencesTable,
+  arDocumentSequenceAssignments as arDocumentSequenceAssignmentsTable,
   glAutoPostRules as glAutoPostRulesTable,
   glDataAccessSets as glDataAccessSetsTable,
+  expenseReports as expenseReportsTable,
+  expenseLines as expenseLinesTable,
+  expensePolicies as expensePoliciesTable,
+  expensePerDiems as expensePerDiemsTable,
+  corporateCardTransactions as corporateCardTransactionsTable,
+  type ExpenseReport,
+  type InsertExpenseReport,
+  type ExpenseLine,
+  type InsertExpenseLine,
+  type ExpensePolicy,
+  type InsertExpensePolicy,
+  type ExpensePerDiem,
+  type InsertExpensePerDiem,
+  type CorporateCardTransaction,
+  type InsertCorporateCardTransaction,
   type GlAutoPostRule,
   type InsertGlAutoPostRule,
   type GlDataAccessSet,
@@ -127,8 +148,16 @@ import type {
   // AR Module
   ArCustomer,
   InsertArCustomer,
+  ArCustomerAccount,
+  InsertArCustomerAccount,
+  ArCustomerSite,
+  InsertArCustomerSite,
+  ArCustomerContact,
+  InsertArCustomerContact,
   ArInvoice,
   InsertArInvoice,
+  ArInvoiceLine,
+  InsertArInvoiceLine,
   ArReceipt,
   InsertArReceipt,
   ApSupplier,
@@ -147,9 +176,13 @@ import type {
   CashReconciliationRule, InsertCashReconciliationRule,
   CashMatchingGroup, InsertCashMatchingGroup,
   CashBankAccount, InsertCashBankAccount,
-  ArSystemOptions, InsertArSystemOptions
+  ArSystemOptions, InsertArSystemOptions,
+  ArDocumentSequence, InsertArDocumentSequence,
+  ArDocumentSequenceAssignment, InsertArDocumentSequenceAssignment
 } from "@shared/schema";
 import { revenueService } from "./modules/revenue/services/RevenueService";
+import { partyService } from "./services/PartyService";
+
 
 /**
  * Database storage operations for Phase 2
@@ -230,11 +263,26 @@ export const dbStorage = {
   },
 
   async createAccount(account: InsertAccount): Promise<Account> {
+    // 1. Create Organization Party
+    const { party } = await partyService.createOrganization(
+      {
+        partyName: account.name,
+        partyNumber: `ACCT-${Date.now().toString().slice(-9)}-${Math.floor(Math.random() * 1000)}`,
+        partyType: 'ORGANIZATION'
+      },
+      {
+        organizationName: account.name,
+        industryCode: account.industry
+      }
+    );
+
+    // 2. Create Account Linked to Party
     const result = await db
       .insert(accountsTable)
       .values({
         ...account,
         annualRevenue: account.annualRevenue ? String(account.annualRevenue) : null,
+        partyId: party.id // TCA Linkage
       })
       .returning();
     return result[0];
@@ -265,9 +313,27 @@ export const dbStorage = {
   },
 
   async createContact(contact: InsertContact): Promise<Contact> {
+    // 1. Create Person Party
+    const { party } = await partyService.createPerson(
+      {
+        partyName: `${contact.firstName} ${contact.lastName}`,
+        partyNumber: `CONT-${Date.now().toString().slice(-9)}-${Math.floor(Math.random() * 1000)}`,
+        email: contact.email,
+        partyType: 'PERSON'
+      },
+      {
+        personFirstName: contact.firstName,
+        personLastName: contact.lastName
+      }
+    );
+
+    // 2. Create Contact Linked to Party
     const result = await db
       .insert(contactsTable)
-      .values(contact)
+      .values({
+        ...contact,
+        partyId: party.id // TCA Linkage
+      })
       .returning();
     return result[0];
   },
@@ -654,7 +720,22 @@ export const dbStorage = {
       if (!lead) throw new Error("Lead not found");
       if (lead.isConverted) throw new Error("Lead already converted");
 
-      // 1. Create Account
+      // 1. Create Account (with Party)
+      // Note: We duplicate logic here because we are in a transaction block
+      // Ideally call PartyService here too (will be separate transaction context, but acceptable for now)
+
+      const { party: accountParty } = await partyService.createOrganization(
+        {
+          partyName: lead.company || `${lead.firstName} ${lead.lastName}`,
+          partyNumber: `ACCT-${Date.now().toString().slice(-8)}-${lead.id.substring(0, 4)}`,
+          partyType: 'ORGANIZATION'
+        },
+        {
+          organizationName: lead.company || `${lead.firstName} ${lead.lastName}`,
+          industryCode: lead.industry
+        }
+      );
+
       const [account] = await tx.insert(accountsTable).values({
         name: lead.company || `${lead.firstName} ${lead.lastName}`,
         industry: lead.industry,
@@ -662,10 +743,24 @@ export const dbStorage = {
         billingCity: lead.city,
         billingState: lead.state,
         billingCountry: lead.country,
-        ownerId: ownerId || lead.ownerId
+        ownerId: ownerId || lead.ownerId,
+        partyId: accountParty.id // TCA Linkage
       }).returning();
 
-      // 2. Create Contact
+      // 2. Create Contact (with Party)
+      const { party: contactParty } = await partyService.createPerson(
+        {
+          partyName: `${lead.firstName} ${lead.lastName}`,
+          partyNumber: `CONT-${Date.now().toString().slice(-8)}-${lead.id.substring(0, 4)}`,
+          email: lead.email,
+          partyType: 'PERSON'
+        },
+        {
+          personFirstName: lead.firstName || "",
+          personLastName: lead.lastName
+        }
+      );
+
       const [contact] = await tx.insert(contactsTable).values({
         accountId: account.id,
         firstName: lead.firstName || "",
@@ -677,7 +772,8 @@ export const dbStorage = {
         mailingState: lead.state,
         mailingCountry: lead.country,
         ownerId: ownerId || lead.ownerId,
-        leadSource: lead.leadSource
+        leadSource: lead.leadSource,
+        partyId: contactParty.id // TCA Linkage
       }).returning();
 
       // 3. Create Opportunity
@@ -894,11 +990,27 @@ export const dbStorage = {
   },
 
   // ========== ACCOUNTS PAYABLE ==========
+  async listApPaymentTerms(): Promise<ApPaymentTerm[]> {
+    return await db.select().from(apPaymentTermsTable).orderBy(apPaymentTermsTable.termName);
+  },
+  async getApPaymentTerm(id: string): Promise<ApPaymentTerm | undefined> {
+    const result = await db.select().from(apPaymentTermsTable).where(eq(apPaymentTermsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApPaymentTerm(data: InsertApPaymentTerm): Promise<ApPaymentTerm> {
+    const result = await db.insert(apPaymentTermsTable).values(data).returning();
+    return result[0];
+  },
+  async updateApPaymentTerm(id: string, data: Partial<InsertApPaymentTerm>): Promise<ApPaymentTerm | undefined> {
+    const result = await db.update(apPaymentTermsTable).set(data).where(eq(apPaymentTermsTable.id, id)).returning();
+    return result[0];
+  },
+
   async listApSuppliers(): Promise<ApSupplier[]> {
     return await db.select().from(apSuppliersTable);
   },
   async getApSupplier(id: string): Promise<ApSupplier | undefined> {
-    const result = await db.select().from(apSuppliersTable).where(eq(apSuppliersTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apSuppliersTable).where(eq(apSuppliersTable.id, id)).limit(1);
     return result[0];
   },
   async createApSupplier(data: InsertApSupplier): Promise<ApSupplier> {
@@ -906,19 +1018,97 @@ export const dbStorage = {
     return result[0];
   },
   async updateApSupplier(id: string, data: Partial<InsertApSupplier>): Promise<ApSupplier | undefined> {
-    const result = await db.update(apSuppliersTable).set(data).where(eq(apSuppliersTable.id, parseInt(id))).returning();
+    const result = await db.update(apSuppliersTable).set(data).where(eq(apSuppliersTable.id, id)).returning();
     return result[0];
   },
   async deleteApSupplier(id: string): Promise<boolean> {
-    const result = await db.delete(apSuppliersTable).where(eq(apSuppliersTable.id, parseInt(id))).returning();
+    const result = await db.delete(apSuppliersTable).where(eq(apSuppliersTable.id, id)).returning();
     return result.length > 0;
   },
 
-  async listApInvoices(): Promise<ApInvoice[]> {
-    return await db.select().from(apInvoicesTable);
+  async listApInvoices(options?: {
+    limit?: number;
+    offset?: number;
+    status?: string | "all";
+    validationStatus?: string | "all";
+    tenantId?: string;
+    entBusinessUnitId?: string;
+    filters?: Record<string, any>;
+  }): Promise<any[]> {
+    const conditions = [];
+    if (options?.status && options.status !== "all") {
+      conditions.push(sql`lower(${apInvoicesTable.invoiceStatus}) = lower(${options.status})`);
+    }
+    if (options?.validationStatus && options.validationStatus !== "all") {
+      conditions.push(sql`lower(${apInvoicesTable.validationStatus}) = lower(${options.validationStatus})`);
+    }
+    if (options?.entBusinessUnitId) {
+      conditions.push(eq(apInvoicesTable.entBusinessUnitId, options.entBusinessUnitId));
+    }
+    if (options?.tenantId) {
+      conditions.push(eq(apInvoicesTable.tenantId, options.tenantId));
+    }
+
+    if (options?.filters) {
+      for (const [key, value] of Object.entries(options.filters)) {
+        if (key === 'invoiceNumber') {
+          conditions.push(sql`lower(${apInvoicesTable.invoiceNumber}) LIKE lower(${`%${value}%`})`);
+        }
+        else if (key === 'supplierId') {
+          conditions.push(eq(apInvoicesTable.supplierId, value));
+        }
+        else if (key === 'businessUnitId') {
+          conditions.push(eq(apInvoicesTable.businessUnitId, value));
+        }
+        else if (key === 'fromDate') {
+          conditions.push(sql`${apInvoicesTable.invoiceDate} >= ${new Date(value).toISOString()}`);
+        }
+        else if (key === 'toDate') {
+          conditions.push(sql`${apInvoicesTable.invoiceDate} <= ${new Date(value).toISOString()}`);
+        }
+      }
+    }
+
+    let query = db.select({
+      invoice: apInvoicesTable,
+      supplier: apSuppliersTable
+    }).from(apInvoicesTable)
+      .leftJoin(apSuppliersTable, eq(apInvoicesTable.supplierId, apSuppliersTable.id));
+
+    if (conditions.length > 0) {
+      // @ts-ignore
+      query = query.where(and(...conditions));
+    }
+
+    // @ts-ignore
+    query = query.orderBy(desc(apInvoicesTable.createdAt));
+
+    if (options?.limit !== undefined) {
+      // @ts-ignore
+      query = query.limit(options.limit);
+    }
+    if (options?.offset !== undefined) {
+      // @ts-ignore
+      query = query.offset(options.offset);
+    }
+
+    const results = await query;
+    return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
+  },
+  async getApInvoicesCount(entBusinessUnitId?: string, tenantId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(apInvoicesTable) as any;
+    const conditions = [];
+    if (entBusinessUnitId) conditions.push(eq(apInvoicesTable.entBusinessUnitId, entBusinessUnitId));
+    if (tenantId) conditions.push(eq(apInvoicesTable.tenantId, tenantId));
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    const [res] = await query;
+    return res.count;
   },
   async getApInvoice(id: string): Promise<ApInvoice | undefined> {
-    const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apInvoicesTable).where(eq(apInvoicesTable.id, id)).limit(1);
     return result[0];
   },
   async createApInvoice(data: InsertApInvoice): Promise<ApInvoice> {
@@ -926,19 +1116,22 @@ export const dbStorage = {
     return result[0];
   },
   async updateApInvoice(id: string, data: Partial<InsertApInvoice>): Promise<ApInvoice | undefined> {
-    const result = await db.update(apInvoicesTable).set(data).where(eq(apInvoicesTable.id, parseInt(id))).returning();
+    const result = await db.update(apInvoicesTable).set(data).where(eq(apInvoicesTable.id, id)).returning();
     return result[0];
   },
   async deleteApInvoice(id: string): Promise<boolean> {
-    const result = await db.delete(apInvoicesTable).where(eq(apInvoicesTable.id, parseInt(id))).returning();
+    const result = await db.delete(apInvoicesTable).where(eq(apInvoicesTable.id, id)).returning();
     return result.length > 0;
   },
 
-  async listApPayments(): Promise<ApPayment[]> {
+  async listApPayments(options?: { entBusinessUnitId?: string }): Promise<ApPayment[]> {
+    if (options?.entBusinessUnitId) {
+      return await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.entBusinessUnitId, options.entBusinessUnitId));
+    }
     return await db.select().from(apPaymentsTable);
   },
   async getApPayment(id: string): Promise<ApPayment | undefined> {
-    const result = await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apPaymentsTable).where(eq(apPaymentsTable.id, id)).limit(1);
     return result[0];
   },
   async createApPayment(data: InsertApPayment): Promise<ApPayment> {
@@ -946,11 +1139,11 @@ export const dbStorage = {
     return result[0];
   },
   async updateApPayment(id: string, data: Partial<InsertApPayment>): Promise<ApPayment | undefined> {
-    const result = await db.update(apPaymentsTable).set(data).where(eq(apPaymentsTable.id, parseInt(id))).returning();
+    const result = await db.update(apPaymentsTable).set(data).where(eq(apPaymentsTable.id, id)).returning();
     return result[0];
   },
   async deleteApPayment(id: string): Promise<boolean> {
-    const result = await db.delete(apPaymentsTable).where(eq(apPaymentsTable.id, parseInt(id))).returning();
+    const result = await db.delete(apPaymentsTable).where(eq(apPaymentsTable.id, id)).returning();
     return result.length > 0;
   },
 
@@ -958,7 +1151,7 @@ export const dbStorage = {
     return await db.select().from(apApprovalsTable);
   },
   async getApApproval(id: string): Promise<ApApproval | undefined> {
-    const result = await db.select().from(apApprovalsTable).where(eq(apApprovalsTable.id, parseInt(id))).limit(1);
+    const result = await db.select().from(apApprovalsTable).where(eq(apApprovalsTable.id, id)).limit(1);
     return result[0];
   },
   async createApApproval(data: InsertApApproval): Promise<ApApproval> {
@@ -966,37 +1159,74 @@ export const dbStorage = {
     return result[0];
   },
   async updateApApproval(id: string, data: Partial<InsertApApproval>): Promise<ApApproval | undefined> {
-    const result = await db.update(apApprovalsTable).set(data).where(eq(apApprovalsTable.id, parseInt(id))).returning();
+    const result = await db.update(apApprovalsTable).set(data).where(eq(apApprovalsTable.id, id)).returning();
     return result[0];
   },
   async deleteApApproval(id: string): Promise<boolean> {
-    const result = await db.delete(apApprovalsTable).where(eq(apApprovalsTable.id, parseInt(id))).returning();
+    const result = await db.delete(apApprovalsTable).where(eq(apApprovalsTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  // ========== ORACLE PARITY: AP ENTERPRISE SETUP ==========
+  async listApTolerances(): Promise<ApTolerance[]> {
+    return await db.select().from(apTolerancesTable);
+  },
+  async getApTolerance(id: string): Promise<ApTolerance | undefined> {
+    const result = await db.select().from(apTolerancesTable).where(eq(apTolerancesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApTolerance(data: InsertApTolerance): Promise<ApTolerance> {
+    const result = await db.insert(apTolerancesTable).values(data).returning();
+    return result[0];
+  },
+  async updateApTolerance(id: string, data: Partial<InsertApTolerance>): Promise<ApTolerance | undefined> {
+    const result = await db.update(apTolerancesTable).set(data).where(eq(apTolerancesTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApTolerance(id: string): Promise<boolean> {
+    const result = await db.delete(apTolerancesTable).where(eq(apTolerancesTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  async listApPprTemplates(): Promise<ApPprTemplate[]> {
+    return await db.select().from(apPprTemplatesTable);
+  },
+  async getApPprTemplate(id: string): Promise<ApPprTemplate | undefined> {
+    const result = await db.select().from(apPprTemplatesTable).where(eq(apPprTemplatesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createApPprTemplate(data: InsertApPprTemplate): Promise<ApPprTemplate> {
+    const result = await db.insert(apPprTemplatesTable).values(data).returning();
+    return result[0];
+  },
+  async updateApPprTemplate(id: string, data: Partial<InsertApPprTemplate>): Promise<ApPprTemplate | undefined> {
+    const result = await db.update(apPprTemplatesTable).set(data).where(eq(apPprTemplatesTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteApPprTemplate(id: string): Promise<boolean> {
+    const result = await db.delete(apPprTemplatesTable).where(eq(apPprTemplatesTable.id, id)).returning();
     return result.length > 0;
   },
 
   // ========== ACCOUNTS RECEIVABLE ==========
-  async listArCustomers(): Promise<ArCustomer[]> {
-    return await db.select().from(arCustomersTable);
-  },
-  async getArCustomer(id: string): Promise<ArCustomer | undefined> {
-    const result = await db.select().from(arCustomersTable).where(eq(arCustomersTable.id, id)).limit(1);
-    return result[0];
-  },
-  async createArCustomer(data: InsertArCustomer): Promise<ArCustomer> {
-    const result = await db.insert(arCustomersTable).values(data).returning();
-    return result[0];
-  },
-  async updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
-    const result = await db.update(arCustomersTable).set(data).where(eq(arCustomersTable.id, id)).returning();
-    return result[0];
-  },
-  async deleteArCustomer(id: string): Promise<boolean> {
-    const result = await db.delete(arCustomersTable).where(eq(arCustomersTable.id, id)).returning();
-    return result.length > 0;
-  },
 
-  async listArInvoices(): Promise<ArInvoice[]> {
-    return await db.select().from(arInvoicesTable);
+  async listArInvoices(limit?: number, offset?: number, entBusinessUnitId?: string): Promise<ArInvoice[]> {
+    let query = db.select().from(arInvoicesTable);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoicesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(arInvoicesTable.createdAt)) as any;
+    if (limit !== undefined) query = query.limit(limit) as any;
+    if (offset !== undefined) query = query.offset(offset) as any;
+    return await query;
+  },
+  async getArInvoicesCount(entBusinessUnitId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(arInvoicesTable);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arInvoicesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    const [res] = await query;
+    return res.count;
   },
   async getArInvoice(id: string): Promise<ArInvoice | undefined> {
     const result = await db.select().from(arInvoicesTable).where(eq(arInvoicesTable.id, id)).limit(1);
@@ -1015,8 +1245,25 @@ export const dbStorage = {
     return result.length > 0;
   },
 
-  async listArReceipts(): Promise<ArReceipt[]> {
-    return await db.select().from(arReceiptsTable);
+  async listArInvoiceLines(invoiceId: string): Promise<ArInvoiceLine[]> {
+    return await db.select().from(arInvoiceLinesTable).where(eq(arInvoiceLinesTable.invoiceId, invoiceId)).orderBy(arInvoiceLinesTable.lineNumber);
+  },
+  async createArInvoiceLine(data: InsertArInvoiceLine): Promise<ArInvoiceLine> {
+    const result = await db.insert(arInvoiceLinesTable).values(data).returning();
+    return result[0];
+  },
+  async updateArInvoiceLine(id: string, data: Partial<InsertArInvoiceLine>): Promise<ArInvoiceLine | undefined> {
+    const result = await db.update(arInvoiceLinesTable).set(data).where(eq(arInvoiceLinesTable.id, id)).returning();
+    return result[0];
+  },
+
+  async listArReceipts(entBusinessUnitId?: string): Promise<ArReceipt[]> {
+    let query = db.select().from(arReceiptsTable);
+    if (entBusinessUnitId) {
+      query = query.where(eq(arReceiptsTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(arReceiptsTable.createdAt)) as any;
+    return await query;
   },
   async getArReceipt(id: string): Promise<ArReceipt | undefined> {
     const result = await db.select().from(arReceiptsTable).where(eq(arReceiptsTable.id, id)).limit(1);
@@ -1032,6 +1279,82 @@ export const dbStorage = {
   },
   async deleteArReceipt(id: string): Promise<boolean> {
     const result = await db.delete(arReceiptsTable).where(eq(arReceiptsTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  // ========== AR CUSTOMERS (TCA) ==========
+  async listArCustomers(): Promise<ArCustomer[]> {
+    return await db.select().from(arCustomersTable);
+  },
+  async getArCustomer(id: string): Promise<ArCustomer | undefined> {
+    const result = await db.select().from(arCustomersTable).where(eq(arCustomersTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomer(data: InsertArCustomer): Promise<ArCustomer> {
+    const result = await db.insert(arCustomersTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomer(id: string, data: Partial<InsertArCustomer>): Promise<ArCustomer | undefined> {
+    const result = await db.update(arCustomersTable).set(data).where(eq(arCustomersTable.id, id)).returning();
+    return result[0];
+  },
+
+  // ========== AR CUSTOMER ACCOUNTS ==========
+
+  async listArCustomerAccounts(customerId?: string): Promise<ArCustomerAccount[]> {
+    if (customerId) {
+      return await db.select().from(arCustomerAccountsTable).where(eq(arCustomerAccountsTable.customerId, customerId));
+    }
+    return await db.select().from(arCustomerAccountsTable);
+  },
+  async getArCustomerAccount(id: string): Promise<ArCustomerAccount | undefined> {
+    const result = await db.select().from(arCustomerAccountsTable).where(eq(arCustomerAccountsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomerAccount(data: InsertArCustomerAccount): Promise<ArCustomerAccount> {
+    const result = await db.insert(arCustomerAccountsTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomerAccount(id: string, data: Partial<InsertArCustomerAccount>): Promise<ArCustomerAccount | undefined> {
+    const result = await db.update(arCustomerAccountsTable).set(data).where(eq(arCustomerAccountsTable.id, id)).returning();
+    return result[0];
+  },
+
+  // ========== AR CUSTOMER SITES ==========
+  async listArCustomerSites(accountId: string): Promise<ArCustomerSite[]> {
+    return await db.select().from(arCustomerSitesTable).where(eq(arCustomerSitesTable.accountId, accountId));
+  },
+  async getArCustomerSite(id: string): Promise<ArCustomerSite | undefined> {
+    const result = await db.select().from(arCustomerSitesTable).where(eq(arCustomerSitesTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomerSite(data: InsertArCustomerSite): Promise<ArCustomerSite> {
+    const result = await db.insert(arCustomerSitesTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomerSite(id: string, data: Partial<InsertArCustomerSite>): Promise<ArCustomerSite | undefined> {
+    const result = await db.update(arCustomerSitesTable).set(data).where(eq(arCustomerSitesTable.id, id)).returning();
+    return result[0];
+  },
+
+  // ========== AR CUSTOMER CONTACTS ==========
+  async listArCustomerContacts(customerId: string): Promise<ArCustomerContact[]> {
+    return await db.select().from(arCustomerContactsTable).where(eq(arCustomerContactsTable.customerId, customerId));
+  },
+  async getArCustomerContact(id: string): Promise<ArCustomerContact | undefined> {
+    const result = await db.select().from(arCustomerContactsTable).where(eq(arCustomerContactsTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArCustomerContact(data: InsertArCustomerContact): Promise<ArCustomerContact> {
+    const result = await db.insert(arCustomerContactsTable).values(data).returning();
+    return result[0];
+  },
+  async updateArCustomerContact(id: string, data: Partial<InsertArCustomerContact>): Promise<ArCustomerContact | undefined> {
+    const result = await db.update(arCustomerContactsTable).set(data).where(eq(arCustomerContactsTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArCustomerContact(id: string): Promise<boolean> {
+    const result = await db.delete(arCustomerContactsTable).where(eq(arCustomerContactsTable.id, id)).returning();
     return result.length > 0;
   },
 
@@ -1127,6 +1450,9 @@ export const dbStorage = {
       and(eq(glDailyRatesTable.fromCurrency, from), eq(glDailyRatesTable.toCurrency, to))
     );
   },
+  async getAllGlDailyRates(): Promise<GlDailyRate[]> {
+    return await db.select().from(glDailyRatesTable).orderBy(desc(glDailyRatesTable.createdAt));
+  },
   async createGlDailyRate(rate: InsertGlDailyRate): Promise<GlDailyRate> {
     const result = await db.insert(glDailyRatesTable).values({
       ...rate,
@@ -1170,6 +1496,60 @@ export const dbStorage = {
   },
 
 
+  // ========== AUTOINVOICE STAGING ==========
+  async listArAutoInvoiceStaging(status?: string): Promise<ArAutoInvoiceStaging[]> {
+    if (status) {
+      return await db.select().from(arAutoInvoiceStagingTable).where(eq(arAutoInvoiceStagingTable.status, status));
+    }
+    return await db.select().from(arAutoInvoiceStagingTable);
+  },
+  async getArAutoInvoiceStaging(id: string): Promise<ArAutoInvoiceStaging | undefined> {
+    const result = await db.select().from(arAutoInvoiceStagingTable).where(eq(arAutoInvoiceStagingTable.id, id)).limit(1);
+    return result[0];
+  },
+  async createArAutoInvoiceStaging(data: InsertArAutoInvoiceStaging): Promise<ArAutoInvoiceStaging> {
+    const result = await db.insert(arAutoInvoiceStagingTable).values(data).returning();
+    return result[0];
+  },
+  async updateArAutoInvoiceStaging(id: string, data: Partial<InsertArAutoInvoiceStaging>): Promise<ArAutoInvoiceStaging | undefined> {
+    const result = await db.update(arAutoInvoiceStagingTable).set(data).where(eq(arAutoInvoiceStagingTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArAutoInvoiceStaging(id: string): Promise<boolean> {
+    const result = await db.delete(arAutoInvoiceStagingTable).where(eq(arAutoInvoiceStagingTable.id, id)).returning();
+    return result.length > 0;
+  },
+
+  // ========== AUTOINVOICE ERRORS ==========
+  async listArAutoInvoiceErrors(stagingId: string): Promise<ArAutoInvoiceError[]> {
+    return await db.select().from(arAutoInvoiceErrorsTable).where(eq(arAutoInvoiceErrorsTable.stagingId, stagingId));
+  },
+  async createArAutoInvoiceError(data: InsertArAutoInvoiceError): Promise<ArAutoInvoiceError> {
+    const result = await db.insert(arAutoInvoiceErrorsTable).values(data).returning();
+    return result[0];
+  },
+  async deleteArAutoInvoiceErrors(stagingId: string): Promise<boolean> {
+    const result = await db.delete(arAutoInvoiceErrorsTable).where(eq(arAutoInvoiceErrorsTable.stagingId, stagingId)).returning();
+    return result.length > 0;
+  },
+
+  // ========== AR SALES CREDITS ==========
+  async listArSalesCredits(invoiceLineId: string): Promise<ArSalesCredit[]> {
+    return await db.select().from(arSalesCreditsTable).where(eq(arSalesCreditsTable.invoiceLineId, invoiceLineId));
+  },
+  async createArSalesCredit(data: InsertArSalesCredit): Promise<ArSalesCredit> {
+    const result = await db.insert(arSalesCreditsTable).values(data).returning();
+    return result[0];
+  },
+  async updateArSalesCredit(id: string, data: Partial<InsertArSalesCredit>): Promise<ArSalesCredit | undefined> {
+    const result = await db.update(arSalesCreditsTable).set(data).where(eq(arSalesCreditsTable.id, id)).returning();
+    return result[0];
+  },
+  async deleteArSalesCredit(id: string): Promise<boolean> {
+    const result = await db.delete(arSalesCreditsTable).where(eq(arSalesCreditsTable.id, id)).returning();
+    return result.length > 0;
+  },
+
   // ========== PROJECTS ==========
   async getProject(id: string): Promise<Project | undefined> {
     const result = await db
@@ -1198,8 +1578,12 @@ export const dbStorage = {
   },
 
   // ========== CASH MANAGEMENT (CHUNK 4 & 5) ==========
-  async listCashBankAccounts(): Promise<CashBankAccount[]> {
-    return await db.select().from(cashBankAccountsTable);
+  async listCashBankAccounts(entLegalEntityId?: string): Promise<CashBankAccount[]> {
+    let query = db.select().from(cashBankAccountsTable);
+    if (entLegalEntityId) {
+      query = query.where(eq(cashBankAccountsTable.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    return await query;
   },
   async getCashBankAccount(id: string): Promise<CashBankAccount | undefined> {
     const [account] = await db.select().from(cashBankAccountsTable).where(eq(cashBankAccountsTable.id, id));
@@ -1232,8 +1616,18 @@ export const dbStorage = {
   },
 
   // Lines
-  async listCashStatementLines(bankAccountId: string): Promise<CashStatementLine[]> {
-    return await db.select().from(cashStatementLinesTable).where(eq(cashStatementLinesTable.bankAccountId, bankAccountId)).orderBy(desc(cashStatementLinesTable.transactionDate));
+  async listCashStatementLines(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashStatementLine[]> {
+    let query = db.select().from(cashStatementLinesTable).where(eq(cashStatementLinesTable.bankAccountId, bankAccountId));
+    if (entLegalEntityId) {
+      query = query.where(eq(cashStatementLinesTable.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    if (entBusinessUnitId) {
+      query = query.where(eq(cashStatementLinesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(cashStatementLinesTable.transactionDate)) as any;
+    if (limit !== undefined) query = query.limit(limit) as any;
+    if (offset !== undefined) query = query.offset(offset) as any;
+    return await query;
   },
   async createCashStatementLine(data: InsertCashStatementLine): Promise<CashStatementLine> {
     const [line] = await db.insert(cashStatementLinesTable).values(data).returning();
@@ -1241,8 +1635,18 @@ export const dbStorage = {
   },
 
   // Transactions
-  async listCashTransactions(bankAccountId: string): Promise<CashTransaction[]> {
-    return await db.select().from(cashTransactionsTable).where(eq(cashTransactionsTable.bankAccountId, bankAccountId)).orderBy(desc(cashTransactionsTable.transactionDate));
+  async listCashTransactions(bankAccountId: string, limit?: number, offset?: number, entBusinessUnitId?: string, entLegalEntityId?: string): Promise<CashTransaction[]> {
+    let query = db.select().from(cashTransactionsTable).where(eq(cashTransactionsTable.bankAccountId, bankAccountId));
+    if (entLegalEntityId) {
+      query = query.where(eq(cashTransactionsTable.entLegalEntityId, entLegalEntityId)) as any;
+    }
+    if (entBusinessUnitId) {
+      query = query.where(eq(cashTransactionsTable.entBusinessUnitId, entBusinessUnitId)) as any;
+    }
+    query = query.orderBy(desc(cashTransactionsTable.transactionDate)) as any;
+    if (limit !== undefined) query = query.limit(limit) as any;
+    if (offset !== undefined) query = query.offset(offset) as any;
+    return await query;
   },
   async createCashTransaction(data: InsertCashTransaction): Promise<CashTransaction> {
     const [txn] = await db.insert(cashTransactionsTable).values(data).returning();
@@ -1325,5 +1729,129 @@ export const dbStorage = {
       .values(set)
       .returning();
     return result[0];
+  },
+
+  // ========== EXPENSE MANAGEMENT ==========
+  async listExpenseReports(tenantId: string, employeeId?: string): Promise<ExpenseReport[]> {
+    const conditions = [eq(expenseReportsTable.tenantId, tenantId)];
+    if (employeeId) {
+      conditions.push(eq(expenseReportsTable.employeeId, employeeId));
+    }
+    return await db.select().from(expenseReportsTable).where(and(...conditions)).orderBy(desc(expenseReportsTable.createdAt));
+  },
+
+  async getExpenseReport(id: string): Promise<ExpenseReport | undefined> {
+    const result = await db.select().from(expenseReportsTable).where(eq(expenseReportsTable.id, id));
+    return result[0];
+  },
+
+  async createExpenseReport(data: InsertExpenseReport): Promise<ExpenseReport> {
+    const result = await db.insert(expenseReportsTable).values(data).returning();
+    return result[0];
+  },
+
+  async updateExpenseReport(id: string, data: Partial<InsertExpenseReport>): Promise<ExpenseReport> {
+    const [updated] = await db
+      .update(expenseReportsTable)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(expenseReportsTable.id, id))
+      .returning();
+    return updated;
+  },
+
+  async listExpenseLines(reportId: string): Promise<ExpenseLine[]> {
+    return await db.select().from(expenseLinesTable).where(eq(expenseLinesTable.reportId, reportId)).orderBy(desc(expenseLinesTable.createdAt));
+  },
+
+  async listAllExpenseLines(tenantId: string): Promise<ExpenseLine[]> {
+    return await db.select().from(expenseLinesTable).where(eq(expenseLinesTable.tenantId, tenantId)).orderBy(desc(expenseLinesTable.createdAt));
+  },
+
+  async createExpenseLine(data: InsertExpenseLine): Promise<ExpenseLine> {
+    const result = await db.insert(expenseLinesTable).values(data).returning();
+    return result[0];
+  },
+
+  async updateExpenseLine(id: string, data: Partial<InsertExpenseLine>): Promise<ExpenseLine> {
+    const [updated] = await db
+      .update(expenseLinesTable)
+      .set(data)
+      .where(eq(expenseLinesTable.id, id))
+      .returning();
+    return updated;
+  },
+
+  async listExpensePolicies(tenantId: string): Promise<ExpensePolicy[]> {
+    return await db.select().from(expensePoliciesTable).where(eq(expensePoliciesTable.tenantId, tenantId));
+  },
+
+  async createExpensePolicy(data: InsertExpensePolicy): Promise<ExpensePolicy> {
+    const result = await db.insert(expensePoliciesTable).values(data).returning();
+    return result[0];
+  },
+
+  async listExpensePerDiems(tenantId: string): Promise<ExpensePerDiem[]> {
+    return await db.select().from(expensePerDiemsTable).where(eq(expensePerDiemsTable.tenantId, tenantId));
+  },
+
+  async createExpensePerDiem(data: InsertExpensePerDiem): Promise<ExpensePerDiem> {
+    const result = await db.insert(expensePerDiemsTable).values(data).returning();
+    return result[0];
+  },
+
+  async listCorporateCardTransactions(tenantId: string, employeeId?: string): Promise<CorporateCardTransaction[]> {
+    if (employeeId) {
+      return await db.select().from(corporateCardTransactionsTable).where(and(eq(corporateCardTransactionsTable.tenantId, tenantId), eq(corporateCardTransactionsTable.employeeId, employeeId))).orderBy(desc(corporateCardTransactionsTable.transactionDate));
+    }
+    return await db.select().from(corporateCardTransactionsTable).where(eq(corporateCardTransactionsTable.tenantId, tenantId)).orderBy(desc(corporateCardTransactionsTable.transactionDate));
+  },
+
+  async createCorporateCardTransaction(data: InsertCorporateCardTransaction): Promise<CorporateCardTransaction> {
+    const result = await db.insert(corporateCardTransactionsTable).values(data).returning();
+    return result[0];
+  },
+
+  async updateCorporateCardTransaction(id: string, data: Partial<InsertCorporateCardTransaction>): Promise<CorporateCardTransaction> {
+    const [updated] = await db
+      .update(corporateCardTransactionsTable)
+      .set(data)
+      .where(eq(corporateCardTransactionsTable.id, id))
+      .returning();
+    return updated;
+  },
+
+  // Document Sequences (Gapless Config)
+  async listArDocumentSequences(module?: string): Promise<ArDocumentSequence[]> {
+    if (module) {
+      return await db.select().from(arDocumentSequencesTable).where(eq(arDocumentSequencesTable.module, module));
+    }
+    return await db.select().from(arDocumentSequencesTable);
+  },
+
+  async createArDocumentSequence(data: InsertArDocumentSequence): Promise<ArDocumentSequence> {
+    const [inserted] = await db.insert(arDocumentSequencesTable).values(data).returning();
+    return inserted;
+  },
+
+  async updateArDocumentSequence(id: string, data: Partial<InsertArDocumentSequence>): Promise<ArDocumentSequence | undefined> {
+    const [updated] = await db.update(arDocumentSequencesTable).set(data).where(eq(arDocumentSequencesTable.id, id)).returning();
+    return updated;
+  },
+
+  async listArDocumentSequenceAssignments(sequenceId?: string): Promise<ArDocumentSequenceAssignment[]> {
+    if (sequenceId) {
+      return await db.select().from(arDocumentSequenceAssignmentsTable).where(eq(arDocumentSequenceAssignmentsTable.sequenceId, sequenceId));
+    }
+    return await db.select().from(arDocumentSequenceAssignmentsTable);
+  },
+
+  async createArDocumentSequenceAssignment(data: InsertArDocumentSequenceAssignment): Promise<ArDocumentSequenceAssignment> {
+    const [inserted] = await db.insert(arDocumentSequenceAssignmentsTable).values(data).returning();
+    return inserted;
+  },
+
+  async updateArDocumentSequenceAssignment(id: string, data: Partial<InsertArDocumentSequenceAssignment>): Promise<ArDocumentSequenceAssignment | undefined> {
+    const [updated] = await db.update(arDocumentSequenceAssignmentsTable).set(data).where(eq(arDocumentSequenceAssignmentsTable.id, id)).returning();
+    return updated;
   },
 };

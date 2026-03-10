@@ -122,7 +122,7 @@ async function testRevaluation() {
         console.log(`Total Variance: ${result.totalVariance}`);
 
         // Verify Lines
-        const lines = await financeService.getJournalLines(result.journalId);
+        const lines = await financeService.getJournalLines(result.journalId!);
         console.log("Revaluation Journal Lines:", JSON.stringify(lines, null, 2));
 
         if (Math.abs(result.totalVariance + 50) < 0.01) {

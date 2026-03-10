@@ -22,7 +22,7 @@ async function runReportingStressTest() {
         console.error("Missing Report Definition or Ledger. Seed data first.");
         process.exit(1);
     }
-    console.log(`Test Report: ${report.reportName}`);
+    console.log(`Test Report: ${report.name}`);
 
     const startTime = Date.now();
     let successCount = 0;

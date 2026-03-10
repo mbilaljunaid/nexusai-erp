@@ -17,7 +17,7 @@ async function verifyPhase13() {
         }
 
         const checkInv = await db.execute(sql`SELECT column_name FROM information_schema.columns WHERE table_name = 'inv_items' AND column_name = 'min_quantity'`);
-        if (checkInv.rowCount > 0) {
+        if (checkInv.rowCount && checkInv.rowCount > 0) {
             console.log("[PASS] Inventory min_quantity column exists");
         } else {
             console.error("[FAIL] Inventory min_quantity column missing");

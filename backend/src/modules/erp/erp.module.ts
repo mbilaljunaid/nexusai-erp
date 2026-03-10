@@ -1,7 +1,5 @@
+
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { GLEntry } from './entities/gl-entry.entity';
-import { Invoice } from './entities/invoice.entity';
 import { GLEntryService } from './gl-entry.service';
 import { GLEntryController } from './gl-entry.controller';
 import { InvoiceService } from './invoice.service';
@@ -19,6 +17,18 @@ import { IntercompanyTaxController } from './intercompany-tax.controller';
 import { TaxReportingService } from './tax-reporting.service';
 import { TaxReportingController } from './tax-reporting.controller';
 import { TaxEngineService } from './tax-engine.service';
+import { ArService } from './ar.service';
+import { ArController } from './ar.controller';
+import { InvoiceGlService } from './invoice-gl.service';
+import { InvoiceGlController } from './invoice-gl.controller';
+import { InvoiceApprovalService } from './invoice-approval.service';
+import { InvoiceApprovalController } from './invoice-approval.controller';
+import { RevenueEngineService } from './revenue-engine.service';
+import { RevenueEngineController } from './revenue-engine.controller';
+import { RevenueEngineExtensionService } from './revenue-engine-extension.service';
+import { IntercompanyDisputeService } from './intercompany-dispute.service';
+import { TaxContentService } from './tax-content.service';
+import { RevenueContractCostService } from './revenue-contract-cost.service';
 
 @Module({
   imports: [AuditModule],
@@ -30,14 +40,26 @@ import { TaxEngineService } from './tax-engine.service';
     TaxFilingScheduler,
     TaxOverrideService,
     IntercompanyTaxService,
-    TaxReportingService
+    TaxReportingService,
+    ArService,
+    InvoiceGlService,
+    InvoiceApprovalService,
+    RevenueEngineService,
+    RevenueEngineExtensionService,
+    IntercompanyDisputeService,
+    TaxContentService,
+    RevenueContractCostService,
   ],
   controllers: [
     ARTaxController,
     InventoryTaxController,
     IntercompanyTaxController,
-    TaxReportingController
+    TaxReportingController,
+    ArController,
+    InvoiceGlController,
+    InvoiceApprovalController,
+    RevenueEngineController,
   ],
-  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService],
+  exports: [TaxEngineService, TaxOverrideService, IntercompanyTaxService, TaxReportingService, ArService, InvoiceGlService, InvoiceApprovalService, RevenueEngineService, RevenueEngineExtensionService, IntercompanyDisputeService, TaxContentService, RevenueContractCostService],
 })
 export class ERPModule { }

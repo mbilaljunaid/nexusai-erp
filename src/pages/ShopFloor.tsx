@@ -1,0 +1,34 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+
+export default function ShopFloor() {
+  return (
+    <StandardPage
+      title="Shop Flion"
+      description="Real-time shop floor status and equipment monitoring"
+    >
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          { line: "Assembly Line 1", status: "Running", wos: 3, efficiency: "92%" },
+          { line: "Assembly Line 2", status: "Running", wos: 2, efficiency: "88%" },
+          { line: "Packaging Line", status: "Idle", wos: 0, efficiency: "0%" },
+          { line: "Quality Check", status: "Running", wos: 1, efficiency: "100%" },
+        ].map((line) => (
+          <Card key={line.line} className="hover:shadow-lg transition">
+            <CardContent className="pt-6">
+              <h3 className="font-semibold">{line.line}</h3>
+              <StatusBadge status={line.status} className="mt-2" />
+              <div className="mt-3 space-y-1 text-sm">
+                <p><strong>Work Orders:</strong> {line.wos}</p>
+                <p><strong>Efficiency:</strong> {line.efficiency}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </StandardPage>
+  );
+}

@@ -1,0 +1,632 @@
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/dateUtils";
+import { useState } from "react";
+import { StandardPage } from "@/components/layout/StandardPage";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Search,
+  ArrowLeft,
+  LayoutGrid,
+  List as ListIcon,
+  Loader2,
+  TrendingUp,
+  Plus,
+  MoreVertical,
+  Calendar,
+  Layers,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+  BrainCircuit,
+  ShieldAlert
+} from "lucide-react";
+import { Link } from "wouter";
+import { OpportunityForm } from "@/components/forms/OpportunityForm";
+import { ActivityTimeline } from "@/components/crm/ActivityTimeline";
+import type { Opportunity, Account } from "@/types/erp-types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { OpportunityProductList } from "@/components/crm/OpportunityProductList";
+import { OpportunityQuoteList } from "@/components/crm/OpportunityQuoteList";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { InteractiveSpreadsheet, SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
+import { Progress } from "@/components/ui/progress";
+import { CompetitorList } from "@/components/crm/CompetitorList";
+import { useNexusAI } from "@/contexts/NexusAIContext";
+import { SalesPlaybookWidget } from "@/components/crm/SalesPlaybookWidget";
+
+// AI Insights Component
+function AiInsightsTab({ opportunityId }: { opportunityId: string }) {
+  const { open, sendMessage } = useNexusAI();
+
+  return (
+    <StandardPage
+      title="Opportunities"
+      description="Manage your sales pipeline and track deal progress."
+      className="flex flex-col items-center justify-center p-8 text-center space-y-4 h-full"
+    >
+      <div className="bg-primary/10 p-4 rounded-full">
+        <Sparkles className="h-8 w-8 text-primary" />
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-foreground dark:text-slate-200">NexusAI Analysis</h3>
+        <p className="text-muted-foreground text-sm max-w-xs mx-auto mt-2">
+          Use the unified NexusAI engine to analyze this deal's win probability, risks, and next best actions.
+        </p>
+      </div>
+      <Button
+        onClick={() => {
+          open();
+          sendMessage(`Analyze opportunity ${opportunityId}`);
+        }}
+        className="gap-2 shadow-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white"
+        data-testid="nexus-ai-analyze-btn"
+      >
+        <BrainCircuit className="h-4 w-4" />
+        Analyze with NexusAI
+      </Button>
+      <div className="pt-4 border-t w-full mt-4 flex justify-center">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black opacity-30">
+          NexusAI Convergence Platform v1.0
+        </p>
+      </div>
+    </StandardPage>
+  );
+}
+
+// AI Insights Component - (kept as is, assuming it was correct above)
+
+const formatCurrency = (val: string | number) => {
+  const num = Number(val);
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+};
+
+export default function OpportunitiesDetail() {
+  const [viewMode, setViewMode] = useState<"list" | "kanban">("kanban");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
+
+  // Fetch opportunities with high limit for Kanban view
+  const { data: fetchResult, isLoading } = useQuery<{ data: Opportunity[], pagination: any }>({
+    queryKey: ["/api/crm/opportunities", "limit=100"],
+    queryFn: () => fetch("/api/crm/opportunities?limit=100").then(res => res.json())
+  });
+
+  const opportunities = fetchResult?.data || [];
+
+  const { data: accountsData } = useQuery<{ data: Account[] }>({
+    queryKey: ["/api/crm/accounts"],
+  });
+  const accounts = accountsData?.data || [];
+
+  // Calculate stats
+  const pipelineValue = opportunities.reduce((acc, opp) => acc + Number(opp.amount), 0);
+  const wonValue = opportunities.filter(o => o.stage === 'closed_won').reduce((acc, opp) => acc + Number(opp.amount), 0);
+  const avgProbability = opportunities.length > 0 ? (opportunities.reduce((acc, opp) => acc + (opp.probability || 0), 0) / opportunities.length).toFixed(0) : 0;
+
+  const metrics = [
+    { label: "Pipeline Value", value: formatCurrency(pipelineValue), icon: TrendingUp, color: "text-blue-600" },
+    { label: "Closed Won", value: formatCurrency(wonValue), icon: CheckCircle2, color: "text-green-600" },
+    { label: "Avg. Probability", value: `${avgProbability}%`, icon: AlertCircle, color: "text-orange-600" },
+  ];
+
+  const filteredOpps = opportunities.filter(o =>
+    o.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const getAccountName = (id: string | null) => {
+    if (!id) return "Unknown Account";
+    const acc = accounts.find(a => a.id === id);
+    return acc ? acc.name : "Unknown Account";
+  };
+
+  const stages = [
+    { id: "qualification", label: "Qualification", color: "bg-blue-500/10 dark:bg-blue-950/30", borderColor: "border-blue-200 dark:border-blue-800" },
+    { id: "needs_analysis", label: "Needs Analysis", color: "bg-indigo-500/10 dark:bg-indigo-950/30", borderColor: "border-indigo-200 dark:border-indigo-800" },
+    { id: "proposal", label: "Proposal", color: "bg-purple-500/10 dark:bg-purple-950/30", borderColor: "border-purple-200 dark:border-purple-800" },
+    { id: "negotiation", label: "Negotiation", color: "bg-orange-500/10 dark:bg-orange-950/30", borderColor: "border-orange-200 dark:border-orange-800" },
+    { id: "closed_won", label: "Closed Won", color: "bg-green-500/10 dark:bg-green-950/30", borderColor: "border-green-200 dark:border-green-800" },
+    { id: "closed_lost", label: "Closed Lost", color: "bg-gray-500/10 dark:bg-gray-900/30", borderColor: "border-border dark:border-gray-800" },
+  ];
+
+  // Kanban Drag & Drop Logic
+  const queryClient = useQueryClient();
+  const [draggedOpp, setDraggedOpp] = useState<Opportunity | null>(null);
+
+  // Win/Loss Reason State
+  const [winLossDialogOpen, setWinLossDialogOpen] = useState(false);
+  const [winLossReason, setWinLossReason] = useState("");
+  const [pendingDropStage, setPendingDropStage] = useState<string | null>(null);
+
+  const winLossReasons = [
+    "Price",
+    "Competitor",
+    "Feature Gap",
+    "Timeline",
+    "Budget",
+    "Relationship",
+    "Other"
+  ];
+
+  const handleDragStart = (e: React.DragEvent, opp: Opportunity) => {
+    setDraggedOpp(opp);
+    e.dataTransfer.effectAllowed = "move";
+    // Transparent ghost image or custom logic could go here
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to allow dropping
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetStageId: string) => {
+    e.preventDefault();
+    if (!draggedOpp || draggedOpp.stage === targetStageId) return;
+
+    if (targetStageId === "closed_won" || targetStageId === "closed_lost") {
+      setPendingDropStage(targetStageId);
+      setWinLossReason("");
+      setWinLossDialogOpen(true);
+      return;
+    }
+
+    await executeStageUpdate(draggedOpp, targetStageId);
+  };
+
+  const executeStageUpdate = async (opp: Opportunity, newStage: string, reason?: string) => {
+    const previousOpp = { ...opp };
+
+    // Optimistic Update
+    queryClient.setQueryData(["/api/crm/opportunities", "limit=100"], (old: any) => {
+      if (!old || !old.data) return old;
+      return {
+        ...old,
+        data: old.data.map((o: Opportunity) =>
+          o.id === opp.id ? { ...o, stage: newStage, winLossReason: reason || o.winLossReason } : o
+        )
+      };
+    });
+
+    try {
+      let endpoint = `/api/crm/opportunities/${opp.id}/stage`;
+      let method = "PATCH";
+      let payload: any = { stage: newStage };
+
+      if (newStage === "closed_won") {
+        endpoint = `/api/crm/opportunities/${opp.id}/close-won`;
+        method = "POST";
+        payload = { winLossReason: reason };
+      } else if (newStage === "closed_lost") {
+        endpoint = `/api/crm/opportunities/${opp.id}/close-lost`;
+        method = "POST";
+        payload = { winLossReason: reason };
+      }
+
+      const res = await fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error("Failed to update stage");
+
+      // Success toast or sound could go here
+
+    } catch (err) {
+      // Rollback
+      queryClient.setQueryData(["/api/crm/opportunities", "limit=100"], (old: any) => {
+        if (!old || !old.data) return old;
+        return {
+          ...old,
+          data: old.data.map((o: Opportunity) =>
+            o.id === previousOpp.id ? previousOpp : o
+          )
+        };
+      });
+    } finally {
+      setDraggedOpp(null);
+      setWinLossDialogOpen(false);
+      setPendingDropStage(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/crm/opportunities"] });
+    }
+  };
+
+  return (
+    <div className="space-y-8 pb-10 flex flex-col flex-1 overflow-y-auto">
+      {/* Premium Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
+        <div className="flex items-center gap-4">
+          <Link href="/crm">
+            <Button variant="outline" size="icon" className="shrink-0 rounded-full" aria-label="Go back">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground dark:text-slate-200">Opportunities</h1>
+            <p className="text-muted-foreground">Manage your sales pipeline and track deal progress.</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex bg-muted p-1 rounded-full border border-muted/50">
+            <Button
+              variant={viewMode === "kanban" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("kanban")}
+              className={cn(`h-8 px-4 rounded-full transition-all ${viewMode === 'kanban' ? 'shadow-sm bg-background' : ''}`)}
+            >
+              <LayoutGrid className="h-4 w-4 mr-2" /> Kanban
+            </Button>
+            <Button
+              variant={viewMode === "list" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("list")}
+              className={cn(`h-8 px-4 rounded-full transition-all ${viewMode === 'list' ? 'shadow-sm bg-background' : ''}`)}
+            >
+              <ListIcon className="h-4 w-4 mr-2" /> List
+            </Button>
+          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button className="shadcn-button-premium rounded-full px-6">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Opportunity
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="sm:max-w-md">
+              <SheetHeader>
+                <SheetTitle>Create New Opportunity</SheetTitle>
+                <SheetDescription>
+                  Start a new deal in your pipeline.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="pt-6">
+                <OpportunityForm />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
+        {metrics.map((m, i) => (
+          <Card key={i} className="hover-elevate shadow-sm overflow-hidden group border-muted/50">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">{m.label}</p>
+                  <p className="text-2xl font-bold">{m.value}</p>
+                </div>
+                <div className={cn(`p-2 rounded-xl bg-muted/50 group-hover:scale-110 transition-transform ${m.color}`)}>
+                  <m.icon className="h-4 w-4" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="flex gap-4 items-center shrink-0">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search opportunities..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+      </div>
+
+      {/* Content Area */}
+      <div className="flex-1 min-h-0 flex flex-col gap-6">
+        <div className="flex gap-4 items-center shrink-0">
+          <div className="relative flex-1 group max-w-xl">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <Input
+              placeholder="Search opportunities by name or account..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-11 bg-muted/30 border-none shadow-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            />
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <Card key={i} className="h-64 animate-pulse bg-muted/20 rounded-2xl" />
+            ))}
+          </div>
+        ) : viewMode === "list" ? (
+          <InteractiveSpreadsheet
+            data={filteredOpps}
+            columns={[
+              {
+                id: "name",
+                header: "Name",
+                width: "300px",
+                cell: (opp: any) => (
+                  <div className="p-2">
+                    <div className="font-semibold">{opp.name}</div>
+                    <div className="text-xs text-muted-foreground">{getAccountName(opp.accountId)}</div>
+                  </div>
+                )
+              },
+              {
+                id: "stage",
+                header: "Stage",
+                width: "150px",
+                cell: (opp: any) => <div className="p-2"><Badge variant="outline" className="capitalize">{String(opp.stage).replace('_', ' ')}</Badge></div>
+              },
+              {
+                id: "amount",
+                header: "Amount",
+                width: "150px",
+                cell: (opp: any) => <div className="p-2 font-medium">{formatCurrency(opp.amount)}</div>
+              },
+              {
+                id: "probability",
+                header: "Probability",
+                width: "120px",
+                cell: (opp: any) => <div className="p-2">{opp.probability}%</div>
+              },
+              {
+                id: "closeDate",
+                header: "Close Date",
+                width: "150px",
+                cell: (opp: any) => <div className="p-2">{opp.closeDate ? formatDate(opp.closeDate) : '-'}</div>
+              },
+              {
+                id: "actions",
+                header: "Actions",
+                width: "100px",
+                cell: (opp: any) => (
+                  <div className="p-2">
+                    <Button variant="ghost" size="sm" onClick={() => setSelectedOpp(opp)}>View</Button>
+                  </div>
+                )
+              }
+            ]}
+            onChange={() => { }}
+            virtualized={true}
+            containerHeight="600px"
+          />
+        ) : (
+          /* Kanban View */
+          <div className="flex gap-6 h-full overflow-x-auto pb-4 custom-scrollbar">
+            {stages.map(stage => {
+              const stageOpps = filteredOpps.filter(o => o.stage === stage.id);
+              const stageTotal = stageOpps.reduce((acc, o) => acc + Number(o.amount), 0);
+              const isDragTarget = draggedOpp && draggedOpp.stage !== stage.id;
+
+              return (
+                <div
+                  key={stage.id}
+                  className={cn(`min-w-80 w-80 flex flex-col bg-muted/10 rounded-2xl border border-muted/50 p-3 transition-colors ${isDragTarget ? 'bg-primary/5 border-primary/20 border-dashed' : ''}`)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, stage.id)}
+                >
+                  <div className={cn(`p-4 mb-4 border-b rounded-xl shadow-sm ${stage.color} ${stage.borderColor} border`)}>
+                    <div className="flex justify-between items-center mb-1">
+                      <h3 className="font-bold text-xs uppercase tracking-widest opacity-70">{stage.label}</h3>
+                      <Badge variant="secondary" className="text-xs h-5 px-1.5 min-w-5 justify-center bg-background/50 border-none shadow-none">
+                        {stageOpps.length}
+                      </Badge>
+                    </div>
+                    <p className="text-xl font-black">{formatCurrency(stageTotal)}</p>
+                  </div>
+
+                  <div className="space-y-3 overflow-y-auto flex-1 max-h-[800px] px-0.5 min-h-24">
+                    {stageOpps.map(opp => (
+                      <div
+                        key={opp.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, opp)}
+                        className="cursor-grab active:cursor-grabbing"
+                      >
+                        <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedOpp(opp)}>
+                          <Card
+                            className={cn(`shadow-sm hover-elevate transition-all border-muted/50 group ${draggedOpp?.id === opp.id ? 'opacity-50 rotate-3 scale-95' : ''}`)}
+                          >
+                            <CardContent className="p-4">
+                              <div className="mb-4">
+                                <p className="font-bold leading-tight group-hover:text-primary transition-colors text-[15px]">{opp.name}</p>
+                                <p className="text-xs text-muted-foreground mt-1.5 font-medium flex items-center gap-1.5 italic">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+                                  {getAccountName(opp.accountId)}
+                                </p>
+                              </div>
+                              <div className="flex justify-between items-center bg-muted/30 p-2.5 rounded-lg border border-transparent group-hover:border-primary/10 transition-colors">
+                                <div className="flex items-center gap-1.5">
+                                  <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-none bg-background/50 font-bold">
+                                    {opp.probability}%
+                                  </Badge>
+                                </div>
+                                <span className="text-[15px] font-black">{formatCurrency(opp.amount)}</span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Button>
+                      </div>
+                    ))}
+                    {stageOpps.length === 0 && (
+                      <div className="h-24 rounded-xl border-2 border-dashed border-muted/30 flex items-center justify-center pointer-events-none">
+                        <p className="text-xs text-muted-foreground font-medium opacity-50 italic">
+                          {isDragTarget ? 'Drop Here' : 'Empty Stage'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Detail Sheet */}
+      <Sheet open={!!selectedOpp} onOpenChange={(open) => !open && setSelectedOpp(null)}>
+        <SheetContent className="sm:max-w-xl w-[90vw] overflow-y-auto">
+          <SheetHeader className="mb-6">
+            <SheetTitle className="text-2xl flex items-center gap-2">
+              <TrendingUp className="h-6 w-6 text-primary" />
+              {selectedOpp?.name}
+            </SheetTitle>
+            <SheetDescription>
+              {getAccountName(selectedOpp?.accountId || null)} • {formatCurrency(selectedOpp?.amount || 0)}
+            </SheetDescription>
+          </SheetHeader>
+
+          {selectedOpp && (
+            <Tabs defaultValue="details" className="h-full flex flex-col">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="details">Details</TabsTrigger>
+                <TabsTrigger value="products">Products</TabsTrigger>
+                <TabsTrigger value="quotes">Quotes</TabsTrigger>
+                <TabsTrigger value="competitors">Competitors</TabsTrigger>
+                <TabsTrigger value="ai-insights" className="gap-2"><Sparkles className="h-3 w-3" />AI Insights</TabsTrigger>
+              </TabsList>
+              <div className="flex-1 overflow-y-auto pt-4 pr-1">
+                <TabsContent value="details">
+                  <div className="space-y-4">
+                    <SalesPlaybookWidget stage={selectedOpp.stage} />
+                    <div className="grid grid-cols-2 gap-4 text-sm bg-muted/30 p-4 rounded-lg">
+                      <div>
+                        <p className="text-muted-foreground">Stage</p>
+                        <p className="font-medium capitalize">{selectedOpp.stage.replace('_', ' ')}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Probability</p>
+                        <p className="font-medium">{selectedOpp.probability}%</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Forecast Category</p>
+                        <p className="font-medium">{selectedOpp.forecastCategory || 'Pipeline'}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Territory</p>
+                        <p className="font-medium">{selectedOpp.territoryId ? `Territory ${selectedOpp.territoryId.substring(0, 6)}` : 'Unassigned'}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Primary Competitor</p>
+                        <p className="font-medium flex items-center gap-2">
+                          See Competitors Tab <ArrowLeft className="w-3 h-3 rotate-180 text-muted-foreground" />
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Close Date</p>
+                        <p className="font-medium">{selectedOpp.closeDate ? formatDate(selectedOpp.closeDate) : 'None'}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Owner</p>
+                        <p className="font-medium">{selectedOpp.ownerId || 'Unassigned'}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Overlay Sales Reps</p>
+                        <p className="font-medium">{selectedOpp.overlayReps || 'None'}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="text-muted-foreground">Next Step</p>
+                        <p className="font-medium">{selectedOpp.nextStep || 'Not specified'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="competitors">
+                  <CompetitorList opportunityId={selectedOpp.id} />
+                </TabsContent>
+
+                <TabsContent value="products">
+                  <OpportunityProductList opportunityId={selectedOpp.id} />
+                </TabsContent>
+
+                <TabsContent value="quotes">
+                  <OpportunityQuoteList opportunityId={selectedOpp.id} />
+                </TabsContent>
+
+                <TabsContent value="activity">
+                  <ActivityTimeline entityType="opportunity" entityId={selectedOpp.id} />
+                </TabsContent>
+
+                <TabsContent value="ai-insights">
+                  <AiInsightsTab opportunityId={selectedOpp.id} />
+                </TabsContent>
+              </div>
+            </Tabs>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* Win/Loss Reason Dialog */}
+      <Dialog open={winLossDialogOpen} onOpenChange={setWinLossDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{pendingDropStage === 'closed_won' ? 'Close as Won' : 'Close as Lost'}</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for closing this opportunity.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Win/Loss Reason</label>
+              <Select value={winLossReason} onValueChange={setWinLossReason}>
+                <SelectTrigger aria-label="Win/Loss Reason">
+                  <SelectValue placeholder="Select a reason..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {winLossReasons.map((reason) => (
+                    <SelectItem key={reason} value={reason}>
+                      {reason}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setWinLossDialogOpen(false)}>Cancel</Button>
+            <Button
+              disabled={!winLossReason}
+              onClick={() => {
+                if (draggedOpp && pendingDropStage) {
+                  executeStageUpdate(draggedOpp, pendingDropStage, winLossReason);
+                }
+              }}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

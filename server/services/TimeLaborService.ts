@@ -11,6 +11,12 @@ import { eq, and, inArray, desc, sql } from "drizzle-orm";
 import { TimeRuleEngine } from "./TimeRuleEngine";
 
 export class TimeLaborService {
+    static async getPersonIdForUser(userId: string, tenantId: string) {
+        if (!userId) return null;
+        const [person] = await db.select().from(hrPersons)
+            .where(and(eq(hrPersons.userId, userId), eq(hrPersons.tenantId, tenantId)));
+        return person?.id;
+    }
 
     // 1. TIME PERIODS
     static async createTimePeriod(tenantId: string, name: string, startDate: string, endDate: string) {
@@ -30,7 +36,7 @@ export class TimeLaborService {
     }
 
     // 2. TIMESHEETS
-    static async getOrCreateTimesheet(tenantId: string, personId: string, periodId: string) {
+    static async getOrCreateTimesheet(tenantId: string, personId: string, periodId: string, entLegalEntityId?: string, entBusinessUnitId?: string) {
         // Check existence
         const [existing] = await db.select().from(hrmTimeSheets)
             .where(and(
@@ -45,7 +51,9 @@ export class TimeLaborService {
             tenantId,
             personId,
             periodId,
-            status: "DRAFT"
+            status: "DRAFT",
+            entLegalEntityId,
+            entBusinessUnitId
         }).returning();
 
         return newSheet;
@@ -242,7 +250,7 @@ export class TimeLaborService {
         return updated;
     }
 
-    static async getPendingTimesheets(tenantId: string) {
+    static async getPendingTimesheets(tenantId: string, entLegalEntityId?: string) {
         // In real app, filter by Approver ID matches Manager
         // V1: All SUBMITTED sheets for tenant
         return await db.select({
@@ -255,7 +263,8 @@ export class TimeLaborService {
             .innerJoin(hrmTimePeriods, eq(hrmTimeSheets.periodId, hrmTimePeriods.id))
             .where(and(
                 eq(hrmTimeSheets.tenantId, tenantId),
-                eq(hrmTimeSheets.status, "SUBMITTED")
+                eq(hrmTimeSheets.status, "SUBMITTED"),
+                entLegalEntityId ? eq(hrmTimeSheets.entLegalEntityId, entLegalEntityId) : sql`true`
             ));
     }
 
@@ -387,7 +396,9 @@ export class TimeLaborService {
                         periodId: period.id,
                         status: "DRAFT",
                         totalHours: "0",
-                        totalOvertime: "0"
+                        totalOvertime: "0",
+                        entLegalEntityId: entry.entLegalEntityId,
+                        entBusinessUnitId: entry.entBusinessUnitId
                     }).returning();
                 }
 
@@ -504,14 +515,15 @@ export class TimeLaborService {
     }
 
     // 9. ANALYTICS
-    static async getLaborMetrics(tenantId: string, startDate: string, endDate: string) {
+    static async getLaborMetrics(tenantId: string, startDate: string, endDate: string, entLegalEntityId?: string) {
         // 1. Actual Hours
         const entries = await db.select().from(hrmTimeEntries)
             .innerJoin(hrmTimeSheets, eq(hrmTimeEntries.timesheetId, hrmTimeSheets.id))
             .where(and(
                 eq(hrmTimeSheets.tenantId, tenantId),
                 sql`${hrmTimeEntries.date} >= ${startDate}`,
-                sql`${hrmTimeEntries.date} <= ${endDate}`
+                sql`${hrmTimeEntries.date} <= ${endDate}`,
+                entLegalEntityId ? eq(hrmTimeSheets.entLegalEntityId, entLegalEntityId) : sql`true`
             ));
 
         let totalActualMinutes = 0;
@@ -595,6 +607,18 @@ export class TimeLaborService {
     // 10. ACCRUALS (Leave Balances)
     static async getLeaveBalances(tenantId: string, personId: string) {
         return await db.select().from(hrmLeaveBalances).where(and(eq(hrmLeaveBalances.tenantId, tenantId), eq(hrmLeaveBalances.personId, personId)));
+    }
+
+    static async getAbsenceHistory(tenantId: string, personId: string) {
+        // Fetch absences from time entries with SICK/VACATION types
+        return await db.select().from(hrmTimeEntries)
+            .innerJoin(hrmTimeSheets, eq(hrmTimeEntries.timesheetId, hrmTimeSheets.id))
+            .where(and(
+                eq(hrmTimeSheets.personId, personId),
+                eq(hrmTimeSheets.tenantId, tenantId),
+                inArray(hrmTimeEntries.timeType, ["SICK", "VACATION"])
+            ))
+            .orderBy(desc(hrmTimeEntries.date));
     }
 
     static async addAccrual(tenantId: string, personId: string, leaveType: string, hours: number) {

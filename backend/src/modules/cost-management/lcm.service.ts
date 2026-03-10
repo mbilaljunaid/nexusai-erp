@@ -1,20 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { LandedCostCharge } from './entities/landed-cost.entity';
-import { ReceiptHeader } from '../procurement/entities/receipt-header.entity';
-// import { ReceiptLine } from '../../procurement/entities/receipt-line.entity'; // verify path
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq } from 'drizzle-orm';
+import { DRIZZLE_DB } from '../../database/drizzle.provider';
+import * as schema from '../../../../shared/schema';
 
 @Injectable()
 export class LcmService {
     private readonly logger = new Logger(LcmService.name);
 
     constructor(
-        @InjectRepository(LandedCostCharge)
-        private chargeRepo: Repository<LandedCostCharge>,
-        // @InjectRepository(Receipt)
-        // private receiptRepo: Repository<Receipt> 
-        // We will receive the Receipt object in method usually, or fetch it.
+        @Inject(DRIZZLE_DB) private db: NodePgDatabase<typeof schema>
     ) { }
 
     /**
@@ -30,9 +25,9 @@ export class LcmService {
             return new Map();
         }
 
-        const charges = await this.chargeRepo.find({
-            where: { purchaseOrder: { id: receipt.purchaseOrder.id } }
-        });
+        const charges = await this.db.select()
+            .from(schema.cstLandedCosts)
+            .where(eq(schema.cstLandedCosts.purchaseOrderId, receipt.purchaseOrder.id));
 
         if (charges.length === 0) {
             return new Map();

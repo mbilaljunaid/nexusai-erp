@@ -83,10 +83,10 @@ router.get("/workflow/form/:formId", (req, res) => {
  * POST /api/approval/request
  * Create approval request
  */
-router.post("/approval/request", (req, res) => {
+router.post("/approval/request", async (req, res) => {
   try {
     const { formId, recordId, requestedBy, approvers, requiredApprovals } = req.body;
-    const request = approvalEngine.createApprovalRequest(
+    const request = await approvalEngine.createApprovalRequest(
       formId,
       recordId,
       requestedBy,
@@ -108,18 +108,18 @@ router.post("/approval/request", (req, res) => {
  * POST /api/approval/:requestId/approve
  * Approve request
  */
-router.post("/approval/:requestId/approve", (req, res) => {
+router.post("/approval/:requestId/approve", async (req, res) => {
   try {
     const { requestId } = req.params;
     const { userId, notes } = req.body;
 
-    const result = approvalEngine.approveRequest(requestId, userId, notes);
+    const result = await approvalEngine.approveRequest(requestId, userId, notes);
     if (!result.success) {
       return res.status(404).json({ error: "Approval request not found" });
     }
 
     // Send notifications
-    const request = approvalEngine.getApprovalRequest(requestId);
+    const request = await approvalEngine.getApprovalRequest(requestId);
     if (request && result.approved) {
       notificationEngine.sendNotification(request.requestedBy, "form_approved", {
         approverName: userId,
@@ -138,18 +138,18 @@ router.post("/approval/:requestId/approve", (req, res) => {
  * POST /api/approval/:requestId/reject
  * Reject request
  */
-router.post("/approval/:requestId/reject", (req, res) => {
+router.post("/approval/:requestId/reject", async (req, res) => {
   try {
     const { requestId } = req.params;
     const { userId, reason } = req.body;
 
-    const result = approvalEngine.rejectRequest(requestId, userId, reason);
+    const result = await approvalEngine.rejectRequest(requestId, userId, reason);
     if (!result.success) {
       return res.status(404).json({ error: "Approval request not found" });
     }
 
     // Send notifications
-    const request = approvalEngine.getApprovalRequest(requestId);
+    const request = await approvalEngine.getApprovalRequest(requestId);
     if (request) {
       notificationEngine.sendNotification(request.requestedBy, "form_rejected", {
         approverName: userId,
@@ -169,10 +169,10 @@ router.post("/approval/:requestId/reject", (req, res) => {
  * GET /api/approval/pending/:userId
  * Get pending approvals for user
  */
-router.get("/approval/pending/:userId", (req, res) => {
+router.get("/approval/pending/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const pending = approvalEngine.getPendingApprovalsForUser(userId);
+    const pending = await approvalEngine.getPendingApprovalsForUser(userId);
     res.json(pending);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

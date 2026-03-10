@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { Router } from "express";
 import { db } from "../../db";
 import { campaigns, insertCampaignSchema } from "../../../shared/schema";

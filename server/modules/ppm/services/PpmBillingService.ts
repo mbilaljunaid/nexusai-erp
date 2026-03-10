@@ -261,6 +261,39 @@ export class PpmBillingService {
     }
 
     /**
+     * Get Billing Summary (Projects with Unbilled Events)
+     */
+    async getBillingSummary() {
+        const events = await db.select({
+            projectId: ppmProjects.id,
+            projectNum: ppmProjects.projectNumber,
+            projectName: ppmProjects.name,
+            totalUnbilled: sql<string>`sum(${ppmBillingEvents.amount})`,
+            eventCount: sql<number>`count(${ppmBillingEvents.id})`,
+            currency: ppmProjects.currencyCode,
+        })
+            .from(ppmBillingEvents)
+            .innerJoin(ppmProjects, eq(ppmBillingEvents.projectId, ppmProjects.id))
+            .where(eq(ppmBillingEvents.billedFlag, false))
+            .groupBy(ppmProjects.id, ppmProjects.projectNumber, ppmProjects.name, ppmProjects.currencyCode);
+
+        return events.map((e: any) => ({
+            id: e.projectId,
+            projectNum: e.projectNum,
+            projectName: e.projectName,
+            billingAction: e.eventCount > 0 ? "Time and Materials" : "Fixed Price",
+            unbilledExpenses: 0, // Simplified for now
+            unbilledLabor: parseFloat(e.totalUnbilled || "0"),
+            totalUnbilled: parseFloat(e.totalUnbilled || "0"),
+            invoiceTo: "Meridian Holdings Ltd", // In real scenario, link to AR Customer
+            currency: e.currency,
+            billingCycle: "Monthly",
+            lastInvoice: "2026-02-28",
+            status: "Ready to Bill"
+        }));
+    }
+
+    /**
      * Interface to Revenue Management (RMCS)
      * Push Billing Events as "Revenue Source Events"
      */
