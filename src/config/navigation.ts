@@ -135,7 +135,9 @@ export const navigationConfig: SidebarNode[] = [
                 id: "scm", title: "Supply Chain & Procurement", type: "group", icon: Package, path: "/scm",
                 children: [
                     { id: "procurement", title: "Procurement", type: "link", path: "/scm/procurement" },
-                    { id: "procurement-orders", title: "Purchase Orders", type: "link", path: "/procurement/orders/new" },
+                    { id: "procurement-reqs", title: "Purchase Requisitions", type: "link", path: "/procurement/requisitions/new" },
+                    { id: "procurement-approvals", title: "Requisition Approvals", type: "link", path: "/procurement/requisitions/approvals" },
+                    { id: "procurement-orders", title: "Purchase Orders", type: "link", path: "/procurement/orders" },
                     { id: "procurement-bpa", title: "Blanket Agreements", type: "link", path: "/procurement/blanket-agreements" },
                     { id: "procurement-cpa", title: "Contract Agreements", type: "link", path: "/procurement/cpas" },
                     { id: "procurement-buyer", title: "Buyer Work Area", type: "link", path: "/procurement/buyer-workarea" },

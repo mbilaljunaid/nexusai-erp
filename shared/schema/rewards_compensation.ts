@@ -70,11 +70,46 @@ export const hrmCompensationPlans = pgTable("hrm_compensation_plans", {
     createdAt: timestamp("created_at").default(sql`now()`),
 });
 
+// 4. COMPENSATION ELIGIBILITY PROFILES
+// Rules engine that determines which employees qualify for which compensation plan.
+// Conditions are stored as JSON array: [{ field, operator, value }]
+export const hrmEligibilityProfiles = pgTable("hrm_eligibility_profiles", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    name: varchar("name").notNull(), // "Full-Time Annual Bonus"
+    description: varchar("description"),
+
+    // JSON rule array: [{ field: "workerType", operator: "=", value: "EMPLOYEE" }]
+    conditions: jsonb("conditions"),
+
+    status: varchar("status").default("ACTIVE"),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+    updatedAt: timestamp("updated_at").default(sql`now()`),
+});
+
+// 5. ELIGIBILITY PLAN LINKS
+// Maps an eligibility profile to one or more compensation plans.
+export const hrmEligibilityPlanLinks = pgTable("hrm_eligibility_plan_links", {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id").notNull(),
+
+    profileId: varchar("profile_id").notNull().references(() => hrmEligibilityProfiles.id),
+    planId: varchar("plan_id").notNull().references(() => hrmCompensationPlans.id),
+
+    createdAt: timestamp("created_at").default(sql`now()`),
+});
+
 // SCHEMAS
 export const insertSalaryBasisSchema = createInsertSchema(hrmSalaryBases);
 export const insertWorkerSalarySchema = createInsertSchema(hrmWorkerSalaries);
 export const insertCompPlanSchema = createInsertSchema(hrmCompensationPlans);
+export const insertEligibilityProfileSchema = createInsertSchema(hrmEligibilityProfiles);
+export const insertEligibilityPlanLinkSchema = createInsertSchema(hrmEligibilityPlanLinks);
 
 export type SalaryBasis = typeof hrmSalaryBases.$inferSelect;
 export type WorkerSalary = typeof hrmWorkerSalaries.$inferSelect;
 export type CompPlan = typeof hrmCompensationPlans.$inferSelect;
+export type EligibilityProfile = typeof hrmEligibilityProfiles.$inferSelect;
+export type EligibilityPlanLink = typeof hrmEligibilityPlanLinks.$inferSelect;

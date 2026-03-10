@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { Progress } from '@/components/ui/progress';
 import { Plus, ArrowUp, ArrowDown, CheckCircle2, AlertTriangle, MapPin } from 'lucide-react';
 
 interface LocatorZone { id: string; zoneCode: string; zoneName: string; }
@@ -102,10 +103,12 @@ export default function LocatorPickingSequence() {
         { id: 'cap', header: 'Cap', width: '80px', cell: r => <span className="text-xs">{r.maxCapacity} {r.capacityUom}</span> },
         {
             id: 'util', header: 'Utilization', width: '120px', cell: r => (
-                <div className="flex items-center gap-1.5">
-                    <div className="w-14 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${r.utilizationPct >= 100 ? 'bg-red-500' : r.utilizationPct >= 75 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{ width: `${r.utilizationPct}%` }} />
-                    </div>
+                <div className="flex items-center gap-1.5 pt-1">
+                    <Progress
+                        value={r.utilizationPct}
+                        className="h-2 w-14"
+                        indicatorClassName={r.utilizationPct >= 100 ? 'bg-red-500' : r.utilizationPct >= 75 ? 'bg-amber-500' : 'bg-emerald-500'}
+                    />
                     <span className="text-[10px] font-mono">{r.utilizationPct}%</span>
                 </div>
             )

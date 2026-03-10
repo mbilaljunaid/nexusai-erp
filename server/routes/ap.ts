@@ -227,15 +227,18 @@ apRouter.get("/invoices", async (req, res) => {
 
         const entBusinessUnitId = req.headers["x-business-unit-id"] as string | undefined;
 
+        const tenantId = (req as any).tenantId || (req.user as any)?.tenantId || "default";
+
         const list = await storage.listApInvoices({ // Updated to use storage direct call with options
             limit: limit ? Number(limit) : undefined,
             offset: offset ? Number(offset) : undefined,
             status: status as string | undefined,
             validationStatus: validationStatus as string | undefined,
+            tenantId,
             entBusinessUnitId: entBusinessUnitId,
             filters
         });
-        const total = await apService.getInvoicesCount(); // Count could be updated to apply filters later if needed
+        const total = await storage.getApInvoicesCount(entBusinessUnitId, tenantId); // Count could be updated to apply filters later if needed
         res.json({ data: list, total });
     } catch (e: any) {
         res.status(500).json({ error: e.message });

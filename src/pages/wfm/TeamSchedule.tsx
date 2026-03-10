@@ -14,11 +14,9 @@ import { AIScheduleOptimizer } from "@/components/wfm/AIScheduleOptimizer";
 import { InteractiveSpreadsheet, type SpreadsheetColumn } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
 
-
-// MOCK CONSTANTS
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
-
 export default function TeamSchedule() {
+    const tenantId = "test-tenant-wfm-001";
+
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [weekStart, setWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
@@ -30,7 +28,7 @@ export default function TeamSchedule() {
     const { data: shifts } = useQuery<any>({
         queryKey: ["wfm-shifts"],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/shifts?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/shifts?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch shifts");
             return res.json();
         }
@@ -40,7 +38,7 @@ export default function TeamSchedule() {
     const { data: scheduleData, isLoading } = useQuery<any>({
         queryKey: ["wfm-team-schedule", weekStart],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/schedule/team?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/schedule/team?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch schedule");
             return res.json();
         }
@@ -61,7 +59,7 @@ export default function TeamSchedule() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    tenantId: MOCK_TENANT_ID,
+                    tenantId: tenantId,
                     personId: selectedCell.personId,
                     date: format(selectedCell.date, "yyyy-MM-dd"),
                     shiftId: selectedShiftId
@@ -109,18 +107,18 @@ export default function TeamSchedule() {
                 const assignment = getShiftForCell(person.id, day);
                 return (
                     <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCell({ personId: person.id, date: day })}>
-                    <div className="cursor-pointer h-full w-full flex items-center justify-center p-1">
-                                            {assignment ? (
-                                                <div
-                                                    className={cn(`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`)}
-                                                    title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
-                                                >
-                                                    {assignment.shift.code}
-                                                </div>
-                                            ) : (
-                                                <div className="h-full w-full rounded hover:bg-slate-500/15 min-h-6"></div>
-                                            )}
-                                        </div>
+                        <div className="cursor-pointer h-full w-full flex items-center justify-center p-1">
+                            {assignment ? (
+                                <div
+                                    className={cn(`text-xs font-medium px-2 py-1 rounded text-white truncate w-full text-center ts-bg-${assignment.shift.id}`)}
+                                    title={`${assignment.shift.name} (${assignment.shift.startTime}-${assignment.shift.endTime})`}
+                                >
+                                    {assignment.shift.code}
+                                </div>
+                            ) : (
+                                <div className="h-full w-full rounded hover:bg-slate-500/15 min-h-6"></div>
+                            )}
+                        </div>
                     </Button>
                 );
             }
@@ -203,7 +201,7 @@ export default function TeamSchedule() {
                     setShowAIOptimizer(false);
                     queryClient.invalidateQueries({ queryKey: ["wfm-team-schedule"] });
                 }}
-                tenantId={MOCK_TENANT_ID}
+                tenantId={tenantId}
             />
         </div>
     );

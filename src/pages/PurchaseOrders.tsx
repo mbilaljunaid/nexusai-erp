@@ -1,25 +1,67 @@
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, ShoppingCart, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { IconNavigation } from "@/components/IconNavigation";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { DatePicker } from '@/components/ui/DatePicker';
-
+import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
+
+const poSchema = z.object({
+  vendorId: z.string().min(1, "Vendor ID is required"),
+  totalAmount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
+  deliveryDate: z.string().min(1, "Delivery date is required"),
+});
+
+type POFormValues = z.infer<typeof poSchema>;
 
 export default function PurchaseOrders() {
   const [activeNav, setActiveNav] = useState("list");
+  const { toast } = useToast();
   const { data: pos = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/purchase-orders"] });
+
+  const form = useForm<POFormValues>({
+    resolver: zodResolver(poSchema),
+    defaultValues: {
+      vendorId: "",
+      totalAmount: 0,
+    },
+  });
 
   const createMutation = useMutation({
     mutationFn: (data: any) => apiRequest("POST", "/api/procurement/purchase-orders", data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["/api/procurement/purchase-orders"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/procurement/purchase-orders"] });
+      toast({ title: "Purchase Order created successfully" });
+      form.reset();
+      setActiveNav("list");
+    },
+    onError: (error: any) => {
+      toast({ title: "Failed to create PO", description: error.message, variant: "destructive" });
+    }
   });
+
+  const onSubmit = (data: POFormValues) => {
+    createMutation.mutate({
+      ...data,
+      poNumber: `PO-${Math.floor(Math.random() * 10000)}`,
+      status: "draft",
+      approvalStatus: "PENDING",
+      totalAmount: data.totalAmount.toString(),
+      deliveryDate: new Date(data.deliveryDate).toISOString(),
+      vendorId: data.vendorId,
+      departmentId: "DEPT-1" // Mock
+    });
+  };
 
   const navigationItems = [
     { id: "list", label: "POs", icon: ShoppingCart, badge: pos.length, color: "blue" as const },
@@ -89,13 +131,57 @@ export default function PurchaseOrders() {
           <CardHeader>
             <CardTitle>Create New Purchase Order</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Input placeholder="Vendor ID" />
-            <Input placeholder="Total Amount" type="number" />
-            <DatePicker onChange={() => {}} placeholder="Delivery Date" />
-            <Button className="w-full">
-              <Plus className="w-4 h-4 mr-2" /> Create PO
-            </Button>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="vendorId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vendor ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter Vendor ID (e.g., VEN-001)" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="totalAmount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Total Amount</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter Total Amount" type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="deliveryDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Delivery Date</FormLabel>
+                      <FormControl>
+                        <DatePicker
+                          value={field.value}
+                          onChange={(date) => field.onChange(date)}
+                          placeholder="Select Delivery Date"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+                  <Plus className="w-4 h-4 mr-2" /> {createMutation.isPending ? "Creating..." : "Create PO"}
+                </Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
       )}

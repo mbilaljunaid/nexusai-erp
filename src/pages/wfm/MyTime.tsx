@@ -12,14 +12,10 @@ import { useToast } from "@/hooks/use-toast";
 import { BulkTimeEntryModal } from "@/components/wfm/BulkTimeEntryModal";
 import { StandardPage } from "@/components/layout/StandardPage";
 
-
-// MOCK USER for V1 - Need to get from context later
-const MOCK_USER = {
-    tenantId: "test-tenant-wfm-001",
-    personId: "3ebd9ddb-1566-418d-a0d6-9c773861acc4" // From Verify Script
-};
-
 export default function MyTime() {
+    const tenantId = "test-tenant-wfm-001";
+    const personId = "3ebd9ddb-1566-418d-a0d6-9c773861acc4";
+
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [selectedDate, setSelectedDate] = useState(new Date()); // Current focus date to determine week
@@ -38,7 +34,7 @@ export default function MyTime() {
     const { data: periods } = useQuery<any>({
         queryKey: ["time-periods"],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/time-periods?tenantId=${MOCK_USER.tenantId}`);
+            const res = await fetch(`/api/wfm/time-periods?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch periods");
             return res.json();
         }
@@ -53,7 +49,7 @@ export default function MyTime() {
         queryKey: ["timesheet", activePeriod?.id],
         enabled: !!activePeriod,
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/timesheets?tenantId=${MOCK_USER.tenantId}&personId=${MOCK_USER.personId}&periodId=${activePeriod.id}`);
+            const res = await fetch(`/api/wfm/timesheets?tenantId=${tenantId}&personId=${personId}&periodId=${activePeriod.id}`);
             if (!res.ok) throw new Error("Failed to fetch timesheet");
             return res.json();
         }
@@ -61,9 +57,9 @@ export default function MyTime() {
 
     // 2. Fetch Balances
     const { data: balances, isLoading: balanceLoading } = useQuery<any>({
-        queryKey: ["leave-balances", MOCK_USER.personId],
+        queryKey: ["leave-balances", personId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/balances/${MOCK_USER.personId}?tenantId=${MOCK_USER.tenantId}`);
+            const res = await fetch(`/api/wfm/balances/${personId}?tenantId=${tenantId}`);
             if (!res.ok) return [];
             return res.json();
         }
@@ -82,7 +78,7 @@ export default function MyTime() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    tenantId: MOCK_USER.tenantId,
+                    tenantId: tenantId,
                     timesheetId: timesheet.id,
                     ...entry
                 })
@@ -111,7 +107,7 @@ export default function MyTime() {
         <StandardPage title="My Time">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Manage your weekly time and leave balances.</p>
                 </div>
                 <div className="flex gap-4">
@@ -189,7 +185,7 @@ export default function MyTime() {
                     onSuccess={() => setShowBulkEntry(false)}
                     timesheetId={timesheet.id}
                     startDate={format(periodStart, "yyyy-MM-dd")}
-                    tenantId={MOCK_USER.tenantId}
+                    tenantId={tenantId}
                 />
             )}
         </StandardPage>

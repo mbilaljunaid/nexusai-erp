@@ -91,7 +91,58 @@ import QuestionnaireBuilder from "../pages/hr/QuestionnaireBuilder";
 import OfferLetterTemplateBuilder from "../pages/hr/OfferLetterTemplateBuilder";
 import AIWorkforceInsights from "../pages/wfm/AIWorkforceInsights";
 import HolidayCalendar from "../pages/wfm/HolidayCalendar";
-import RegulatoryCalendar from "../pages/hr/RegulatoryCalendar"; // New import
+import RegulatoryCalendar from "../pages/hr/RegulatoryCalendar";
+
+// New Phase 8 Parity Components
+import PersonSpotlight from "../pages/hr/PersonSpotlight";
+import StatutoryTaxFiling from "../pages/hr/payroll/StatutoryTaxFiling";
+import OffCyclePayment from "../pages/hr/payroll/OffCyclePayment";
+import PayrollSimulator from "../pages/hr/payroll/PayrollSimulator";
+import FmlaWorkbench from "../pages/wfm/FmlaWorkbench";
+import ShiftBiddingBoard from "../pages/wfm/ShiftBiddingBoard";
+import TimeCardAudit from "../pages/wfm/TimeCardAudit";
+import CareerSiteBuilder from "../pages/recruiting/CareerSiteBuilder";
+import CandidateMerge from "../pages/recruiting/CandidateMerge";
+import GoalCascadeTree from "../pages/hr/talent/GoalCascadeTree";
+import ComplianceRenewalMonitor from "../pages/hr/learning/ComplianceRenewalMonitor";
+import SuccessionOrgChart from "../pages/hr/talent/SuccessionOrgChart";
+import WorkforceCompensationWorkbench from "../pages/hr/compensation/WorkforceCompensationWorkbench";
+import EquityAwardsManager from "../pages/hr/compensation/EquityAwardsManager";
+import TotalCompensationStatement from "../pages/hr/compensation/TotalCompensationStatement";
+import GradeLadderSetup from "../pages/hr/orgdesign/GradeLadderSetup";
+import EeoEstablishmentReporting from "../pages/hr/orgdesign/EeoEstablishmentReporting";
+
+// HCM Additional Gap Components
+import SeniorityTracking from "../pages/hr/SeniorityTracking";
+import DocumentRoutingConfig from "../pages/hr/performance/DocumentRoutingConfig";
+import PerformanceToCompIntegration from "../pages/hr/performance/PerformanceToCompIntegration";
+import ExternalTrainingCredit from "../pages/learning/ExternalTrainingCredit";
+import LearningSkillIntegration from "../pages/learning/LearningSkillIntegration";
+import RiskOfLossScoreboard from "../pages/hr/talent/RiskOfLossScoreboard";
+import TreeVersioning from "../pages/hr/orgdesign/TreeVersioning";
+
+// HCM Phase 3 Final Gap Components
+import HireFlowWizard from "../pages/hr/HireFlowWizard";
+import EffectiveDatingPanel from "../pages/hr/EffectiveDatingPanel";
+import JobBoardDistribution from "../pages/recruitment/JobBoardDistribution";
+import LearningRecommendations from "../pages/learning/LearningRecommendations";
+import SuccessionNotification from "../pages/hr/talent/SuccessionNotification";
+
+
+// HCM Phase 9 Gap Components
+import InterviewScoringRubric from "../pages/recruitment/InterviewScoringRubric";
+import RequisitionApprovalRules from "../pages/recruitment/RequisitionApprovalRules";
+import OnboardingChecklistManager from "../pages/recruitment/OnboardingChecklistManager";
+import FeedbackCenter360 from "../pages/hr/performance/FeedbackCenter360";
+import CompEligibilityProfiles from "../pages/hr/compensation/CompEligibilityProfiles";
+import SalaryRangeCompaRatio from "../pages/hr/compensation/SalaryRangeCompaRatio";
+import JobFamiliesProfiles from "../pages/hr/orgdesign/JobFamiliesProfiles";
+
+// HCM Phase 10 Gap Components
+import PayrollDefinitionSetup from "../pages/hr/payroll/PayrollDefinitionSetup";
+import EmploymentContractManager from "../pages/hr/EmploymentContractManager";
+import PositionBudgetingWorkbench from "../pages/hr/PositionBudgetingWorkbench";
+import HRJourneyTemplateBuilder from "../pages/hr/HRJourneyTemplateBuilder";
 
 // HR Analytics
 import HRAnalyticsDashboard from "@/pages/HRAnalyticsDashboard";
@@ -125,16 +176,33 @@ export default function HrRoutes() {
                 <Route path="/hr/recruitment/onboarding-tracker" component={OnboardingTracker} />
                 <Route path="/hr/recruitment/analytics-dashboard" component={RecruitmentAnalytics} />
                 <Route path="/hr/recruitment/campaigns" component={RecruitmentCampaignBuilder} />
+                <Route path="/hr/recruitment/career-site" component={CareerSiteBuilder} />
+                <Route path="/hr/recruitment/candidate-merge" component={CandidateMerge} />
+                <Route path="/hr/recruitment/job-boards" component={JobBoardDistribution} />
+                <Route path="/hr/recruitment/interview-scoring" component={InterviewScoringRubric} />
+                <Route path="/hr/recruitment/approval-rules" component={RequisitionApprovalRules} />
+                <Route path="/hr/recruitment/onboarding-checklist" component={OnboardingChecklistManager} />
 
                 <Route path="/hr/succession" component={SuccessionPlanning} />
+                <Route path="/hr/succession/org-chart" component={SuccessionOrgChart} />
                 <Route path="/hr/talent/competencies" component={CompetencyManagement} />
                 <Route path="/hr/talent/performance/templates" component={PerformanceTemplateBuilder} />
                 <Route path="/hr/talent/questionnaires" component={QuestionnaireBuilder} />
                 <Route path="/hr/talent/offers/templates" component={OfferLetterTemplateBuilder} />
+                <Route path="/hr/talent/goal-cascade" component={GoalCascadeTree} />
                 <Route path="/hr/talent-pool" component={TalentPool} />
                 <Route path="/hr/performance" component={PerformanceManagement} />
                 <Route path="/hr/performance/calibration" component={PerformanceCalibrationBoard} />
+                <Route path="/hr/talent/performance/routing" component={DocumentRoutingConfig} />
+                <Route path="/hr/talent/performance/comp-sync" component={PerformanceToCompIntegration} />
+                <Route path="/hr/performance/360-feedback" component={FeedbackCenter360} />
                 <Route path="/hr/employees" component={EmployeeDirectory} />
+                <Route path="/hr/hire" component={HireFlowWizard} />
+                <Route path="/hr/seniority-tracking" component={SeniorityTracking} />
+                <Route path="/hr/datetrack" component={EffectiveDatingPanel} />
+                <Route path="/hr/employees/spotlight/:id" component={PersonSpotlight} />
+                <Route path="/hr/succession/risk-board" component={RiskOfLossScoreboard} />
+                <Route path="/hr/succession/notifications" component={SuccessionNotification} />
 
                 {/* Payroll & Rewards */}
                 <Route path="/hr/payroll" component={PayrollRuns} />
@@ -143,7 +211,10 @@ export default function HrRoutes() {
                 <Route path="/hr/payroll/setup/costing" component={PayrollCostingSetup} />
                 <Route path="/hr/payroll/setup/events" component={RetroEventGroupSetup} />
                 <Route path="/hr/payroll/setup/balances" component={YTDBalanceUpload} />
+                <Route path="/hr/payroll/statutory-taxes" component={StatutoryTaxFiling} />
                 <Route path="/hr/payroll/processing" component={PayrollProcessing} />
+                <Route path="/hr/payroll/off-cycle" component={OffCyclePayment} />
+                <Route path="/hr/payroll/simulator" component={PayrollSimulator} />
                 <Route path="/hr/payroll/retro" component={RetroactivePayEngine} />
                 <Route path="/hr/payroll/engine" component={PayrollEngine} />
                 <Route path="/hr/payroll/runs/:id">
@@ -160,6 +231,15 @@ export default function HrRoutes() {
                 <Route path="/hr/rewards/payslips/:id">
                     {(params: any) => params ? <PayslipView isOpen={true} onClose={() => { }} runId="demo" assignmentId="demo" data={[]} /> : null}
                 </Route>
+                <Route path="/hr/compensation/total-rewards" component={TotalCompensationStatement} />
+                <Route path="/hr/compensation/equity" component={EquityAwardsManager} />
+                <Route path="/hr/compensation/workbench" component={WorkforceCompensationWorkbench} />
+
+                {/* Phase 10 — New HCM Pages */}
+                <Route path="/hr/payroll/definition-setup" component={PayrollDefinitionSetup} />
+                <Route path="/hr/employment-contracts" component={EmploymentContractManager} />
+                <Route path="/hr/position-budgeting" component={PositionBudgetingWorkbench} />
+                <Route path="/hr/journey-templates" component={HRJourneyTemplateBuilder} />
 
                 {/* Self-Service Routes */}
                 <Route path="/hr/self-service/me" component={ESSDashboard} />
@@ -178,13 +258,20 @@ export default function HrRoutes() {
                 <Route path="/hr/wfm/time-rules" component={TimeRuleBuilder} />
                 <Route path="/hr/wfm/scheduler" component={PredictiveScheduler} />
                 <Route path="/hr/wfm/absence/setup" component={AbsencePlanSetup} />
+                <Route path="/hr/wfm/fmla" component={FmlaWorkbench} />
+                <Route path="/hr/wfm/shift-bidding" component={ShiftBiddingBoard} />
 
                 {/* Configuration / Setup */}
                 <Route path="/hr/setup" component={WorkforceStructureDashboard} />
                 <Route path="/hr/setup/workforce-structures" component={WorkforceStructureSetup} />
+                <Route path="/hr/setup/tree-versioning" component={TreeVersioning} />
                 <Route path="/hr/setup/document-records" component={DocumentOfRecords} />
                 <Route path="/hr/setup/benefits-programs" component={BenefitsProgramSetup} />
+                <Route path="/hr/setup/grade-ladders" component={GradeLadderSetup} />
+                <Route path="/hr/setup/job-families" component={JobFamiliesProfiles} />
                 <Route path="/hr/compensation" component={CompBenDashboard} />
+                <Route path="/hr/compensation/eligibility-profiles" component={CompEligibilityProfiles} />
+                <Route path="/hr/compensation/salary-ranges" component={SalaryRangeCompaRatio} />
 
                 {/* Learning Management (LMS) Routes */}
                 <Route path="/hr/learning/me" component={LearningDashboard} />
@@ -194,9 +281,13 @@ export default function HrRoutes() {
                 <Route path="/hr/learning/play/:id" component={LearningPlayer} />
 
                 {/* Learning Admin - Advanced Features */}
+                <Route path="/hr/learning/compliance" component={ComplianceRenewalMonitor} />
                 <Route path="/hr/learning/admin/assessments" component={AssessmentBuilder} />
                 <Route path="/hr/learning/admin/curricula" component={CurriculumBuilder} />
                 <Route path="/hr/learning/communities" component={CommunityBrowser} />
+                <Route path="/hr/learning/external-credit" component={ExternalTrainingCredit} />
+                <Route path="/hr/learning/skill-sync" component={LearningSkillIntegration} />
+                <Route path="/hr/learning/recommendations" component={LearningRecommendations} />
 
                 {/* Workforce Management (WFM) Routes */}
                 {/* Employee Self-Service */}
@@ -207,6 +298,7 @@ export default function HrRoutes() {
                 <Route path="/hr/wfm/team/schedule" component={TeamSchedule} />
                 <Route path="/hr/wfm/team/approvals" component={ManagerApprovals} />
                 <Route path="/hr/wfm/timekeeper" component={TimekeeperConsole} />
+                <Route path="/hr/wfm/timecard-audit" component={TimeCardAudit} />
 
                 {/* Admin & Configuration */}
                 <Route path="/hr/wfm/admin/shifts" component={ShiftConfiguration} />
@@ -218,6 +310,7 @@ export default function HrRoutes() {
                 <Route path="/hr/analytics" component={HRAnalyticsDashboard} />
                 <Route path="/hr/analytics/predictive" component={HRPredictiveAnalytics} />
                 <Route path="/hr/reports" component={HRReports} />
+                <Route path="/hr/reports/eeo-establishment" component={EeoEstablishmentReporting} />
                 <Route path="/hr/wfm/analytics" component={WfmAnalytics} />
                 <Route path="/hr/wfm/schedules/:deptId" component={PredictiveScheduler} />
                 <Route path="/hr/wfm/time-entries" component={MyTimeCard} /> {/* Reusing for admin view */}

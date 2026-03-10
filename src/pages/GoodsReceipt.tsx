@@ -1,17 +1,84 @@
 import { formatDate } from "@/lib/dateUtils";
 import { useState } from "react";
 import { StandardPage } from "@/components/layout/StandardPage";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Package, FileCheck } from "lucide-react";
 import { IconNavigation } from "@/components/IconNavigation";
 import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+const inspectionSchema = z.object({
+  notes: z.string().min(1, "Notes are required for this action"),
+});
+type InspectionValues = z.infer<typeof inspectionSchema>;
+
+function InspectionForm({ grn, onAction }: { grn: any, onAction: (grnId: string, action: string, notes: string) => void }) {
+  const form = useForm<InspectionValues>({
+    resolver: zodResolver(inspectionSchema),
+    defaultValues: { notes: "" }
+  });
+
+  return (
+    <Form {...form}>
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Inspection Notes..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex gap-2">
+          <Button size="sm" className="flex-1" onClick={() => form.handleSubmit((data) => onAction(grn.id, "accepted", data.notes))()}>
+            <FileCheck className="w-4 h-4 mr-2" /> Accept
+          </Button>
+          <Button size="sm" variant="destructive" className="flex-1" onClick={() => form.handleSubmit((data) => onAction(grn.id, "rejected", data.notes))()}>
+            Reject
+          </Button>
+          <Button size="sm" variant="outline" className="flex-1" onClick={() => form.handleSubmit((data) => onAction(grn.id, "hold", data.notes))()}>
+            Hold
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+}
 
 export default function GoodsReceipt() {
   const [activeNav, setActiveNav] = useState("list");
+  const { toast } = useToast();
   const { data: grns = [] } = useQuery<any[]>({ queryKey: ["/api/procurement/goods-receipts"] });
+
+  const updateMutation = useMutation({
+    mutationFn: (data: { id: string, status: string, qualityStatus: string, notes: string }) =>
+      apiRequest("PATCH", `/api/procurement/goods-receipts/${data.id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/procurement/goods-receipts"] });
+      toast({ title: "Inspection recorded successfully" });
+    }
+  });
+
+  const handleInspect = (grnId: string, action: string, notes: string) => {
+    updateMutation.mutate({
+      id: grnId,
+      status: action === "hold" ? "received" : "inspected", // Mock transition
+      qualityStatus: action,
+      notes
+    });
+  };
 
   const navigationItems = [
     { id: "list", label: "GRNs", icon: Package, badge: grns.length, color: "blue" as const },
@@ -83,20 +150,7 @@ export default function GoodsReceipt() {
                   <CardTitle className="text-base">{grn.grnNumber}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <Input placeholder="Inspection Notes..." />
-                    <div className="flex gap-2">
-                      <Button size="sm" className="flex-1">
-                        <FileCheck className="w-4 h-4 mr-2" /> Accept
-                      </Button>
-                      <Button size="sm" variant="destructive" className="flex-1">
-                        Reject
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
-                        Hold
-                      </Button>
-                    </div>
-                  </div>
+                  <InspectionForm grn={grn} onAction={handleInspect} />
                 </CardContent>
               </Card>
             ))}

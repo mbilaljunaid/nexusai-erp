@@ -77,8 +77,8 @@ import { supplierPortalExternalRouter } from "./routes/supplierPortalExternal";
 import publicCareersRouter from "./routes/public_careers";
 import { mdmRouter } from "./routes/mdm";
 import { enterpriseRoutes } from "./routes/enterprise";
-// // import sourcingRouter from "./routes/sourcing"; // Refactored to modules/scm/routes.ts
-// import { procurementRouter as PROCUREMENT_ROUTER } from "./modules/scm/procurementRoutes"; // Refactored to modules/scm/routes.ts
+// import sourcingRouter from "./routes/sourcing"; // Refactored to modules/scm/routes.ts
+import { procurementRouter } from "./modules/scm/procurementRoutes";
 
 import transportationRouter from "./modules/transportation/routes";
 import carrierRatesRouter from "./routes/carrier_rates";
@@ -104,6 +104,7 @@ import featureFlagRoutes from "./modules/admin/feature-flag.routes";
 import pdfRoutes from "./routes/pdf.routes";
 import { oracleParityRouter } from "./routes/oracle-parity-round5";
 import { scmParityV8Router } from "./routes/scm-parity-v8";
+import { scmParityPhase56Router } from "./routes/scm-parity-phase56";
 
 
 export async function registerRoutes(
@@ -156,7 +157,7 @@ export async function registerRoutes(
   legacyScmRouter.get("/rfqs", scmController.listRfqs);
 
   app.use("/api", legacyScmRouter); // Mounts /api/purchase-orders
-  app.use("/api/procurement", legacyScmRouter); // Mounts /api/procurement/requisitions
+  app.use("/api/procurement", procurementRouter);
 
   // Stub for /api/vendors
   app.get("/api/vendors", (req, res) => res.json([]));
@@ -400,6 +401,9 @@ export async function registerRoutes(
 
   // SCM/MFG Parity v8 — ASN Acknowledgements, Consignment, RMA, Production Adherence, Transfer Pricing, Multi-Modal, Scorecard KPIs
   app.use("/api", scmParityV8Router);
+
+  // SCM/MFG Phase 5/6 Parity — ABC, Catch Weight, Dropship, Rework, Kanban, Overhead, Period Close, CBM, Meters, Freight Claims, ERS
+  app.use("/api", scmParityPhase56Router);
 
   // Order Management
   app.use("/api/order-management", orderRouter);

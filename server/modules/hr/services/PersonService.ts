@@ -9,6 +9,7 @@ import { eq, and, like, or, sql, desc, count, ilike, lte, gte, isNull, inArray }
 import { AorService } from "./AorService";
 import { ComplianceEngineService } from "./ComplianceEngineService";
 import { MaskPII } from "../../../common/decorators/MaskPII";
+import { DateTrackService } from "./DateTrackService";
 
 // Types for Paginated Response
 export interface PaginatedResult<T> {
@@ -117,6 +118,17 @@ export class PersonService {
             const [assignment] = await tx.insert(hrAssignments).values(assignmentData).returning();
             await this.logAudit(tx, { tenantId, actorId, entityType: "ASSIGNMENT", entityId: assignment.id, action: "CREATE", changes: assignmentData });
 
+            // DateTrack: write INITIAL history snapshot
+            await DateTrackService.writeHistory({
+                assignment: { ...assignment },
+                mode: "INITIAL",
+                effectiveDate: assignment.effectiveStartDate ?? new Date().toISOString().split('T')[0],
+                effectiveEndDate: null,
+                actorId,
+                tenantId,
+                changeReason: "Worker Hire",
+            }, tx as any);
+
             // 4. Evaluate Compliance
             await ComplianceEngineService.evaluateTransaction(tenantId, "PERSON", person.id, {
                 ...personData,
@@ -183,6 +195,21 @@ export class PersonService {
                 tenantId, actorId, entityType: "ASSIGNMENT", entityId: "ALL_ACTIVE", action: "TERMINATE",
                 changes: { effectiveEndDate: terminationDate }
             });
+
+            // DateTrack: write TERMINATE snapshot for all affected assignments
+            const terminatedAsgs = await tx.select().from(hrAssignments)
+                .where(eq(hrAssignments.workRelationshipId, relationshipId));
+            for (const asg of terminatedAsgs) {
+                await DateTrackService.writeHistory({
+                    assignment: { ...asg },
+                    mode: "TERMINATE",
+                    effectiveDate: terminationDate,
+                    effectiveEndDate: terminationDate,
+                    actorId,
+                    tenantId,
+                    changeReason: data.reason ?? "Termination",
+                }, tx as any);
+            }
 
             // 4. Evaluate Compliance (Termination)
             await ComplianceEngineService.evaluateTransaction(tenantId, "WORK_RELATIONSHIP", relationshipId, {
@@ -252,6 +279,28 @@ export class PersonService {
                 tenantId, actorId, entityType: "ASSIGNMENT", entityId: newAsg.id, action: "TRANSFER",
                 changes: { from: currentAsg.id, to: newAsg.id, reason: data.reason, ...data }
             });
+
+            // DateTrack: write UPDATE snapshot. End-dated OLD assignment history entry first.
+            await DateTrackService.writeHistory({
+                assignment: { ...currentAsg },
+                mode: "UPDATE",
+                effectiveDate: currentAsg.effectiveStartDate ?? effectiveDate,
+                effectiveEndDate: endDateStr,
+                actorId,
+                tenantId,
+                changeReason: `Transfer — ended prior period`,
+            }, tx as any);
+
+            // DateTrack: write the NEW forward assignment snapshot
+            await DateTrackService.writeHistory({
+                assignment: { ...newAsg },
+                mode: "UPDATE",
+                effectiveDate: effectiveDate,
+                effectiveEndDate: null,
+                actorId,
+                tenantId,
+                changeReason: data.reason ?? "Transfer",
+            }, tx as any);
 
             // 4. Evaluate Compliance (Transfer)
             await ComplianceEngineService.evaluateTransaction(tenantId, "ASSIGNMENT", newAsg.id, {

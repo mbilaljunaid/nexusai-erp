@@ -26,9 +26,11 @@ export default function PurchaseOrderList() {
     const { toast } = useToast();
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
-    const { data: pos = [], isLoading } = useQuery<PurchaseOrder[]>({
+    const { data: posData = [], isLoading } = useQuery<PurchaseOrder[] | any>({
         queryKey: ["/api/procurement/purchase-orders"],
     });
+
+    const pos = Array.isArray(posData) ? posData : [];
 
     const { data: suppliers = [] } = useQuery<any[]>({
         queryKey: ["/api/procurement/suppliers"],
@@ -115,7 +117,7 @@ export default function PurchaseOrderList() {
                 data={pos}
                 columns={columns}
                 isLoading={isLoading}
-             onChange={() => {}} containerHeight="600px" />
+                onChange={() => { }} containerHeight="600px" />
         </StandardPage>
     );
 }

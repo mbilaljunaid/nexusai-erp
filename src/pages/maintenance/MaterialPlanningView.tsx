@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { materialService } from "@/services/maintenance.service";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -333,17 +334,15 @@ export function MaterialPlanningView() {
                                                 <span>Stock Level</span>
                                                 <span>{stockPercent.toFixed(0)}% of reorder point</span>
                                             </div>
-                                            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                                <div
-                                                    className={cn(
-                                                        "h-full transition-all",
-                                                        stockPercent >= 100 ? "bg-green-600" :
-                                                            stockPercent >= 50 ? "bg-yellow-600" :
-                                                                "bg-red-600"
-                                                    )}
-                                                    style={{ width: `${Math.min(stockPercent, 100)}%` }}
-                                                />
-                                            </div>
+                                            <Progress
+                                                value={Math.min(stockPercent, 100)}
+                                                className="h-2 bg-gray-200"
+                                                indicatorClassName={
+                                                    stockPercent >= 100 ? "bg-green-600" :
+                                                        stockPercent >= 50 ? "bg-yellow-600" :
+                                                            "bg-red-600"
+                                                }
+                                            />
                                         </div>
 
                                         <div className="flex justify-between items-center text-sm border-t pt-3">

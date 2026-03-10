@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import { assetHealthService } from "@/services/maintenance.service";
 import {
     Activity,
@@ -386,59 +387,58 @@ export function AssetHealthDashboard() {
 
                             return (
                                 <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedAsset(asset)}>
-                                <Card
-                                                                    key={asset.id}
-                                                                    className={cn(
-                                                                        "cursor-pointer hover:border-primary transition-all",
-                                                                        selectedAsset?.id === asset.id && "border-2 border-primary"
-                                                                    )}
-                                                                >
-                                                                    <CardContent className="pt-4">
-                                                                        <div className="flex items-start justify-between mb-3">
-                                                                            <div className="flex-1">
-                                                                                <div className="font-bold text-lg mb-1">{asset.name}</div>
-                                                                                <div className="text-sm text-muted-foreground">{asset.type}</div>
-                                                                            </div>
-                                                                            <Badge variant="outline" className={statusConfig.color}>
-                                                                                <StatusIcon className="h-3 w-3 mr-1" />
-                                                                                {statusConfig.label}
-                                                                            </Badge>
-                                                                        </div>
+                                    <Card
+                                        key={asset.id}
+                                        className={cn(
+                                            "cursor-pointer hover:border-primary transition-all",
+                                            selectedAsset?.id === asset.id && "border-2 border-primary"
+                                        )}
+                                    >
+                                        <CardContent className="pt-4">
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div className="flex-1">
+                                                    <div className="font-bold text-lg mb-1">{asset.name}</div>
+                                                    <div className="text-sm text-muted-foreground">{asset.type}</div>
+                                                </div>
+                                                <Badge variant="outline" className={statusConfig.color}>
+                                                    <StatusIcon className="h-3 w-3 mr-1" />
+                                                    {statusConfig.label}
+                                                </Badge>
+                                            </div>
 
-                                                                        <div className="space-y-2">
-                                                                            <div>
-                                                                                <div className="flex items-center justify-between text-sm mb-1">
-                                                                                    <span className="text-muted-foreground">Health Score</span>
-                                                                                    <span className={cn("font-bold text-2xl", healthColor)}>{asset.healthScore}</span>
-                                                                                </div>
-                                                                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                                                                    <div
-                                                                                        className={cn("h-full transition-all", asset.healthScore >= 70 ? "bg-green-600" : asset.healthScore >= 50 ? "bg-yellow-600" : "bg-red-600")}
-                                                                                        style={{ width: `${asset.healthScore}%` }}
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
+                                            <div className="space-y-2">
+                                                <div>
+                                                    <div className="flex items-center justify-between text-sm mb-1">
+                                                        <span className="text-muted-foreground">Health Score</span>
+                                                        <span className={cn("font-bold text-2xl", healthColor)}>{asset.healthScore}</span>
+                                                    </div>
+                                                    <Progress
+                                                        value={asset.healthScore}
+                                                        className="h-2 bg-gray-200"
+                                                        indicatorClassName={asset.healthScore >= 70 ? "bg-green-600" : asset.healthScore >= 50 ? "bg-yellow-600" : "bg-red-600"}
+                                                    />
+                                                </div>
 
-                                                                            <div className="grid grid-cols-2 gap-2 text-xs">
-                                                                                <div>
-                                                                                    <span className="text-muted-foreground">Failure Risk:</span>
-                                                                                    <div className="font-medium">{asset.failureProbability}%</div>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <span className="text-muted-foreground">Uptime:</span>
-                                                                                    <div className="font-medium">{asset.uptime}%</div>
-                                                                                </div>
-                                                                            </div>
+                                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                                    <div>
+                                                        <span className="text-muted-foreground">Failure Risk:</span>
+                                                        <div className="font-medium">{asset.failureProbability}%</div>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-muted-foreground">Uptime:</span>
+                                                        <div className="font-medium">{asset.uptime}%</div>
+                                                    </div>
+                                                </div>
 
-                                                                            {asset.nextPM && (
-                                                                                <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2 border-t">
-                                                                                    <Calendar className="h-3 w-3" />
-                                                                                    Next PM: {asset.nextPM}
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    </CardContent>
-                                                                </Card>
+                                                {asset.nextPM && (
+                                                    <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2 border-t">
+                                                        <Calendar className="h-3 w-3" />
+                                                        Next PM: {asset.nextPM}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
                                 </Button>
                             );
                         })}

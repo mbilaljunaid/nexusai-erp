@@ -16,6 +16,8 @@ interface AssetNode {
     parentId?: string | null;
 }
 
+const INDENT_MAP: Record<number, string> = { 0: "pl-2", 1: "pl-6", 2: "pl-10", 3: "pl-14", 4: "pl-[72px]", 5: "pl-[88px]", 6: "pl-[104px]", 7: "pl-[120px]" };
+
 const TreeNode = ({ node, level = 0 }: { node: AssetNode, level?: number }) => {
     const [isOpen, setIsOpen] = useState(false);
     const hasChildren = node.children && node.children.length > 0;
@@ -23,22 +25,21 @@ const TreeNode = ({ node, level = 0 }: { node: AssetNode, level?: number }) => {
     return (
         <div className="select-none">
             <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setIsOpen(!isOpen)}>
-            <div
-                            className={cn(`flex items-center gap-2 py-2 px-2 hover:bg-muted/50 rounded cursor-pointer ${level === 0 ? 'font-medium' : 'text-sm'}`)}
-                            style={{ paddingLeft: `${level * 16 + 8}px` }} // eslint-disable-line react-dom/no-unsafe-inline-style
-                        >
-                            {hasChildren ? (
-                                isOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                                <span className="w-4" />
-                            )}
+                <div
+                    className={cn("flex items-center gap-2 py-2 px-2 hover:bg-muted/50 rounded cursor-pointer", level === 0 ? 'font-medium' : 'text-sm', INDENT_MAP[level] || "pl-[140px]")}
+                >
+                    {hasChildren ? (
+                        isOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                        <span className="w-4" />
+                    )}
 
-                            {level === 0 ? <Layers className="h-4 w-4 text-primary" /> : <Box className="h-4 w-4 text-blue-500" />}
+                    {level === 0 ? <Layers className="h-4 w-4 text-primary" /> : <Box className="h-4 w-4 text-blue-500" />}
 
-                            <span className="truncate">
-                                {node.assetNumber} <span className="text-muted-foreground font-normal">- {node.description}</span>
-                            </span>
-                        </div>
+                    <span className="truncate">
+                        {node.assetNumber} <span className="text-muted-foreground font-normal">- {node.description}</span>
+                    </span>
+                </div>
             </Button>
 
             {isOpen && hasChildren && (

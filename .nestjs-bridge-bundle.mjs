@@ -159,6 +159,7 @@ __export(schema_exports, {
   apAuditLogs: () => apAuditLogs,
   apDistributionSetLines: () => apDistributionSetLines,
   apDistributionSets: () => apDistributionSets,
+  apErsRunLog: () => apErsRunLog,
   apHolds: () => apHolds,
   apInvoiceDistributions: () => apInvoiceDistributions,
   apInvoiceLines: () => apInvoiceLines,
@@ -314,6 +315,8 @@ __export(schema_exports, {
   cstCostScenarios: () => cstCostScenarios,
   cstItemCosts: () => cstItemCosts,
   cstLandedCosts: () => cstLandedCosts,
+  cstOverheadRates: () => cstOverheadRates,
+  cstPeriodStatuses: () => cstPeriodStatuses,
   cstStandardCosts: () => cstStandardCosts,
   cstTransactions: () => cstTransactions,
   cstTransferPricingAdjustments: () => cstTransferPricingAdjustments,
@@ -440,6 +443,7 @@ __export(schema_exports, {
   hrAllocatedTasks: () => hrAllocatedTasks,
   hrAnalyticsSnapshots: () => hrAnalyticsSnapshots,
   hrAor: () => hrAor,
+  hrAssignmentHistory: () => hrAssignmentHistory,
   hrAssignments: () => hrAssignments,
   hrAuditApprovals: () => hrAuditApprovals,
   hrAuditLogs: () => hrAuditLogs,
@@ -451,8 +455,11 @@ __export(schema_exports, {
   hrComplianceViolations: () => hrComplianceViolations,
   hrDelegations: () => hrDelegations,
   hrDocuments: () => hrDocuments,
+  hrGradeSteps: () => hrGradeSteps,
   hrGrades: () => hrGrades,
   hrHdlImports: () => hrHdlImports,
+  hrJobFamilies: () => hrJobFamilies,
+  hrJobProfiles: () => hrJobProfiles,
   hrJobs: () => hrJobs,
   hrKpiDefinitions: () => hrKpiDefinitions,
   hrLocations: () => hrLocations,
@@ -478,6 +485,8 @@ __export(schema_exports, {
   hrmBenPrograms: () => hrmBenPrograms,
   hrmCompensationPlans: () => hrmCompensationPlans,
   hrmCompetencies: () => hrmCompetencies,
+  hrmEligibilityPlanLinks: () => hrmEligibilityPlanLinks,
+  hrmEligibilityProfiles: () => hrmEligibilityProfiles,
   hrmJobProfiles: () => hrmJobProfiles,
   hrmLaborPolicies: () => hrmLaborPolicies,
   hrmLearningAssessmentAttempts: () => hrmLearningAssessmentAttempts,
@@ -653,6 +662,7 @@ __export(schema_exports, {
   insertArTransactionTypeSchema: () => insertArTransactionTypeSchema,
   insertAsnHeaderSchema: () => insertAsnHeaderSchema,
   insertAsnLineSchema: () => insertAsnLineSchema,
+  insertAssignmentHistorySchema: () => insertAssignmentHistorySchema,
   insertAssignmentSchema: () => insertAssignmentSchema,
   insertAuditLogSchema: () => insertAuditLogSchema,
   insertBadgeDefinitionSchema: () => insertBadgeDefinitionSchema,
@@ -766,6 +776,8 @@ __export(schema_exports, {
   insertEducationStudentSchema: () => insertEducationStudentSchema,
   insertEgpItemCategorySchema: () => insertEgpItemCategorySchema,
   insertEgpSystemItemSchema: () => insertEgpSystemItemSchema,
+  insertEligibilityPlanLinkSchema: () => insertEligibilityPlanLinkSchema,
+  insertEligibilityProfileSchema: () => insertEligibilityProfileSchema,
   insertEmailTemplateSchema: () => insertEmailTemplateSchema,
   insertEmployeeSchema: () => insertEmployeeSchema,
   insertEncryptedFieldSchema: () => insertEncryptedFieldSchema,
@@ -854,6 +866,7 @@ __export(schema_exports, {
   insertGlValueSetSchema: () => insertGlValueSetSchema,
   insertGoalSchema: () => insertGoalSchema,
   insertGradeSchema: () => insertGradeSchema,
+  insertGradeStepSchema: () => insertGradeStepSchema,
   insertHdlImportSchema: () => insertHdlImportSchema,
   insertHoldDefinitionSchema: () => insertHoldDefinitionSchema,
   insertHoldSchema: () => insertHoldSchema,
@@ -888,7 +901,9 @@ __export(schema_exports, {
   insertInventoryTransactionSchema: () => insertInventoryTransactionSchema,
   insertInvoiceSchema: () => insertInvoiceSchema,
   insertIssueSchema: () => insertIssueSchema,
+  insertJobFamilySchema: () => insertJobFamilySchema,
   insertJobPostingSchema: () => insertJobPostingSchema,
+  insertJobProfileSchema: () => insertJobProfileSchema,
   insertJobProposalSchema: () => insertJobProposalSchema,
   insertJobSchema: () => insertJobSchema,
   insertKnowledgeArticleSchema: () => insertKnowledgeArticleSchema,
@@ -1168,6 +1183,9 @@ __export(schema_exports, {
   insertWorkRelationshipSchema: () => insertWorkRelationshipSchema,
   insertWorkerSalarySchema: () => insertWorkerSalarySchema,
   interactions: () => interactions,
+  invAbcAssignments: () => invAbcAssignments,
+  invKanbanCards: () => invKanbanCards,
+  invOnhandBalances: () => invOnhandBalances,
   inventory: () => inventory,
   inventoryLocators: () => inventoryLocators,
   inventoryLotSerial: () => inventoryLotSerial,
@@ -1196,6 +1214,7 @@ __export(schema_exports, {
   leaseSchedules: () => leaseSchedules,
   leaveRequests: () => leaveRequests,
   maintAssetsExtension: () => maintAssetsExtension,
+  maintCbmRules: () => maintCbmRules,
   maintCostTypeEnum: () => maintCostTypeEnum,
   maintFailureCodes: () => maintFailureCodes,
   maintFailureCodesRelations: () => maintFailureCodesRelations,
@@ -1254,6 +1273,8 @@ __export(schema_exports, {
   marketplaceTransactions: () => marketplaceTransactions,
   mdmAuditLog: () => mdmAuditLog,
   mdmChangeRequests: () => mdmChangeRequests,
+  mfgFormulaHeaders: () => mfgFormulaHeaders,
+  mfgWorkOrdersPhase56: () => mfgWorkOrdersPhase56,
   mobileDevices: () => mobileDevices,
   mrpPlans: () => mrpPlans,
   mrpRecommendations: () => mrpRecommendations,
@@ -1302,6 +1323,8 @@ __export(schema_exports, {
   planVersions: () => planVersions,
   planVersionsRelations: () => planVersionsRelations,
   plans: () => plans,
+  poDropShipLinks: () => poDropShipLinks,
+  poSupplierScores: () => poSupplierScores,
   ppmAssetLines: () => ppmAssetLines,
   ppmBillRateSchedules: () => ppmBillRateSchedules,
   ppmBillRates: () => ppmBillRates,
@@ -1449,6 +1472,7 @@ __export(schema_exports, {
   tlStops: () => tlStops,
   tlTrackingAlerts: () => tlTrackingAlerts,
   tlTrackingMilestones: () => tlTrackingMilestones,
+  tmsFreightClaims: () => tmsFreightClaims,
   trainingFilterRequests: () => trainingFilterRequests,
   trainingResourceLikes: () => trainingResourceLikes,
   trainingResources: () => trainingResources,
@@ -1792,6 +1816,8 @@ import { createInsertSchema as createInsertSchema2 } from "drizzle-zod";
 import { relations } from "drizzle-orm";
 var apSuppliers = pgTable2("ap_suppliers", {
   id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  tenantId: varchar2("tenant_id"),
+  // Multi-tenant isolation
   supplierNumber: varchar2("supplier_number", { length: 50 }),
   // Business Key
   name: varchar2("name", { length: 255 }).notNull(),
@@ -1821,6 +1847,8 @@ var apSuppliers = pgTable2("ap_suppliers", {
 var insertApSupplierSchema = createInsertSchema2(apSuppliers);
 var apSupplierSites = pgTable2("ap_supplier_sites", {
   id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  tenantId: varchar2("tenant_id"),
+  // Multi-tenant isolation
   supplierId: varchar2("supplier_id").notNull(),
   // Parent
   orgId: varchar2("org_id").default("1"),
@@ -1846,6 +1874,8 @@ var apSupplierSites = pgTable2("ap_supplier_sites", {
 var insertApSupplierSiteSchema = createInsertSchema2(apSupplierSites);
 var apInvoices = pgTable2("ap_invoices", {
   id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  tenantId: varchar2("tenant_id"),
+  // Multi-tenant isolation
   invoiceId: varchar2("invoice_id", { length: 50 }),
   // Logical ID if needed, or use serial ID
   supplierId: varchar2("supplier_id").notNull(),
@@ -2013,6 +2043,8 @@ var apPaymentBatches = pgTable2("ap_payment_batches", {
 var insertApPaymentBatchSchema = createInsertSchema2(apPaymentBatches);
 var apPayments = pgTable2("ap_payments", {
   id: varchar2("id").primaryKey().default(sql2`gen_random_uuid()`),
+  tenantId: varchar2("tenant_id"),
+  // Multi-tenant isolation
   paymentNumber: varchar2("payment_number", { length: 50 }),
   // Internal sequential
   checkNumber: varchar2("check_number"),
@@ -4943,6 +4975,52 @@ var hrGrades = pgTable8("hr_grades", {
   code: varchar8("code").notNull(),
   name: varchar8("name").notNull(),
   payScaleId: varchar8("pay_scale_id"),
+  // Salary Bands (for CompaRatio calculation)
+  minSalary: numeric8("min_salary", { precision: 15, scale: 2 }),
+  midSalary: numeric8("mid_salary", { precision: 15, scale: 2 }),
+  maxSalary: numeric8("max_salary", { precision: 15, scale: 2 }),
+  salaryCurrency: varchar8("salary_currency").default("USD"),
+  activeStatus: varchar8("active_status").default("ACTIVE"),
+  createdAt: timestamp8("created_at").default(sql8`now()`),
+  updatedAt: timestamp8("updated_at").default(sql8`now()`)
+});
+var hrGradeSteps = pgTable8("hr_grade_steps", {
+  id: varchar8("id").primaryKey().default(sql8`gen_random_uuid()`),
+  tenantId: varchar8("tenant_id").notNull(),
+  gradeId: varchar8("grade_id").notNull().references(() => hrGrades.id),
+  stepNumber: integer8("step_number").notNull(),
+  // 1, 2, 3...
+  description: varchar8("description"),
+  // e.g. "Step 1 — Entry"
+  salary: numeric8("salary", { precision: 15, scale: 2 }).notNull(),
+  currency: varchar8("currency").default("USD"),
+  createdAt: timestamp8("created_at").default(sql8`now()`)
+});
+var hrJobFamilies = pgTable8("hr_job_families", {
+  id: varchar8("id").primaryKey().default(sql8`gen_random_uuid()`),
+  tenantId: varchar8("tenant_id").notNull(),
+  code: varchar8("code").notNull(),
+  name: varchar8("name").notNull(),
+  // Technology, Finance, HR
+  description: varchar8("description"),
+  activeStatus: varchar8("active_status").default("ACTIVE"),
+  createdAt: timestamp8("created_at").default(sql8`now()`),
+  updatedAt: timestamp8("updated_at").default(sql8`now()`)
+});
+var hrJobProfiles = pgTable8("hr_job_profiles", {
+  id: varchar8("id").primaryKey().default(sql8`gen_random_uuid()`),
+  tenantId: varchar8("tenant_id").notNull(),
+  jobFamilyId: varchar8("job_family_id").notNull().references(() => hrJobFamilies.id),
+  jobId: varchar8("job_id").references(() => hrJobs.id),
+  // Optional link to specific job
+  name: varchar8("name").notNull(),
+  // e.g. "Sr. Software Engineer Profile"
+  gradeRangeMin: varchar8("grade_range_min"),
+  // e.g. IC4
+  gradeRangeMax: varchar8("grade_range_max"),
+  // e.g. IC5
+  // Required competencies: [{ competency: string, proficiency: string }]
+  requiredCompetencies: jsonb6("required_competencies"),
   activeStatus: varchar8("active_status").default("ACTIVE"),
   createdAt: timestamp8("created_at").default(sql8`now()`),
   updatedAt: timestamp8("updated_at").default(sql8`now()`)
@@ -4971,10 +5049,13 @@ var insertLocationSchema = createInsertSchema8(hrLocations);
 var insertOrganizationSchema = createInsertSchema8(hrOrganizations);
 var insertJobSchema = createInsertSchema8(hrJobs);
 var insertGradeSchema = createInsertSchema8(hrGrades);
+var insertGradeStepSchema = createInsertSchema8(hrGradeSteps);
 var insertPositionSchema = createInsertSchema8(hrPositions);
+var insertJobFamilySchema = createInsertSchema8(hrJobFamilies);
+var insertJobProfileSchema = createInsertSchema8(hrJobProfiles);
 
 // shared/schema/hr_worker.ts
-import { pgTable as pgTable9, varchar as varchar9, timestamp as timestamp9, boolean as boolean9, numeric as numeric9, date as date3 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable9, varchar as varchar9, timestamp as timestamp9, boolean as boolean9, numeric as numeric9, date as date3, text as text7 } from "drizzle-orm/pg-core";
 import { sql as sql9 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema9 } from "drizzle-zod";
 var hrPersons = pgTable9("hr_persons", {
@@ -5048,6 +5129,11 @@ var hrAssignments = pgTable9("hr_assignments", {
   // Details
   primaryAssignmentFlag: boolean9("primary_assignment_flag").default(true),
   fullTimeEquivalent: numeric9("fte", { precision: 5, scale: 2 }).default("1.0"),
+  // Oracle-parity fields
+  probationEndDate: date3("probation_end_date"),
+  workingHoursPerWeek: numeric9("working_hours_per_week", { precision: 4, scale: 1 }).default("40.0"),
+  gradeStepId: varchar9("grade_step_id"),
+  // References hrGradeSteps (loose ref to avoid circular dep)
   // Effective Date Simulation (for now, latest active row)
   effectiveStartDate: date3("effective_start_date").notNull(),
   effectiveEndDate: date3("effective_end_date"),
@@ -5057,9 +5143,35 @@ var hrAssignments = pgTable9("hr_assignments", {
   createdAt: timestamp9("created_at").default(sql9`now()`),
   updatedAt: timestamp9("updated_at").default(sql9`now()`)
 });
+var hrAssignmentHistory = pgTable9("hr_assignment_history", {
+  id: varchar9("id", { length: 36 }).primaryKey().$defaultFn(() => crypto.randomUUID()),
+  assignmentId: varchar9("assignment_id", { length: 36 }).notNull().references(() => hrAssignments.id, { onDelete: "cascade" }),
+  // DateTrack metadata
+  dateTrackMode: varchar9("datetrack_mode", { length: 20 }).notNull(),
+  // 'CORRECTION' | 'UPDATE' | 'FUTURE'
+  effectiveStartDate: date3("effective_start_date").notNull(),
+  effectiveEndDate: date3("effective_end_date"),
+  // null = 4712-12-31 (end of time)
+  // Snapshot of assignment values at this effective date
+  jobId: varchar9("job_id", { length: 36 }),
+  positionId: varchar9("position_id", { length: 36 }),
+  gradeId: varchar9("grade_id", { length: 36 }),
+  departmentId: varchar9("department_id", { length: 36 }),
+  locationId: varchar9("location_id", { length: 36 }),
+  managerId: varchar9("manager_id", { length: 36 }),
+  gradeStepId: varchar9("grade_step_id", { length: 36 }),
+  fullTimeEquivalent: numeric9("fte", { precision: 5, scale: 2 }),
+  workingHoursPerWeek: numeric9("working_hours_per_week", { precision: 4, scale: 1 }),
+  probationEndDate: date3("probation_end_date"),
+  // Audit trail
+  changedBy: varchar9("changed_by", { length: 255 }),
+  changeReason: text7("change_reason"),
+  createdAt: timestamp9("created_at").default(sql9`now()`)
+});
 var insertPersonSchema = createInsertSchema9(hrPersons);
 var insertWorkRelationshipSchema = createInsertSchema9(hrWorkRelationships);
 var insertAssignmentSchema = createInsertSchema9(hrAssignments);
+var insertAssignmentHistorySchema = createInsertSchema9(hrAssignmentHistory);
 
 // shared/schema/hr_documents.ts
 import { pgTable as pgTable10, varchar as varchar10, timestamp as timestamp10, date as date4 } from "drizzle-orm/pg-core";
@@ -5211,14 +5323,14 @@ var insertHrAuditLogSchema = createInsertSchema12(hrAuditLogs);
 var insertHrAuditApprovalsSchema = createInsertSchema12(hrAuditApprovals);
 
 // shared/schema/talent_succession.ts
-import { pgTable as pgTable13, varchar as varchar13, timestamp as timestamp13, integer as integer12, date as date6, text as text7 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable13, varchar as varchar13, timestamp as timestamp13, integer as integer12, date as date6, text as text8 } from "drizzle-orm/pg-core";
 import { sql as sql13 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema13 } from "drizzle-zod";
 var hrmTalentPools = pgTable13("hrm_talent_pools", {
   id: varchar13("id").primaryKey().default(sql13`gen_random_uuid()`),
   tenantId: varchar13("tenant_id").notNull(),
   name: varchar13("name").notNull(),
-  description: text7("description"),
+  description: text8("description"),
   ownerId: varchar13("owner_id").references(() => hrPersons.id),
   // HR BP or Manager
   status: varchar13("status").default("ACTIVE"),
@@ -5253,7 +5365,7 @@ var hrmSuccessionCandidates = pgTable13("hrm_succession_candidates", {
   // 1, 2, 3
   nineBoxPosition: varchar13("nine_box_position"),
   // HIGH_PERF_HIGH_POT, etc.
-  notes: text7("notes"),
+  notes: text8("notes"),
   createdAt: timestamp13("created_at").default(sql13`now()`),
   updatedAt: timestamp13("updated_at").default(sql13`now()`)
 });
@@ -5266,7 +5378,7 @@ var hrmReadinessAssessments = pgTable13("hrm_readiness_assessments", {
   leadershipCapability: integer12("leadership_capability").notNull(),
   culturalFit: integer12("cultural_fit").notNull(),
   overallScore: integer12("overall_score"),
-  developmentNeeds: text7("development_needs"),
+  developmentNeeds: text8("development_needs"),
   readinessTimeline: varchar13("readiness_timeline"),
   createdAt: timestamp13("created_at").default(sql13`now()`),
   updatedBy: varchar13("updated_by")
@@ -5278,7 +5390,7 @@ var hrmPositionHistory = pgTable13("hrm_position_history", {
   previousPosition: varchar13("previous_position"),
   newPosition: varchar13("new_position").notNull(),
   changedBy: varchar13("changed_by"),
-  changeReason: text7("change_reason"),
+  changeReason: text8("change_reason"),
   createdAt: timestamp13("created_at").default(sql13`now()`)
 });
 var insertTalentPoolSchema = createInsertSchema13(hrmTalentPools);
@@ -5288,7 +5400,7 @@ var insertReadinessAssessmentSchema = createInsertSchema13(hrmReadinessAssessmen
 var insertPositionHistorySchema = createInsertSchema13(hrmPositionHistory);
 
 // shared/schema/hr_hdl.ts
-import { pgTable as pgTable14, varchar as varchar14, text as text8, timestamp as timestamp14, jsonb as jsonb9 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable14, varchar as varchar14, text as text9, timestamp as timestamp14, jsonb as jsonb9 } from "drizzle-orm/pg-core";
 import { sql as sql14 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema14 } from "drizzle-zod";
 var hrHdlImports = pgTable14("hr_hdl_imports", {
@@ -5299,10 +5411,10 @@ var hrHdlImports = pgTable14("hr_hdl_imports", {
   // WORKER, DEPT, JOB
   status: varchar14("status").default("PENDING"),
   // PENDING, PROCESSING, COMPLETED, FAILED
-  totalLines: text8("total_lines"),
+  totalLines: text9("total_lines"),
   // Storing as text to avoid int overflow if huge, though unlikely for "Lite"
-  successLines: text8("success_lines").default("0"),
-  failedLines: text8("failed_lines").default("0"),
+  successLines: text9("success_lines").default("0"),
+  failedLines: text9("failed_lines").default("0"),
   errorReport: jsonb9("error_report"),
   // Array of { line: 1, error: "..." }
   uploadedBy: varchar14("uploaded_by").notNull(),
@@ -5352,7 +5464,7 @@ var hrDelegations = pgTable16("hr_delegations", {
 var insertHrDelegationSchema = createInsertSchema16(hrDelegations);
 
 // shared/schema/hr_compliance.ts
-import { pgTable as pgTable17, varchar as varchar17, timestamp as timestamp17, jsonb as jsonb10, boolean as boolean15, integer as integer13, text as text9 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable17, varchar as varchar17, timestamp as timestamp17, jsonb as jsonb10, boolean as boolean15, integer as integer13, text as text10 } from "drizzle-orm/pg-core";
 import { sql as sql17 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema17 } from "drizzle-zod";
 var hrComplianceFrameworks = pgTable17("hr_compliance_frameworks", {
@@ -5361,7 +5473,7 @@ var hrComplianceFrameworks = pgTable17("hr_compliance_frameworks", {
   code: varchar17("code").notNull(),
   // e.g., GDPR, HIPAA, SOX, WTD
   name: varchar17("name").notNull(),
-  description: text9("description"),
+  description: text10("description"),
   jurisdiction: varchar17("jurisdiction"),
   // e.g., EU, US, UK, GLOBAL
   isActive: boolean15("is_active").default(true),
@@ -5374,7 +5486,7 @@ var hrComplianceRules = pgTable17("hr_compliance_rules", {
   frameworkId: varchar17("framework_id").references(() => hrComplianceFrameworks.id),
   code: varchar17("code").notNull(),
   name: varchar17("name").notNull(),
-  description: text9("description"),
+  description: text10("description"),
   severity: varchar17("severity").notNull(),
   // critical, high, medium, low
   category: varchar17("category").notNull().default("REGULATORY"),
@@ -5411,7 +5523,7 @@ var hrPolicyAcknowledgements = pgTable17("hr_policy_acknowledgements", {
   // "v1.0", "2026-A"
   ipAddress: varchar17("ip_address"),
   // Audit trail
-  userAgent: text9("user_agent"),
+  userAgent: text10("user_agent"),
   // Device info
   acknowledgedAt: timestamp17("acknowledged_at").defaultNow()
 });
@@ -5422,7 +5534,7 @@ var hrSodRules = pgTable17("hr_sod_rules", {
   roleCodeB: varchar17("role_code_b").notNull(),
   riskLevel: varchar17("risk_level").notNull(),
   // CRITICAL, HIGH, MEDIUM
-  description: text9("description"),
+  description: text10("description"),
   createdAt: timestamp17("created_at").defaultNow()
 });
 var hrComplianceEvents = pgTable17("hr_compliance_events", {
@@ -5448,13 +5560,13 @@ var hrComplianceViolations = pgTable17("hr_compliance_violations", {
   status: varchar17("status").default("open"),
   // open, investigation, resolved, dismissed
   severity: varchar17("severity").notNull(),
-  description: text9("description"),
+  description: text10("description"),
   remediationActions: jsonb10("remediation_actions"),
   // Array of required steps
   assignedTo: varchar17("assigned_to"),
   // User ID of compliance officer
   resolvedAt: timestamp17("resolved_at"),
-  resolutionNotes: text9("resolution_notes"),
+  resolutionNotes: text10("resolution_notes"),
   createdAt: timestamp17("created_at").default(sql17`now()`)
 });
 var insertComplianceFrameworkSchema = createInsertSchema17(hrComplianceFrameworks);
@@ -5466,7 +5578,7 @@ var insertPolicyAcknowledgementSchema = createInsertSchema17(hrPolicyAcknowledge
 var insertSodRuleSchema = createInsertSchema17(hrSodRules);
 
 // shared/schema/hr_analytics.ts
-import { pgTable as pgTable18, varchar as varchar18, text as text10, timestamp as timestamp18, numeric as numeric11, boolean as boolean16, jsonb as jsonb11, integer as integer14 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable18, varchar as varchar18, text as text11, timestamp as timestamp18, numeric as numeric11, boolean as boolean16, jsonb as jsonb11, integer as integer14 } from "drizzle-orm/pg-core";
 import { sql as sql18 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema18 } from "drizzle-zod";
 var hrKpiDefinitions = pgTable18("hr_kpi_definitions", {
@@ -5475,7 +5587,7 @@ var hrKpiDefinitions = pgTable18("hr_kpi_definitions", {
   // e.g., "Total Headcount", "Voluntary Turnover"
   code: varchar18("code").notNull().unique(),
   // e.g., "HR_HEADCOUNT", "HR_TURNOVER_VOL"
-  description: text10("description"),
+  description: text11("description"),
   category: varchar18("category").notNull(),
   // "WORKFORCE", "RECRUITING", "PERFORMANCE"
   periodicity: varchar18("periodicity").default("DAILY"),
@@ -5486,7 +5598,7 @@ var hrKpiDefinitions = pgTable18("hr_kpi_definitions", {
   // NUMBER, PERCENT, CURRENCY
   targetValue: numeric11("target_value"),
   // Optional goal
-  sqlLogic: text10("sql_logic"),
+  sqlLogic: text11("sql_logic"),
   // Descriptive SQL or actual execution query
   isActive: boolean16("is_active").default(true),
   createdAt: timestamp18("created_at").default(sql18`now()`),
@@ -5553,7 +5665,7 @@ var hrReportSchedules = pgTable18("hr_report_schedules", {
 var insertHrReportScheduleSchema = createInsertSchema18(hrReportSchedules);
 
 // shared/schema/manufacturing.ts
-import { pgTable as pgTable19, varchar as varchar19, text as text11, timestamp as timestamp19, integer as integer15, boolean as boolean17, numeric as numeric12 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable19, varchar as varchar19, text as text12, timestamp as timestamp19, integer as integer15, boolean as boolean17, numeric as numeric12 } from "drizzle-orm/pg-core";
 import { sql as sql19 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema19 } from "drizzle-zod";
 import { z as z7 } from "zod";
@@ -5581,7 +5693,7 @@ var workCenters = pgTable19("work_centers", {
   code: varchar19("code").notNull().unique(),
   // Added explicit code column if missing in recent view
   name: varchar19("name").notNull(),
-  description: text11("description"),
+  description: text12("description"),
   capacity: integer15("capacity"),
   status: varchar19("status").default("active"),
   calendarId: varchar19("calendar_id"),
@@ -5663,7 +5775,7 @@ var qualityInspections = pgTable19("quality_inspections", {
   inspector: varchar19("inspector"),
   status: varchar19("status").default("pending"),
   // pending, passed, failed
-  findings: text11("findings"),
+  findings: text12("findings"),
   createdAt: timestamp19("created_at").default(sql19`now()`)
 });
 var qualityResults = pgTable19("mfg_quality_results", {
@@ -5682,7 +5794,7 @@ var qualityResults = pgTable19("mfg_quality_results", {
 var productionCalendars = pgTable19("production_calendars", {
   id: varchar19("id").primaryKey().default(sql19`gen_random_uuid()`),
   calendarCode: varchar19("calendar_code").notNull().unique(),
-  description: text11("description"),
+  description: text12("description"),
   isDefault: boolean17("is_default").default(false),
   status: varchar19("status").default("active"),
   weekendDays: varchar19("weekend_days").default("SAT,SUN"),
@@ -5721,7 +5833,7 @@ var standardOperations = pgTable19("standard_operations", {
   id: varchar19("id").primaryKey().default(sql19`gen_random_uuid()`),
   code: varchar19("code").notNull().unique(),
   name: varchar19("name").notNull(),
-  description: text11("description"),
+  description: text12("description"),
   defaultWorkCenterId: varchar19("default_work_center_id"),
   defaultSetupTime: numeric12("default_setup_time", { precision: 10, scale: 2 }).default("0"),
   defaultRunTime: numeric12("default_run_time", { precision: 10, scale: 2 }).default("0"),
@@ -5742,7 +5854,7 @@ var demandForecasts = pgTable19("mfg_demand_forecasts", {
 var mrpPlans = pgTable19("mfg_mrp_plans", {
   id: varchar19("id").primaryKey().default(sql19`gen_random_uuid()`),
   planName: varchar19("plan_name").notNull(),
-  description: text11("description"),
+  description: text12("description"),
   planDate: timestamp19("plan_date").default(sql19`now()`),
   projectId: varchar19("project_id"),
   // PJM Integration
@@ -5819,7 +5931,7 @@ var varianceJournals = pgTable19("mfg_variance_journals", {
   varianceType: varchar19("variance_type").notNull(),
   // MATERIAL_USAGE, LABOR_EFFICIENCY, OVERHEAD_VOLUME
   amount: numeric12("amount", { precision: 18, scale: 4 }).notNull(),
-  description: text11("description"),
+  description: text12("description"),
   glPosted: boolean17("gl_posted").default(false),
   transactionDate: timestamp19("transaction_date").default(sql19`now()`),
   createdAt: timestamp19("created_at").default(sql19`now()`)
@@ -5834,7 +5946,7 @@ var formulas = pgTable19("mfg_formulas", {
   status: varchar19("status").default("active"),
   totalBatchSize: numeric12("total_batch_size", { precision: 18, scale: 4 }).notNull(),
   uom: varchar19("uom").notNull(),
-  instructions: text11("instructions"),
+  instructions: text12("instructions"),
   createdAt: timestamp19("created_at").default(sql19`now()`)
 });
 var formulaIngredients = pgTable19("mfg_formula_ingredients", {
@@ -5854,7 +5966,7 @@ var recipes = pgTable19("mfg_recipes", {
   routingId: varchar19("routing_id"),
   // Process Routing
   name: varchar19("name").notNull(),
-  description: text11("description"),
+  description: text12("description"),
   status: varchar19("status").default("active"),
   createdAt: timestamp19("created_at").default(sql19`now()`)
 });
@@ -5917,7 +6029,7 @@ var insertBatchTransactionSchema = createInsertSchema19(batchTransactions);
 var insertQualityResultSchema = createInsertSchema19(qualityResults);
 
 // shared/schema/scm.ts
-import { pgTable as pgTable20, varchar as varchar20, text as text12, timestamp as timestamp20, numeric as numeric13, integer as integer16, boolean as boolean18 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable20, varchar as varchar20, text as text13, timestamp as timestamp20, numeric as numeric13, integer as integer16, boolean as boolean18 } from "drizzle-orm/pg-core";
 import { sql as sql20, relations as relations2 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema20 } from "drizzle-zod";
 import { z as z8 } from "zod";
@@ -5926,7 +6038,7 @@ var suppliers = pgTable20("scm_suppliers", {
   name: varchar20("name").notNull(),
   email: varchar20("email"),
   phone: varchar20("phone"),
-  address: text12("address"),
+  address: text13("address"),
   supplierNumber: varchar20("supplier_number").unique(),
   // Legacy Key
   status: varchar20("status").default("active"),
@@ -5947,7 +6059,7 @@ var supplierSites = pgTable20("scm_supplier_sites", {
   // FK to scm_suppliers
   siteName: varchar20("site_name").notNull(),
   // e.g., "HEADQUARTERS", "NYC-DISTRIBUTION"
-  address: text12("address"),
+  address: text13("address"),
   isPurchasing: varchar20("is_purchasing").default("true"),
   // "true" or "false"
   isPay: varchar20("is_pay").default("true"),
@@ -5965,6 +6077,8 @@ var insertSupplierSiteSchema = createInsertSchema20(supplierSites).extend({
 });
 var purchaseOrders = pgTable20("purchase_orders", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  tenantId: varchar20("tenant_id"),
+  // Multi-tenant isolation
   entBusinessUnitId: varchar20("ent_business_unit_id"),
   // Operating Unit/BU Scope
   orderNumber: varchar20("order_number").notNull().unique(),
@@ -5974,7 +6088,7 @@ var purchaseOrders = pgTable20("purchase_orders", {
   dueDate: timestamp20("due_date"),
   complianceStatus: varchar20("compliance_status").default("COMPLIANT"),
   // COMPLIANT, NON_COMPLIANT
-  complianceReason: text12("compliance_reason"),
+  complianceReason: text13("compliance_reason"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
 var purchaseOrderLines = pgTable20("purchase_order_lines", {
@@ -6015,6 +6129,8 @@ var insertPurchaseOrderLineSchema = createInsertSchema20(purchaseOrderLines).ext
 });
 var inventoryOrganizations = pgTable20("inv_organizations", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
+  tenantId: varchar20("tenant_id"),
+  // Multi-tenant isolation
   code: varchar20("code").notNull().unique(),
   name: varchar20("name").notNull(),
   active: boolean18("active").default(true),
@@ -6130,7 +6246,7 @@ var purchaseRequisitions = pgTable20("purchase_requisitions", {
   // Operating Unit/BU Scope
   requisitionNumber: varchar20("requisition_number").notNull().unique(),
   requesterId: varchar20("requester_id"),
-  description: text12("description"),
+  description: text13("description"),
   status: varchar20("status").default("draft"),
   // DRAFT, PENDING, APPROVED, REJECTED, CLOSED
   sourceModule: varchar20("source_module").default("SCM"),
@@ -6147,7 +6263,7 @@ var purchaseRequisitionLines = pgTable20("purchase_requisition_lines", {
   lineNumber: integer16("line_number").notNull(),
   itemId: varchar20("item_id"),
   // NULL for non-catalog items
-  itemDescription: text12("item_description").notNull(),
+  itemDescription: text13("item_description").notNull(),
   quantity: numeric13("quantity", { precision: 18, scale: 4 }).notNull(),
   unitOfMeasure: varchar20("unit_of_measure"),
   estimatedPrice: numeric13("estimated_price", { precision: 18, scale: 4 }),
@@ -6166,7 +6282,7 @@ var supplierOnboardingRequests = pgTable20("supplier_onboarding_requests", {
   phone: varchar20("phone"),
   businessClassification: varchar20("business_classification"),
   status: varchar20("status").default("PENDING"),
-  notes: text12("notes"),
+  notes: text13("notes"),
   submittedAt: timestamp20("submitted_at").default(sql20`now()`),
   reviewedAt: timestamp20("reviewed_at"),
   reviewerId: varchar20("reviewer_id"),
@@ -6218,7 +6334,7 @@ var insertSupplierDocumentSchema = createInsertSchema20(supplierDocuments);
 var contractClauses = pgTable20("contract_clauses", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
   title: varchar20("title").notNull(),
-  clauseText: text12("clause_text").notNull(),
+  clauseText: text13("clause_text").notNull(),
   category: varchar20("category").notNull(),
   // LEGAL, PAYMENT, TERMINATION, COMPLIANCE
   isMandatory: varchar20("is_mandatory").default("false"),
@@ -6228,7 +6344,7 @@ var contractTerms = pgTable20("contract_terms", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
   contractId: varchar20("contract_id").notNull(),
   clauseId: varchar20("clause_id").notNull(),
-  amendedText: text12("amended_text"),
+  amendedText: text13("amended_text"),
   // Overrides standard library text
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
@@ -6295,7 +6411,7 @@ var supplierQualityEvents = pgTable20("supplier_quality_events", {
   // DEFECT, DELAY, NON_COMPLIANCE
   severity: varchar20("severity").default("MEDIUM"),
   // LOW, MEDIUM, CRITICAL
-  description: text12("description"),
+  description: text13("description"),
   eventDate: timestamp20("event_date").default(sql20`now()`),
   resolved: boolean18("resolved").default(false)
 });
@@ -6307,7 +6423,7 @@ var sourcingRfqs = pgTable20("scm_sourcing_rfqs", {
   // Operating Unit/BU Scope
   rfqNumber: varchar20("rfq_number").notNull().unique(),
   title: varchar20("title").notNull(),
-  description: text12("description"),
+  description: text13("description"),
   status: varchar20("status").default("DRAFT"),
   // DRAFT, PUBLISHED, EVALUATING, AWARDED, CLOSED
   closeDate: timestamp20("close_date"),
@@ -6317,7 +6433,7 @@ var sourcingRfqLines = pgTable20("scm_sourcing_rfq_lines", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
   rfqId: varchar20("rfq_id").notNull(),
   lineNumber: integer16("line_number").notNull(),
-  itemDescription: text12("item_description").notNull(),
+  itemDescription: text13("item_description").notNull(),
   targetQuantity: numeric13("target_quantity", { precision: 18, scale: 4 }).notNull(),
   unitOfMeasure: varchar20("uom"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
@@ -6329,7 +6445,7 @@ var sourcingBids = pgTable20("scm_sourcing_bids", {
   bidStatus: varchar20("bid_status").default("DRAFT"),
   // DRAFT, SUBMITTED, WITHDRAWN
   submissionDate: timestamp20("submission_date"),
-  notes: text12("notes"),
+  notes: text13("notes"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
 var sourcingBidLines = pgTable20("scm_sourcing_bid_lines", {
@@ -6398,7 +6514,7 @@ var wmsWaves = pgTable20("wms_waves", {
   warehouseId: varchar20("warehouse_id").notNull(),
   status: varchar20("status").default("PLANNED"),
   // PLANNED, RELEASED, PICKING, COMPLETED
-  description: text12("description"),
+  description: text13("description"),
   releaseDate: timestamp20("release_date"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
@@ -6484,7 +6600,7 @@ var wmsWaveTemplates = pgTable20("wms_wave_templates", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
   warehouseId: varchar20("warehouse_id").notNull(),
   name: varchar20("name").notNull(),
-  criteriaJson: text12("criteria_json").notNull(),
+  criteriaJson: text13("criteria_json").notNull(),
   // JSON string of criteria
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
@@ -6496,7 +6612,7 @@ var purchaseOrderDistributions = pgTable20("purchase_order_distributions", {
   distributionNumber: integer16("distribution_number").notNull(),
   quantity: numeric13("quantity", { precision: 18, scale: 4 }).notNull(),
   amount: numeric13("amount", { precision: 18, scale: 2 }).notNull(),
-  chargeAccountParams: text12("charge_account_params"),
+  chargeAccountParams: text13("charge_account_params"),
   // JSON string
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
@@ -6513,7 +6629,7 @@ var rfqHeaders = pgTable20("scm_rfq_headers", {
 var rfqLines = pgTable20("scm_rfq_lines", {
   id: varchar20("id").primaryKey().default(sql20`gen_random_uuid()`),
   headerId: varchar20("header_id").notNull(),
-  description: text12("description"),
+  description: text13("description"),
   targetQuantity: numeric13("target_quantity", { precision: 18, scale: 2 }),
   itemId: varchar20("item_id"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
@@ -6552,7 +6668,7 @@ var rcvShipmentHeaders = pgTable20("rcv_shipment_headers", {
   shippedDate: timestamp20("shipped_date"),
   expectedReceiptDate: timestamp20("expected_receipt_date"),
   receiptDate: timestamp20("receipt_date").default(sql20`now()`),
-  comments: text12("comments"),
+  comments: text13("comments"),
   grossWeight: numeric13("gross_weight"),
   netWeight: numeric13("net_weight"),
   packagingCode: varchar20("packaging_code"),
@@ -6570,10 +6686,26 @@ var rcvShipmentLines = pgTable20("rcv_shipment_lines", {
   itemDescription: varchar20("item_description"),
   itemId: varchar20("item_id"),
   poHeaderId: varchar20("po_header_id"),
+  poId: varchar20("po_id"),
+  // Added for ERS
   poLineId: varchar20("po_line_id"),
   poDistributionId: varchar20("po_distribution_id"),
   routingHeaderId: varchar20("routing_header_id"),
   packingSlip: varchar20("packing_slip"),
+  receiptNumber: varchar20("receipt_number"),
+  // Added for ERS
+  netPrice: numeric13("net_price", { precision: 18, scale: 4 }),
+  // Added for ERS
+  transactionDate: timestamp20("transaction_date").default(sql20`now()`),
+  // Added for ERS
+  accounted: boolean18("accounted").default(false),
+  // Added for period close
+  ersFlag: boolean18("ers_flag").default(false),
+  // Added for ERS
+  ersStatus: varchar20("ers_status"),
+  // Added for ERS (eg READY_FOR_ERS, INVOICED)
+  ersRunAt: timestamp20("ers_run_at"),
+  // Added for ERS
   fromOrganizationId: varchar20("from_organization_id"),
   toOrganizationId: varchar20("to_organization_id"),
   // Inventory Org
@@ -6723,7 +6855,7 @@ var scmConsignmentLines = pgTable20("scm_consignment_lines", {
   apInvoiceId: varchar20("ap_invoice_id"),
   // filled after AP invoice created
   billedAt: timestamp20("billed_at"),
-  notes: text12("notes"),
+  notes: text13("notes"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
 var insertScmConsignmentLineSchema = createInsertSchema20(scmConsignmentLines);
@@ -6745,7 +6877,7 @@ var scmRmaHeaders = pgTable20("scm_rma_headers", {
   currencyCode: varchar20("currency_code").default("USD"),
   creditMemoId: varchar20("credit_memo_id"),
   // AR credit memo created on disposition
-  notes: text12("notes"),
+  notes: text13("notes"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
 var scmRmaLines = pgTable20("scm_rma_lines", {
@@ -6753,7 +6885,7 @@ var scmRmaLines = pgTable20("scm_rma_lines", {
   rmaId: varchar20("rma_id").notNull(),
   lineNumber: integer16("line_number").notNull(),
   itemId: varchar20("item_id").notNull(),
-  itemDescription: text12("item_description"),
+  itemDescription: text13("item_description"),
   qtyAuthorized: numeric13("qty_authorized", { precision: 18, scale: 4 }).notNull(),
   qtyReceived: numeric13("qty_received", { precision: 18, scale: 4 }).default("0"),
   qtyInspected: numeric13("qty_inspected", { precision: 18, scale: 4 }).default("0"),
@@ -6763,7 +6895,7 @@ var scmRmaLines = pgTable20("scm_rma_lines", {
   // RESTOCK, SCRAP, SUPPLIER_RETURN, REPAIR
   qcStatus: varchar20("qc_status").default("PENDING"),
   // PENDING, PASS, FAIL
-  qcNotes: text12("qc_notes"),
+  qcNotes: text13("qc_notes"),
   creditValue: numeric13("credit_value", { precision: 18, scale: 2 }),
   receivedAt: timestamp20("received_at"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
@@ -6783,25 +6915,25 @@ var scmAsnAcknowledgements = pgTable20("scm_asn_acknowledgements", {
   // PENDING, CONFIRMED, RESCHEDULED, REJECTED
   originalDeliveryDate: timestamp20("original_delivery_date"),
   confirmedDeliveryDate: timestamp20("confirmed_delivery_date"),
-  rescheduleReason: text12("reschedule_reason"),
+  rescheduleReason: text13("reschedule_reason"),
   acknowledgedBy: varchar20("acknowledged_by"),
   acknowledgedAt: timestamp20("acknowledged_at"),
   dockPreAdvised: boolean18("dock_pre_advised").default(false),
   // true if WMS dock scheduled
-  notes: text12("notes"),
+  notes: text13("notes"),
   createdAt: timestamp20("created_at").default(sql20`now()`)
 });
 var insertScmAsnAcknowledgementSchema = createInsertSchema20(scmAsnAcknowledgements);
 
 // shared/schema/projects.ts
-import { pgTable as pgTable21, varchar as varchar21, text as text13, timestamp as timestamp21, integer as integer17, decimal, boolean as boolean19 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable21, varchar as varchar21, text as text14, timestamp as timestamp21, integer as integer17, decimal, boolean as boolean19 } from "drizzle-orm/pg-core";
 import { sql as sql21 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema21 } from "drizzle-zod";
 import { z as z9 } from "zod";
 var workOrders = pgTable21("work_orders", {
   id: varchar21("id").primaryKey().default(sql21`gen_random_uuid()`),
   title: varchar21("title").notNull(),
-  description: text13("description"),
+  description: text14("description"),
   status: varchar21("status").default("open"),
   assignedTo: varchar21("assigned_to"),
   dueDate: timestamp21("due_date"),
@@ -6817,7 +6949,7 @@ var insertWorkOrderSchema = createInsertSchema21(workOrders).extend({
 var projects2 = pgTable21("projects2", {
   id: varchar21("id").primaryKey().default(sql21`gen_random_uuid()`),
   name: varchar21("name").notNull(),
-  description: text13("description"),
+  description: text14("description"),
   status: varchar21("status").default("active"),
   startDate: timestamp21("start_date"),
   endDate: timestamp21("end_date"),
@@ -6836,7 +6968,7 @@ var sprints = pgTable21("sprints", {
   id: varchar21("id").primaryKey().default(sql21`gen_random_uuid()`),
   projectId: varchar21("project_id").notNull(),
   name: varchar21("name").notNull(),
-  goal: text13("goal"),
+  goal: text14("goal"),
   startDate: timestamp21("start_date"),
   endDate: timestamp21("end_date"),
   status: varchar21("status").default("planned"),
@@ -6859,7 +6991,7 @@ var issues = pgTable21("issues", {
   projectId: varchar21("project_id").notNull(),
   sprintId: varchar21("sprint_id"),
   title: varchar21("title").notNull(),
-  description: text13("description"),
+  description: text14("description"),
   type: varchar21("type").default("task"),
   // task, bug, story, epic
   status: varchar21("status").default("todo"),
@@ -6904,7 +7036,7 @@ var paCostDistributionLines = pgTable21("pa_cost_distribution_lines", {
 var insertPaCostDistributionLineSchema = createInsertSchema21(paCostDistributionLines);
 
 // shared/schema/field_service.ts
-import { pgTable as pgTable22, varchar as varchar22, text as text14, timestamp as timestamp22, jsonb as jsonb12 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable22, varchar as varchar22, text as text15, timestamp as timestamp22, jsonb as jsonb12 } from "drizzle-orm/pg-core";
 import { sql as sql22 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema22 } from "drizzle-zod";
 import { z as z10 } from "zod";
@@ -6921,7 +7053,7 @@ var fieldServiceJobs = pgTable22("field_service_jobs", {
   scheduledDate: timestamp22("scheduled_date"),
   completedDate: timestamp22("completed_date"),
   location: jsonb12("location"),
-  notes: text14("notes"),
+  notes: text15("notes"),
   createdAt: timestamp22("created_at").default(sql22`now()`),
   updatedAt: timestamp22("updated_at").default(sql22`now()`)
 });
@@ -6939,7 +7071,7 @@ var insertFieldServiceJobSchema = createInsertSchema22(fieldServiceJobs).extend(
 });
 
 // shared/schema/marketplace.ts
-import { pgTable as pgTable23, varchar as varchar23, text as text15, timestamp as timestamp23, numeric as numeric14, boolean as boolean20, integer as integer18, jsonb as jsonb13 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable23, varchar as varchar23, text as text16, timestamp as timestamp23, numeric as numeric14, boolean as boolean20, integer as integer18, jsonb as jsonb13 } from "drizzle-orm/pg-core";
 import { sql as sql23 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema23 } from "drizzle-zod";
 import { z as z11 } from "zod";
@@ -6947,7 +7079,7 @@ var marketplaceDevelopers = pgTable23("marketplace_developers", {
   id: varchar23("id").primaryKey().default(sql23`gen_random_uuid()`),
   userId: varchar23("user_id").notNull(),
   name: varchar23("name").notNull(),
-  description: text15("description"),
+  description: text16("description"),
   website: varchar23("website"),
   supportEmail: varchar23("support_email"),
   status: varchar23("status").default("pending"),
@@ -6972,7 +7104,7 @@ var marketplaceCategories = pgTable23("marketplace_categories", {
   id: varchar23("id").primaryKey().default(sql23`gen_random_uuid()`),
   name: varchar23("name").notNull(),
   slug: varchar23("slug").notNull().unique(),
-  description: text15("description"),
+  description: text16("description"),
   icon: varchar23("icon"),
   parentId: varchar23("parent_id"),
   // for nested categories
@@ -6992,18 +7124,18 @@ var marketplaceApps = pgTable23("marketplace_apps", {
   name: varchar23("name").notNull(),
   slug: varchar23("slug").notNull().unique(),
   shortDescription: varchar23("short_description").notNull(),
-  fullDescription: text15("full_description").notNull(),
+  fullDescription: text16("full_description").notNull(),
   logoUrl: varchar23("logo_url"),
-  screenshots: text15("screenshots").array(),
+  screenshots: text16("screenshots").array(),
   priceType: varchar23("price_type").default("free"),
   // free, one_time, subscription
   price: numeric14("price", { precision: 18, scale: 2 }).default("0"),
   currency: varchar23("currency").default("USD"),
-  tags: text15("tags").array(),
+  tags: text16("tags").array(),
   features: jsonb13("features"),
   compatibility: jsonb13("compatibility"),
   // Min version requirements etc.
-  permissions: text15("permissions").array(),
+  permissions: text16("permissions").array(),
   // Required system permissions
   status: varchar23("status").default("draft"),
   // draft, submitted, approved, rejected, suspended
@@ -7013,7 +7145,7 @@ var marketplaceApps = pgTable23("marketplace_apps", {
   installCount: integer18("install_count").default(0),
   averageRating: numeric14("average_rating", { precision: 3, scale: 2 }).default("0"),
   reviewCount: integer18("review_count").default(0),
-  supportedIndustries: text15("supported_industries").array(),
+  supportedIndustries: text16("supported_industries").array(),
   subscriptionPriceMonthly: numeric14("subscription_price_monthly", { precision: 18, scale: 2 }),
   subscriptionPriceYearly: numeric14("subscription_price_yearly", { precision: 18, scale: 2 }),
   totalRevenue: numeric14("total_revenue", { precision: 18, scale: 2 }).default("0"),
@@ -7052,8 +7184,8 @@ var marketplaceAppVersions = pgTable23("marketplace_app_versions", {
   id: varchar23("id").primaryKey().default(sql23`gen_random_uuid()`),
   appId: varchar23("app_id").notNull(),
   version: varchar23("version").notNull(),
-  changelog: text15("changelog"),
-  releaseNotes: text15("release_notes"),
+  changelog: text16("changelog"),
+  releaseNotes: text16("release_notes"),
   minErpVersion: varchar23("min_erp_version"),
   maxErpVersion: varchar23("max_erp_version"),
   downloadUrl: varchar23("download_url"),
@@ -7152,7 +7284,7 @@ var marketplaceSubscriptions = pgTable23("marketplace_subscriptions", {
   currentPeriodStart: timestamp23("current_period_start").notNull(),
   currentPeriodEnd: timestamp23("current_period_end").notNull(),
   cancelledAt: timestamp23("cancelled_at"),
-  cancelReason: text15("cancel_reason"),
+  cancelReason: text16("cancel_reason"),
   autoRenew: boolean20("auto_renew").default(true),
   createdAt: timestamp23("created_at").default(sql23`now()`),
   updatedAt: timestamp23("updated_at").default(sql23`now()`)
@@ -7179,8 +7311,8 @@ var marketplaceReviews = pgTable23("marketplace_reviews", {
   tenantId: varchar23("tenant_id").notNull(),
   rating: integer18("rating").notNull(),
   title: varchar23("title"),
-  content: text15("content"),
-  developerResponse: text15("developer_response"),
+  content: text16("content"),
+  developerResponse: text16("developer_response"),
   developerResponseAt: timestamp23("developer_response_at"),
   status: varchar23("status").default("published"),
   // pending, published, hidden, flagged
@@ -7214,7 +7346,7 @@ var marketplacePayouts = pgTable23("marketplace_payouts", {
   paidAt: timestamp23("paid_at"),
   statementUrl: varchar23("statement_url"),
   transactionCount: integer18("transaction_count").default(0),
-  notes: text15("notes"),
+  notes: text16("notes"),
   createdAt: timestamp23("created_at").default(sql23`now()`)
 });
 var insertMarketplacePayoutSchema = createInsertSchema23(marketplacePayouts).extend({
@@ -7356,14 +7488,14 @@ var insertMarketplaceAppDependencySchema = createInsertSchema23(marketplaceAppDe
 });
 
 // shared/schema/service.ts
-import { pgTable as pgTable24, varchar as varchar24, text as text16, timestamp as timestamp24, numeric as numeric15, integer as integer19 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable24, varchar as varchar24, text as text17, timestamp as timestamp24, numeric as numeric15, integer as integer19 } from "drizzle-orm/pg-core";
 import { sql as sql24 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema24 } from "drizzle-zod";
 import { z as z12 } from "zod";
 var serviceCategories = pgTable24("service_categories", {
   id: varchar24("id").primaryKey().default(sql24`gen_random_uuid()`),
   name: varchar24("name").notNull(),
-  description: text16("description"),
+  description: text17("description"),
   icon: varchar24("icon"),
   sortOrder: integer19("sort_order").default(0),
   createdAt: timestamp24("created_at").default(sql24`now()`)
@@ -7379,7 +7511,7 @@ var servicePackages = pgTable24("service_packages", {
   providerId: varchar24("provider_id").notNull(),
   categoryId: varchar24("category_id").notNull(),
   title: varchar24("title").notNull(),
-  description: text16("description"),
+  description: text17("description"),
   price: numeric15("price", { precision: 10, scale: 2 }).notNull(),
   deliveryDays: integer19("delivery_days").default(7),
   status: varchar24("status").default("active"),
@@ -7408,8 +7540,8 @@ var serviceOrders = pgTable24("service_orders", {
   status: varchar24("status").default("pending"),
   // pending, in_progress, delivered, completed, cancelled, disputed
   price: numeric15("price", { precision: 10, scale: 2 }).notNull(),
-  requirements: text16("requirements"),
-  deliveryNotes: text16("delivery_notes"),
+  requirements: text17("requirements"),
+  deliveryNotes: text17("delivery_notes"),
   deliveredAt: timestamp24("delivered_at"),
   completedAt: timestamp24("completed_at"),
   createdAt: timestamp24("created_at").default(sql24`now()`)
@@ -7432,7 +7564,7 @@ var serviceReviews = pgTable24("service_reviews", {
   providerId: varchar24("provider_id").notNull(),
   rating: integer19("rating").notNull(),
   // 1-5
-  comment: text16("comment"),
+  comment: text17("comment"),
   createdAt: timestamp24("created_at").default(sql24`now()`)
 });
 var insertServiceReviewSchema = createInsertSchema24(serviceReviews).extend({
@@ -7447,14 +7579,14 @@ var jobPostings = pgTable24("job_postings", {
   buyerId: varchar24("buyer_id").notNull(),
   categoryId: varchar24("category_id").notNull(),
   title: varchar24("title").notNull(),
-  description: text16("description").notNull(),
+  description: text17("description").notNull(),
   budgetMin: numeric15("budget_min", { precision: 10, scale: 2 }),
   budgetMax: numeric15("budget_max", { precision: 10, scale: 2 }),
   currency: varchar24("currency").default("USD"),
   deadline: timestamp24("deadline"),
   status: varchar24("status").default("open"),
   // open, in_progress, completed, cancelled, expired
-  skills: text16("skills").array(),
+  skills: text17("skills").array(),
   urgency: varchar24("urgency").default("normal"),
   // low, normal, high, urgent
   totalProposals: integer19("total_proposals").default(0),
@@ -7481,7 +7613,7 @@ var jobProposals = pgTable24("job_proposals", {
   providerId: varchar24("provider_id").notNull(),
   packageId: varchar24("package_id"),
   // optional link to existing service package
-  proposalMessage: text16("proposal_message").notNull(),
+  proposalMessage: text17("proposal_message").notNull(),
   bidAmount: numeric15("bid_amount", { precision: 10, scale: 2 }).notNull(),
   estimatedDeliveryDays: integer19("estimated_delivery_days").notNull(),
   status: varchar24("status").default("pending"),
@@ -7500,7 +7632,7 @@ var insertJobProposalSchema = createInsertSchema24(jobProposals).extend({
 });
 
 // shared/schema/community.ts
-import { pgTable as pgTable25, varchar as varchar25, text as text17, timestamp as timestamp25, integer as integer20, boolean as boolean21, numeric as numeric16, jsonb as jsonb14 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable25, varchar as varchar25, text as text18, timestamp as timestamp25, integer as integer20, boolean as boolean21, numeric as numeric16, jsonb as jsonb14 } from "drizzle-orm/pg-core";
 import { sql as sql25 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema25 } from "drizzle-zod";
 import { z as z13 } from "zod";
@@ -7508,10 +7640,10 @@ var communitySpaces = pgTable25("community_spaces", {
   id: varchar25("id").primaryKey().default(sql25`gen_random_uuid()`),
   name: varchar25("name").notNull(),
   slug: varchar25("slug").notNull().unique(),
-  description: text17("description"),
+  description: text18("description"),
   icon: varchar25("icon"),
-  postingGuidelines: text17("posting_guidelines"),
-  allowedPostTypes: text17("allowed_post_types").array(),
+  postingGuidelines: text18("posting_guidelines"),
+  allowedPostTypes: text18("allowed_post_types").array(),
   // question, answer, discussion, how-to, bug, feature, show-tell, announcement
   reputationWeight: numeric16("reputation_weight", { precision: 3, scale: 2 }).default("1.0"),
   // multiplier for rep earned in this space
@@ -7537,7 +7669,7 @@ var communityPosts = pgTable25("community_posts", {
   postType: varchar25("post_type").notNull(),
   // question, discussion, how-to, bug, feature, show-tell, announcement
   title: varchar25("title").notNull(),
-  content: text17("content").notNull(),
+  content: text18("content").notNull(),
   isPinned: boolean21("is_pinned").default(false),
   isLocked: boolean21("is_locked").default(false),
   upvotes: integer20("upvotes").default(0),
@@ -7545,7 +7677,7 @@ var communityPosts = pgTable25("community_posts", {
   viewCount: integer20("view_count").default(0),
   answerCount: integer20("answer_count").default(0),
   acceptedAnswerId: varchar25("accepted_answer_id"),
-  tags: text17("tags").array(),
+  tags: text18("tags").array(),
   createdAt: timestamp25("created_at").default(sql25`now()`),
   updatedAt: timestamp25("updated_at").default(sql25`now()`)
 });
@@ -7570,7 +7702,7 @@ var communityComments = pgTable25("community_comments", {
   parentId: varchar25("parent_id"),
   // For nested replies
   authorId: varchar25("author_id").notNull(),
-  content: text17("content").notNull(),
+  content: text18("content").notNull(),
   upvotes: integer20("upvotes").default(0),
   downvotes: integer20("downvotes").default(0),
   isAccepted: boolean21("is_accepted").default(false),
@@ -7640,7 +7772,7 @@ var reputationEvents = pgTable25("reputation_events", {
   sourceType: varchar25("source_type"),
   // post, comment, app, form, bug, video, docs, service
   sourceId: varchar25("source_id"),
-  description: text17("description"),
+  description: text18("description"),
   createdAt: timestamp25("created_at").default(sql25`now()`)
 });
 var insertReputationEventSchema = createInsertSchema25(reputationEvents).extend({
@@ -7695,7 +7827,7 @@ var communityModerationActions = pgTable25("community_moderation_actions", {
   targetUserId: varchar25("target_user_id"),
   actionType: varchar25("action_type").notNull(),
   // warn, mute, ban, unban, delete_post, lock_post, flag, hide, delete, suspend
-  reason: text17("reason"),
+  reason: text18("reason"),
   targetType: varchar25("target_type"),
   // user, post, comment
   targetId: varchar25("target_id"),
@@ -7764,7 +7896,7 @@ var communityFlags = pgTable25("community_flags", {
   targetId: varchar25("target_id").notNull(),
   reason: varchar25("reason").notNull(),
   // spam, harassment, inappropriate, misleading, other
-  details: text17("details"),
+  details: text18("details"),
   status: varchar25("status").default("pending"),
   // pending, reviewed, dismissed, actioned
   reviewedBy: varchar25("reviewed_by"),
@@ -7821,7 +7953,7 @@ var communityVoteAnomalies = pgTable25("community_vote_anomalies", {
   // vote_ring, rapid_voting, self_promotion, sock_puppet
   userId: varchar25("user_id"),
   // primary user involved
-  relatedUserIds: text17("related_user_ids").array(),
+  relatedUserIds: text18("related_user_ids").array(),
   // other users in vote ring
   targetId: varchar25("target_id"),
   // content targeted
@@ -7863,8 +7995,8 @@ var communityAIRecommendations = pgTable25("community_ai_recommendations", {
   // dismiss, warn, hide, delete, escalate
   confidence: numeric16("confidence", { precision: 3, scale: 2 }),
   // 0.00 - 1.00
-  reasoning: text17("reasoning"),
-  categories: text17("categories").array(),
+  reasoning: text18("reasoning"),
+  categories: text18("categories").array(),
   // detected categories: spam, harassment, hate_speech, etc.
   processingTime: integer20("processing_time"),
   // milliseconds
@@ -7882,7 +8014,7 @@ var insertCommunityAIRecommendationSchema = createInsertSchema25(communityAIReco
 });
 
 // shared/schema/education.ts
-import { pgTable as pgTable26, varchar as varchar26, text as text18, timestamp as timestamp26, integer as integer21, numeric as numeric17 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable26, varchar as varchar26, text as text19, timestamp as timestamp26, integer as integer21, numeric as numeric17 } from "drizzle-orm/pg-core";
 import { sql as sql26 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema26 } from "drizzle-zod";
 import { z as z14 } from "zod";
@@ -7911,7 +8043,7 @@ var educationCourses = pgTable26("education_courses", {
   tenantId: varchar26("tenant_id").notNull(),
   courseId: varchar26("course_id").notNull().unique(),
   courseName: varchar26("course_name").notNull(),
-  description: text18("description"),
+  description: text19("description"),
   instructor: varchar26("instructor"),
   credits: integer21("credits"),
   createdAt: timestamp26("created_at").default(sql26`now()`)
@@ -7948,7 +8080,7 @@ var educationAssignments = pgTable26("education_assignments", {
   assignmentId: varchar26("assignment_id").notNull().unique(),
   courseId: varchar26("course_id").notNull(),
   title: varchar26("title").notNull(),
-  description: text18("description"),
+  description: text19("description"),
   dueDate: timestamp26("due_date"),
   createdAt: timestamp26("created_at").default(sql26`now()`)
 });
@@ -8032,7 +8164,7 @@ var insertEducationAttendanceSchema = createInsertSchema26(educationAttendance).
 });
 
 // shared/schema/partner.ts
-import { pgTable as pgTable27, varchar as varchar27, text as text19, timestamp as timestamp27, boolean as boolean22 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable27, varchar as varchar27, text as text20, timestamp as timestamp27, boolean as boolean22 } from "drizzle-orm/pg-core";
 import { sql as sql27 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema27 } from "drizzle-zod";
 import { z as z15 } from "zod";
@@ -8047,9 +8179,9 @@ var partners = pgTable27("partners", {
   // partner, trainer
   tier: varchar27("tier").default("silver"),
   // gold, silver, platinum, diamond
-  description: text19("description"),
+  description: text20("description"),
   logo: varchar27("logo"),
-  specializations: text19("specializations").array(),
+  specializations: text20("specializations").array(),
   isActive: boolean22("is_active").default(true),
   isApproved: boolean22("is_approved").default(false),
   createdAt: timestamp27("created_at").default(sql27`now()`),
@@ -8081,7 +8213,7 @@ var dealRegistrations = pgTable27("deal_registrations", {
   // Pending, Approved, Rejected
   expectedCloseDate: timestamp27("expected_close_date"),
   createdAt: timestamp27("created_at").default(sql27`now()`),
-  notes: text19("notes")
+  notes: text20("notes")
 });
 var insertDealRegistrationSchema = createInsertSchema27(dealRegistrations).extend({
   dealName: z15.string().min(1, "Deal Name is required"),
@@ -8091,7 +8223,7 @@ var insertDealRegistrationSchema = createInsertSchema27(dealRegistrations).exten
 });
 
 // shared/schema/copilot.ts
-import { pgTable as pgTable28, varchar as varchar28, timestamp as timestamp28, text as text20 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable28, varchar as varchar28, timestamp as timestamp28, text as text21 } from "drizzle-orm/pg-core";
 import { sql as sql28 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema28 } from "drizzle-zod";
 import { z as z16 } from "zod";
@@ -8113,7 +8245,7 @@ var copilotMessages = pgTable28("copilot_messages", {
   conversationId: varchar28("conversation_id").notNull(),
   role: varchar28("role"),
   // user, assistant
-  content: text20("content").notNull(),
+  content: text21("content").notNull(),
   createdAt: timestamp28("created_at").default(sql28`now()`)
 });
 var insertCopilotMessageSchema = createInsertSchema28(copilotMessages).extend({
@@ -8173,14 +8305,14 @@ var insertOfflineSyncSchema = createInsertSchema29(offlineSyncs).extend({
 });
 
 // shared/schema/reporting.ts
-import { pgTable as pgTable30, varchar as varchar30, text as text21, timestamp as timestamp30, numeric as numeric18, boolean as boolean24, jsonb as jsonb16 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable30, varchar as varchar30, text as text22, timestamp as timestamp30, numeric as numeric18, boolean as boolean24, jsonb as jsonb16 } from "drizzle-orm/pg-core";
 import { sql as sql30 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema30 } from "drizzle-zod";
 import { z as z18 } from "zod";
 var reports = pgTable30("reports", {
   id: varchar30("id").primaryKey().default(sql30`gen_random_uuid()`),
   name: varchar30("name").notNull(),
-  description: text21("description"),
+  description: text22("description"),
   module: varchar30("module"),
   type: varchar30("type"),
   // chart, table, summary
@@ -8239,12 +8371,12 @@ var smartViews = pgTable30("smart_views", {
   id: varchar30("id").primaryKey().default(sql30`gen_random_uuid()`),
   formId: varchar30("form_id").notNull(),
   name: varchar30("name").notNull(),
-  description: text21("description"),
+  description: text22("description"),
   filters: jsonb16("filters").default(sql30`'[]'::jsonb`),
   // Array of {field, operator, value}
   sortBy: jsonb16("sort_by").default(sql30`'[]'::jsonb`),
   // Array of {field, direction}
-  visibleColumns: text21("visible_columns").array(),
+  visibleColumns: text22("visible_columns").array(),
   createdAt: timestamp30("created_at").default(sql30`now()`),
   updatedAt: timestamp30("updated_at").default(sql30`now()`)
 });
@@ -8273,7 +8405,7 @@ var insertTimeSeriesDataSchema = createInsertSchema30(timeSeriesData).extend({
 var biDashboards = pgTable30("bi_dashboards", {
   id: varchar30("id").primaryKey().default(sql30`gen_random_uuid()`),
   name: varchar30("name").notNull(),
-  description: text21("description"),
+  description: text22("description"),
   layout: jsonb16("layout"),
   widgets: jsonb16("widgets"),
   filters: jsonb16("filters"),
@@ -8300,7 +8432,7 @@ var glReportSchedules = pgTable30("gl_report_schedules", {
   // CRON or "DAILY", "WEEKLY", "MONTHLY"
   parameters: jsonb16("parameters"),
   // { period: "CURRENT", ledgerId: "..." }
-  recipientEmails: text21("recipient_emails"),
+  recipientEmails: text22("recipient_emails"),
   // Comma-separated or JSON array
   nextRunAt: timestamp30("next_run_at"),
   enabled: boolean24("enabled").default(true),
@@ -8315,16 +8447,16 @@ var glReportInstances = pgTable30("gl_report_instances", {
   runDate: timestamp30("run_date").default(sql30`now()`),
   status: varchar30("status").default("COMPLETED"),
   // COMPLETED, FAILED, RUNNING
-  outputPath: text21("output_path"),
+  outputPath: text22("output_path"),
   // S3 or Local path to PDF/Excel
   filtersApplied: jsonb16("filters_applied"),
-  errorLog: text21("error_log"),
+  errorLog: text22("error_log"),
   createdAt: timestamp30("created_at").default(sql30`now()`)
 });
 var insertGlReportInstanceSchema = createInsertSchema30(glReportInstances);
 
 // shared/schema/admin.ts
-import { pgTable as pgTable31, varchar as varchar31, text as text22, timestamp as timestamp31, numeric as numeric19, jsonb as jsonb17, boolean as boolean25, integer as integer22, index as index3 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable31, varchar as varchar31, text as text23, timestamp as timestamp31, numeric as numeric19, jsonb as jsonb17, boolean as boolean25, integer as integer22, index as index3 } from "drizzle-orm/pg-core";
 import { sql as sql31 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema31 } from "drizzle-zod";
 import { z as z19 } from "zod";
@@ -8376,7 +8508,7 @@ var systemConfig = pgTable31("system_config", {
   value: jsonb17("value").notNull(),
   category: varchar31("category"),
   // general, email, security, integrations, etc.
-  description: text22("description"),
+  description: text23("description"),
   createdAt: timestamp31("created_at").default(sql31`now()`),
   updatedAt: timestamp31("updated_at").default(sql31`now()`)
 });
@@ -8389,7 +8521,7 @@ var insertSystemConfigSchema = createInsertSchema31(systemConfig).extend({
 var featureFlags = pgTable31("feature_flags", {
   id: varchar31("id").primaryKey().default(sql31`gen_random_uuid()`),
   name: varchar31("name").notNull().unique(),
-  description: text22("description"),
+  description: text23("description"),
   enabled: boolean25("enabled").default(false),
   createdAt: timestamp31("created_at").default(sql31`now()`),
   updatedAt: timestamp31("updated_at").default(sql31`now()`)
@@ -8408,14 +8540,14 @@ var adminLogs = pgTable31("admin_logs", {
   action: varchar31("action").notNull(),
   resourceType: varchar31("resource_type"),
   resourceId: varchar31("resource_id"),
-  intent: text22("intent"),
-  details: text22("details"),
+  intent: text23("intent"),
+  details: text23("details"),
   beforeState: jsonb17("before_state"),
   afterState: jsonb17("after_state"),
-  justification: text22("justification"),
+  justification: text23("justification"),
   tenantId: varchar31("tenant_id"),
   ipAddress: varchar31("ip_address"),
-  userAgent: text22("user_agent"),
+  userAgent: text23("user_agent"),
   createdAt: timestamp31("created_at").default(sql31`now()`)
 }, (table) => ({
   actorEmailIdx: index3("admin_logs_actor_email_idx").on(table.actorEmail),
@@ -8437,7 +8569,7 @@ var insertAdminLogSchema = createInsertSchema31(adminLogs).extend({
 var configurationTemplates = pgTable31("configuration_templates", {
   id: varchar31("id").primaryKey().default(sql31`gen_random_uuid()`),
   name: varchar31("name").notNull(),
-  description: text22("description"),
+  description: text23("description"),
   industryId: varchar31("industry_id"),
   moduleId: varchar31("module_id"),
   templateData: jsonb17("template_data").notNull().default({}),
@@ -8461,7 +8593,7 @@ var templateApplications = pgTable31("template_applications", {
   status: varchar31("status").default("applied"),
   // applied, rolled_back, failed
   appliedData: jsonb17("applied_data").notNull().default({}),
-  errorMessage: text22("error_message"),
+  errorMessage: text23("error_message"),
   metadata: jsonb17("metadata").default({}),
   createdAt: timestamp31("created_at").default(sql31`now()`),
   updatedAt: timestamp31("updated_at").default(sql31`now()`)
@@ -8469,7 +8601,7 @@ var templateApplications = pgTable31("template_applications", {
 var insertTemplateApplicationSchema = createInsertSchema31(templateApplications);
 
 // shared/schema/epm.ts
-import { pgTable as pgTable32, varchar as varchar32, text as text23, timestamp as timestamp32, numeric as numeric20, boolean as boolean26, jsonb as jsonb18, integer as integer23, date as date7 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable32, varchar as varchar32, text as text24, timestamp as timestamp32, numeric as numeric20, boolean as boolean26, jsonb as jsonb18, integer as integer23, date as date7 } from "drizzle-orm/pg-core";
 import { sql as sql32, relations as relations3 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema32 } from "drizzle-zod";
 var budgets = pgTable32("budgets", {
@@ -8481,7 +8613,7 @@ var budgets = pgTable32("budgets", {
   spentAmount: numeric20("spent_amount", { precision: 18, scale: 2 }).default("0"),
   reservedAmount: numeric20("reserved_amount", { precision: 18, scale: 2 }).default("0"),
   status: varchar32("status").default("draft"),
-  notes: text23("notes"),
+  notes: text24("notes"),
   createdAt: timestamp32("created_at").default(sql32`now()`),
   updatedAt: timestamp32("updated_at").default(sql32`now()`),
   entLedgerId: varchar32("ent_ledger_id")
@@ -8491,7 +8623,7 @@ var planScenarios = pgTable32("plan_scenarios", {
   code: varchar32("code").notNull().unique(),
   // ACTUAL, BUDGET_2024
   name: varchar32("name").notNull(),
-  description: text23("description"),
+  description: text24("description"),
   isSystem: boolean26("is_system").default(false),
   createdAt: timestamp32("created_at").default(sql32`now()`),
   updatedAt: timestamp32("updated_at").default(sql32`now()`),
@@ -8578,7 +8710,7 @@ var planProjects = pgTable32("plan_projects", {
   // Added to match Entity
   name: varchar32("name"),
   // Added
-  description: text23("description"),
+  description: text24("description"),
   // Added
   isActive: boolean26("is_active").default(true),
   // Added
@@ -8667,7 +8799,7 @@ var insertPlanPositionSchema = createInsertSchema32(planPositions);
 var insertPlanAssetSchema = createInsertSchema32(planAssets);
 
 // shared/schema/integration.ts
-import { pgTable as pgTable33, varchar as varchar33, text as text24, timestamp as timestamp33, jsonb as jsonb19 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable33, varchar as varchar33, text as text25, timestamp as timestamp33, jsonb as jsonb19 } from "drizzle-orm/pg-core";
 import { sql as sql33 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema33 } from "drizzle-zod";
 import { z as z20 } from "zod";
@@ -8726,7 +8858,7 @@ var insertWebhookEventSchema = createInsertSchema33(webhookEvents).extend({
 var dataLakes = pgTable33("data_lakes", {
   id: varchar33("id").primaryKey().default(sql33`gen_random_uuid()`),
   name: varchar33("name").notNull(),
-  description: text24("description"),
+  description: text25("description"),
   storageType: varchar33("storage_type"),
   // s3, gcs, azure, local
   connectionConfig: jsonb19("connection_config"),
@@ -8744,7 +8876,7 @@ var insertDataLakeSchema = createInsertSchema33(dataLakes).extend({
 var etlPipelines = pgTable33("etl_pipelines", {
   id: varchar33("id").primaryKey().default(sql33`gen_random_uuid()`),
   name: varchar33("name").notNull(),
-  description: text24("description"),
+  description: text25("description"),
   sourceConfig: jsonb19("source_config"),
   transformConfig: jsonb19("transform_config"),
   destinationConfig: jsonb19("destination_config"),
@@ -8767,7 +8899,7 @@ var insertEtlPipelineSchema = createInsertSchema33(etlPipelines).extend({
 });
 
 // shared/schema/platform.ts
-import { pgTable as pgTable34, varchar as varchar34, text as text25, timestamp as timestamp34, boolean as boolean28, integer as integer24, jsonb as jsonb20 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable34, varchar as varchar34, text as text26, timestamp as timestamp34, boolean as boolean28, integer as integer24, jsonb as jsonb20 } from "drizzle-orm/pg-core";
 import { sql as sql34 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema34 } from "drizzle-zod";
 import { z as z21 } from "zod";
@@ -8775,7 +8907,7 @@ var roles = pgTable34("roles", {
   id: varchar34("id").primaryKey().default(sql34`gen_random_uuid()`),
   tenantId: varchar34("tenant_id"),
   name: varchar34("name").notNull(),
-  description: text25("description"),
+  description: text26("description"),
   permissions: jsonb20("permissions"),
   isSystem: boolean28("is_system").default(false),
   createdAt: timestamp34("created_at").default(sql34`now()`),
@@ -8815,7 +8947,7 @@ var encryptedFields = pgTable34("encrypted_fields", {
   entityType: varchar34("entity_type").notNull(),
   entityId: varchar34("entity_id").notNull(),
   fieldName: varchar34("field_name").notNull(),
-  encryptedValue: text25("encrypted_value"),
+  encryptedValue: text26("encrypted_value"),
   keyVersion: varchar34("key_version"),
   createdAt: timestamp34("created_at").default(sql34`now()`),
   updatedAt: timestamp34("updated_at").default(sql34`now()`)
@@ -8846,7 +8978,7 @@ var insertComplianceConfigSchema = createInsertSchema34(complianceConfigs).exten
 var apps = pgTable34("apps", {
   id: varchar34("id").primaryKey().default(sql34`gen_random_uuid()`),
   name: varchar34("name").notNull(),
-  description: text25("description"),
+  description: text26("description"),
   version: varchar34("version"),
   status: varchar34("status").default("active"),
   createdAt: timestamp34("created_at").default(sql34`now()`),
@@ -8864,7 +8996,7 @@ var appReviews = pgTable34("app_reviews", {
   userId: varchar34("user_id").notNull(),
   rating: integer24("rating").notNull(),
   title: varchar34("title"),
-  content: text25("content"),
+  content: text26("content"),
   createdAt: timestamp34("created_at").default(sql34`now()`)
 });
 var insertAppReviewSchema = createInsertSchema34(appReviews).extend({
@@ -8890,7 +9022,7 @@ var insertAppInstallationSchema = createInsertSchema34(appInstallations).extend(
 });
 
 // shared/schema/ai.ts
-import { pgTable as pgTable35, varchar as varchar35, text as text26, timestamp as timestamp35, boolean as boolean29, jsonb as jsonb21, integer as integer25 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable35, varchar as varchar35, text as text27, timestamp as timestamp35, boolean as boolean29, jsonb as jsonb21, integer as integer25 } from "drizzle-orm/pg-core";
 import { sql as sql35 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema35 } from "drizzle-zod";
 var aiActions = pgTable35("ai_actions", {
@@ -8899,7 +9031,7 @@ var aiActions = pgTable35("ai_actions", {
   // e.g., 'finance', 'crm', 'hr'
   actionName: varchar35("action_name").notNull().unique(),
   // e.g., 'gl_create_journal', 'crm_score_lead'
-  description: text26("description"),
+  description: text27("description"),
   requiredPermissions: jsonb21("required_permissions").$type(),
   // e.g., ['finance.write', 'journal.create']
   inputSchema: jsonb21("input_schema"),
@@ -8912,13 +9044,13 @@ var aiAuditLogs = pgTable35("ai_audit_logs", {
   userId: varchar35("user_id"),
   // The user who prompted the AI (if applicable)
   actionName: varchar35("action_name").notNull(),
-  inputPrompt: text26("input_prompt"),
+  inputPrompt: text27("input_prompt"),
   // The natural language request
   structuredIntent: jsonb21("structured_intent"),
   // The parsed JSON intent
   status: varchar35("status").notNull(),
   // 'pending', 'success', 'failed', 'blocked_by_rbac'
-  errorMessage: text26("error_message"),
+  errorMessage: text27("error_message"),
   executionTimeMs: integer25("execution_time_ms"),
   timestamp: timestamp35("timestamp").defaultNow()
 });
@@ -8934,12 +9066,12 @@ var aiCredits = pgTable35("ai_credits", {
 var insertAiCreditsSchema = createInsertSchema35(aiCredits);
 
 // shared/schema/agentic.ts
-import { pgTable as pgTable36, text as text27, serial as serial2, integer as integer26, jsonb as jsonb22, timestamp as timestamp36, boolean as boolean30, decimal as decimal2 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable36, text as text28, serial as serial2, integer as integer26, jsonb as jsonb22, timestamp as timestamp36, boolean as boolean30, decimal as decimal2 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema36, createSelectSchema } from "drizzle-zod";
 var agentActions = pgTable36("agent_actions", {
-  code: text27("code").primaryKey(),
+  code: text28("code").primaryKey(),
   // e.g. "AR_CREATE_INVOICE"
-  description: text27("description").notNull(),
+  description: text28("description").notNull(),
   requiredPermissions: jsonb22("required_permissions").$type(),
   // e.g. ["ar:write"]
   parametersSchema: jsonb22("parameters_schema").notNull(),
@@ -8948,26 +9080,26 @@ var agentActions = pgTable36("agent_actions", {
 });
 var agentExecutions = pgTable36("agent_executions", {
   id: serial2("id").primaryKey(),
-  intentText: text27("intent_text").notNull(),
+  intentText: text28("intent_text").notNull(),
   // "Create invoice for Acme..."
-  actionCode: text27("action_code"),
+  actionCode: text28("action_code"),
   // Linked to agentActions.code
   parameters: jsonb22("parameters"),
   // Extracted parameters
-  status: text27("status").notNull().default("PENDING"),
+  status: text28("status").notNull().default("PENDING"),
   // PENDING, SUCCESS, FAILED, ROLLED_BACK
   confidenceScore: decimal2("confidence_score").default("0"),
-  executedBy: text27("executed_by").default("system"),
+  executedBy: text28("executed_by").default("system"),
   createdAt: timestamp36("created_at").defaultNow(),
   completedAt: timestamp36("completed_at"),
-  errorMessage: text27("error_message")
+  errorMessage: text28("error_message")
 });
 var agentAuditLogs = pgTable36("agent_audit_logs", {
   id: serial2("id").primaryKey(),
   executionId: integer26("execution_id").references(() => agentExecutions.id),
   stepNumber: integer26("step_number").notNull(),
-  message: text27("message").notNull(),
-  actionType: text27("action_type").notNull(),
+  message: text28("message").notNull(),
+  actionType: text28("action_type").notNull(),
   // EXECUTE, VALIDATE, ROLLBACK
   dataSnapshot: jsonb22("data_snapshot"),
   // State BEFORE change (for rollback)
@@ -8980,14 +9112,14 @@ var selectAgentExecutionSchema = createSelectSchema(agentExecutions);
 var insertAgentAuditLogSchema = createInsertSchema36(agentAuditLogs);
 
 // shared/schema/billing.ts
-import { pgTable as pgTable37, varchar as varchar36, text as text28, timestamp as timestamp37, numeric as numeric21, boolean as boolean31, integer as integer27, jsonb as jsonb23 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable37, varchar as varchar36, text as text29, timestamp as timestamp37, numeric as numeric21, boolean as boolean31, integer as integer27, jsonb as jsonb23 } from "drizzle-orm/pg-core";
 import { sql as sql36 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema37 } from "drizzle-zod";
 import { z as z22 } from "zod";
 var plans = pgTable37("plans", {
   id: varchar36("id").primaryKey().default(sql36`gen_random_uuid()`),
   name: varchar36("name").notNull(),
-  description: text28("description"),
+  description: text29("description"),
   price: numeric21("price", { precision: 18, scale: 2 }),
   billingPeriod: varchar36("billing_period").default("monthly"),
   // monthly, yearly
@@ -9053,7 +9185,7 @@ var insertPaymentSchema = createInsertSchema37(payments).extend({
 });
 
 // shared/schema/content.ts
-import { pgTable as pgTable38, varchar as varchar37, text as text29, timestamp as timestamp38, integer as integer28, boolean as boolean32 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable38, varchar as varchar37, text as text30, timestamp as timestamp38, integer as integer28, boolean as boolean32 } from "drizzle-orm/pg-core";
 import { sql as sql37 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema38 } from "drizzle-zod";
 import { z as z23 } from "zod";
@@ -9062,26 +9194,26 @@ var trainingResources = pgTable38("training_resources", {
   type: varchar37("type").notNull(),
   // video, api, guide, material, tutorial
   title: varchar37("title").notNull(),
-  description: text29("description"),
+  description: text30("description"),
   resourceUrl: varchar37("resource_url"),
   thumbnailUrl: varchar37("thumbnail_url"),
   duration: varchar37("duration"),
   // for videos: "10:30", for guides: "15 min read"
   difficulty: varchar37("difficulty").default("beginner"),
   // beginner, intermediate, advanced
-  modules: text29("modules").array(),
+  modules: text30("modules").array(),
   // related module slugs
-  industries: text29("industries").array(),
+  industries: text30("industries").array(),
   // related industry slugs
-  apps: text29("apps").array(),
+  apps: text30("apps").array(),
   // related app IDs
-  tags: text29("tags").array(),
+  tags: text30("tags").array(),
   submittedBy: varchar37("submitted_by").notNull(),
   status: varchar37("status").default("pending"),
   // pending, approved, rejected, archived
   reviewedBy: varchar37("reviewed_by"),
   reviewedAt: timestamp38("reviewed_at"),
-  reviewNotes: text29("review_notes"),
+  reviewNotes: text30("review_notes"),
   likes: integer28("likes").default(0),
   views: integer28("views").default(0),
   featured: boolean32("featured").default(false),
@@ -9124,7 +9256,7 @@ var trainingFilterRequests = pgTable38("training_filter_requests", {
   filterType: varchar37("filter_type").notNull(),
   // module, industry, app, tag
   filterValue: varchar37("filter_value").notNull(),
-  description: text29("description"),
+  description: text30("description"),
   requestedBy: varchar37("requested_by").notNull(),
   status: varchar37("status").default("pending"),
   // pending, approved, rejected
@@ -9144,7 +9276,7 @@ var insertTrainingFilterRequestSchema = createInsertSchema38(trainingFilterReque
 var developerSpotlight = pgTable38("developer_spotlight", {
   id: varchar37("id").primaryKey().default(sql37`gen_random_uuid()`),
   developerId: varchar37("developer_id").notNull(),
-  featuredReason: text29("featured_reason"),
+  featuredReason: text30("featured_reason"),
   isTrending: boolean32("is_trending").default(false),
   isNew: boolean32("is_new").default(false),
   isFeatured: boolean32("is_featured").default(false),
@@ -9165,7 +9297,7 @@ var insertDeveloperSpotlightSchema = createInsertSchema38(developerSpotlight).ex
 });
 
 // shared/schema/gamification.ts
-import { pgTable as pgTable39, varchar as varchar38, text as text30, timestamp as timestamp39, integer as integer29, boolean as boolean33, jsonb as jsonb24 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable39, varchar as varchar38, text as text31, timestamp as timestamp39, integer as integer29, boolean as boolean33, jsonb as jsonb24 } from "drizzle-orm/pg-core";
 import { sql as sql38 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema39 } from "drizzle-zod";
 import { z as z24 } from "zod";
@@ -9201,7 +9333,7 @@ var userBadges = pgTable39("user_badges", {
   userId: varchar38("user_id").notNull(),
   badgeId: varchar38("badge_id").notNull(),
   badgeName: varchar38("badge_name").notNull(),
-  badgeDescription: text30("badge_description"),
+  badgeDescription: text31("badge_description"),
   badgeIcon: varchar38("badge_icon"),
   badgeCategory: varchar38("badge_category"),
   // "contributor" | "reviewer" | "developer" | "power_user"
@@ -9220,7 +9352,7 @@ var insertUserBadgeSchema = createInsertSchema39(userBadges).extend({
 var badgeDefinitions = pgTable39("badge_definitions", {
   id: varchar38("id").primaryKey().default(sql38`gen_random_uuid()`),
   name: varchar38("name").notNull().unique(),
-  description: text30("description"),
+  description: text31("description"),
   icon: varchar38("icon"),
   category: varchar38("category").notNull(),
   // "contributor" | "reviewer" | "developer" | "power_user"
@@ -9245,7 +9377,7 @@ var userActivityPoints = pgTable39("user_activity_points", {
   activityType: varchar38("activity_type").notNull(),
   // "app_install" | "review" | "app_publish" | "contribution"
   points: integer29("points").default(0),
-  description: text30("description"),
+  description: text31("description"),
   referenceId: varchar38("reference_id"),
   // app_id, review_id, etc.
   createdAt: timestamp39("created_at").default(sql38`now()`)
@@ -9259,7 +9391,7 @@ var insertUserActivityPointSchema = createInsertSchema39(userActivityPoints).ext
 });
 
 // shared/schema/cash.ts
-import { pgTable as pgTable40, varchar as varchar39, numeric as numeric22, timestamp as timestamp40, integer as integer30, boolean as boolean34, text as text31, jsonb as jsonb25 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable40, varchar as varchar39, numeric as numeric22, timestamp as timestamp40, integer as integer30, boolean as boolean34, text as text32, jsonb as jsonb25 } from "drizzle-orm/pg-core";
 import { sql as sql39 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema40 } from "drizzle-zod";
 import { z as z25 } from "zod";
@@ -9319,7 +9451,7 @@ var cashStatementLines = pgTable40("cash_statement_lines", {
   bankAccountId: varchar39("bank_account_id").notNull(),
   transactionDate: timestamp40("transaction_date").notNull(),
   amount: numeric22("amount", { precision: 20, scale: 2 }).notNull(),
-  description: text31("description"),
+  description: text32("description"),
   referenceNumber: varchar39("reference_number", { length: 100 }),
   reconciled: boolean34("reconciled").default(false),
   isIntraday: boolean34("is_intraday").default(false),
@@ -9340,7 +9472,7 @@ var cashTransactions = pgTable40("cash_transactions", {
   amount: numeric22("amount", { precision: 20, scale: 2 }).notNull(),
   transactionDate: timestamp40("transaction_date").default(sql39`now()`),
   reference: varchar39("reference", { length: 100 }),
-  description: text31("description"),
+  description: text32("description"),
   // For manual transactions
   status: varchar39("status", { length: 20 }).default("Unreconciled"),
   // 'Unreconciled', 'Cleared'
@@ -9454,7 +9586,7 @@ var cashForecasts = pgTable40("cash_forecasts", {
   forecastDate: timestamp40("forecast_date").notNull(),
   amount: numeric22("amount", { precision: 20, scale: 2 }).notNull(),
   currency: varchar39("currency", { length: 10 }).default("USD"),
-  description: text31("description").notNull(),
+  description: text32("description").notNull(),
   type: varchar39("type", { length: 20 }).default("MANUAL"),
   // MANUAL, TAX, PAYROLL
   createdAt: timestamp40("created_at").default(sql39`now()`)
@@ -9462,14 +9594,14 @@ var cashForecasts = pgTable40("cash_forecasts", {
 var insertCashForecastSchema = createInsertSchema40(cashForecasts);
 
 // shared/schema/fixedAssets.ts
-import { pgTable as pgTable41, text as text32, varchar as varchar40, timestamp as timestamp41, numeric as numeric23, boolean as boolean35, integer as integer31 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable41, text as text33, varchar as varchar40, timestamp as timestamp41, numeric as numeric23, boolean as boolean35, integer as integer31 } from "drizzle-orm/pg-core";
 import { sql as sql40 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema41 } from "drizzle-zod";
 var faBooks = pgTable41("fa_books", {
   id: varchar40("id").primaryKey().default(sql40`gen_random_uuid()`),
   bookCode: varchar40("book_code", { length: 30 }).notNull().unique(),
   // e.g., CORP_USD
-  description: text32("description").notNull(),
+  description: text33("description").notNull(),
   ledgerId: varchar40("ledger_id").notNull(),
   // Link to GL
   depreciationCalendar: varchar40("depreciation_calendar", { length: 50 }).notNull(),
@@ -9503,7 +9635,7 @@ var faAssets = pgTable41("fa_assets", {
   id: varchar40("id").primaryKey().default(sql40`gen_random_uuid()`),
   assetNumber: varchar40("asset_number", { length: 50 }).notNull().unique(),
   tagNumber: varchar40("tag_number", { length: 50 }),
-  description: text32("description").notNull(),
+  description: text33("description").notNull(),
   manufacturer: varchar40("manufacturer"),
   model: varchar40("model"),
   serialNumber: varchar40("serial_number"),
@@ -9519,7 +9651,7 @@ var faAssets = pgTable41("fa_assets", {
   // Hierarchy (L3 Reference)
   parentId: varchar40("parent_id").references(() => faAssets.id),
   // Physical Verification (L3)
-  qrCode: text32("qr_code"),
+  qrCode: text33("qr_code"),
   lastVerifiedAt: timestamp41("last_verified_at"),
   createdAt: timestamp41("created_at").default(sql40`now()`)
 });
@@ -9565,7 +9697,7 @@ var faTransactions = pgTable41("fa_transactions", {
   // Audit
   reference: varchar40("reference"),
   // Source Invoice, etc.
-  description: text32("description"),
+  description: text33("description"),
   status: varchar40("status", { length: 20 }).default("POSTED"),
   createdAt: timestamp41("created_at").default(sql40`now()`)
 });
@@ -9611,7 +9743,7 @@ var faMassAdditions = pgTable41("fa_mass_additions", {
   sourceType: varchar40("source_type", { length: 20 }).default("AP_INVOICE"),
   invoiceNumber: varchar40("invoice_number", { length: 50 }),
   invoiceLineNumber: integer31("invoice_line_number"),
-  description: text32("description").notNull(),
+  description: text33("description").notNull(),
   amount: numeric23("amount", { precision: 20, scale: 2 }).notNull(),
   date: timestamp41("date").notNull(),
   vendorName: varchar40("vendor_name"),
@@ -9639,7 +9771,7 @@ var faTransfers = pgTable41("fa_transfers", {
   fromCcid: varchar40("from_ccid"),
   toCcid: varchar40("to_ccid"),
   units: numeric23("units").default("1"),
-  description: text32("description"),
+  description: text33("description"),
   createdBy: varchar40("created_by"),
   createdAt: timestamp41("created_at").default(sql40`now()`)
 });
@@ -9647,7 +9779,7 @@ var insertFaTransferSchema = createInsertSchema41(faTransfers);
 var faLeases = pgTable41("fa_leases", {
   id: varchar40("id").primaryKey().default(sql40`gen_random_uuid()`),
   leaseNumber: varchar40("lease_number").notNull().unique(),
-  description: text32("description"),
+  description: text33("description"),
   lessor: varchar40("lessor"),
   leaseType: varchar40("lease_type", { length: 30 }).notNull(),
   // OPERATING, FINANCE
@@ -9670,7 +9802,7 @@ var faPhysicalInventory = pgTable41("fa_physical_inventory", {
   // OPEN, CLOSED, RECONCILED
   startDate: timestamp41("start_date").notNull(),
   endDate: timestamp41("end_date"),
-  description: text32("description"),
+  description: text33("description"),
   createdBy: varchar40("created_by"),
   createdAt: timestamp41("created_at").default(sql40`now()`)
 });
@@ -9683,7 +9815,7 @@ var faInventoryScans = pgTable41("fa_inventory_scans", {
   scannedBy: varchar40("scanned_by"),
   condition: varchar40("condition", { length: 50 }),
   // GOOD, DAMAGED, OBSOLETE
-  notes: text32("notes"),
+  notes: text33("notes"),
   reconciliationStatus: varchar40("reconciliation_status", { length: 20 }).default("PENDING")
   // MATCH, MISMATCH, NEW
 });
@@ -9691,7 +9823,7 @@ var insertFaPhysicalInventorySchema = createInsertSchema41(faPhysicalInventory);
 var insertFaInventoryScanSchema = createInsertSchema41(faInventoryScans);
 
 // shared/schema/sla.ts
-import { pgTable as pgTable42, text as text33, integer as integer32, boolean as boolean36, timestamp as timestamp42, varchar as varchar41, unique } from "drizzle-orm/pg-core";
+import { pgTable as pgTable42, text as text34, integer as integer32, boolean as boolean36, timestamp as timestamp42, varchar as varchar41, unique } from "drizzle-orm/pg-core";
 import { relations as relations5, sql as sql41 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema42 } from "drizzle-zod";
 var slaEventClasses = pgTable42("sla_event_classes", {
@@ -9701,7 +9833,7 @@ var slaEventClasses = pgTable42("sla_event_classes", {
   // "AP"
   name: varchar41("name").notNull(),
   // "Payables Invoice"
-  description: text33("description"),
+  description: text34("description"),
   enabledFlag: boolean36("enabled_flag").default(true)
 });
 var slaEventTypes = pgTable42("sla_event_types", {
@@ -9710,7 +9842,7 @@ var slaEventTypes = pgTable42("sla_event_types", {
   eventClassId: varchar41("event_class_id").references(() => slaEventClasses.id).notNull(),
   name: varchar41("name").notNull(),
   // "Invoice Validated"
-  description: text33("description"),
+  description: text34("description"),
   accountingFlag: boolean36("accounting_flag").default(true)
   // Does this event generate accounting?
 });
@@ -9719,7 +9851,7 @@ var slaMappingSets = pgTable42("sla_mapping_sets", {
   code: varchar41("code").notNull().unique(),
   // "SUPPLIER_TYPE_ACCOUNT"
   name: varchar41("name").notNull(),
-  description: text33("description"),
+  description: text34("description"),
   inputType: varchar41("input_type").notNull(),
   // "Segment", "Literal", "Lookup"
   outputType: varchar41("output_type").notNull()
@@ -9770,11 +9902,11 @@ var slaJournalLineTypes = pgTable42("sla_journal_line_types", {
   // Allow switching side based on sign?
   mergeFlag: boolean36("merge_flag").default(true),
   // Summarize lines?
-  condition: text33("condition"),
+  condition: text34("condition"),
   // JS-like condition string e.g. "source.taxAmount > 0"
   amountSource: varchar41("amount_source").default("amount"),
   // Key in payload check e.g. "taxAmount"
-  descriptionRule: text33("description_rule"),
+  descriptionRule: text34("description_rule"),
   // Template e.g. "Tax for Invoice {invoiceNumber}"
   priority: integer32("priority").default(0)
   // Execution Order
@@ -9797,7 +9929,7 @@ var slaJournalHeaders = pgTable42("sla_journal_headers", {
   status: varchar41("status").default("Draft"),
   // Draft, Final, Posted
   completedFlag: boolean36("completed_flag").default(false),
-  description: text33("description"),
+  description: text34("description"),
   transferStatus: varchar41("transfer_status").default("Not Transferred"),
   // Not Transferred, Transferred
   glJournalId: varchar41("gl_journal_id"),
@@ -9817,7 +9949,7 @@ var slaJournalLines = pgTable42("sla_journal_lines", {
   accountedDr: varchar41("accounted_dr"),
   accountedCr: varchar41("accounted_cr"),
   currencyCode: varchar41("currency_code").notNull(),
-  description: text33("description")
+  description: text34("description")
 });
 var slaJournalHeaderRelations = relations5(slaJournalHeaders, ({ many }) => ({
   lines: many(slaJournalLines)
@@ -9847,7 +9979,7 @@ var slaPeriodStatuses = pgTable42("sla_period_statuses", {
 var insertSlaPeriodStatusSchema = createInsertSchema42(slaPeriodStatuses);
 
 // shared/schema/gl-config.ts
-import { pgTable as pgTable43, varchar as varchar42, text as text34, timestamp as timestamp43, boolean as boolean37, numeric as numeric24 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable43, varchar as varchar42, text as text35, timestamp as timestamp43, boolean as boolean37, numeric as numeric24 } from "drizzle-orm/pg-core";
 import { sql as sql42 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema43 } from "drizzle-zod";
 var glJournalSources = pgTable43("gl_je_sources", {
@@ -9855,7 +9987,7 @@ var glJournalSources = pgTable43("gl_je_sources", {
   name: varchar42("name").notNull().unique(),
   // e.g. "Manual", "Payables"
   userSourceName: varchar42("user_source_name").notNull(),
-  description: text34("description"),
+  description: text35("description"),
   importJournalReferences: boolean37("import_journal_references").default(false),
   journalApprovalFlag: boolean37("journal_approval_flag").default(false),
   effectiveDateRule: varchar42("effective_date_rule").default("Fail"),
@@ -9868,7 +10000,7 @@ var glJournalCategories = pgTable43("gl_je_categories", {
   name: varchar42("name").notNull().unique(),
   // e.g. "Adjustment"
   userCategoryName: varchar42("user_category_name").notNull(),
-  description: text34("description"),
+  description: text35("description"),
   reversalMethod: varchar42("reversal_method").default("Switch Dr/Cr"),
   // Switch Dr/Cr, Change Sign
   createdAt: timestamp43("created_at").default(sql42`now()`)
@@ -10040,7 +10172,7 @@ var icNettingBatchesRelations = relations6(icNettingBatches, ({ one }) => ({
 }));
 
 // shared/schema/translation.ts
-import { pgTable as pgTable46, varchar as varchar45, text as text36, timestamp as timestamp45, boolean as boolean40, numeric as numeric27 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable46, varchar as varchar45, text as text37, timestamp as timestamp45, boolean as boolean40, numeric as numeric27 } from "drizzle-orm/pg-core";
 import { sql as sql44 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema46 } from "drizzle-zod";
 var glTranslationRules = pgTable46("gl_translation_rules", {
@@ -10048,7 +10180,7 @@ var glTranslationRules = pgTable46("gl_translation_rules", {
   ledgerId: varchar45("ledger_id").notNull(),
   targetCurrency: varchar45("target_currency").notNull(),
   ruleName: varchar45("rule_name").notNull(),
-  description: text36("description"),
+  description: text37("description"),
   // Rate Types for different account types
   assetRateType: varchar45("asset_rate_type").default("Period End"),
   // e.g. Period End
@@ -10069,7 +10201,7 @@ var glHistoricalRates = pgTable46("gl_historical_rates", {
   // If rate is period-specific
   rate: numeric27("rate", { precision: 20, scale: 10 }).notNull(),
   rateType: varchar45("rate_type").default("Historical"),
-  description: text36("description"),
+  description: text37("description"),
   createdAt: timestamp45("created_at").default(sql44`now()`)
 });
 var insertGlHistoricalRateSchema = createInsertSchema46(glHistoricalRates);
@@ -10768,14 +10900,14 @@ var hasPermission = (userRole, permission) => {
 };
 
 // shared/schema/ppm.ts
-import { pgTable as pgTable47, varchar as varchar46, text as text37, timestamp as timestamp46, numeric as numeric28, boolean as boolean41, integer as integer37 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable47, varchar as varchar46, text as text38, timestamp as timestamp46, numeric as numeric28, boolean as boolean41, integer as integer37 } from "drizzle-orm/pg-core";
 import { sql as sql45 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema47 } from "drizzle-zod";
 var ppmProjects = pgTable47("ppm_projects", {
   id: varchar46("id").primaryKey().default(sql45`gen_random_uuid()`),
   projectNumber: varchar46("project_number").notNull().unique(),
   name: varchar46("name").notNull(),
-  description: text37("description"),
+  description: text38("description"),
   projectType: varchar46("project_type").notNull(),
   // CAPITAL, INDIRECT, CONTRACT
   organizationId: varchar46("organization_id"),
@@ -10803,7 +10935,7 @@ var ppmTasks = pgTable47("ppm_tasks", {
   // For hierarchy
   taskNumber: varchar46("task_number").notNull(),
   name: varchar46("name").notNull(),
-  description: text37("description"),
+  description: text38("description"),
   billableFlag: boolean41("billable_flag").default(false),
   chargeableFlag: boolean41("chargeable_flag").default(true),
   capitalizableFlag: boolean41("capitalizable_flag").default(false),
@@ -10820,7 +10952,7 @@ var ppmExpenditureTypes = pgTable47("ppm_expenditure_types", {
   // e.g., Professional Services, IT Equipment, Travel
   unitOfMeasure: varchar46("uom").notNull(),
   // Hours, Currency, Each
-  description: text37("description"),
+  description: text38("description"),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
 var insertPpmExpenditureTypeSchema = createInsertSchema47(ppmExpenditureTypes);
@@ -10868,7 +11000,7 @@ var insertPpmCostDistributionSchema = createInsertSchema47(ppmCostDistributions)
 var ppmBurdenSchedules = pgTable47("ppm_burden_schedules", {
   id: varchar46("id").primaryKey().default(sql45`gen_random_uuid()`),
   name: varchar46("name").notNull().unique(),
-  description: text37("description"),
+  description: text38("description"),
   version: varchar46("version").default("1.0"),
   activeFlag: boolean41("active_flag").default(true),
   createdAt: timestamp46("created_at").default(sql45`now()`)
@@ -10881,7 +11013,7 @@ var ppmBurdenRules = pgTable47("ppm_burden_rules", {
   multiplier: numeric28("multiplier", { precision: 18, scale: 4 }).notNull(),
   // e.g., 0.20 for 20%
   precedence: integer37("precedence").default(1),
-  description: text37("description"),
+  description: text38("description"),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
 var insertPpmBurdenRuleSchema = createInsertSchema47(ppmBurdenRules);
@@ -10889,7 +11021,7 @@ var ppmProjectAssets = pgTable47("ppm_project_assets", {
   id: varchar46("id").primaryKey().default(sql45`gen_random_uuid()`),
   projectId: varchar46("project_id").notNull(),
   assetName: varchar46("asset_name").notNull(),
-  assetDescription: text37("asset_description"),
+  assetDescription: text38("asset_description"),
   assetNumber: varchar46("asset_number"),
   // Assigned after interface to FA
   status: varchar46("status").default("DRAFT"),
@@ -10935,7 +11067,7 @@ var insertPpmPerformanceSnapshotSchema = createInsertSchema47(ppmPerformanceSnap
 var ppmProjectTemplates = pgTable47("ppm_project_templates", {
   id: varchar46("id").primaryKey().default(sql45`gen_random_uuid()`),
   name: varchar46("name").notNull().unique(),
-  description: text37("description"),
+  description: text38("description"),
   projectType: varchar46("project_type").notNull(),
   defaultBurdenScheduleId: varchar46("default_burden_schedule_id"),
   activeFlag: boolean41("active_flag").default(true),
@@ -10947,7 +11079,7 @@ var ppmBillRateSchedules = pgTable47("ppm_bill_rate_schedules", {
   name: varchar46("name").notNull().unique(),
   // e.g., "Standard Corporate Rates 2026"
   currencyCode: varchar46("currency_code").default("USD"),
-  description: text37("description"),
+  description: text38("description"),
   activeFlag: boolean41("active_flag").default(true),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
@@ -10974,7 +11106,7 @@ var ppmBillingRules = pgTable47("ppm_billing_rules", {
   // FIXED_PRICE, TM, COST_PLUS
   contractAmount: numeric28("contract_amount", { precision: 18, scale: 2 }),
   markupPercentage: numeric28("markup_percentage", { precision: 5, scale: 2 }),
-  description: text37("description"),
+  description: text38("description"),
   activeFlag: boolean41("active_flag").default(true),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
@@ -10990,7 +11122,7 @@ var ppmBillingEvents = pgTable47("ppm_billing_events", {
   // Amounts
   amount: numeric28("amount", { precision: 18, scale: 2 }).notNull(),
   currency: varchar46("currency").default("USD"),
-  description: text37("description"),
+  description: text38("description"),
   // Links
   expenditureItemId: varchar46("expenditure_item_id"),
   // If derived fromcost
@@ -11022,7 +11154,7 @@ var ppmProjectInvoices = pgTable47("ppm_project_invoices", {
   transferStatus: varchar46("transfer_status").default("PENDING"),
   // PENDING, TRANSFERRED, REJECTED
   transferDate: timestamp46("transfer_date"),
-  transferError: text37("transfer_error"),
+  transferError: text38("transfer_error"),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
 var insertPpmProjectInvoiceSchema = createInsertSchema47(ppmProjectInvoices);
@@ -11033,7 +11165,7 @@ var ppmProjectInvoiceLines = pgTable47("ppm_project_invoice_lines", {
   eventId: varchar46("event_id").notNull(),
   // Link to Billing Event
   amount: numeric28("amount", { precision: 18, scale: 2 }).notNull(),
-  description: text37("description"),
+  description: text38("description"),
   taxAmount: numeric28("tax_amount", { precision: 18, scale: 2 }),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
@@ -11046,7 +11178,7 @@ var ppmControlRules = pgTable47("ppm_control_rules", {
   controlType: varchar46("control_type").default("ADVISORY"),
   // ADVISORY, ABSOLUTE, TRACKING
   tolerancePercentage: numeric28("tolerance_percentage", { precision: 5, scale: 2 }).default("0"),
-  description: text37("description"),
+  description: text38("description"),
   activeFlag: boolean41("active_flag").default(true),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
@@ -11063,7 +11195,7 @@ var ppmBudgetVersions = pgTable47("ppm_budget_versions", {
   currentFlag: boolean41("current_flag").default(false),
   // Is this the active plan?
   baselineDate: timestamp46("baseline_date"),
-  description: text37("description"),
+  description: text38("description"),
   createdAt: timestamp46("created_at").default(sql45`now()`)
 });
 var insertPpmBudgetVersionSchema = createInsertSchema47(ppmBudgetVersions);
@@ -11086,7 +11218,7 @@ var ppmBudgetLines = pgTable47("ppm_budget_lines", {
 var insertPpmBudgetLineSchema = createInsertSchema47(ppmBudgetLines);
 
 // shared/schema/revenue.ts
-import { pgTable as pgTable48, varchar as varchar47, text as text38, timestamp as timestamp47, numeric as numeric29, integer as integer38 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable48, varchar as varchar47, text as text39, timestamp as timestamp47, numeric as numeric29, integer as integer38 } from "drizzle-orm/pg-core";
 import { sql as sql46 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema48 } from "drizzle-zod";
 var revenueSspBooks = pgTable48("revenue_ssp_books", {
@@ -11147,7 +11279,7 @@ var revenueContractVersions = pgTable48("revenue_contract_versions", {
   // Link to the master contract
   versionNumber: integer38("version_number").notNull(),
   snapshotDate: timestamp47("snapshot_date").default(sql46`now()`),
-  changeReason: text38("change_reason"),
+  changeReason: text39("change_reason"),
   // "Added Seat", "Price Change"
   // Snapshot fields (subset of key fields)
   totalTransactionPrice: numeric29("total_transaction_price", { precision: 18, scale: 2 }),
@@ -11202,7 +11334,7 @@ var revenueRecognitions = pgTable48("revenue_recognitions", {
   // Link to GL
   eventType: varchar47("event_type").default("Schedule"),
   // Schedule, Event, CatchUp
-  description: text38("description"),
+  description: text39("description"),
   createdAt: timestamp47("created_at").default(sql46`now()`)
 });
 var insertRevenueRecognitionSchema = createInsertSchema48(revenueRecognitions);
@@ -11233,13 +11365,13 @@ var revenueSourceEvents = pgTable48("revenue_source_events", {
   // Pending, Processed, Error, Ignored
   contractId: varchar47("contract_id"),
   // Linked after processing
-  errorMessage: text38("error_message"),
+  errorMessage: text39("error_message"),
   createdAt: timestamp47("created_at").default(sql46`now()`)
 });
 var insertRevenueSourceEventSchema = createInsertSchema48(revenueSourceEvents);
 
 // shared/schema/revenue_accounting.ts
-import { pgTable as pgTable49, varchar as varchar48, timestamp as timestamp48, text as text39 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable49, varchar as varchar48, timestamp as timestamp48, text as text40 } from "drizzle-orm/pg-core";
 import { sql as sql47 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema49 } from "drizzle-zod";
 var revenueGlAccounts = pgTable49("revenue_gl_accounts", {
@@ -11254,7 +11386,7 @@ var revenueGlAccounts = pgTable49("revenue_gl_accounts", {
   // Debit Asset
   clearingAccountCCID: varchar48("clearing_account_ccid"),
   // For unbilled
-  description: text39("description"),
+  description: text40("description"),
   lastUpdated: timestamp48("last_updated").default(sql47`now()`)
 });
 var insertRevenueGlAccountsSchema = createInsertSchema49(revenueGlAccounts);
@@ -11279,13 +11411,13 @@ var revenuePeriods = pgTable50("revenue_periods", {
 var insertRevenuePeriodSchema = createInsertSchema50(revenuePeriods);
 
 // shared/schema/revenue_rules.ts
-import { pgTable as pgTable51, varchar as varchar50, text as text40, timestamp as timestamp50, jsonb as jsonb30, integer as integer39 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable51, varchar as varchar50, text as text41, timestamp as timestamp50, jsonb as jsonb30, integer as integer39 } from "drizzle-orm/pg-core";
 import { sql as sql49 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema51 } from "drizzle-zod";
 var revenueIdentificationRules = pgTable51("revenue_identification_rules", {
   id: varchar50("id").primaryKey().default(sql49`gen_random_uuid()`),
   name: varchar50("name").notNull(),
-  description: text40("description"),
+  description: text41("description"),
   // grouping_criteria stores an array of fields to group by, e.g. ["legalEntityId", "orgId", "customerId", "referenceNumber"]
   groupingCriteria: jsonb30("grouping_criteria").notNull(),
   priority: integer39("priority").default(1),
@@ -11296,7 +11428,7 @@ var insertRevenueIdentificationRuleSchema = createInsertSchema51(revenueIdentifi
 var performanceObligationRules = pgTable51("performance_obligation_rules", {
   id: varchar50("id").primaryKey().default(sql49`gen_random_uuid()`),
   name: varchar50("name").notNull(),
-  description: text40("description"),
+  description: text41("description"),
   // Rule logic: if source line attribute matches value, use this POB metadata
   attributeName: varchar50("attribute_name").notNull(),
   // e.g. "itemType" or "itemId"
@@ -11313,220 +11445,220 @@ var performanceObligationRules = pgTable51("performance_obligation_rules", {
 var insertPerformanceObligationRuleSchema = createInsertSchema51(performanceObligationRules);
 var glRevenueRules = pgTable51("gl_revenue_rules", {
   id: varchar50("id").primaryKey().default(sql49`gen_random_uuid()`),
-  name: text40("name"),
-  type: text40("type"),
-  duration: text40("duration"),
-  recognitionStart: text40("recognition_start"),
-  enabled: text40("enabled"),
-  description: text40("description"),
+  name: text41("name"),
+  type: text41("type"),
+  duration: text41("duration"),
+  recognitionStart: text41("recognition_start"),
+  enabled: text41("enabled"),
+  description: text41("description"),
   createdAt: timestamp50("created_at").default(sql49`now()`)
 });
 
 // shared/schema/costing.ts
-import { pgTable as pgTable52, text as text41, timestamp as timestamp51, decimal as decimal3, boolean as boolean44 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable52, text as text42, timestamp as timestamp51, decimal as decimal3, boolean as boolean44 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema52 } from "drizzle-zod";
 var cstItemCosts = pgTable52("cst_item_costs", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  inventoryOrganizationId: text41("inventoryOrganizationId"),
-  itemId: text41("itemId"),
-  costBookId: text41("costBookId"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  inventoryOrganizationId: text42("inventoryOrganizationId"),
+  itemId: text42("itemId"),
+  costBookId: text42("costBookId"),
   unitCost: decimal3("unitCost", { precision: 18, scale: 4 }).default("0"),
-  currencyCode: text41("currencyCode").notNull(),
-  entInventoryOrgId: text41("ent_inventory_org_id"),
+  currencyCode: text42("currencyCode").notNull(),
+  entInventoryOrgId: text42("ent_inventory_org_id"),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstCostDistributions = pgTable52("cst_cost_distributions", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  transactionId: text41("transactionId"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  transactionId: text42("transactionId"),
   // FK to inv_material_transactions
-  costOrganizationId: text41("costOrganizationId"),
-  costElementId: text41("costElementId"),
-  accountingLineType: text41("accountingLineType").notNull(),
+  costOrganizationId: text42("costOrganizationId"),
+  costElementId: text42("costElementId"),
+  accountingLineType: text42("accountingLineType").notNull(),
   // 'Inventory Valuation', 'COGS'
   amount: decimal3("amount", { precision: 18, scale: 4 }).notNull(),
-  currencyCode: text41("currencyCode").notNull(),
+  currencyCode: text42("currencyCode").notNull(),
   unitCost: decimal3("unitCost", { precision: 18, scale: 4 }).notNull(),
-  status: text41("status").default("Draft"),
+  status: text42("status").default("Draft"),
   // Draft, Final, Posted
   accounted: boolean44("accounted").default(false),
-  glAccountId: text41("glAccountId"),
-  entInventoryOrgId: text41("ent_inventory_org_id"),
+  glAccountId: text42("glAccountId"),
+  entInventoryOrgId: text42("ent_inventory_org_id"),
   createdAt: timestamp51("createdAt").defaultNow()
 });
 var cmrReceiptDistributions = pgTable52("cmr_receipt_distributions", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  transactionId: text41("transactionId"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  transactionId: text42("transactionId"),
   // FK to inv_material_transactions
-  costOrganizationId: text41("costOrganizationId"),
-  accountingLineType: text41("accountingLineType").notNull(),
+  costOrganizationId: text42("costOrganizationId"),
+  accountingLineType: text42("accountingLineType").notNull(),
   amount: decimal3("amount", { precision: 18, scale: 4 }).notNull(),
-  currencyCode: text41("currencyCode").notNull(),
+  currencyCode: text42("currencyCode").notNull(),
   accountedAmount: decimal3("accountedAmount", { precision: 18, scale: 4 }),
-  glAccountId: text41("glAccountId"),
-  status: text41("status").default("Draft"),
-  entInventoryOrgId: text41("ent_inventory_org_id"),
+  glAccountId: text42("glAccountId"),
+  status: text42("status").default("Draft"),
+  entInventoryOrgId: text42("ent_inventory_org_id"),
   createdAt: timestamp51("createdAt").defaultNow()
 });
 var cstCostOrganizations = pgTable52("cst_cost_organizations", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  code: text41("code").notNull(),
-  name: text41("name").notNull(),
-  inventoryOrganizationId: text41("inventoryOrganizationId").notNull(),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  code: text42("code").notNull(),
+  name: text42("name").notNull(),
+  inventoryOrganizationId: text42("inventoryOrganizationId").notNull(),
   createdAt: timestamp51("createdAt").defaultNow()
 });
 var cstCostBooks = pgTable52("cst_cost_books", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  costBookCode: text41("costBookCode").notNull().unique(),
-  description: text41("description").notNull(),
-  currencyCode: text41("currencyCode").notNull(),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  costBookCode: text42("costBookCode").notNull().unique(),
+  description: text42("description").notNull(),
+  currencyCode: text42("currencyCode").notNull(),
   isActive: boolean44("isActive").default(true),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstCostPeriods = pgTable52("cst_cost_periods", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  costOrganizationId: text41("costOrganizationId"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  costOrganizationId: text42("costOrganizationId"),
   // FK to cst_cost_organizations
-  periodName: text41("periodName").notNull(),
+  periodName: text42("periodName").notNull(),
   startDate: timestamp51("startDate").notNull(),
   endDate: timestamp51("endDate").notNull(),
-  status: text41("status").default("Open"),
+  status: text42("status").default("Open"),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstCostScenarios = pgTable52("cst_cost_scenarios", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  costOrganizationId: text41("costOrganizationId"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  costOrganizationId: text42("costOrganizationId"),
   // FK
-  name: text41("name").notNull(),
-  description: text41("description"),
-  scenarioType: text41("scenarioType").default("Pending"),
+  name: text42("name").notNull(),
+  description: text42("description"),
+  scenarioType: text42("scenarioType").default("Pending"),
   effectiveDate: timestamp51("effectiveDate"),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstCostElements = pgTable52("cst_cost_elements", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  costElementCode: text41("costElementCode").notNull().unique(),
-  description: text41("description").notNull(),
-  elementType: text41("elementType").default("Material"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  costElementCode: text42("costElementCode").notNull().unique(),
+  description: text42("description").notNull(),
+  elementType: text42("elementType").default("Material"),
   isActive: boolean44("isActive").default(true),
   createdAt: timestamp51("createdAt").defaultNow()
 });
 var cstCostProfiles = pgTable52("cst_cost_profiles", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  profileName: text41("profileName").notNull().unique(),
-  description: text41("description").notNull(),
-  costMethod: text41("costMethod").default("Average"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  profileName: text42("profileName").notNull().unique(),
+  description: text42("description").notNull(),
+  costMethod: text42("costMethod").default("Average"),
   isDefault: boolean44("isDefault").default(true),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstStandardCosts = pgTable52("cst_standard_costs", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  scenarioId: text41("scenarioId"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  scenarioId: text42("scenarioId"),
   // FK to cst_cost_scenarios
-  itemId: text41("itemId"),
-  costElementId: text41("costElementId"),
+  itemId: text42("itemId"),
+  costElementId: text42("costElementId"),
   unitCost: decimal3("unitCost", { precision: 18, scale: 4 }).notNull(),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstLandedCosts = pgTable52("cst_landed_costs", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  organizationId: text41("organizationId"),
-  purchaseOrderId: text41("purchaseOrderId"),
-  chargeType: text41("chargeType").notNull(),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organizationId: text42("organizationId"),
+  purchaseOrderId: text42("purchaseOrderId"),
+  chargeType: text42("chargeType").notNull(),
   amount: decimal3("amount", { precision: 18, scale: 4 }).notNull(),
-  currencyCode: text41("currencyCode").notNull(),
-  allocationBasis: text41("allocationBasis").default("Value"),
+  currencyCode: text42("currencyCode").notNull(),
+  allocationBasis: text42("allocationBasis").default("Value"),
   isEstimated: boolean44("isEstimated").default(false),
-  vendorName: text41("vendorName"),
+  vendorName: text42("vendorName"),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstAnomalies = pgTable52("cst_anomalies", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  organizationId: text41("organizationId"),
-  itemId: text41("itemId"),
-  anomalyType: text41("anomalyType").notNull(),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  organizationId: text42("organizationId"),
+  itemId: text42("itemId"),
+  anomalyType: text42("anomalyType").notNull(),
   detectedValue: decimal3("detectedValue", { precision: 10, scale: 2 }),
   expectedValue: decimal3("expectedValue", { precision: 10, scale: 2 }),
   variancePercent: decimal3("variancePercent", { precision: 5, scale: 2 }),
-  severity: text41("severity").default("Medium"),
-  details: text41("details"),
-  status: text41("status").default("Open"),
+  severity: text42("severity").default("Medium"),
+  details: text42("details"),
+  status: text42("status").default("Open"),
   detectedAt: timestamp51("detectedAt").defaultNow()
 });
 var cstApprovalRequests = pgTable52("cst_approval_requests", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  requesterId: text41("requesterId").notNull(),
-  approverId: text41("approverId"),
-  status: text41("status").default("PENDING"),
-  entityType: text41("entityType").notNull(),
-  entityId: text41("entityId").notNull(),
-  payload: text41("payload"),
-  rejectionReason: text41("rejectionReason"),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  requesterId: text42("requesterId").notNull(),
+  approverId: text42("approverId"),
+  status: text42("status").default("PENDING"),
+  entityType: text42("entityType").notNull(),
+  entityId: text42("entityId").notNull(),
+  payload: text42("payload"),
+  rejectionReason: text42("rejectionReason"),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstTransactions = pgTable52("cst_transactions", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  transactionType: text41("transaction_type").notNull(),
-  itemId: text41("item_id").notNull(),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  transactionType: text42("transaction_type").notNull(),
+  itemId: text42("item_id").notNull(),
   quantity: decimal3("quantity", { precision: 16, scale: 4 }).notNull(),
   unitCost: decimal3("unit_cost", { precision: 16, scale: 4 }).default("0"),
   totalCost: decimal3("total_cost", { precision: 16, scale: 2 }).default("0"),
-  orgId: text41("org_id").notNull(),
-  entInventoryOrgId: text41("ent_inventory_org_id"),
+  orgId: text42("org_id").notNull(),
+  entInventoryOrgId: text42("ent_inventory_org_id"),
   transactionDate: timestamp51("transaction_date").defaultNow(),
-  glStatus: text41("gl_status").default("PENDING")
+  glStatus: text42("gl_status").default("PENDING")
 });
 var insertCstItemCostSchema = createInsertSchema52(cstItemCosts);
 var insertCstCostDistributionSchema = createInsertSchema52(cstCostDistributions);
 var insertCmrReceiptDistributionSchema = createInsertSchema52(cmrReceiptDistributions);
 var cstTransferPricingPolicies = pgTable52("cst_transfer_pricing_policies", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  policyCode: text41("policyCode").notNull().unique(),
-  description: text41("description"),
-  entityFrom: text41("entityFrom").notNull(),
-  entityTo: text41("entityTo").notNull(),
-  method: text41("method").notNull(),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  policyCode: text42("policyCode").notNull().unique(),
+  description: text42("description"),
+  entityFrom: text42("entityFrom").notNull(),
+  entityTo: text42("entityTo").notNull(),
+  method: text42("method").notNull(),
   // COST_PLUS, CUP, RESALE_PRICE, PROFIT_SPLIT
   markupPercent: decimal3("markupPercent", { precision: 8, scale: 4 }).default("0"),
-  baseCostType: text41("baseCostType").default("Standard"),
-  currencyCode: text41("currencyCode").default("USD"),
+  baseCostType: text42("baseCostType").default("Standard"),
+  currencyCode: text42("currencyCode").default("USD"),
   effectiveFrom: timestamp51("effectiveFrom").notNull(),
   effectiveTo: timestamp51("effectiveTo"),
-  status: text41("status").default("Active"),
-  glAccount: text41("glAccount"),
+  status: text42("status").default("Active"),
+  glAccount: text42("glAccount"),
   taxImpactTracked: boolean44("taxImpactTracked").default(true),
-  notes: text41("notes"),
+  notes: text42("notes"),
   createdAt: timestamp51("createdAt").defaultNow(),
   updatedAt: timestamp51("updatedAt").defaultNow()
 });
 var cstTransferPricingAdjustments = pgTable52("cst_transfer_pricing_adjustments", {
-  id: text41("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  policyId: text41("policyId").notNull(),
-  period: text41("period").notNull(),
+  id: text42("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  policyId: text42("policyId").notNull(),
+  period: text42("period").notNull(),
   baseAmount: decimal3("baseAmount", { precision: 18, scale: 2 }).notNull(),
   markupAmount: decimal3("markupAmount", { precision: 18, scale: 2 }).notNull(),
   transferPrice: decimal3("transferPrice", { precision: 18, scale: 2 }).notNull(),
   taxImpactAmount: decimal3("taxImpactAmount", { precision: 18, scale: 2 }),
-  currencyCode: text41("currencyCode").default("USD"),
+  currencyCode: text42("currencyCode").default("USD"),
   glPosted: boolean44("glPosted").default(false),
-  glJournalRef: text41("glJournalRef"),
+  glJournalRef: text42("glJournalRef"),
   postedAt: timestamp51("postedAt"),
-  status: text41("status").default("Draft"),
-  notes: text41("notes"),
+  status: text42("status").default("Draft"),
+  notes: text42("notes"),
   createdAt: timestamp51("createdAt").defaultNow()
 });
 var insertCstTransferPricingPolicySchema = createInsertSchema52(cstTransferPricingPolicies);
 var insertCstTransferPricingAdjustmentSchema = createInsertSchema52(cstTransferPricingAdjustments);
 
 // shared/schema/cost_ai.ts
-import { pgTable as pgTable53, varchar as varchar52, text as text42, timestamp as timestamp52 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable53, varchar as varchar52, text as text43, timestamp as timestamp52 } from "drizzle-orm/pg-core";
 import { sql as sql50 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema53 } from "drizzle-zod";
 var costAnomalies = pgTable53("mfg_cost_anomalies", {
@@ -11538,7 +11670,7 @@ var costAnomalies = pgTable53("mfg_cost_anomalies", {
   // IPV_VARIANCE, EFFICIENCY_LOW, SCRAP_EXCESS
   severity: varchar52("severity").notNull(),
   // LOW, MEDIUM, HIGH
-  description: text42("description"),
+  description: text43("description"),
   status: varchar52("status").default("PENDING"),
   // PENDING, DISMISSED, INVESTIGATING
   createdAt: timestamp52("created_at").default(sql50`now()`)
@@ -11546,7 +11678,7 @@ var costAnomalies = pgTable53("mfg_cost_anomalies", {
 var insertCostAnomalySchema = createInsertSchema53(costAnomalies);
 
 // shared/schema/finance_expenses.ts
-import { pgTable as pgTable54, varchar as varchar53, text as text43, timestamp as timestamp53, decimal as decimal4, boolean as boolean46 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable54, varchar as varchar53, text as text44, timestamp as timestamp53, decimal as decimal4, boolean as boolean46 } from "drizzle-orm/pg-core";
 import { sql as sql51 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema54 } from "drizzle-zod";
 var expenseReports = pgTable54("expense_reports", {
@@ -11554,7 +11686,7 @@ var expenseReports = pgTable54("expense_reports", {
   tenantId: varchar53("tenant_id").notNull(),
   reportNumber: varchar53("report_number").notNull().unique(),
   employeeId: varchar53("employee_id").notNull(),
-  purpose: text43("purpose"),
+  purpose: text44("purpose"),
   status: varchar53("status").notNull().default("DRAFT"),
   // DRAFT, SUBMITTED, APPROVED, PAID, REJECTED
   totalAmount: decimal4("total_amount", { precision: 20, scale: 2 }).notNull().default("0"),
@@ -11581,11 +11713,11 @@ var expenseLines = pgTable54("expense_lines", {
   currency: varchar53("currency").notNull().default("USD"),
   entBusinessUnitId: varchar53("ent_business_unit_id"),
   entLegalEntityId: varchar53("ent_legal_entity_id"),
-  description: text43("description"),
-  receiptUrl: text43("receipt_url"),
+  description: text44("description"),
+  receiptUrl: text44("receipt_url"),
   status: varchar53("status").notNull().default("PENDING"),
   // PENDING, VALIDATED, FLAGGED
-  justification: text43("justification"),
+  justification: text44("justification"),
   glCodeCombinationId: varchar53("gl_code_combination_id"),
   createdAt: timestamp53("created_at").defaultNow().notNull()
 });
@@ -11635,14 +11767,14 @@ var insertExpensePerDiemSchema = createInsertSchema54(expensePerDiems);
 var insertCorporateCardTransactionSchema = createInsertSchema54(corporateCardTransactions);
 
 // shared/schema/billing_enterprise.ts
-import { pgTable as pgTable55, varchar as varchar54, text as text44, timestamp as timestamp54, numeric as numeric31, boolean as boolean47, integer as integer43, jsonb as jsonb31 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable55, varchar as varchar54, text as text45, timestamp as timestamp54, numeric as numeric31, boolean as boolean47, integer as integer43, jsonb as jsonb31 } from "drizzle-orm/pg-core";
 import { sql as sql52 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema55 } from "drizzle-zod";
 import { z as z27 } from "zod";
 var billingRules = pgTable55("billing_rules", {
   id: varchar54("id").primaryKey().default(sql52`gen_random_uuid()`),
   name: varchar54("name").notNull(),
-  description: text44("description"),
+  description: text45("description"),
   ruleType: varchar54("rule_type").notNull(),
   // 'Recurring', 'Milestone', 'Usage', 'OneTime'
   frequency: varchar54("frequency"),
@@ -11692,7 +11824,7 @@ var billingBatches = pgTable55("billing_batches", {
   totalEventsProcessed: integer43("total_events_processed").default(0),
   totalInvoicesCreated: integer43("total_invoices_created").default(0),
   totalErrors: integer43("total_errors").default(0),
-  errorMessage: text44("error_message"),
+  errorMessage: text45("error_message"),
   createdBy: varchar54("created_by"),
   // User ID who triggered it (or 'System')
   createdAt: timestamp54("created_at").default(sql52`now()`)
@@ -11709,7 +11841,7 @@ var billingEvents = pgTable55("billing_events", {
   entBusinessUnitId: varchar54("ent_business_unit_id"),
   amount: numeric31("amount", { precision: 18, scale: 2 }).notNull(),
   currency: varchar54("currency").default("USD"),
-  description: text44("description").notNull(),
+  description: text45("description").notNull(),
   quantity: numeric31("quantity").default("1"),
   unitPrice: numeric31("unit_price", { precision: 18, scale: 2 }),
   // Status tracking
@@ -11721,7 +11853,7 @@ var billingEvents = pgTable55("billing_events", {
   // Link to the resulting AR Invoice
   // Error handling
   errorCode: varchar54("error_code"),
-  errorMessage: text44("error_message"),
+  errorMessage: text45("error_message"),
   // Classification
   ruleId: varchar54("rule_id"),
   // Applied rule
@@ -11763,7 +11895,7 @@ var billingAnomalies = pgTable55("billing_anomalies", {
   // 'LOW', 'MEDIUM', 'HIGH'
   confidence: numeric31("confidence", { precision: 5, scale: 2 }),
   // 0.00 to 1.00
-  description: text44("description"),
+  description: text45("description"),
   status: varchar54("status").default("PENDING"),
   // 'PENDING', 'DISMISSED', 'CONFIRMED'
   createdAt: timestamp54("created_at").default(sql52`now()`)
@@ -11771,22 +11903,22 @@ var billingAnomalies = pgTable55("billing_anomalies", {
 var insertBillingAnomalySchema = createInsertSchema55(billingAnomalies);
 
 // shared/schema/billing_subscription.ts
-import { pgTable as pgTable56, text as text45, timestamp as timestamp55, numeric as numeric32, jsonb as jsonb32 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable56, text as text46, timestamp as timestamp55, numeric as numeric32, jsonb as jsonb32 } from "drizzle-orm/pg-core";
 import { relations as relations7 } from "drizzle-orm";
 var subscriptionContracts = pgTable56("subscription_contracts", {
-  id: text45("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  contractNumber: text45("contract_number").notNull().unique(),
+  id: text46("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  contractNumber: text46("contract_number").notNull().unique(),
   // e.g., SUB-2026-001
-  customerId: text45("customer_id").references(() => arCustomers.id),
-  status: text45("status").notNull().default("Draft"),
+  customerId: text46("customer_id").references(() => arCustomers.id),
+  status: text46("status").notNull().default("Draft"),
   // Draft, Active, Hold, Cancelled, Expired
   startDate: timestamp55("start_date").notNull(),
   endDate: timestamp55("end_date"),
-  renewalType: text45("renewal_type").default("Manual"),
+  renewalType: text46("renewal_type").default("Manual"),
   // Manual, Auto
-  currency: text45("currency").default("USD"),
-  paymentTerms: text45("payment_terms").default("Net 30"),
-  billingFrequency: text45("billing_frequency").default("Monthly"),
+  currency: text46("currency").default("USD"),
+  paymentTerms: text46("payment_terms").default("Net 30"),
+  billingFrequency: text46("billing_frequency").default("Monthly"),
   // Monthly, Quarterly, Annually
   // Amounts
   totalTcv: numeric32("total_tcv").default("0"),
@@ -11795,36 +11927,36 @@ var subscriptionContracts = pgTable56("subscription_contracts", {
   // Monthly Recurring Revenue
   createdAt: timestamp55("created_at").defaultNow(),
   updatedAt: timestamp55("updated_at").defaultNow(),
-  createdBy: text45("created_by")
+  createdBy: text46("created_by")
 });
 var subscriptionProducts = pgTable56("subscription_products", {
-  id: text45("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  subscriptionId: text45("subscription_id").references(() => subscriptionContracts.id),
-  itemId: text45("item_id").notNull(),
+  id: text46("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  subscriptionId: text46("subscription_id").references(() => subscriptionContracts.id),
+  itemId: text46("item_id").notNull(),
   // Product ID
-  itemName: text45("item_name").notNull(),
+  itemName: text46("item_name").notNull(),
   quantity: numeric32("quantity").notNull().default("1"),
   unitPrice: numeric32("unit_price").notNull(),
   discountPercent: numeric32("discount_percent").default("0"),
   amount: numeric32("amount").notNull(),
   // (Qty * Price) - Discount
-  billingType: text45("billing_type").default("Recurring"),
+  billingType: text46("billing_type").default("Recurring"),
   // Recurring, One-Time, Usage
   startDate: timestamp55("start_date"),
   endDate: timestamp55("end_date"),
-  status: text45("status").default("Active")
+  status: text46("status").default("Active")
 });
 var subscriptionActions = pgTable56("subscription_actions", {
-  id: text45("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  subscriptionId: text45("subscription_id").references(() => subscriptionContracts.id),
-  actionType: text45("action_type").notNull(),
+  id: text46("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  subscriptionId: text46("subscription_id").references(() => subscriptionContracts.id),
+  actionType: text46("action_type").notNull(),
   // New, Amend, Renew, Terminate, Suspend
   actionDate: timestamp55("action_date").defaultNow(),
-  reason: text45("reason"),
+  reason: text46("reason"),
   // Snapshot of values before/after change
   changes: jsonb32("changes"),
   // e.g., { "quantity": { "old": 10, "new": 15 } }
-  performedBy: text45("performed_by")
+  performedBy: text46("performed_by")
 });
 var subscriptionContractsRelations = relations7(subscriptionContracts, ({ many }) => ({
   products: many(subscriptionProducts),
@@ -11844,7 +11976,7 @@ var subscriptionActionsRelations = relations7(subscriptionActions, ({ one }) => 
 }));
 
 // shared/schema/usage_metering.ts
-import { pgTable as pgTable57, varchar as varchar55, text as text46, timestamp as timestamp56, numeric as numeric33, boolean as boolean49, jsonb as jsonb33 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable57, varchar as varchar55, text as text47, timestamp as timestamp56, numeric as numeric33, boolean as boolean49, jsonb as jsonb33 } from "drizzle-orm/pg-core";
 import { sql as sql53 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema56 } from "drizzle-zod";
 import { z as z28 } from "zod";
@@ -11852,7 +11984,7 @@ var usageMeters = pgTable57("usage_meters", {
   id: varchar55("id").primaryKey().default(sql53`gen_random_uuid()`),
   name: varchar55("name").notNull(),
   // "API Calls", "Storage GB", "Compute Hours"
-  description: text46("description"),
+  description: text47("description"),
   unitOfMeasure: varchar55("unit_of_measure").notNull(),
   // "requests", "GB", "hours"
   meterType: varchar55("meter_type").default("Counter"),
@@ -11928,17 +12060,17 @@ var insertUsageThresholdSchema = createInsertSchema56(usageThresholds).extend({
 });
 
 // shared/schema/order_management.ts
-import { pgTable as pgTable58, text as text47, integer as integer46, boolean as boolean50, timestamp as timestamp57, decimal as decimal5, numeric as numeric34, varchar as varchar56 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable58, text as text48, integer as integer46, boolean as boolean50, timestamp as timestamp57, decimal as decimal5, numeric as numeric34, varchar as varchar56 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema57 } from "drizzle-zod";
 import { relations as relations8, sql as sql54 } from "drizzle-orm";
 var omOrderHeaders = pgTable58("om_order_headers", {
-  id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  orderNumber: text47("order_number").notNull().unique(),
-  customerId: text47("customer_id").notNull(),
-  orderType: text47("order_type").default("STANDARD"),
+  id: text48("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  orderNumber: text48("order_number").notNull().unique(),
+  customerId: text48("customer_id").notNull(),
+  orderType: text48("order_type").default("STANDARD"),
   // STANDARD, RMA, DROPSHIP
-  status: text47("status", { enum: ["DRAFT", "BOOKED", "AWAITING_FULFILLMENT", "SHIPPED", "INVOICED", "CLOSED", "CANCELLED", "HOLD"] }).default("DRAFT"),
-  orderCurrency: text47("order_currency").default("USD"),
+  status: text48("status", { enum: ["DRAFT", "BOOKED", "AWAITING_FULFILLMENT", "SHIPPED", "INVOICED", "CLOSED", "CANCELLED", "HOLD"] }).default("DRAFT"),
+  orderCurrency: text48("order_currency").default("USD"),
   // Amounts
   totalAmount: decimal5("total_amount", { precision: 16, scale: 2 }).default("0"),
   taxAmount: decimal5("tax_amount", { precision: 16, scale: 2 }).default("0"),
@@ -11947,12 +12079,12 @@ var omOrderHeaders = pgTable58("om_order_headers", {
   orderedDate: timestamp57("ordered_date").defaultNow(),
   requestedDate: timestamp57("requested_date"),
   // Supply Chain & Project Links
-  orgId: text47("org_id").notNull(),
-  warehouseId: text47("warehouse_id"),
-  shippingMethod: text47("shipping_method"),
-  paymentTerms: text47("payment_terms"),
+  orgId: text48("org_id").notNull(),
+  warehouseId: text48("warehouse_id"),
+  shippingMethod: text48("shipping_method"),
+  paymentTerms: text48("payment_terms"),
   // Audit
-  createdBy: text47("created_by"),
+  createdBy: text48("created_by"),
   updatedAt: timestamp57("updated_at").defaultNow()
 });
 var omOrderLines = pgTable58("om_order_lines", {
@@ -11963,7 +12095,7 @@ var omOrderLines = pgTable58("om_order_lines", {
   // Item
   itemId: varchar56("item_id").notNull(),
   // Link to inventory items
-  description: text47("description"),
+  description: text48("description"),
   // Quantity
   orderedQuantity: numeric34("ordered_quantity", { precision: 18, scale: 4 }).notNull(),
   shippedQuantity: numeric34("shipped_quantity", { precision: 18, scale: 4 }).default("0"),
@@ -11974,62 +12106,62 @@ var omOrderLines = pgTable58("om_order_lines", {
   unitSellingPrice: decimal5("unit_selling_price", { precision: 16, scale: 2 }).notNull(),
   extendedAmount: numeric34("extended_amount", { precision: 18, scale: 2 }).default("0"),
   // Fulfillment
-  status: text47("status", { enum: ["AWAITING_FULFILLMENT", "PICKED", "SHIPPED", "INVOICED", "CLOSED", "RETURNED", "CANCELLED"] }).default("AWAITING_FULFILLMENT"),
+  status: text48("status", { enum: ["AWAITING_FULFILLMENT", "PICKED", "SHIPPED", "INVOICED", "CLOSED", "RETURNED", "CANCELLED"] }).default("AWAITING_FULFILLMENT"),
   // shippedQuantity removed (duplicate)
-  projectId: text47("project_id"),
-  taskId: text47("task_id"),
-  orgId: text47("org_id").notNull()
+  projectId: text48("project_id"),
+  taskId: text48("task_id"),
+  orgId: text48("org_id").notNull()
 });
 var omHolds = pgTable58("om_holds", {
-  id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  headerId: text47("header_id").references(() => omOrderHeaders.id),
-  lineId: text47("line_id").references(() => omOrderLines.id),
+  id: text48("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  headerId: text48("header_id").references(() => omOrderHeaders.id),
+  lineId: text48("line_id").references(() => omOrderLines.id),
   // Optional, can be header or line level
-  holdName: text47("hold_name").notNull(),
-  holdType: text47("hold_type").notNull(),
+  holdName: text48("hold_name").notNull(),
+  holdType: text48("hold_type").notNull(),
   // 'CREDIT', 'MARGIN', 'MANUAL'
   appliedDate: timestamp57("applied_date").defaultNow(),
   releasedDate: timestamp57("released_date"),
-  releasedBy: text47("released_by"),
-  reason: text47("reason")
+  releasedBy: text48("released_by"),
+  reason: text48("reason")
 });
 var omPriceAdjustments = pgTable58("om_price_adjustments", {
-  id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  lineId: text47("line_id").references(() => omOrderLines.id).notNull(),
-  adjustmentName: text47("adjustment_name").notNull(),
+  id: text48("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  lineId: text48("line_id").references(() => omOrderLines.id).notNull(),
+  adjustmentName: text48("adjustment_name").notNull(),
   amount: decimal5("amount", { precision: 16, scale: 2 }).notNull(),
-  type: text47("type").notNull()
+  type: text48("type").notNull()
   // 'DISCOUNT', 'SURCHARGE', 'TAX'
 });
 var omTransactionTypes = pgTable58("om_transaction_types", {
-  id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  typeName: text47("type_name").notNull(),
-  description: text47("description"),
-  workflow: text47("workflow").notNull(),
+  id: text48("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  typeName: text48("type_name").notNull(),
+  description: text48("description"),
+  workflow: text48("workflow").notNull(),
   // 'STANDARD', 'DROP_SHIP', 'RMA'
   isActive: boolean50("is_active").default(true)
 });
 var omHoldDefinitions = pgTable58("om_hold_definitions", {
-  id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  holdName: text47("hold_name").notNull(),
-  description: text47("description"),
-  type: text47("type").notNull(),
+  id: text48("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  holdName: text48("hold_name").notNull(),
+  description: text48("description"),
+  type: text48("type").notNull(),
   // 'SYSTEM', 'USER'
   isActive: boolean50("is_active").default(true)
 });
 var omPriceLists = pgTable58("om_price_lists", {
-  id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  name: text47("name").notNull(),
-  currencyCode: text47("currency_code").notNull(),
-  status: text47("status").default("ACTIVE"),
+  id: text48("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text48("name").notNull(),
+  currencyCode: text48("currency_code").notNull(),
+  status: text48("status").default("ACTIVE"),
   // 'ACTIVE', 'INACTIVE'
   startDate: timestamp57("start_date"),
   endDate: timestamp57("end_date")
 });
 var omPriceListItems = pgTable58("om_price_list_items", {
-  id: text47("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  priceListId: text47("price_list_id").references(() => omPriceLists.id).notNull(),
-  itemId: text47("item_id").notNull(),
+  id: text48("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  priceListId: text48("price_list_id").references(() => omPriceLists.id).notNull(),
+  itemId: text48("item_id").notNull(),
   unitPrice: decimal5("unit_price", { precision: 16, scale: 2 }).notNull(),
   isActive: boolean50("is_active").default(true)
 });
@@ -12056,22 +12188,22 @@ var insertPriceListSchema = createInsertSchema57(omPriceLists);
 var insertPriceListItemSchema = createInsertSchema57(omPriceListItems);
 
 // shared/schema/maintenance.ts
-import { pgTable as pgTable60, text as text49, varchar as varchar58, timestamp as timestamp59, numeric as numeric35, boolean as boolean52, integer as integer48 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable60, text as text50, varchar as varchar58, timestamp as timestamp59, numeric as numeric35, boolean as boolean52, integer as integer48 } from "drizzle-orm/pg-core";
 import { relations as relations10, sql as sql56 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema58 } from "drizzle-zod";
 
 // shared/schema/maintenance_library.ts
-import { pgTable as pgTable59, text as text48, integer as integer47, timestamp as timestamp58, decimal as decimal6, varchar as varchar57 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable59, text as text49, integer as integer47, timestamp as timestamp58, decimal as decimal6, varchar as varchar57 } from "drizzle-orm/pg-core";
 import { relations as relations9, sql as sql55 } from "drizzle-orm";
 var maintWorkDefinitions = pgTable59("maint_work_definitions", {
   id: varchar57("id").primaryKey().default(sql55`gen_random_uuid()`),
-  code: text48("code").notNull(),
+  code: text49("code").notNull(),
   // Unique User-facing code e.g. "PM-500H-TRUCK"
-  name: text48("name").notNull(),
-  description: text48("description"),
-  type: text48("type").default("STANDARD"),
+  name: text49("name").notNull(),
+  description: text49("description"),
+  type: text49("type").default("STANDARD"),
   // STANDARD, PM, SAFETY
-  status: text48("status").default("ACTIVE"),
+  status: text49("status").default("ACTIVE"),
   // ACTIVE, DRAFT, OBSOLETE
   version: integer47("version").default(1),
   createdAt: timestamp58("created_at").defaultNow(),
@@ -12081,9 +12213,9 @@ var maintWorkDefinitionOperations = pgTable59("maint_work_definition_ops", {
   id: varchar57("id").primaryKey().default(sql55`gen_random_uuid()`),
   workDefinitionId: varchar57("work_definition_id").notNull(),
   sequenceNumber: integer47("sequence_number").notNull(),
-  name: text48("name").notNull(),
-  description: text48("description"),
-  longDescription: text48("long_description"),
+  name: text49("name").notNull(),
+  description: text49("description"),
+  longDescription: text49("long_description"),
   // Detailed instructions
   standardHours: decimal6("standard_hours", { precision: 10, scale: 2 }).default("0"),
   requiredHeadCount: integer47("required_head_count").default(1)
@@ -12156,7 +12288,7 @@ var maintAssetsExtension = pgTable60("maint_assets_extension", {
 var maintWorkOrders = pgTable60("maint_work_orders", {
   id: varchar58("id").primaryKey().default(sql56`gen_random_uuid()`),
   workOrderNumber: varchar58("work_order_number", { length: 50 }).notNull().unique(),
-  description: text49("description").notNull(),
+  description: text50("description").notNull(),
   // Source
   assetId: varchar58("asset_id").references(() => faAssets.id).notNull(),
   workDefinitionId: varchar58("work_definition_id").references(() => maintWorkDefinitions.id),
@@ -12189,7 +12321,7 @@ var maintWorkOrderOperations = pgTable60("maint_work_order_operations", {
   // Linked to maint_work_centers (soft link via ID for now as circular dep risk)
   scheduledDate: timestamp59("scheduled_date"),
   sequence: integer48("sequence").notNull(),
-  description: text49("description").notNull(),
+  description: text50("description").notNull(),
   status: varchar58("status", { length: 30 }).default("PENDING"),
   // PENDING, READY, COMPLETED, REJECTED
   // Actuals
@@ -12197,7 +12329,7 @@ var maintWorkOrderOperations = pgTable60("maint_work_order_operations", {
   assignedToUserId: varchar58("assigned_to_user_id"),
   completedByUserId: varchar58("completed_by_user_id"),
   completedAt: timestamp59("completed_at"),
-  comments: text49("comments"),
+  comments: text50("comments"),
   createdAt: timestamp59("created_at").default(sql56`now()`)
 });
 var maintWorkOrdersRelations = relations10(maintWorkOrders, ({ one, many }) => ({
@@ -12218,25 +12350,25 @@ var insertMaintWorkOrderSchema = createInsertSchema58(maintWorkOrders);
 var insertMaintAssetExtSchema = createInsertSchema58(maintAssetsExtension);
 
 // shared/schema/maintenance_pm.ts
-import { pgTable as pgTable62, text as text51, varchar as varchar60, timestamp as timestamp61, numeric as numeric36, boolean as boolean54, integer as integer50 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable62, text as text52, varchar as varchar60, timestamp as timestamp61, numeric as numeric36, boolean as boolean54, integer as integer50 } from "drizzle-orm/pg-core";
 import { relations as relations12, sql as sql58 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema59 } from "drizzle-zod";
 
 // shared/schema/maintenance_meters.ts
-import { pgTable as pgTable61, text as text50, boolean as boolean53, timestamp as timestamp60, uuid as uuid5, decimal as decimal7, varchar as varchar59 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable61, text as text51, boolean as boolean53, timestamp as timestamp60, uuid as uuid5, decimal as decimal7, varchar as varchar59 } from "drizzle-orm/pg-core";
 import { relations as relations11, sql as sql57 } from "drizzle-orm";
 var maintMeters = pgTable61("maint_asset_meters", {
   id: varchar59("id").primaryKey().default(sql57`gen_random_uuid()`),
   assetId: varchar59("asset_id").notNull(),
   // Linked to Fixed Asset
-  name: text50("name").notNull(),
+  name: text51("name").notNull(),
   // e.g. "Engine Hours", "Odometer", "Cycle Count"
-  description: text50("description"),
-  unitOfMeasure: text50("unit_of_measure").notNull(),
+  description: text51("description"),
+  unitOfMeasure: text51("unit_of_measure").notNull(),
   // e.g. "Hours", "KM", "Cycles"
   // Type: ABSOLUTE (odometer) or CONTINUOUS/GAUGE (temperature)?
   // For PMs, we usually care about Utilization (Absolute increasing)
-  readingType: text50("reading_type").default("ABSOLUTE"),
+  readingType: text51("reading_type").default("ABSOLUTE"),
   // ABSOLUTE (Cumulative), DELTA, GAUGE
   currentValue: decimal7("current_value", { precision: 15, scale: 2 }).default("0"),
   lastReadingDate: timestamp60("last_reading_date"),
@@ -12251,11 +12383,11 @@ var maintMeterReadings = pgTable61("maint_asset_meter_readings", {
   readingDate: timestamp60("reading_date").defaultNow().notNull(),
   // Calculated delta from previous reading (for easy analysis)
   deltaValue: decimal7("delta_value", { precision: 15, scale: 2 }),
-  source: text50("source").default("MANUAL"),
+  source: text51("source").default("MANUAL"),
   // MANUAL, IOT, WO_COMPLETION
   workOrderId: varchar59("work_order_id"),
   // If captured during a WO
-  createdById: text50("created_by_id")
+  createdById: text51("created_by_id")
 });
 var maintMetersRelations = relations11(maintMeters, ({ one, many }) => ({
   asset: one(faAssets, {
@@ -12283,7 +12415,7 @@ var maintMeterReadingsLegacy = pgTable61("maint_meter_readings", {
 var maintPMDefinitions = pgTable62("maint_pm_definitions", {
   id: varchar60("id").primaryKey().default(sql58`gen_random_uuid()`),
   name: varchar60("name", { length: 100 }).notNull(),
-  description: text51("description"),
+  description: text52("description"),
   // Target
   assetId: varchar60("asset_id").references(() => faAssets.id).notNull(),
   workDefinitionId: varchar60("work_definition_id").references(() => maintWorkDefinitions.id).notNull(),
@@ -12329,14 +12461,16 @@ var maintPMDefinitionsRelations = relations12(maintPMDefinitions, ({ one }) => (
 var insertMaintPMDefinitionSchema = createInsertSchema59(maintPMDefinitions);
 
 // shared/schema/maintenance_sr.ts
-import { pgTable as pgTable63, text as text52, varchar as varchar61, timestamp as timestamp62 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable63, text as text53, varchar as varchar61, timestamp as timestamp62 } from "drizzle-orm/pg-core";
 import { relations as relations13, sql as sql59 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema60 } from "drizzle-zod";
 var maintServiceRequests = pgTable63("maint_service_requests", {
   id: varchar61("id").primaryKey().default(sql59`gen_random_uuid()`),
   requestNumber: varchar61("request_number", { length: 50 }).notNull().unique(),
   // SR-2026-X
-  description: text52("description").notNull(),
+  title: varchar61("title", { length: 255 }).default(""),
+  description: text53("description").notNull(),
+  location: varchar61("location", { length: 255 }),
   priority: varchar61("priority", { length: 20 }).default("NORMAL"),
   // LOW, NORMAL, HIGH, CRITICAL
   status: varchar61("status", { length: 20 }).default("NEW"),
@@ -12433,7 +12567,7 @@ var maintWorkOrderResourcesRelations = relations15(maintWorkOrderResources, ({ o
 var insertMaintWorkOrderResourceSchema = createInsertSchema62(maintWorkOrderResources);
 
 // shared/schema/maintenance_costing.ts
-import { pgTable as pgTable66, text as text53, timestamp as timestamp65, varchar as varchar64, numeric as numeric39, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable as pgTable66, text as text54, timestamp as timestamp65, varchar as varchar64, numeric as numeric39, pgEnum } from "drizzle-orm/pg-core";
 import { relations as relations16, sql as sql62 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema63 } from "drizzle-zod";
 var maintCostTypeEnum = pgEnum("maint_cost_type", [
@@ -12452,7 +12586,7 @@ var maintWorkOrderCosts = pgTable66("maint_work_order_costs", {
   workOrderId: varchar64("work_order_id").references(() => maintWorkOrders.id).notNull(),
   costType: varchar64("cost_type", { length: 30 }).notNull(),
   // MATERIAL, LABOR...
-  description: text53("description"),
+  description: text54("description"),
   // e.g. "Bearing 6205 x 2"
   quantity: numeric39("quantity"),
   unitCost: numeric39("unit_cost"),
@@ -12495,7 +12629,7 @@ var maintWorkCentersRelations = relations17(maintWorkCenters, ({ many }) => ({
 var insertMaintWorkCenterSchema = createInsertSchema64(maintWorkCenters);
 
 // shared/schema/maintenance_quality.ts
-import { pgTable as pgTable68, text as text55, timestamp as timestamp67, varchar as varchar66, boolean as boolean58, integer as integer56, jsonb as jsonb39, pgEnum as pgEnum2 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable68, text as text56, timestamp as timestamp67, varchar as varchar66, boolean as boolean58, integer as integer56, jsonb as jsonb39, pgEnum as pgEnum2 } from "drizzle-orm/pg-core";
 import { relations as relations18, sql as sql63 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema65 } from "drizzle-zod";
 var maintPermitTypeEnum = pgEnum2("maint_permit_type", [
@@ -12514,7 +12648,7 @@ var maintInspectionStatusEnum = pgEnum2("maint_inspection_status", [
 var maintInspectionDefinitions = pgTable68("maint_inspection_definitions", {
   id: varchar66("id").primaryKey().default(sql63`gen_random_uuid()`),
   name: varchar66("name", { length: 150 }).notNull(),
-  description: text55("description"),
+  description: text56("description"),
   type: varchar66("type", { length: 50 }).default("Standard"),
   // e.g. Pre-Start, Monthly
   // JSONB for Questions: Array of { id: string, text: string, type: 'YES_NO' | 'TEXT' | 'NUMBER', required: boolean }
@@ -12533,14 +12667,14 @@ var maintInspections = pgTable68("maint_inspections", {
   conductedByUserId: varchar66("conducted_by_user_id"),
   // Ideally FK to users, but focusing on Schema independence
   conductedAt: timestamp67("conducted_at"),
-  notes: text55("notes"),
+  notes: text56("notes"),
   createdAt: timestamp67("created_at").defaultNow(),
   updatedAt: timestamp67("updated_at").defaultNow()
 });
 var maintPermitTypes = pgTable68("permit_types", {
   id: varchar66("id").primaryKey().default(sql63`gen_random_uuid()`),
   name: varchar66("name", { length: 150 }).notNull(),
-  description: text55("description"),
+  description: text56("description"),
   category: varchar66("category", { length: 100 }),
   requiresApproval: boolean58("requires_approval").default(true),
   approvalLevels: integer56("approval_levels").default(1),
@@ -12561,8 +12695,8 @@ var maintPermits = pgTable68("maint_permits", {
   validFrom: timestamp67("valid_from").notNull(),
   validTo: timestamp67("valid_to").notNull(),
   authorizedByUserId: varchar66("authorized_by_user_id"),
-  hazards: text55("hazards"),
-  precautions: text55("precautions"),
+  hazards: text56("hazards"),
+  precautions: text56("precautions"),
   createdAt: timestamp67("created_at").defaultNow()
 });
 var maintInspectionDefinitionsRelations = relations18(maintInspectionDefinitions, ({ many }) => ({
@@ -12590,14 +12724,14 @@ var insertMaintPermitSchema = createInsertSchema65(maintPermits);
 var insertMaintPermitTypeSchema = createInsertSchema65(maintPermitTypes);
 
 // shared/schema/maintenance_failure.ts
-import { pgTable as pgTable69, text as text56, varchar as varchar67, timestamp as timestamp68 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable69, text as text57, varchar as varchar67, timestamp as timestamp68 } from "drizzle-orm/pg-core";
 import { relations as relations19, sql as sql64 } from "drizzle-orm";
 var maintFailureCodes = pgTable69("maint_failure_codes", {
   id: varchar67("id").primaryKey().default(sql64`gen_random_uuid()`),
   code: varchar67("code", { length: 50 }).notNull().unique(),
   // e.g., OVERHEAT
   name: varchar67("name", { length: 150 }).notNull(),
-  description: text56("description"),
+  description: text57("description"),
   // Type: PROBLEM, CAUSE, REMEDY
   type: varchar67("type", { length: 20 }).notNull(),
   // Hierarchy
@@ -12618,7 +12752,7 @@ var maintFailureCodesRelations = relations19(maintFailureCodes, ({ one, many }) 
 }));
 
 // shared/schema/treasury.ts
-import { pgTable as pgTable70, varchar as varchar68, numeric as numeric41, timestamp as timestamp69, integer as integer57, boolean as boolean59, text as text57, jsonb as jsonb40 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable70, varchar as varchar68, numeric as numeric41, timestamp as timestamp69, integer as integer57, boolean as boolean59, text as text58, jsonb as jsonb40 } from "drizzle-orm/pg-core";
 import { sql as sql65 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema66 } from "drizzle-zod";
 var treasuryCounterparties = pgTable70("treasury_counterparties", {
@@ -12629,7 +12763,7 @@ var treasuryCounterparties = pgTable70("treasury_counterparties", {
   shortName: varchar68("short_name", { length: 50 }),
   taxId: varchar68("tax_id", { length: 50 }),
   swiftCode: varchar68("swift_code", { length: 11 }),
-  address: text57("address"),
+  address: text58("address"),
   active: boolean59("active").default(true),
   createdAt: timestamp69("created_at").default(sql65`now()`)
 });
@@ -12674,7 +12808,7 @@ var treasuryDeals = pgTable70("treasury_deals", {
   legalEntityId: varchar68("legal_entity_id"),
   entLegalEntityId: varchar68("ent_legal_entity_id"),
   ledgerId: varchar68("ledger_id"),
-  description: text57("description"),
+  description: text58("description"),
   metadata: jsonb40("metadata"),
   // FX strike rates, swap legs, etc.
   createdAt: timestamp69("created_at").default(sql65`now()`),
@@ -12734,7 +12868,7 @@ var treasuryFxDeals = pgTable70("treasury_fx_deals", {
   markToMarket: numeric41("mark_to_market", { precision: 20, scale: 2 }).default("0"),
   lastRevaluationDate: timestamp69("last_revaluation_date"),
   entLegalEntityId: varchar68("ent_legal_entity_id"),
-  notes: text57("notes"),
+  notes: text58("notes"),
   createdAt: timestamp69("created_at").default(sql65`now()`)
 });
 var insertTreasuryFxDealSchema = createInsertSchema66(treasuryFxDeals);
@@ -12840,26 +12974,26 @@ var treasuryPaymentMessages = pgTable70("treasury_payment_messages", {
   batchId: varchar68("batch_id"),
   messageType: varchar68("message_type", { length: 20 }).notNull(),
   // pain.001, pain.002
-  xmlContent: text57("xml_content"),
+  xmlContent: text58("xml_content"),
   externalReference: varchar68("external_reference", { length: 100 }),
   status: varchar68("status", { length: 20 }).default("SENT"),
   // SENT, ACCEPTED, REJECTED
-  errorDetails: text57("error_details"),
+  errorDetails: text58("error_details"),
   sentAt: timestamp69("sent_at").default(sql65`now()`)
 });
 
 // shared/schema/construction.ts
-import { pgTable as pgTable71, varchar as varchar69, text as text58, timestamp as timestamp70, numeric as numeric42, boolean as boolean60, integer as integer58 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable71, varchar as varchar69, text as text59, timestamp as timestamp70, numeric as numeric42, boolean as boolean60, integer as integer58 } from "drizzle-orm/pg-core";
 import { sql as sql66 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema67 } from "drizzle-zod";
 var constructionSetup = pgTable71("construction_setup", {
   id: varchar69("id").primaryKey().default(sql66`gen_random_uuid()`),
   configKey: varchar69("config_key").notNull().unique(),
   // e.g. 'DEFAULT_RETENTION'
-  configValue: text58("config_value").notNull(),
+  configValue: text59("config_value").notNull(),
   category: varchar69("category").default("GENERAL"),
   // GENERAL, BILLING, VARIATIONS
-  description: text58("description"),
+  description: text59("description"),
   updatedAt: timestamp70("updated_at").default(sql66`now()`)
 });
 var insertConstructionSetupSchema = createInsertSchema67(constructionSetup);
@@ -12876,7 +13010,7 @@ var constructionContracts = pgTable71("construction_contracts", {
   // DRAFT, ACTIVE, CLOSED
   entBusinessUnitId: varchar69("ent_business_unit_id"),
   subject: varchar69("subject").notNull(),
-  description: text58("description"),
+  description: text59("description"),
   awardedDate: timestamp70("awarded_date"),
   startDate: timestamp70("start_date"),
   completionDate: timestamp70("completion_date"),
@@ -12912,7 +13046,7 @@ var constructionVariations = pgTable71("construction_variations", {
   contractId: varchar69("contract_id").notNull(),
   variationNumber: varchar69("variation_number").notNull(),
   title: varchar69("title").notNull(),
-  description: text58("description"),
+  description: text59("description"),
   type: varchar69("type").default("PCO"),
   // PCO (Potential), COR (Request), CO (Approved Change Order)
   status: varchar69("status").default("DRAFT"),
@@ -12963,21 +13097,21 @@ var constructionPayAppLines = pgTable71("construction_pay_app_lines", {
 var insertConstructionPayAppLineSchema = createInsertSchema67(constructionPayAppLines);
 
 // shared/schema/construction_ops.ts
-import { pgTable as pgTable72, text as text59, timestamp as timestamp71, uuid as uuid10, boolean as boolean61, decimal as decimal8, integer as integer59, date as date17 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable72, text as text60, timestamp as timestamp71, uuid as uuid10, boolean as boolean61, decimal as decimal8, integer as integer59, date as date17 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema68, createSelectSchema as createSelectSchema2 } from "drizzle-zod";
 var constructionDailyLogs = pgTable72("construction_daily_logs", {
   id: uuid10("id").primaryKey().defaultRandom(),
   projectId: uuid10("projectId").notNull(),
   contractId: uuid10("contractId"),
   logDate: date17("log_date").notNull(),
-  weatherCondition: text59("weather_condition"),
+  weatherCondition: text60("weather_condition"),
   // e.g., Sunny, Rain, Cloudy
   temperatureMin: integer59("temp_min"),
   temperatureMax: integer59("temp_max"),
-  safetyIncidents: text59("safety_incidents"),
-  generalComments: text59("general_comments"),
-  reportedBy: text59("reported_by").notNull(),
-  status: text59("status").notNull().default("DRAFT"),
+  safetyIncidents: text60("safety_incidents"),
+  generalComments: text60("general_comments"),
+  reportedBy: text60("reported_by").notNull(),
+  status: text60("status").notNull().default("DRAFT"),
   // DRAFT, SUBMITTED
   createdAt: timestamp71("created_at").defaultNow().notNull(),
   updatedAt: timestamp71("updated_at").defaultNow().notNull()
@@ -12985,36 +13119,36 @@ var constructionDailyLogs = pgTable72("construction_daily_logs", {
 var constructionDailyLabor = pgTable72("construction_daily_labor", {
   id: uuid10("id").primaryKey().defaultRandom(),
   dailyLogId: uuid10("daily_log_id").notNull(),
-  trade: text59("trade").notNull(),
+  trade: text60("trade").notNull(),
   // e.g., Electrician, Plumber
   workerCount: integer59("worker_count").notNull(),
   hoursWorked: decimal8("hours_worked", { precision: 10, scale: 2 }).notNull(),
-  workPerformed: text59("work_performed")
+  workPerformed: text60("work_performed")
 });
 var constructionRFIs = pgTable72("construction_rfis", {
   id: uuid10("id").primaryKey().defaultRandom(),
   projectId: uuid10("projectId").notNull(),
-  rfiNumber: text59("rfi_number").notNull(),
-  subject: text59("subject").notNull(),
-  question: text59("question").notNull(),
-  suggestedSolution: text59("suggested_solution"),
-  importance: text59("importance").notNull().default("NORMAL"),
+  rfiNumber: text60("rfi_number").notNull(),
+  subject: text60("subject").notNull(),
+  question: text60("question").notNull(),
+  suggestedSolution: text60("suggested_solution"),
+  importance: text60("importance").notNull().default("NORMAL"),
   // LOW, NORMAL, HIGH, URGENT
-  status: text59("status").notNull().default("OPEN"),
+  status: text60("status").notNull().default("OPEN"),
   // OPEN, CLOSED, VOID
   dueDate: date17("due_date"),
-  assignedTo: text59("assigned_to"),
+  assignedTo: text60("assigned_to"),
   closedAt: timestamp71("closed_at"),
   createdAt: timestamp71("created_at").defaultNow().notNull()
 });
 var constructionSubmittals = pgTable72("construction_submittals", {
   id: uuid10("id").primaryKey().defaultRandom(),
   projectId: uuid10("projectId").notNull(),
-  submittalNumber: text59("submittal_number").notNull(),
-  specSection: text59("spec_section"),
+  submittalNumber: text60("submittal_number").notNull(),
+  specSection: text60("spec_section"),
   // e.g., 03 30 00 Cast-in-Place Concrete
-  description: text59("description").notNull(),
-  status: text59("status").notNull().default("PENDING"),
+  description: text60("description").notNull(),
+  status: text60("status").notNull().default("PENDING"),
   // PENDING, APPROVED, REJECTED, REVISE_RESUBMIT
   receivedDate: date17("received_date"),
   requiredDate: date17("required_date"),
@@ -13024,28 +13158,28 @@ var constructionSubmittals = pgTable72("construction_submittals", {
 var constructionDailyEquipment = pgTable72("construction_daily_equipment", {
   id: uuid10("id").primaryKey().defaultRandom(),
   dailyLogId: uuid10("daily_log_id").notNull(),
-  equipmentType: text59("equipment_type").notNull(),
+  equipmentType: text60("equipment_type").notNull(),
   // e.g., Excavator, Crane
-  equipmentId: text59("equipment_id"),
+  equipmentId: text60("equipment_id"),
   // Optional Asset ID
   hoursUsed: decimal8("hours_used", { precision: 10, scale: 2 }).notNull(),
-  workPerformed: text59("work_performed"),
-  costStatus: text59("cost_status").default("UNCOSTED")
+  workPerformed: text60("work_performed"),
+  costStatus: text60("cost_status").default("UNCOSTED")
   // UNCOSTED, COSTED
 });
 var constructionCompliance = pgTable72("construction_compliance", {
   id: uuid10("id").primaryKey().defaultRandom(),
   contractId: uuid10("contractId").notNull(),
-  documentType: text59("document_type").notNull(),
+  documentType: text60("document_type").notNull(),
   // INSURANCE, BOND, LICENSE
-  description: text59("description"),
-  issuer: text59("issuer"),
+  description: text60("description"),
+  issuer: text60("issuer"),
   // e.g., Insurance Co Name
-  policyNumber: text59("policy_number"),
+  policyNumber: text60("policy_number"),
   effectiveDate: date17("effective_date"),
   expiryDate: date17("expiry_date"),
   coverageAmount: decimal8("coverage_amount", { precision: 18, scale: 2 }),
-  status: text59("status").notNull().default("ACTIVE"),
+  status: text60("status").notNull().default("ACTIVE"),
   // ACTIVE, EXPIRED, PENDING
   isMandatoryForPayment: boolean61("is_mandatory_for_payment").default(true),
   createdAt: timestamp71("created_at").defaultNow().notNull()
@@ -13059,7 +13193,7 @@ var insertSubmittalSchema = createInsertSchema68(constructionSubmittals);
 var insertComplianceSchema = createInsertSchema68(constructionCompliance);
 
 // shared/schema/construction_master.ts
-import { pgTable as pgTable73, varchar as varchar70, text as text60, timestamp as timestamp72, uuid as uuid11 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable73, varchar as varchar70, text as text61, timestamp as timestamp72, uuid as uuid11 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema69, createSelectSchema as createSelectSchema3 } from "drizzle-zod";
 var constructionCostCodes = pgTable73("construction_cost_codes", {
   id: uuid11("id").primaryKey().defaultRandom(),
@@ -13067,7 +13201,7 @@ var constructionCostCodes = pgTable73("construction_cost_codes", {
   // e.g., '03-30-00'
   name: varchar70("name").notNull(),
   // e.g., 'Cast-in-Place Concrete'
-  description: text60("description"),
+  description: text61("description"),
   category: varchar70("category"),
   // e.g., 'Div 03 - Concrete'
   status: varchar70("status").default("ACTIVE"),
@@ -13078,7 +13212,7 @@ var insertCostCodeSchema = createInsertSchema69(constructionCostCodes);
 var selectCostCodeSchema = createSelectSchema3(constructionCostCodes);
 
 // shared/schema/construction_claims.ts
-import { pgTable as pgTable74, varchar as varchar71, text as text61, numeric as numeric43, timestamp as timestamp73 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable74, varchar as varchar71, text as text62, numeric as numeric43, timestamp as timestamp73 } from "drizzle-orm/pg-core";
 import { sql as sql67 } from "drizzle-orm";
 var constructionClaims = pgTable74("construction_claims", {
   id: varchar71("id").primaryKey().default(sql67`gen_random_uuid()`),
@@ -13088,7 +13222,7 @@ var constructionClaims = pgTable74("construction_claims", {
   claimNumber: varchar71("claim_number").notNull().unique(),
   // e.g. CLAIM-2026-001
   subject: varchar71("subject").notNull(),
-  description: text61("description"),
+  description: text62("description"),
   type: varchar71("type").default("CONTRACTUAL"),
   // CONTRACTUAL, EOT (Extension of Time), DISRUPTIVE
   status: varchar71("status").default("DRAFT").notNull(),
@@ -13098,11 +13232,11 @@ var constructionClaims = pgTable74("construction_claims", {
   currency: varchar71("currency", { length: 3 }).default("USD"),
   submittedDate: timestamp73("submitted_date"),
   settledDate: timestamp73("settled_date"),
-  evidenceUrls: text61("evidence_urls"),
+  evidenceUrls: text62("evidence_urls"),
   // Comma-separated or JSON array of links
   reportedBy: varchar71("reported_by"),
   // Reference to user/resource
-  internalNotes: text61("internal_notes"),
+  internalNotes: text62("internal_notes"),
   createdAt: timestamp73("created_at").defaultNow().notNull(),
   updatedAt: timestamp73("updated_at").defaultNow().notNull()
 });
@@ -13142,13 +13276,13 @@ var constructionResourceAllocations = pgTable75("construction_resource_allocatio
 });
 
 // shared/schema/lcm.ts
-import { pgTable as pgTable76, text as text62, boolean as boolean62, timestamp as timestamp75, jsonb as jsonb42, numeric as numeric45, varchar as varchar73, uuid as uuid12 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable76, text as text63, boolean as boolean62, timestamp as timestamp75, jsonb as jsonb42, numeric as numeric45, varchar as varchar73, uuid as uuid12 } from "drizzle-orm/pg-core";
 import { createInsertSchema as createInsertSchema70 } from "drizzle-zod";
 import { sql as sql69, relations as relations20 } from "drizzle-orm";
 var lcmCostComponents = pgTable76("lcm_cost_components", {
   id: varchar73("id").primaryKey().default(sql69`gen_random_uuid()`),
   name: varchar73("name").notNull(),
-  description: text62("description"),
+  description: text63("description"),
   componentType: varchar73("component_type").notNull(),
   // 'FREIGHT', 'INSURANCE', 'DUTY', 'OTHERS'
   allocationBasis: varchar73("allocation_basis").default("VALUE"),
@@ -13169,7 +13303,7 @@ var lcmTradeOperations = pgTable76("lcm_trade_operations", {
   // e.g. "Maersk Voyage 123"
   status: varchar73("status").default("OPEN"),
   // 'OPEN', 'CLOSED', 'CANCELLED'
-  description: text62("description"),
+  description: text63("description"),
   supplierId: varchar73("supplier_id"),
   // Optional: if the whole shipment is from one supplier
   // Logistics into
@@ -13249,7 +13383,7 @@ var lcmAuditLogRelations = relations20(lcmAuditLogs, ({ one }) => ({
 var insertLcmAllocationSchema = createInsertSchema70(lcmAllocations);
 
 // shared/schema/transportation.ts
-import { pgTable as pgTable77, varchar as varchar74, text as text63, timestamp as timestamp76, numeric as numeric46, boolean as boolean63, integer as integer62 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable77, varchar as varchar74, text as text64, timestamp as timestamp76, numeric as numeric46, boolean as boolean63, integer as integer62 } from "drizzle-orm/pg-core";
 import { sql as sql70 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema71 } from "drizzle-zod";
 var tlLocations = pgTable77("tl_locations", {
@@ -13259,7 +13393,7 @@ var tlLocations = pgTable77("tl_locations", {
   name: varchar74("name").notNull(),
   type: varchar74("type").notNull(),
   // WAREHOUSE, SUPPLIER, CUSTOMER, HUB, DOCK
-  address: text63("address"),
+  address: text64("address"),
   city: varchar74("city"),
   state: varchar74("state"),
   country: varchar74("country"),
@@ -13335,7 +13469,7 @@ var tlShipments = pgTable77("tl_shipments", {
   totalVolumeCbm: numeric46("total_volume_cbm", { precision: 18, scale: 4 }),
   totalCost: numeric46("total_cost", { precision: 18, scale: 2 }),
   trackingNumber: varchar74("tracking_number"),
-  notes: text63("notes"),
+  notes: text64("notes"),
   createdAt: timestamp76("created_at").default(sql70`now()`)
 });
 var tlMilestones = pgTable77("tl_milestones", {
@@ -13349,7 +13483,7 @@ var tlMilestones = pgTable77("tl_milestones", {
   actualDate: timestamp76("actual_date"),
   status: varchar74("status").default("PENDING"),
   // PENDING, COMPLETED, SKIPPED, EXCEPTION
-  description: text63("description"),
+  description: text64("description"),
   createdAt: timestamp76("created_at").default(sql70`now()`)
 });
 var tlFreightCharges = pgTable77("tl_freight_charges", {
@@ -13382,7 +13516,7 @@ var tlStops = pgTable77("tl_stops", {
   entInventoryOrgId: varchar74("ent_inventory_org_id"),
   plannedArrival: timestamp76("planned_arrival"),
   actualArrival: timestamp76("actual_arrival"),
-  notes: text63("notes"),
+  notes: text64("notes"),
   createdAt: timestamp76("created_at").default(sql70`now()`)
 });
 var tlCarrierRates = pgTable77("tl_carrier_rates", {
@@ -13411,7 +13545,7 @@ var tlRateQuotes = pgTable77("tl_rate_quotes", {
   quoteAmount: numeric46("quote_amount", { precision: 18, scale: 2 }).notNull(),
   transitDays: integer62("transit_days"),
   validUntil: timestamp76("valid_until").notNull(),
-  quoteDetails: text63("quote_details"),
+  quoteDetails: text64("quote_details"),
   // JSON string with breakdown
   status: varchar74("status").default("PENDING"),
   // PENDING, ACCEPTED, REJECTED, EXPIRED
@@ -13453,7 +13587,7 @@ var tlTrackingMilestones = pgTable77("tl_tracking_milestones", {
   latitude: numeric46("latitude", { precision: 10, scale: 7 }),
   longitude: numeric46("longitude", { precision: 10, scale: 7 }),
   timestamp: timestamp76("timestamp").default(sql70`now()`),
-  notes: text63("notes"),
+  notes: text64("notes"),
   createdBy: varchar74("created_by")
 });
 var tlTrackingAlerts = pgTable77("tl_tracking_alerts", {
@@ -13461,7 +13595,7 @@ var tlTrackingAlerts = pgTable77("tl_tracking_alerts", {
   shipmentId: varchar74("shipment_id").notNull(),
   alertType: varchar74("alert_type").notNull(),
   // DELAY, EXCEPTION, WEATHER, CUSTOMS
-  message: text63("message").notNull(),
+  message: text64("message").notNull(),
   severity: varchar74("severity").default("MEDIUM"),
   // LOW, MEDIUM, HIGH, CRITICAL
   createdAt: timestamp76("created_at").default(sql70`now()`),
@@ -13507,13 +13641,13 @@ var tlMultimodalQuotes = pgTable77("tl_multimodal_quotes", {
   awardedAt: timestamp76("awarded_at"),
   awardedBy: varchar74("awarded_by"),
   validUntil: timestamp76("valid_until"),
-  notes: text63("notes"),
+  notes: text64("notes"),
   createdAt: timestamp76("created_at").default(sql70`now()`)
 });
 var insertTlMultimodalQuoteSchema = createInsertSchema71(tlMultimodalQuotes);
 
 // shared/schema/lease.ts
-import { pgTable as pgTable78, varchar as varchar75, text as text64, timestamp as timestamp77, numeric as numeric47, integer as integer63, boolean as boolean64, jsonb as jsonb43 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable78, varchar as varchar75, text as text65, timestamp as timestamp77, numeric as numeric47, integer as integer63, boolean as boolean64, jsonb as jsonb43 } from "drizzle-orm/pg-core";
 import { sql as sql71 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema72 } from "drizzle-zod";
 import { z as z29 } from "zod";
@@ -13565,7 +13699,7 @@ var leasePayments = pgTable78("lease_payments", {
   // MONTHLY, QUARTERLY, ANNUALLY
   startDate: timestamp77("start_date").notNull(),
   endDate: timestamp77("end_date").notNull(),
-  description: text64("description"),
+  description: text65("description"),
   createdAt: timestamp77("created_at").default(sql71`now()`)
 });
 var leaseAssets = pgTable78("lease_assets", {
@@ -13636,7 +13770,7 @@ var insertLeaseAssetSchema = createInsertSchema72(leaseAssets);
 var insertLeaseAmendmentSchema = createInsertSchema72(leaseAmendments);
 
 // shared/schema/contracts.ts
-import { pgTable as pgTable79, varchar as varchar76, text as text65, timestamp as timestamp78, numeric as numeric48, integer as integer64, boolean as boolean65 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable79, varchar as varchar76, text as text66, timestamp as timestamp78, numeric as numeric48, integer as integer64, boolean as boolean65 } from "drizzle-orm/pg-core";
 import { sql as sql72 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema73 } from "drizzle-zod";
 import { z as z30 } from "zod";
@@ -13645,7 +13779,7 @@ var contracts = pgTable79("contracts", {
   contractNumber: varchar76("contract_number").notNull().unique(),
   // Auto-generated or Manual
   title: varchar76("title").notNull(),
-  description: text65("description"),
+  description: text66("description"),
   // Classification
   contractType: varchar76("contract_type").default("MSA"),
   // MSA, SOW, LEASE, NDA, PURCHASE, SALES
@@ -13724,28 +13858,28 @@ var insertContractPartySchema = createInsertSchema73(contractParties);
 var insertContractDocumentSchema = createInsertSchema73(contractDocuments);
 
 // shared/schema/intercompany.ts
-import { pgTable as pgTable80, text as text66, serial as serial10, integer as integer65, boolean as boolean66, timestamp as timestamp79, uuid as uuid13, date as date20, numeric as numeric49, varchar as varchar77, jsonb as jsonb44 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable80, text as text67, serial as serial10, integer as integer65, boolean as boolean66, timestamp as timestamp79, uuid as uuid13, date as date20, numeric as numeric49, varchar as varchar77, jsonb as jsonb44 } from "drizzle-orm/pg-core";
 import { relations as relations21 } from "drizzle-orm";
 var icOrgs = pgTable80("ic_orgs", {
-  id: text66("id").primaryKey(),
+  id: text67("id").primaryKey(),
   // e.g. "ICO-101"
-  orgName: text66("org_name").notNull(),
-  legalEntityId: text66("legal_entity_id").notNull(),
-  ledgerId: text66("ledger_id").notNull(),
-  companySegment: text66("company_segment").notNull(),
+  orgName: text67("org_name").notNull(),
+  legalEntityId: text67("legal_entity_id").notNull(),
+  ledgerId: text67("ledger_id").notNull(),
+  companySegment: text67("company_segment").notNull(),
   // e.g. "101"
-  receivablesAccountId: text66("receivables_account_id"),
+  receivablesAccountId: text67("receivables_account_id"),
   // Default IC AR
-  payablesAccountId: text66("payables_account_id"),
+  payablesAccountId: text67("payables_account_id"),
   // Default IC AP
   enabled: boolean66("enabled").default(true),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icTransactionTypes = pgTable80("ic_transaction_types", {
-  id: text66("id").primaryKey(),
+  id: text67("id").primaryKey(),
   // e.g. "SHARED_SERVICES"
-  typeName: text66("type_name").notNull(),
-  description: text66("description"),
+  typeName: text67("type_name").notNull(),
+  description: text67("description"),
   requiresApproval: boolean66("requires_approval").default(true),
   requiresInvoicing: boolean66("requires_invoicing").default(false),
   // If true, generates AP/AR
@@ -13757,52 +13891,52 @@ var icTransactionTypes = pgTable80("ic_transaction_types", {
 var icBatches = pgTable80("ic_batches", {
   id: uuid13("id").defaultRandom().primaryKey(),
   batchNumber: serial10("batch_number"),
-  description: text66("description"),
-  initiatorOrgId: text66("initiator_org_id").references(() => icOrgs.id),
-  status: text66("status").notNull(),
+  description: text67("description"),
+  initiatorOrgId: text67("initiator_org_id").references(() => icOrgs.id),
+  status: text67("status").notNull(),
   // DRAFT, SUBMITTED, PARTIAL, COMPLETE
   glDate: date20("gl_date").notNull(),
-  currencyCode: text66("currency_code").notNull(),
+  currencyCode: text67("currency_code").notNull(),
   totalAmount: numeric49("total_amount", { precision: 20, scale: 2 }),
   totalTransactions: integer65("total_transactions").default(0),
-  entLegalEntityId: text66("ent_legal_entity_id"),
+  entLegalEntityId: text67("ent_legal_entity_id"),
   createdAt: timestamp79("created_at").defaultNow(),
-  createdBy: text66("created_by")
+  createdBy: text67("created_by")
 });
 var icHeaders = pgTable80("ic_headers", {
   id: uuid13("id").defaultRandom().primaryKey(),
   batchId: uuid13("batch_id").references(() => icBatches.id),
-  transactionTypeId: text66("transaction_type_id").references(() => icTransactionTypes.id),
-  providerOrgId: text66("provider_org_id").references(() => icOrgs.id),
-  receiverOrgId: text66("receiver_org_id").references(() => icOrgs.id),
+  transactionTypeId: text67("transaction_type_id").references(() => icTransactionTypes.id),
+  providerOrgId: text67("provider_org_id").references(() => icOrgs.id),
+  receiverOrgId: text67("receiver_org_id").references(() => icOrgs.id),
   amount: numeric49("amount", { precision: 20, scale: 2 }).notNull(),
-  currencyCode: text66("currency_code").notNull(),
+  currencyCode: text67("currency_code").notNull(),
   conversionRate: numeric49("conversion_rate", { precision: 20, scale: 10 }).default("1"),
   markupRate: numeric49("markup_rate", { precision: 5, scale: 2 }).default("0"),
   // Applied Markup
-  status: text66("status").notNull(),
+  status: text67("status").notNull(),
   // NEW, RECEIVED, APPROVED, REJECTED, TRANSFERRED
-  rejectionReason: text66("rejection_reason"),
-  glStatus: text66("gl_status").default("Pending"),
+  rejectionReason: text67("rejection_reason"),
+  glStatus: text67("gl_status").default("Pending"),
   // Pending, Transferred
-  invoiceStatus: text66("invoice_status").default("Not Required"),
-  settlementStatus: text66("settlement_status").default("Unsettled"),
+  invoiceStatus: text67("invoice_status").default("Not Required"),
+  settlementStatus: text67("settlement_status").default("Unsettled"),
   // Unsettled, Selected, Settled
   settlementBatchId: varchar77("settlement_batch_id"),
   // Link to ic_netting_batches
-  entLegalEntityId: text66("ent_legal_entity_id"),
+  entLegalEntityId: text67("ent_legal_entity_id"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icLines = pgTable80("ic_lines", {
   id: uuid13("id").defaultRandom().primaryKey(),
   headerId: uuid13("header_id").references(() => icHeaders.id),
   lineNumber: integer65("line_number").notNull(),
-  side: text66("side").notNull(),
+  side: text67("side").notNull(),
   // PROVIDER or RECEIVER
-  codeCombinationId: text66("code_combination_id").notNull(),
+  codeCombinationId: text67("code_combination_id").notNull(),
   enteredDr: numeric49("entered_dr", { precision: 20, scale: 2 }),
   enteredCr: numeric49("entered_cr", { precision: 20, scale: 2 }),
-  description: text66("description"),
+  description: text67("description"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icBatchesRelations = relations21(icBatches, ({ many }) => ({
@@ -13817,43 +13951,43 @@ var icLinesRelations = relations21(icLines, ({ one }) => ({
 }));
 var icTransferPricingRules = pgTable80("ic_transfer_pricing_rules", {
   id: uuid13("id").defaultRandom().primaryKey(),
-  providerOrgId: text66("provider_org_id").references(() => icOrgs.id).notNull(),
-  receiverOrgId: text66("receiver_org_id").references(() => icOrgs.id).notNull(),
+  providerOrgId: text67("provider_org_id").references(() => icOrgs.id).notNull(),
+  receiverOrgId: text67("receiver_org_id").references(() => icOrgs.id).notNull(),
   // Can be "ALL" for global rule
-  transactionTypeId: text66("transaction_type_id").references(() => icTransactionTypes.id),
+  transactionTypeId: text67("transaction_type_id").references(() => icTransactionTypes.id),
   // Optional specific rule
-  markupType: text66("markup_type").notNull().default("PERCENTAGE"),
+  markupType: text67("markup_type").notNull().default("PERCENTAGE"),
   // PERCENTAGE, FIXED_AMOUNT, NONE
   markupValue: numeric49("markup_value", { precision: 10, scale: 4 }).notNull(),
   // e.g. 0.15 for 15% or 100.00 for amount
   activeFrom: date20("active_from").notNull().defaultNow(),
   activeTo: date20("active_to"),
-  description: text66("description"),
+  description: text67("description"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icDataAccessSets = pgTable80("ic_data_access_sets", {
   id: uuid13("id").defaultRandom().primaryKey(),
-  userId: text66("user_id").notNull(),
+  userId: text67("user_id").notNull(),
   // Links to auth system
-  icOrgId: text66("ic_org_id").references(() => icOrgs.id).notNull(),
-  accessLevel: text66("access_level").default("FULL"),
+  icOrgId: text67("ic_org_id").references(() => icOrgs.id).notNull(),
+  accessLevel: text67("access_level").default("FULL"),
   // FULL, READ_ONLY
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icAllocationRules = pgTable80("ic_allocation_rules", {
   id: uuid13("id").defaultRandom().primaryKey(),
-  name: text66("name").notNull(),
-  description: text66("description"),
-  sourceOrgId: text66("source_org_id").references(() => icOrgs.id).notNull(),
-  allocationMethod: text66("allocation_method").default("PERCENTAGE"),
+  name: text67("name").notNull(),
+  description: text67("description"),
+  sourceOrgId: text67("source_org_id").references(() => icOrgs.id).notNull(),
+  allocationMethod: text67("allocation_method").default("PERCENTAGE"),
   // PERCENTAGE, FIXED
-  status: text66("status").default("ACTIVE"),
+  status: text67("status").default("ACTIVE"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icAllocationLines = pgTable80("ic_allocation_lines", {
   id: uuid13("id").defaultRandom().primaryKey(),
   ruleId: uuid13("rule_id").references(() => icAllocationRules.id).notNull(),
-  targetOrgId: text66("target_org_id").references(() => icOrgs.id).notNull(),
+  targetOrgId: text67("target_org_id").references(() => icOrgs.id).notNull(),
   percentage: numeric49("percentage", { precision: 5, scale: 2 }),
   // e.g. 50.00
   fixedAmount: numeric49("fixed_amount", { precision: 20, scale: 2 }),
@@ -13861,79 +13995,79 @@ var icAllocationLines = pgTable80("ic_allocation_lines", {
 });
 var icNettingSessions = pgTable80("ic_netting_sessions", {
   id: uuid13("id").defaultRandom().primaryKey(),
-  tenantId: text66("tenant_id").notNull(),
-  sessionName: text66("session_name").notNull(),
-  period: text66("period").notNull(),
-  currency: text66("currency").notNull(),
+  tenantId: text67("tenant_id").notNull(),
+  sessionName: text67("session_name").notNull(),
+  period: text67("period").notNull(),
+  currency: text67("currency").notNull(),
   entitiesInScope: jsonb44("entities_in_scope"),
   settlementDate: date20("settlement_date"),
-  status: text66("status").default("Draft"),
+  status: text67("status").default("Draft"),
   netPositions: jsonb44("net_positions"),
-  runBy: text66("run_by"),
-  settledBy: text66("settled_by"),
+  runBy: text67("run_by"),
+  settledBy: text67("settled_by"),
   settlementInstructions: jsonb44("settlement_instructions"),
-  entLegalEntityId: text66("ent_legal_entity_id"),
+  entLegalEntityId: text67("ent_legal_entity_id"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var transferPricingPolicies = pgTable80("transfer_pricing_policies", {
   id: uuid13("id").defaultRandom().primaryKey(),
-  tenantId: text66("tenant_id").notNull(),
-  policyName: text66("policy_name").notNull(),
-  transactionCategory: text66("transaction_category").notNull(),
-  method: text66("method").notNull(),
-  fromEntity: text66("from_entity"),
-  toEntity: text66("to_entity"),
+  tenantId: text67("tenant_id").notNull(),
+  policyName: text67("policy_name").notNull(),
+  transactionCategory: text67("transaction_category").notNull(),
+  method: text67("method").notNull(),
+  fromEntity: text67("from_entity"),
+  toEntity: text67("to_entity"),
   armLengthMarginPct: numeric49("arm_length_margin_pct", { precision: 5, scale: 2 }),
   benchmarkRangeLow: numeric49("benchmark_range_low", { precision: 5, scale: 2 }),
   benchmarkRangeHigh: numeric49("benchmark_range_high", { precision: 5, scale: 2 }),
   effectiveFrom: date20("effective_from").notNull(),
   effectiveTo: date20("effective_to"),
-  approvedBy: text66("approved_by"),
+  approvedBy: text67("approved_by"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var transferPricingAnalyses = pgTable80("transfer_pricing_analyses", {
   id: uuid13("id").defaultRandom().primaryKey(),
-  tenantId: text66("tenant_id").notNull(),
+  tenantId: text67("tenant_id").notNull(),
   policyId: uuid13("policy_id").references(() => transferPricingPolicies.id),
-  period: text66("period").notNull(),
+  period: text67("period").notNull(),
   actualMarginPct: numeric49("actual_margin_pct", { precision: 5, scale: 2 }),
   benchmarkMarginPct: numeric49("benchmark_margin_pct", { precision: 5, scale: 2 }),
   variancePct: numeric49("variance_pct", { precision: 5, scale: 2 }),
   inRange: boolean66("in_range").default(true),
   flagged: boolean66("flagged").default(false),
   transactionsReviewed: integer65("transactions_reviewed").default(0),
-  analysisNotes: text66("analysis_notes"),
+  analysisNotes: text67("analysis_notes"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 var icDisputes = pgTable80("ic_disputes", {
   id: uuid13("id").defaultRandom().primaryKey(),
-  tenantId: text66("tenant_id").notNull(),
-  disputeNumber: text66("dispute_number").notNull().unique(),
-  icTransactionId: text66("ic_transaction_id"),
-  fromEntity: text66("from_entity").notNull(),
-  toEntity: text66("to_entity").notNull(),
+  tenantId: text67("tenant_id").notNull(),
+  disputeNumber: text67("dispute_number").notNull().unique(),
+  icTransactionId: text67("ic_transaction_id"),
+  fromEntity: text67("from_entity").notNull(),
+  toEntity: text67("to_entity").notNull(),
   disputedAmount: numeric49("disputed_amount", { precision: 20, scale: 2 }),
-  currency: text66("currency").notNull().default("USD"),
-  reason: text66("reason").notNull(),
-  status: text66("status").default("Open"),
-  openedBy: text66("opened_by").notNull(),
+  currency: text67("currency").notNull().default("USD"),
+  reason: text67("reason").notNull(),
+  status: text67("status").default("Open"),
+  openedBy: text67("opened_by").notNull(),
   openedAt: timestamp79("opened_at").defaultNow(),
-  resolvedBy: text66("resolved_by"),
+  resolvedBy: text67("resolved_by"),
   resolvedAt: timestamp79("resolved_at"),
-  resolution: text66("resolution"),
+  resolution: text67("resolution"),
   events: jsonb44("events").default("[]"),
   createdAt: timestamp79("created_at").defaultNow()
 });
 
 // shared/schema/talent_core.ts
-import { pgTable as pgTable81, varchar as varchar78, timestamp as timestamp80, boolean as boolean67, text as text67, jsonb as jsonb45 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable81, varchar as varchar78, timestamp as timestamp80, boolean as boolean67, text as text68, jsonb as jsonb45 } from "drizzle-orm/pg-core";
 import { sql as sql73 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema74 } from "drizzle-zod";
 var hrmSkills = pgTable81("hrm_skills", {
   id: varchar78("id").primaryKey().default(sql73`gen_random_uuid()`),
   tenantId: varchar78("tenant_id").notNull(),
   name: varchar78("name").notNull().unique(),
-  description: text67("description"),
+  description: text68("description"),
   category: varchar78("category"),
   // Technical, Soft, Language
   isActive: boolean67("is_active").default(true),
@@ -13943,7 +14077,7 @@ var hrmCompetencies = pgTable81("hrm_competencies", {
   id: varchar78("id").primaryKey().default(sql73`gen_random_uuid()`),
   tenantId: varchar78("tenant_id").notNull(),
   name: varchar78("name").notNull(),
-  description: text67("description"),
+  description: text68("description"),
   behavioralIndicators: jsonb45("behavioral_indicators"),
   // Array of strings e.g. ["Communicates clearly", "Listens actively"]
   createdAt: timestamp80("created_at").default(sql73`now()`)
@@ -13957,9 +14091,9 @@ var hrmJobProfiles = pgTable81("hrm_job_profiles", {
   // Let's use a JSONB structure for V1 simplicity if acceptable, or separate tables.
   // Given "Oracle Style", we should probably link them proper. 
   // But for "Tier-1 Parity" V1, let's keep it simple.
-  profileSummary: text67("profile_summary"),
-  responsibilities: text67("responsibilities"),
-  qualifications: text67("qualifications"),
+  profileSummary: text68("profile_summary"),
+  responsibilities: text68("responsibilities"),
+  qualifications: text68("qualifications"),
   // Structure: [{ skillId: string, level: string, required: boolean }]
   requiredSkills: jsonb45("required_skills"),
   createdAt: timestamp80("created_at").default(sql73`now()`)
@@ -13984,7 +14118,7 @@ var hrmPersonSkills = pgTable81("hrm_person_skills", {
 var insertPersonSkillSchema = createInsertSchema74(hrmPersonSkills);
 
 // shared/schema/talent_recruitment.ts
-import { pgTable as pgTable82, varchar as varchar79, timestamp as timestamp81, boolean as boolean68, integer as integer67, date as date21, text as text68, jsonb as jsonb46 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable82, varchar as varchar79, timestamp as timestamp81, boolean as boolean68, integer as integer67, date as date21, text as text69, jsonb as jsonb46 } from "drizzle-orm/pg-core";
 import { sql as sql74 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema75 } from "drizzle-zod";
 var hrmRecRequisitions = pgTable82("hrm_rec_requisitions", {
@@ -14007,8 +14141,8 @@ var hrmRecRequisitions = pgTable82("hrm_rec_requisitions", {
   openDate: date21("open_date"),
   closeDate: date21("close_date"),
   headcount: integer67("headcount").default(1),
-  description: text68("description"),
-  requirements: text68("requirements"),
+  description: text69("description"),
+  requirements: text69("requirements"),
   payRangeMin: integer67("pay_range_min"),
   payRangeMax: integer67("pay_range_max"),
   currency: varchar79("currency").default("USD"),
@@ -14048,7 +14182,7 @@ var hrmRecApplications = pgTable82("hrm_rec_applications", {
   // More granular: 'Hiring Manager Review', 'Tech Interview'
   score: integer67("score"),
   // AI Ranking Score?
-  notes: text68("notes"),
+  notes: text69("notes"),
   appliedDate: timestamp81("applied_date").default(sql74`now()`),
   createdAt: timestamp81("created_at").default(sql74`now()`),
   updatedAt: timestamp81("updated_at").default(sql74`now()`)
@@ -14082,7 +14216,7 @@ var hrmRecInterviews = pgTable82("hrm_rec_interviews", {
   // "Zoom", "Office 301"
   status: varchar79("status").default("SCHEDULED"),
   // SCHEDULED, COMPLETED, CANCELLED, NO_SHOW
-  feedback: text68("feedback"),
+  feedback: text69("feedback"),
   rating: integer67("rating"),
   // 1-5
   createdAt: timestamp81("created_at").default(sql74`now()`),
@@ -14093,7 +14227,7 @@ var hrmRecPipelineTemplates = pgTable82("hrm_rec_pipeline_templates", {
   tenantId: varchar79("tenant_id").notNull(),
   name: varchar79("name").notNull(),
   // e.g., "Engineering Pipeline"
-  description: text68("description"),
+  description: text69("description"),
   isDefault: boolean68("is_default").default(false),
   departmentId: varchar79("department_id"),
   // Optional: Limit to specific dept
@@ -14116,7 +14250,7 @@ var hrmRecEmailTemplates = pgTable82("hrm_rec_email_templates", {
   name: varchar79("name").notNull(),
   // e.g., "Offer Letter"
   subject: varchar79("subject").notNull(),
-  body: text68("body").notNull(),
+  body: text69("body").notNull(),
   type: varchar79("type").notNull(),
   // OFFER, REJECTION, INTERVIEW_INVITE
   createdAt: timestamp81("created_at").default(sql74`now()`)
@@ -14146,7 +14280,7 @@ var insertPipelineStageSchema = createInsertSchema75(hrmRecPipelineStages);
 var insertEmailTemplateSchema = createInsertSchema75(hrmRecEmailTemplates);
 
 // shared/schema/talent_performance.ts
-import { pgTable as pgTable83, varchar as varchar80, timestamp as timestamp82, boolean as boolean69, integer as integer68, date as date22, text as text69, jsonb as jsonb47 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable83, varchar as varchar80, timestamp as timestamp82, boolean as boolean69, integer as integer68, date as date22, text as text70, jsonb as jsonb47 } from "drizzle-orm/pg-core";
 import { sql as sql75 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema76 } from "drizzle-zod";
 var hrmPerfGoals = pgTable83("hrm_perf_goals", {
@@ -14155,7 +14289,7 @@ var hrmPerfGoals = pgTable83("hrm_perf_goals", {
   personId: varchar80("person_id").notNull().references(() => hrPersons.id),
   // The API uses this
   title: varchar80("title").notNull(),
-  description: text69("description"),
+  description: text70("description"),
   category: varchar80("category"),
   // CAREER, PROJECT, PERSONAL
   status: varchar80("status").default("NOT_STARTED"),
@@ -14184,7 +14318,7 @@ var hrmPerfDocuments = pgTable83("hrm_perf_documents", {
   // DRAFT, EMPLOYEE_INPUT, MANAGER_EVAL, APPROVAL, COMPLETED
   overallRating: integer68("overall_rating"),
   // 1-5 scale often
-  overallComments: text69("overall_comments"),
+  overallComments: text70("overall_comments"),
   employeeSubmittedDate: timestamp82("employee_submitted_date"),
   managerSubmittedDate: timestamp82("manager_submitted_date"),
   completedDate: timestamp82("completed_date"),
@@ -14196,7 +14330,7 @@ var hrmPerfTemplates = pgTable83("hrm_perf_templates", {
   tenantId: varchar80("tenant_id").notNull(),
   name: varchar80("name").notNull(),
   // "Annual Review 2024", "PIP Template"
-  description: text69("description"),
+  description: text70("description"),
   sections: jsonb47("sections"),
   // definition of sections: ["Goals", "Competencies", "Feedback"]
   ratingScale: jsonb47("rating_scale"),
@@ -14213,7 +14347,7 @@ var hrmPerfFeedback = pgTable83("hrm_perf_feedback", {
   // Can be anonymous/null
   feedbackType: varchar80("feedback_type").default("GENERAL"),
   // GENERAL, PROJECT, PEER_REVIEW
-  message: text69("message").notNull(),
+  message: text70("message").notNull(),
   isVisibleToEmployee: boolean69("is_visible_to_employee").default(true),
   createdAt: timestamp82("created_at").default(sql75`now()`)
 });
@@ -14223,14 +14357,14 @@ var insertPerfTemplateSchema = createInsertSchema76(hrmPerfTemplates);
 var insertFeedbackSchema = createInsertSchema76(hrmPerfFeedback);
 
 // shared/schema/talent_learning.ts
-import { pgTable as pgTable84, varchar as varchar81, timestamp as timestamp83, boolean as boolean70, integer as integer69, date as date23, text as text70, jsonb as jsonb48, numeric as numeric50 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable84, varchar as varchar81, timestamp as timestamp83, boolean as boolean70, integer as integer69, date as date23, text as text71, jsonb as jsonb48, numeric as numeric50 } from "drizzle-orm/pg-core";
 import { sql as sql76 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema77 } from "drizzle-zod";
 var hrmLearningCourses = pgTable84("hrm_learning_courses", {
   id: varchar81("id").primaryKey().default(sql76`gen_random_uuid()`),
   tenantId: varchar81("tenant_id").notNull(),
   title: varchar81("title").notNull(),
-  description: text70("description"),
+  description: text71("description"),
   // Categorization
   category: varchar81("category"),
   // e.g. "Compliance", "Technical", "Leadership"
@@ -14254,9 +14388,9 @@ var hrmLearningContentItems = pgTable84("hrm_learning_content_items", {
   title: varchar81("title").notNull(),
   type: varchar81("type").notNull(),
   // SCORM_12, VIDEO, PDF, LINK
-  url: text70("url"),
+  url: text71("url"),
   // Path to file or external link
-  launchData: text70("launch_data"),
+  launchData: text71("launch_data"),
   // specialized launch params
   createdAt: timestamp83("created_at").default(sql76`now()`)
 });
@@ -14292,7 +14426,7 @@ var hrmLearningEnrollments = pgTable84("hrm_learning_enrollments", {
   progressPercent: integer69("progress_percent").default(0),
   score: integer69("score"),
   completionDate: date23("completion_date"),
-  certificateUrl: text70("certificate_url"),
+  certificateUrl: text71("certificate_url"),
   createdAt: timestamp83("created_at").default(sql76`now()`),
   updatedAt: timestamp83("updated_at").default(sql76`now()`)
 });
@@ -14300,7 +14434,7 @@ var hrmLearningCertifications = pgTable84("hrm_learning_certifications", {
   id: varchar81("id").primaryKey().default(sql76`gen_random_uuid()`),
   tenantId: varchar81("tenant_id").notNull(),
   title: varchar81("title").notNull(),
-  description: text70("description"),
+  description: text71("description"),
   validityPeriodDays: integer69("validity_period_days"),
   renewalWindowDays: integer69("renewal_window_days"),
   // Can renew X days before expiry
@@ -14317,8 +14451,8 @@ var hrmLearningAuditLogs = pgTable84("hrm_learning_audit_logs", {
   entityId: varchar81("entity_id").notNull(),
   action: varchar81("action").notNull(),
   // UPDATE, CREATE, AUTO_RENEWAL
-  previousValue: text70("previous_value"),
-  newValue: text70("new_value"),
+  previousValue: text71("previous_value"),
+  newValue: text71("new_value"),
   actorId: varchar81("actor_id"),
   createdAt: timestamp83("created_at").default(sql76`now()`)
 });
@@ -14326,7 +14460,7 @@ var hrmLearningCurricula = pgTable84("hrm_learning_curricula", {
   id: varchar81("id").primaryKey().default(sql76`gen_random_uuid()`),
   tenantId: varchar81("tenant_id").notNull(),
   title: varchar81("title").notNull(),
-  description: text70("description"),
+  description: text71("description"),
   provider: varchar81("provider").default("Internal"),
   category: varchar81("category"),
   createdAt: timestamp83("created_at").default(sql76`now()`),
@@ -14345,7 +14479,7 @@ var hrmLearningAssessments = pgTable84("hrm_learning_assessments", {
   id: varchar81("id").primaryKey().default(sql76`gen_random_uuid()`),
   tenantId: varchar81("tenant_id").notNull(),
   title: varchar81("title").notNull(),
-  description: text70("description"),
+  description: text71("description"),
   passingScore: integer69("passing_score").default(80),
   maxAttempts: integer69("max_attempts").default(3),
   timeLimitMinutes: integer69("time_limit_minutes"),
@@ -14356,7 +14490,7 @@ var hrmLearningAssessmentQuestions = pgTable84("hrm_learning_assessment_question
   id: varchar81("id").primaryKey().default(sql76`gen_random_uuid()`),
   tenantId: varchar81("tenant_id").notNull(),
   assessmentId: varchar81("assessment_id").notNull().references(() => hrmLearningAssessments.id),
-  text: text70("text").notNull(),
+  text: text71("text").notNull(),
   type: varchar81("type").default("MULTIPLE_CHOICE"),
   options: jsonb48("options"),
   // [{id: "1", text: "A"}]
@@ -14379,9 +14513,9 @@ var hrmLearningCommunities = pgTable84("hrm_learning_communities", {
   id: varchar81("id").primaryKey().default(sql76`gen_random_uuid()`),
   tenantId: varchar81("tenant_id").notNull(),
   title: varchar81("title").notNull(),
-  description: text70("description"),
+  description: text71("description"),
   parentId: varchar81("parent_id").references(() => hrmLearningCommunities.id),
-  path: text70("path"),
+  path: text71("path"),
   createdAt: timestamp83("created_at").default(sql76`now()`),
   updatedAt: timestamp83("updated_at").default(sql76`now()`)
 });
@@ -14396,7 +14530,7 @@ var insertLearningAssessmentSchema = createInsertSchema77(hrmLearningAssessments
 var insertLearningCommunitySchema = createInsertSchema77(hrmLearningCommunities);
 
 // shared/schema/rewards_compensation.ts
-import { pgTable as pgTable85, varchar as varchar82, timestamp as timestamp84, numeric as numeric51, date as date24 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable85, varchar as varchar82, timestamp as timestamp84, numeric as numeric51, date as date24, jsonb as jsonb49 } from "drizzle-orm/pg-core";
 import { sql as sql77 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema78 } from "drizzle-zod";
 var hrmSalaryBases = pgTable85("hrm_salary_bases", {
@@ -14446,9 +14580,30 @@ var hrmCompensationPlans = pgTable85("hrm_compensation_plans", {
   status: varchar82("status").default("ACTIVE"),
   createdAt: timestamp84("created_at").default(sql77`now()`)
 });
+var hrmEligibilityProfiles = pgTable85("hrm_eligibility_profiles", {
+  id: varchar82("id").primaryKey().default(sql77`gen_random_uuid()`),
+  tenantId: varchar82("tenant_id").notNull(),
+  name: varchar82("name").notNull(),
+  // "Full-Time Annual Bonus"
+  description: varchar82("description"),
+  // JSON rule array: [{ field: "workerType", operator: "=", value: "EMPLOYEE" }]
+  conditions: jsonb49("conditions"),
+  status: varchar82("status").default("ACTIVE"),
+  createdAt: timestamp84("created_at").default(sql77`now()`),
+  updatedAt: timestamp84("updated_at").default(sql77`now()`)
+});
+var hrmEligibilityPlanLinks = pgTable85("hrm_eligibility_plan_links", {
+  id: varchar82("id").primaryKey().default(sql77`gen_random_uuid()`),
+  tenantId: varchar82("tenant_id").notNull(),
+  profileId: varchar82("profile_id").notNull().references(() => hrmEligibilityProfiles.id),
+  planId: varchar82("plan_id").notNull().references(() => hrmCompensationPlans.id),
+  createdAt: timestamp84("created_at").default(sql77`now()`)
+});
 var insertSalaryBasisSchema = createInsertSchema78(hrmSalaryBases);
 var insertWorkerSalarySchema = createInsertSchema78(hrmWorkerSalaries);
 var insertCompPlanSchema = createInsertSchema78(hrmCompensationPlans);
+var insertEligibilityProfileSchema = createInsertSchema78(hrmEligibilityProfiles);
+var insertEligibilityPlanLinkSchema = createInsertSchema78(hrmEligibilityPlanLinks);
 
 // shared/schema/rewards_payroll.ts
 import { pgTable as pgTable86, varchar as varchar83, timestamp as timestamp85, boolean as boolean72, numeric as numeric52, date as date25 } from "drizzle-orm/pg-core";
@@ -14534,7 +14689,7 @@ var hrmVoluntaryDeductions = pgTable87("hrm_voluntary_deductions", {
 var insertVoluntaryDeductionSchema = createInsertSchema80(hrmVoluntaryDeductions);
 
 // shared/schema/time_labor.ts
-import { pgTable as pgTable88, varchar as varchar85, timestamp as timestamp87, boolean as boolean73, integer as integer72, numeric as numeric54, date as date26, text as text73, jsonb as jsonb51 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable88, varchar as varchar85, timestamp as timestamp87, boolean as boolean73, integer as integer72, numeric as numeric54, date as date26, text as text74, jsonb as jsonb51 } from "drizzle-orm/pg-core";
 import { sql as sql80 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema81 } from "drizzle-zod";
 var hrmTimePeriods = pgTable88("hrm_time_periods", {
@@ -14581,7 +14736,7 @@ var hrmTimeEntries = pgTable88("hrm_time_entries", {
   projectId: varchar85("project_id"),
   // Optional integration with Projects
   taskId: varchar85("task_id"),
-  notes: text73("notes"),
+  notes: text74("notes"),
   createdAt: timestamp87("created_at").default(sql80`now()`)
 });
 var hrmShifts = pgTable88("hrm_shifts", {
@@ -14745,12 +14900,12 @@ var hrmPayslipEntries = pgTable88("hrm_payslip_entries", {
 });
 
 // shared/schema/time_ai.ts
-import { pgTable as pgTable89, text as text74, serial as serial11, integer as integer73, timestamp as timestamp88, numeric as numeric55, date as date27, jsonb as jsonb52 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable89, text as text75, serial as serial11, integer as integer73, timestamp as timestamp88, numeric as numeric55, date as date27, jsonb as jsonb52 } from "drizzle-orm/pg-core";
 import { relations as relations22 } from "drizzle-orm";
 var hrmAiForecasts = pgTable89("hrm_ai_forecasts", {
   id: serial11("id").primaryKey(),
-  tenantId: text74("tenant_id").notNull(),
-  departmentId: text74("department_id").notNull(),
+  tenantId: text75("tenant_id").notNull(),
+  departmentId: text75("department_id").notNull(),
   forecastDate: date27("forecast_date").notNull(),
   // The future date being predicted
   projectedHours: numeric55("projected_hours").notNull(),
@@ -14760,15 +14915,15 @@ var hrmAiForecasts = pgTable89("hrm_ai_forecasts", {
 });
 var hrmAiAnomalies = pgTable89("hrm_ai_anomalies", {
   id: serial11("id").primaryKey(),
-  tenantId: text74("tenant_id").notNull(),
-  personId: text74("person_id").notNull(),
-  type: text74("type").notNull(),
+  tenantId: text75("tenant_id").notNull(),
+  personId: text75("person_id").notNull(),
+  type: text75("type").notNull(),
   // FATIGUE_RISK, LATE_PATTERN, GHOST_CLOCK_IN
   riskScore: integer73("risk_score").default(0),
   // 0-100 (High = Bad)
-  riskReason: text74("risk_reason"),
+  riskReason: text75("risk_reason"),
   // "Worked 8 consecutive days"
-  status: text74("status").default("OPEN"),
+  status: text75("status").default("OPEN"),
   // OPEN, DISMISSED, RESOLVED
   detectedAt: timestamp88("detected_at").defaultNow(),
   metadata: jsonb52("metadata")
@@ -14891,7 +15046,7 @@ var insertTimeRuleSchema = createInsertSchema83(hrmTimeRules);
 var insertAccrualPolicyRuleSchema = createInsertSchema83(hrmAccrualPolicyRules);
 
 // shared/schema/locations.ts
-import { pgTable as pgTable92, varchar as varchar88, text as text76, timestamp as timestamp91, boolean as boolean77, numeric as numeric58 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable92, varchar as varchar88, text as text77, timestamp as timestamp91, boolean as boolean77, numeric as numeric58 } from "drizzle-orm/pg-core";
 import { sql as sql83 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema84 } from "drizzle-zod";
 import { z as z31 } from "zod";
@@ -14917,7 +15072,7 @@ var hzLocations = pgTable92("hz_locations", {
   longitude: numeric58("longitude", { precision: 10, scale: 6 }),
   timezone: varchar88("timezone"),
   // Full formatted string
-  formattedAddress: text76("formatted_address"),
+  formattedAddress: text77("formatted_address"),
   createdAt: timestamp91("created_at").default(sql83`now()`),
   updatedAt: timestamp91("updated_at").default(sql83`now()`)
 });
@@ -14961,7 +15116,7 @@ var insertHzPartySiteUseSchema = createInsertSchema84(hzPartySiteUses).extend({
 });
 
 // shared/schema/reference.ts
-import { pgTable as pgTable93, varchar as varchar89, text as text77, timestamp as timestamp92, boolean as boolean78, integer as integer77 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable93, varchar as varchar89, text as text78, timestamp as timestamp92, boolean as boolean78, integer as integer77 } from "drizzle-orm/pg-core";
 import { sql as sql84 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema85 } from "drizzle-zod";
 import { z as z32 } from "zod";
@@ -14973,7 +15128,7 @@ var fndLookupTypes = pgTable93("fnd_lookup_types", {
   // Module ID
   userLookupName: varchar89("user_lookup_name").notNull(),
   // User friendly name
-  description: text77("description"),
+  description: text78("description"),
   customizationLevel: varchar89("customization_level", { length: 1 }).default("U"),
   // U=User, S=System, E=Extensible
   createdAt: timestamp92("created_at").default(sql84`now()`),
@@ -14986,7 +15141,7 @@ var fndLookupValues = pgTable93("fnd_lookup_values", {
   // e.g., 'ORGANIZATION'
   meaning: varchar89("meaning").notNull(),
   // Display Value
-  description: text77("description"),
+  description: text78("description"),
   enabledFlag: boolean78("enabled_flag").default(true),
   startDateActive: timestamp92("start_date_active"),
   endDateActive: timestamp92("end_date_active"),
@@ -15005,7 +15160,7 @@ var insertFndLookupValueSchema = createInsertSchema85(fndLookupValues).extend({
 });
 
 // shared/schema/relationships.ts
-import { pgTable as pgTable94, varchar as varchar90, text as text78, timestamp as timestamp93, boolean as boolean79, date as date30 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable94, varchar as varchar90, text as text79, timestamp as timestamp93, boolean as boolean79, date as date30 } from "drizzle-orm/pg-core";
 import { sql as sql85 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema86 } from "drizzle-zod";
 import { z as z33 } from "zod";
@@ -15022,7 +15177,7 @@ var hzRelationships = pgTable94("hz_relationships", {
   startDate: date30("start_date").defaultNow(),
   endDate: date30("end_date"),
   status: varchar90("status", { length: 1 }).default("A"),
-  comments: text78("comments"),
+  comments: text79("comments"),
   createdAt: timestamp93("created_at").default(sql85`now()`),
   updatedAt: timestamp93("updated_at").default(sql85`now()`)
 });
@@ -15048,7 +15203,7 @@ var insertHzOrgContactSchema = createInsertSchema86(hzOrgContacts).extend({
 });
 
 // shared/schema/data-quality.ts
-import { pgTable as pgTable95, varchar as varchar91, text as text79, timestamp as timestamp94, integer as integer78, numeric as numeric59, boolean as boolean80, json } from "drizzle-orm/pg-core";
+import { pgTable as pgTable95, varchar as varchar91, text as text80, timestamp as timestamp94, integer as integer78, numeric as numeric59, boolean as boolean80, json } from "drizzle-orm/pg-core";
 import { sql as sql86 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema87 } from "drizzle-zod";
 import { z as z34 } from "zod";
@@ -15087,7 +15242,7 @@ var hzDupSetParties = pgTable95("hz_dup_set_parties", {
 var hzMatchRules = pgTable95("hz_match_rules", {
   id: varchar91("id").primaryKey().default(sql86`gen_random_uuid()`),
   ruleName: varchar91("rule_name").notNull(),
-  description: text79("description"),
+  description: text80("description"),
   matchType: varchar91("match_type").default("FUZZY"),
   // EXACT, FUZZY
   matchScoreThreshold: integer78("match_score_threshold").default(80),
@@ -15100,7 +15255,7 @@ var hzMatchRules = pgTable95("hz_match_rules", {
 var hzSurvivorshipRules = pgTable95("hz_survivorship_rules", {
   id: varchar91("id").primaryKey().default(sql86`gen_random_uuid()`),
   ruleName: varchar91("rule_name").notNull(),
-  description: text79("description"),
+  description: text80("description"),
   sourceSystem: varchar91("source_system"),
   // e.g. "CRM", "SAP"
   confidenceScore: integer78("confidence_score").default(50),
@@ -15148,7 +15303,7 @@ var insertHzSurvivorshipRuleSchema = createInsertSchema87(hzSurvivorshipRules).e
 });
 
 // shared/schema/pim.ts
-import { pgTable as pgTable96, varchar as varchar92, text as text80, timestamp as timestamp95 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable96, varchar as varchar92, text as text81, timestamp as timestamp95 } from "drizzle-orm/pg-core";
 import { sql as sql87, relations as relations24 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema88 } from "drizzle-zod";
 import { z as z35 } from "zod";
@@ -15157,7 +15312,7 @@ var egpSystemItems = pgTable96("egp_system_items", {
   itemNumber: varchar92("item_number", { length: 100 }).notNull().unique(),
   // e.g. "PRJ-001"
   itemName: varchar92("item_name").notNull(),
-  description: text80("description"),
+  description: text81("description"),
   // Classification
   itemType: varchar92("item_type").default("GOODS"),
   // GOODS, SERVICE
@@ -15201,7 +15356,7 @@ var insertEgpSystemItemSchema = createInsertSchema88(egpSystemItems).extend({
 var insertEgpItemCategorySchema = createInsertSchema88(egpItemCategories);
 
 // shared/schema/governance.ts
-import { pgTable as pgTable97, varchar as varchar93, text as text81, timestamp as timestamp96, jsonb as jsonb54 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable97, varchar as varchar93, text as text82, timestamp as timestamp96, jsonb as jsonb54 } from "drizzle-orm/pg-core";
 import { sql as sql88 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema89 } from "drizzle-zod";
 var mdmAuditLog = pgTable97("mdm_audit_log", {
@@ -15228,7 +15383,7 @@ var mdmChangeRequests = pgTable97("mdm_change_requests", {
   proposedChanges: jsonb54("proposed_changes").notNull(),
   requesterId: varchar93("requester_id").default("SYSTEM"),
   approverId: varchar93("approver_id"),
-  rejectionReason: text81("rejection_reason"),
+  rejectionReason: text82("rejection_reason"),
   createdAt: timestamp96("created_at").default(sql88`now()`),
   updatedAt: timestamp96("updated_at").default(sql88`now()`)
 });
@@ -15236,7 +15391,7 @@ var insertMdmAuditLogSchema = createInsertSchema89(mdmAuditLog);
 var insertMdmChangeRequestSchema = createInsertSchema89(mdmChangeRequests);
 
 // shared/schema/nexus_ai.ts
-import { pgTable as pgTable98, varchar as varchar94, text as text82, timestamp as timestamp97, boolean as boolean83, integer as integer81, jsonb as jsonb55 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable98, varchar as varchar94, text as text83, timestamp as timestamp97, boolean as boolean83, integer as integer81, jsonb as jsonb55 } from "drizzle-orm/pg-core";
 import { sql as sql89 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema90 } from "drizzle-zod";
 import { z as z36 } from "zod";
@@ -15247,9 +15402,9 @@ var aiProviderConfigs = pgTable98("ai_provider_configs", {
   // Display name e.g. "Production OpenAI"
   provider: varchar94("provider").notNull(),
   // openai, google_gemini, anthropic, azure_openai, ollama, mistral, cohere, custom
-  apiKey: text82("api_key").notNull(),
+  apiKey: text83("api_key").notNull(),
   // Encrypted API key
-  baseUrl: text82("base_url"),
+  baseUrl: text83("base_url"),
   // Custom endpoint URL
   model: varchar94("model").notNull(),
   // e.g. gpt-4o, gemini-2.5-pro
@@ -15302,10 +15457,10 @@ var aiCapabilities = pgTable98("ai_capabilities", {
   // e.g., 'Finance', 'Human Resources'
   name: varchar94("name").notNull(),
   // e.g., 'Financial AI Assistant'
-  description: text82("description"),
+  description: text83("description"),
   routes: jsonb55("routes").$type().default([]),
   insights: jsonb55("insights").$type().default([]),
-  systemPrompt: text82("system_prompt"),
+  systemPrompt: text83("system_prompt"),
   // Context/Persona for this agent
   isActive: boolean83("is_active").default(true),
   createdAt: timestamp97("created_at").default(sql89`now()`),
@@ -15317,7 +15472,7 @@ var aiTools = pgTable98("ai_tools", {
   capabilityId: varchar94("capability_id").references(() => aiCapabilities.id),
   name: varchar94("name").notNull(),
   // e.g., 'create_journal_entry'
-  description: text82("description"),
+  description: text83("description"),
   parameters: jsonb55("parameters").notNull(),
   // JSON Schema for tool parameters
   requiredPermission: varchar94("required_permission").notNull(),
@@ -15332,7 +15487,7 @@ var aiQuickActions = pgTable98("ai_quick_actions", {
   capabilityId: varchar94("capability_id").references(() => aiCapabilities.id),
   label: varchar94("label").notNull(),
   // e.g., 'Analyze Opportunity'
-  prompt: text82("prompt").notNull(),
+  prompt: text83("prompt").notNull(),
   icon: varchar94("icon").default("Sparkles"),
   isActive: boolean83("is_active").default(true),
   createdAt: timestamp97("created_at").default(sql89`now()`)
@@ -15346,14 +15501,14 @@ var aiAgentLogs = pgTable98("ai_agent_logs", {
   // Link to the capability/agent
   action: varchar94("action").notNull(),
   // 'chat', 'tool_execution', 'quick_action'
-  prompt: text82("prompt"),
-  response: text82("response"),
+  prompt: text83("prompt"),
+  response: text83("response"),
   toolCalls: jsonb55("tool_calls"),
   tokenUsage: jsonb55("token_usage").$type(),
   latencyMs: integer81("latency_ms"),
   status: varchar94("status").notNull().default("success"),
   // success, error
-  errorMessage: text82("error_message"),
+  errorMessage: text83("error_message"),
   metadata: jsonb55("metadata"),
   // Any additional context (activePage, agentMode, etc.)
   createdAt: timestamp97("created_at").default(sql89`now()`)
@@ -15361,7 +15516,7 @@ var aiAgentLogs = pgTable98("ai_agent_logs", {
 var insertAiAgentLogSchema = createInsertSchema90(aiAgentLogs);
 
 // shared/schema/enterprise.ts
-import { pgTable as pgTable99, varchar as varchar95, text as text83, timestamp as timestamp98, boolean as boolean84, jsonb as jsonb56 } from "drizzle-orm/pg-core";
+import { pgTable as pgTable99, varchar as varchar95, text as text84, timestamp as timestamp98, boolean as boolean84, jsonb as jsonb56 } from "drizzle-orm/pg-core";
 import { sql as sql90 } from "drizzle-orm";
 import { createInsertSchema as createInsertSchema91 } from "drizzle-zod";
 import { z as z37 } from "zod";
@@ -15370,7 +15525,7 @@ var entLegalGroups = pgTable99("ent_legal_groups", {
   tenantId: varchar95("tenant_id").notNull(),
   name: varchar95("name").notNull(),
   // Company Name / Legal Group Name
-  description: text83("description"),
+  description: text84("description"),
   registrationNumber: varchar95("registration_number"),
   taxId: varchar95("tax_id"),
   currency: varchar95("currency").notNull().default("USD"),
@@ -15396,7 +15551,7 @@ var entBusinessUnits = pgTable99("ent_business_units", {
   // e.g., BU-001
   name: varchar95("name").notNull(),
   // e.g., North America Operations
-  description: text83("description"),
+  description: text84("description"),
   managerId: varchar95("manager_id"),
   // Reference to a user/employee
   status: varchar95("status").default("Active"),
@@ -15472,6 +15627,179 @@ var insertUserDataAccessSchema = createInsertSchema91(entUserDataAccess).extend(
   contextType: z37.enum(["BU", "LE", "INV_ORG", "LEDGER", "SET_ID", "GLOBAL"]),
   contextValue: z37.string().min(1),
   isDefault: z37.boolean().optional()
+});
+
+// shared/schema/scm_phase56.ts
+import { pgTable as pgTable100, varchar as varchar96, integer as integer82, timestamp as timestamp99, numeric as numeric61, boolean as boolean85, text as text85 } from "drizzle-orm/pg-core";
+import { sql as sql91 } from "drizzle-orm";
+var invAbcAssignments = pgTable100("inv_abc_assignments", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  itemId: varchar96("item_id").notNull(),
+  abcClass: varchar96("abc_class").notNull(),
+  criteriaType: varchar96("criteria_type").default("VALUE"),
+  criteriaValue: numeric61("criteria_value", { precision: 18, scale: 4 }),
+  entInventoryOrgId: varchar96("ent_inventory_org_id"),
+  compiledBy: varchar96("compiled_by"),
+  status: varchar96("status").default("ACTIVE"),
+  compiledAt: timestamp99("compiled_at").default(sql91`now()`),
+  updatedAt: timestamp99("updated_at").default(sql91`now()`)
+});
+var invOnhandBalances = pgTable100("inv_onhand_balances", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  itemId: varchar96("item_id").notNull(),
+  subinventoryCode: varchar96("subinventory_code"),
+  locatorId: varchar96("locator_id"),
+  lotNumber: varchar96("lot_number"),
+  primaryUomCode: varchar96("primary_uom_code"),
+  primaryQty: numeric61("primary_qty", { precision: 18, scale: 4 }),
+  secondaryUomCode: varchar96("secondary_uom_code"),
+  secondaryUomQuantity: numeric61("secondary_uom_quantity", { precision: 18, scale: 4 }),
+  variableConversionFlag: boolean85("variable_conversion_flag").default(false),
+  actualConversionRate: numeric61("actual_conversion_rate", { precision: 18, scale: 6 }),
+  entInventoryOrgId: varchar96("ent_inventory_org_id"),
+  transactedBy: varchar96("transacted_by"),
+  transactionDate: timestamp99("transaction_date").default(sql91`now()`)
+});
+var poSupplierScores = pgTable100("po_supplier_scores", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  supplierId: varchar96("supplier_id").notNull(),
+  questionnaireRef: varchar96("questionnaire_ref"),
+  qualityScore: numeric61("quality_score", { precision: 5, scale: 2 }),
+  deliveryScore: numeric61("delivery_score", { precision: 5, scale: 2 }),
+  financialScore: numeric61("financial_score", { precision: 5, scale: 2 }),
+  complianceScore: numeric61("compliance_score", { precision: 5, scale: 2 }),
+  totalScore: numeric61("total_score", { precision: 5, scale: 2 }),
+  riskLevel: varchar96("risk_level").default("LOW"),
+  status: varchar96("status").default("SUBMITTED"),
+  assessedBy: varchar96("assessed_by"),
+  assessmentDate: timestamp99("assessment_date").default(sql91`now()`),
+  notes: text85("notes")
+});
+var poDropShipLinks = pgTable100("po_drop_ship_links", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  linkRef: varchar96("link_ref"),
+  salesOrderNumber: varchar96("sales_order_number").notNull(),
+  omSalesOrderLineId: varchar96("om_sales_order_line_id"),
+  customerId: varchar96("customer_id"),
+  itemId: varchar96("item_id").notNull(),
+  qty: numeric61("qty", { precision: 18, scale: 4 }),
+  supplierId: varchar96("supplier_id").notNull(),
+  supplierName: varchar96("supplier_name"),
+  shipToAddress: text85("ship_to_address"),
+  requestedDeliveryDate: timestamp99("requested_delivery_date"),
+  dropShipType: varchar96("drop_ship_type").default("DROP_SHIP"),
+  status: varchar96("status").default("PENDING"),
+  notes: text85("notes"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
+});
+var mfgWorkOrdersPhase56 = pgTable100("mfg_work_orders", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  workOrderNumber: varchar96("work_order_number"),
+  woClass: varchar96("wo_class"),
+  description: varchar96("description"),
+  itemId: varchar96("item_id"),
+  qtyRequired: numeric61("qty_required", { precision: 18, scale: 4 }),
+  workCenterId: varchar96("work_center_id"),
+  requestedDate: timestamp99("requested_date"),
+  status: varchar96("status").default("DRAFT"),
+  entInventoryOrgId: varchar96("ent_inventory_org_id"),
+  createdBy: varchar96("created_by"),
+  defectCategory: varchar96("defect_category"),
+  reworkReason: varchar96("rework_reason"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
+});
+var invKanbanCards = pgTable100("inv_kanban_cards", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  cardNumber: varchar96("card_number"),
+  itemId: varchar96("item_id").notNull(),
+  subinventoryCode: varchar96("subinventory_code"),
+  locatorId: varchar96("locator_id"),
+  kanbanQty: numeric61("kanban_qty", { precision: 18, scale: 4 }).notNull(),
+  minBinLevel: numeric61("min_bin_level", { precision: 18, scale: 4 }),
+  replenishmentSource: varchar96("replenishment_source"),
+  supplierId: varchar96("supplier_id"),
+  workOrderType: varchar96("work_order_type"),
+  leadTimeDays: integer82("lead_time_days"),
+  cardStatus: varchar96("card_status").default("ACTIVE"),
+  entInventoryOrgId: varchar96("ent_inventory_org_id"),
+  createdAt: timestamp99("created_at").default(sql91`now()`),
+  lastTriggeredAt: timestamp99("last_triggered_at")
+});
+var mfgFormulaHeaders = pgTable100("mfg_formula_headers", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  formulaCode: varchar96("formula_code"),
+  formulaName: varchar96("formula_name"),
+  status: varchar96("status").default("ACTIVE"),
+  itemId: varchar96("item_id"),
+  entInventoryOrgId: varchar96("ent_inventory_org_id"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
+});
+var cstOverheadRates = pgTable100("cst_overhead_rates", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  ruleCode: varchar96("rule_code"),
+  name: varchar96("name"),
+  description: text85("description"),
+  absorptionBase: varchar96("absorption_base").default("LABOR_HOURS"),
+  rate: numeric61("rate", { precision: 18, scale: 6 }),
+  rateType: varchar96("rate_type").default("FIXED"),
+  glAccount: varchar96("gl_account"),
+  effectiveDate: timestamp99("effective_date"),
+  status: varchar96("status").default("ACTIVE"),
+  entInventoryOrgId: varchar96("ent_inventory_org_id"),
+  createdBy: varchar96("created_by")
+});
+var cstPeriodStatuses = pgTable100("cst_period_statuses", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  period: varchar96("period").notNull(),
+  entInventoryOrgId: varchar96("ent_inventory_org_id"),
+  status: varchar96("status").default("OPEN"),
+  lockedBy: varchar96("locked_by"),
+  lockedAt: timestamp99("locked_at")
+});
+var maintCbmRules = pgTable100("maint_cbm_rules", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  name: varchar96("name"),
+  maintAssetId: varchar96("maint_asset_id"),
+  assetTag: varchar96("asset_tag"),
+  sensorId: varchar96("sensor_id"),
+  parameterName: varchar96("parameter_name"),
+  unit: varchar96("unit"),
+  thresholdValue: numeric61("threshold_value", { precision: 18, scale: 4 }),
+  thresholdOperator: varchar96("threshold_operator").default("GT"),
+  severity: varchar96("severity").default("HIGH"),
+  woTemplateId: varchar96("wo_template_id"),
+  triggerDelayMinutes: integer82("trigger_delay_minutes").default(0),
+  status: varchar96("status").default("ACTIVE"),
+  notes: text85("notes"),
+  createdAt: timestamp99("created_at").default(sql91`now()`)
+});
+var tmsFreightClaims = pgTable100("tms_freight_claims", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  claimNumber: varchar96("claim_number"),
+  shipmentId: varchar96("shipment_id"),
+  bolNumber: varchar96("bol_number"),
+  carrierId: varchar96("carrier_id"),
+  carrierName: varchar96("carrier_name"),
+  incidentDate: timestamp99("incident_date"),
+  claimType: varchar96("claim_type"),
+  description: text85("description"),
+  qtyAffected: numeric61("qty_affected", { precision: 18, scale: 4 }),
+  claimValue: numeric61("claim_value", { precision: 18, scale: 4 }),
+  currency: varchar96("currency").default("USD"),
+  evidence: varchar96("evidence"),
+  status: varchar96("status").default("OPEN"),
+  submittedBy: varchar96("submitted_by"),
+  submittedAt: timestamp99("submitted_at").default(sql91`now()`)
+});
+var apErsRunLog = pgTable100("ap_ers_run_log", {
+  id: varchar96("id").primaryKey().default(sql91`gen_random_uuid()`),
+  runId: varchar96("run_id"),
+  runDate: timestamp99("run_date").default(sql91`now()`),
+  receiptsProcessed: integer82("receipts_processed").default(0),
+  invoicesGenerated: integer82("invoices_generated").default(0),
+  errorCount: integer82("error_count").default(0),
+  status: varchar96("status").default("SUCCESS"),
+  runBy: varchar96("run_by")
 });
 
 // backend/src/config/database.config.ts
@@ -19325,7 +19653,7 @@ MetricsController = __decorateClass([
 
 // backend/src/modules/admin/metrics/metrics.service.ts
 import { Injectable as Injectable35, Inject as Inject28 } from "@nestjs/common";
-import { sql as sql91 } from "drizzle-orm";
+import { sql as sql92 } from "drizzle-orm";
 import { tenants as tenants3 } from "@shared/schema";
 import { adminLogs as adminLogs2 } from "@shared/schema/admin";
 import { eq as eq26, gte } from "drizzle-orm";
@@ -19340,9 +19668,9 @@ var MetricsService = class {
       activeTenantsResult,
       recentLogsResult
     ] = await Promise.all([
-      this.db.select({ count: sql91`count(*)::int` }).from(tenants3),
-      this.db.select({ count: sql91`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
-      this.db.select({ count: sql91`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
+      this.db.select({ count: sql92`count(*)::int` }).from(tenants3),
+      this.db.select({ count: sql92`count(*)::int` }).from(tenants3).where(eq26(tenants3.status, "active")),
+      this.db.select({ count: sql92`count(*)::int` }).from(adminLogs2).where(gte(adminLogs2.createdAt, sevenDaysAgo))
     ]);
     return {
       data: {
@@ -19399,7 +19727,7 @@ AuditLogsController = __decorateClass([
 
 // backend/src/modules/admin/audit-logs/audit-logs.service.ts
 import { Injectable as Injectable36, Inject as Inject29 } from "@nestjs/common";
-import { sql as sql92, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
+import { sql as sql93, and as and14, gte as gte2, lte, eq as eq27, ilike, desc } from "drizzle-orm";
 import { adminLogs as adminLogs3 } from "@shared/schema";
 var AuditLogsService = class {
   constructor(db) {
@@ -19417,7 +19745,7 @@ var AuditLogsService = class {
     const where = conditions.length > 0 ? and14(...conditions) : void 0;
     const [logs, countResult] = await Promise.all([
       this.db.select().from(adminLogs3).where(where).orderBy(desc(adminLogs3.createdAt)).limit(limit).offset(offset),
-      this.db.select({ count: sql92`count(*)::int` }).from(adminLogs3).where(where)
+      this.db.select({ count: sql93`count(*)::int` }).from(adminLogs3).where(where)
     ]);
     const total = countResult[0]?.count ?? 0;
     return {
@@ -19743,7 +20071,7 @@ ManufacturingVarianceController = __decorateClass([
 
 // backend/src/modules/manufacturing/manufacturing-variance.service.ts
 import { Injectable as Injectable38, Inject as Inject30 } from "@nestjs/common";
-import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql93 } from "drizzle-orm";
+import { and as and15, desc as desc2, gte as gte3, lte as lte2, sql as sql94 } from "drizzle-orm";
 import { varianceJournals as varianceJournals2 } from "@shared/schema/manufacturing";
 var ManufacturingVarianceService = class {
   constructor(db) {
@@ -19762,7 +20090,7 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const [items, countResult] = await Promise.all([
       this.db.select().from(varianceJournals2).where(where).orderBy(desc2(varianceJournals2.transactionDate)).limit(limit).offset(offset),
-      this.db.select({ count: sql93`count(*)::int` }).from(varianceJournals2).where(where)
+      this.db.select({ count: sql94`count(*)::int` }).from(varianceJournals2).where(where)
     ]);
     return {
       items,
@@ -19780,8 +20108,8 @@ var ManufacturingVarianceService = class {
     const where = conditions.length > 0 ? and15(...conditions) : void 0;
     const summary = await this.db.select({
       varianceType: varianceJournals2.varianceType,
-      total: sql93`sum(${varianceJournals2.amount})::numeric`,
-      count: sql93`count(*)::int`
+      total: sql94`sum(${varianceJournals2.amount})::numeric`,
+      count: sql94`count(*)::int`
     }).from(varianceJournals2).where(where).groupBy(varianceJournals2.varianceType);
     const netVariance = summary.reduce((acc, s) => acc + Number(s.total), 0);
     return {

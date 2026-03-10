@@ -2,18 +2,35 @@ import { useState } from "react";
 import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Package2, Plus, Trash2 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
+const receiptSchema = z.object({
+  poId: z.string().min(1, "PO ID is required"),
+  productId: z.string().min(1, "Product ID is required"),
+  quantity: z.coerce.number().min(1, "Quantity must be > 0"),
+  status: z.string()
+});
+
+type ReceiptFormValues = z.infer<typeof receiptSchema>;
+
 export default function GoodsReceiptPutaway() {
   const { toast } = useToast();
-  const [newReceipt, setNewReceipt] = useState({ poId: "", productId: "", quantity: "100", warehouseId: "WH-001", status: "received" });
+
+  const form = useForm<ReceiptFormValues>({
+    resolver: zodResolver(receiptSchema),
+    defaultValues: { poId: "", productId: "", quantity: 100, status: "received" }
+  });
 
   const { data: receipts = [], isLoading } = useQuery<any>({
     queryKey: ["/api/goods-receipt"],
@@ -24,7 +41,7 @@ export default function GoodsReceiptPutaway() {
     mutationFn: (data: any) => fetch("/api/goods-receipt", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }).then(r => r.json()),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/goods-receipt"] });
-      setNewReceipt({ poId: "", productId: "", quantity: "100", warehouseId: "WH-001", status: "received" });
+      form.reset({ poId: "", productId: "", quantity: 100, status: "received" });
       toast({ title: "Receipt created" });
     },
   });
@@ -75,23 +92,69 @@ export default function GoodsReceiptPutaway() {
 
       <Card data-testid="card-new-receipt">
         <CardHeader><CardTitle className="text-base">Record Goods Receipt</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-5 gap-2">
-            <Input placeholder="PO ID" value={newReceipt.poId} onChange={(e) => setNewReceipt({ ...newReceipt, poId: e.target.value })} data-testid="input-poid" className="text-sm" />
-            <Input placeholder="Product ID" value={newReceipt.productId} onChange={(e) => setNewReceipt({ ...newReceipt, productId: e.target.value })} data-testid="input-prodid" className="text-sm" />
-            <Input placeholder="Quantity" type="number" value={newReceipt.quantity} onChange={(e) => setNewReceipt({ ...newReceipt, quantity: e.target.value })} data-testid="input-qty" className="text-sm" />
-            <Select value={newReceipt.status} onValueChange={(v) => setNewReceipt({ ...newReceipt, status: v })}>
-              <SelectTrigger data-testid="select-status" className="text-sm"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="received">Received</SelectItem>
-                <SelectItem value="qc-pending">QC Pending</SelectItem>
-                <SelectItem value="putaway">Putaway</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button onClick={() => createMutation.mutate(newReceipt)} disabled={createMutation.isPending || !newReceipt.poId} size="sm" data-testid="button-record">
-              <Plus className="w-3 h-3" />
-            </Button>
-          </div>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit((data) => createMutation.mutate({ ...data, warehouseId: "WH-001" }))} className="grid grid-cols-5 gap-2">
+              <FormField
+                control={form.control}
+                name="poId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="PO ID" data-testid="input-poid" className="text-sm" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="productId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Product ID" data-testid="input-prodid" className="text-sm" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Quantity" type="number" data-testid="input-qty" className="text-sm" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger data-testid="select-status" className="text-sm"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="received">Received</SelectItem>
+                          <SelectItem value="qc-pending">QC Pending</SelectItem>
+                          <SelectItem value="putaway">Putaway</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" disabled={createMutation.isPending} size="sm" data-testid="button-record">
+                <Plus className="w-3 h-3" />
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
 

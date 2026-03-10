@@ -59,13 +59,16 @@ export default function BOMDesigner() {
     const boms = data?.items || [];
     const totalItems = data?.total || 0;
 
-    const { data: inventory = [] } = useQuery<InventoryItem[]>({
+    const rawInventoryQuery = useQuery<{ items?: InventoryItem[] } | any>({
         queryKey: ["/api/scm/inventory"],
         queryFn: async () => {
             const res = await fetch("/api/scm/inventory");
             return res.json();
         }
     });
+
+    const rawData = rawInventoryQuery.data;
+    const inventory: InventoryItem[] = Array.isArray(rawData) ? rawData : (rawData?.items || []);
 
     const createMutation = useMutation({
         mutationFn: async (data: any) => {

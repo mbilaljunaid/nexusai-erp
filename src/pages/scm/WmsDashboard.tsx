@@ -14,6 +14,7 @@ import {
 import { Link } from "wouter";
 import { DashboardWidget, StandardDashboard } from "@/components/layout/StandardDashboard";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { EnterpriseContextSwitcher } from "@/components/EnterpriseContextSwitcher";
 
 const taskData = [
@@ -26,10 +27,10 @@ const taskData = [
 ];
 
 const zoneUtilization = [
-    { name: 'Cold Storage', value: 85, color: '#3b82f6' },
-    { name: 'Dry Goods', value: 65, color: '#10b981' },
-    { name: 'Bulk Area', value: 45, color: '#8b5cf6' },
-    { name: 'Hazardous', value: 25, color: '#f59e0b' },
+    { name: 'Cold Storage', value: 85, colorClass: 'bg-blue-500' },
+    { name: 'Dry Goods', value: 65, colorClass: 'bg-emerald-500' },
+    { name: 'Bulk Area', value: 45, colorClass: 'bg-violet-500' },
+    { name: 'Hazardous', value: 25, colorClass: 'bg-amber-500' },
 ];
 
 export default function WmsDashboard() {
@@ -137,12 +138,11 @@ export default function WmsDashboard() {
                                         <span className="text-muted-foreground/70">{zone.name}</span>
                                         <span className="text-white font-bold">{zone.value}%</span>
                                     </div>
-                                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full transition-all duration-1000 w-[var(--tw-progress-width)]"
-                                            style={{ "--tw-progress-width": `${zone.value}%`, backgroundColor: zone.color } as React.CSSProperties}
-                                        />
-                                    </div>
+                                    <Progress
+                                        value={zone.value}
+                                        className="h-2 bg-slate-800"
+                                        indicatorClassName={zone.colorClass}
+                                    />
                                 </div>
                             ))}
                         </div>

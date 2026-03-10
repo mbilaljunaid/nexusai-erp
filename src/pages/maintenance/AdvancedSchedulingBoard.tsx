@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
     Calendar,
@@ -66,6 +67,16 @@ const generateDateRange = (startDate: Date, days: number): TimeSlot[] => {
         });
     }
     return slots;
+};
+
+const SPAN_WIDTHS: Record<number, string> = {
+    1: "w-[calc(100%)]",
+    2: "w-[calc(200%+4px)]",
+    3: "w-[calc(300%+8px)]",
+    4: "w-[calc(400%+12px)]",
+    5: "w-[calc(500%+16px)]",
+    6: "w-[calc(600%+20px)]",
+    7: "w-[calc(700%+24px)]",
 };
 
 export function AdvancedSchedulingBoard() {
@@ -206,17 +217,15 @@ export function AdvancedSchedulingBoard() {
                                         <span className="text-muted-foreground">Capacity:</span>
                                         <span className="font-bold">{tech.currentLoad}h / {tech.maxCapacity}h</span>
                                     </div>
-                                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div
-                                            className={cn(
-                                                "h-full transition-all",
-                                                loadPercent >= 95 ? "bg-red-600" :
-                                                    loadPercent >= 80 ? "bg-yellow-600" :
-                                                        "bg-green-600"
-                                            )}
-                                            style={{ width: `${Math.min(loadPercent, 100)}%` }} /* AG-fixed via Progress below */
-                                        />
-                                    </div>
+                                    <Progress
+                                        value={Math.min(loadPercent, 100)}
+                                        className="h-2 bg-gray-200"
+                                        indicatorClassName={
+                                            loadPercent >= 95 ? "bg-red-600" :
+                                                loadPercent >= 80 ? "bg-yellow-600" :
+                                                    "bg-green-600"
+                                        }
+                                    />
                                     <div className="text-xs text-right text-muted-foreground">
                                         {loadPercent.toFixed(0)}% utilized
                                     </div>
@@ -286,7 +295,7 @@ export function AdvancedSchedulingBoard() {
                 </CardHeader>
                 <CardContent>
                     {/* Date Headers */}
-                    <div className="grid gap-1 mb-3" style={{ gridTemplateColumns: `200px repeat(${viewDays}, 1fr)` }}>
+                    <div className="grid gap-1 mb-3 grid-cols-[200px_repeat(7,1fr)]">
                         <div className="font-bold text-sm p-2">Technician / Asset</div>
                         {timeSlots.map(slot => (
                             <div
@@ -325,8 +334,7 @@ export function AdvancedSchedulingBoard() {
                                         return (
                                             <div
                                                 key={wo.id}
-                                                className="grid gap-1"
-                                                style={{ gridTemplateColumns: `200px repeat(${viewDays}, 1fr)` }}
+                                                className="grid gap-1 grid-cols-[200px_repeat(7,1fr)]"
                                             >
                                                 {/* WO Info */}
                                                 <div className="p-2 text-xs border rounded bg-gray-500/10">
@@ -348,14 +356,11 @@ export function AdvancedSchedulingBoard() {
                                                             {isStart && isWithinSpan && (
                                                                 <div
                                                                     className={cn(
-                                                                        "absolute top-1 left-1 right-1 bottom-1 rounded p-1 shadow-sm",
+                                                                        "absolute top-1 left-1 bottom-1 rounded p-1 shadow-sm overflow-hidden z-10 text-xs",
                                                                         priorityConfig.color,
                                                                         priorityConfig.textColor,
-                                                                        "text-xs overflow-hidden"
+                                                                        SPAN_WIDTHS[visibleSpan] || "w-full"
                                                                     )}
-                                                                    style={{
-                                                                        width: `calc(${visibleSpan * 100}% + ${(visibleSpan - 1) * 4}px)`
-                                                                    }}
                                                                 >
                                                                     <div className="font-bold truncate">{wo.woNumber}</div>
                                                                     <div className="truncate opacity-90">{wo.description}</div>

@@ -195,6 +195,10 @@ function Router() {
 
         <Route path="/scm" component={ScmRoutes} />
         <Route path="/scm/*" component={ScmRoutes} />
+        <Route path="/procurement" component={ScmRoutes} />
+        <Route path="/procurement/*" component={ScmRoutes} />
+        <Route path="/manufacturing" component={ScmRoutes} />
+        <Route path="/manufacturing/*" component={ScmRoutes} />
         <Route path="/mdm" component={MdmRoutes} />
         <Route path="/mdm/*" component={MdmRoutes} />
 
@@ -261,12 +265,15 @@ function Router() {
 
         {/* Legacy/Aliases */}
         <Route path="/inventory" component={ScmRoutes} />
-        <Route path="/inventory/:rest*" component={ScmRoutes} />
+        <Route path="/inventory/*" component={ScmRoutes} />
         <Route path="/warehouse" component={ScmRoutes} />
         <Route path="/suppliers" component={ScmRoutes} />
         <Route path="/logistics" component={ScmRoutes} />
         <Route path="/transportation" component={ScmRoutes} />
         <Route path="/transportation/:rest*" component={ScmRoutes} />
+        <Route path="/tms" component={ScmRoutes} />
+        <Route path="/tms/:rest*" component={ScmRoutes} />
+        <Route path="/mrp-dashboard" component={ScmRoutes} />
         <Route path="/ppm" component={ProjectRoutes} />
         <Route path="/ppm/:rest*" component={ProjectRoutes} />
         <Route path="/construction*" component={ConstructionRoutes} />

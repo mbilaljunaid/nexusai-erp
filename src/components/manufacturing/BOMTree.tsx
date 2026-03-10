@@ -5,6 +5,7 @@ import { Box, GripVertical, Plus, Trash2, ChevronRight, ChevronDown } from 'luci
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from "@/lib/utils";
 
 export interface BOMNodeData {
     id: string; // Unique instance ID
@@ -81,15 +82,14 @@ const BOMNode: React.FC<BOMNodeProps> = ({ node, index, path, moveNode, updateNo
     // drag(drop(ref)); - Connect drag and drop handles
     drop(ref);
 
-    const opacity = isDragging ? 0.4 : 1;
+    const opacityClass = isDragging ? 'opacity-40' : 'opacity-100';
     const borderClass = isOver && canDrop ? 'border-primary border-2 dashed bg-primary/5' : 'border-slate-200';
 
     return (
-        <div className={`ml-${isTopLevel ? '0' : '6'} mb-2`} ref={dragPreview}>
+        <div className={isTopLevel ? "ml-0 mb-2" : "ml-6 mb-2"} ref={dragPreview}>
             <div
                 ref={ref}
-                className={`flex items-center gap-3 p-2 bg-card border rounded-md shadow-sm transition-all ${borderClass}`}
-                style={{ opacity }}
+                className={cn(`flex items-center gap-3 p-2 bg-card border rounded-md shadow-sm transition-all`, borderClass, opacityClass)}
             >
                 <div ref={drag} className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600">
                     <GripVertical className="h-4 w-4" />

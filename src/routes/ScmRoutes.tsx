@@ -58,6 +58,7 @@ import FreightClaimManagement from "@/pages/transportation/FreightClaimManagemen
 
 // Static Imports for SCM & Logistics
 import ProcurementDashboard from "@/pages/procurement/ProcurementDashboard";
+import PurchaseOrderList from "@/pages/procurement/PurchaseOrderList";
 import PurchaseOrderDetail from "@/pages/procurement/PurchaseOrderDetail";
 import RequisitionEntry from "@/pages/procurement/RequisitionEntry";
 import RequisitionApprovalWorkbench from "@/pages/procurement/RequisitionApprovalWorkbench";
@@ -217,7 +218,11 @@ export default function ScmRoutes() {
             {/* SCM */}
             <Route path="/scm/procurement" component={ProcurementDashboard} />
             <Route path="/procurement/orders/new" component={RequisitionEntry} />
+            <Route path="/procurement/purchase-orders/new" component={RequisitionEntry} />
+            <Route path="/procurement/orders" component={PurchaseOrderList} />
             <Route path="/procurement/orders/:id" component={PurchaseOrderDetail} />
+            <Route path="/procurement/purchase-orders" component={PurchaseOrderList} />
+            <Route path="/procurement/purchase-orders/:id" component={PurchaseOrderDetail} />
             <Route path="/procurement/requisitions/new" component={RequisitionEntry} />
             <Route path="/procurement/requisitions/approvals" component={RequisitionApprovalWorkbench} />
             <Route path="/procurement/asl" component={ApprovedSupplierList} />

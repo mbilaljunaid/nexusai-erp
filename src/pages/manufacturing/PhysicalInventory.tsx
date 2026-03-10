@@ -20,7 +20,14 @@ import { Button } from "@/components/ui/button";
 interface Cycle { id: string; cycle_name: string; cycle_type: string; status: string; count_date: string; line_count: number; counted_lines: number; approved_by: string; created_at: string; }
 interface Line { id: string; item_number: string; location: string; lot_number: string; book_quantity: number; count_quantity: number; variance_quantity: number; variance_value: number; count_status: string; counted_by: string; }
 
-const CYCLE_STATUS_CLR: Record<string, string> = { Planned: '#6b7280', Counting: '#d97706', Under_Review: '#1d4ed8', Approved: '#7c3aed', Posted: '#059669', Cancelled: '#dc2626' };
+const CYCLE_STATUS_TW: Record<string, { border: string; bg: string; text: string }> = {
+    Planned: { border: 'border-l-gray-500', bg: 'bg-gray-500/10', text: 'text-gray-500' },
+    Counting: { border: 'border-l-amber-600', bg: 'bg-amber-600/10', text: 'text-amber-600' },
+    Under_Review: { border: 'border-l-blue-700', bg: 'bg-blue-700/10', text: 'text-blue-700' },
+    Approved: { border: 'border-l-violet-600', bg: 'bg-violet-600/10', text: 'text-violet-600' },
+    Posted: { border: 'border-l-emerald-600', bg: 'bg-emerald-600/10', text: 'text-emerald-600' },
+    Cancelled: { border: 'border-l-red-600', bg: 'bg-red-600/10', text: 'text-red-600' }
+};
 
 export default function PhysicalInventory() {
     const [selectedCycle, setSelectedCycle] = useState<Cycle | null>(null);
@@ -129,25 +136,25 @@ export default function PhysicalInventory() {
                     <div className="w-96 shrink-0">
                         <div className="flex flex-col gap-1.5">
                             {cycles.map(c => {
-                                const clr = CYCLE_STATUS_CLR[c.status] ?? '#6b7280';
+                                const tw = CYCLE_STATUS_TW[c.status] ?? CYCLE_STATUS_TW.Planned;
                                 const pct = c.line_count > 0 ? Math.round(Number(c.counted_lines) / Number(c.line_count) * 100) : 0;
                                 return (
                                     <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => setSelectedCycle(selectedCycle?.id === c.id ? null : c)}>
-                                    <div key={c.id} className="bg-card rounded-xl px-3.5 py-3 cursor-pointer" style={{ border: `1px solid ${selectedCycle?.id === c.id ? '#1d4ed8' : '#e5e7eb'}`, borderLeft: `4px solid ${clr}` }}>
-                                                                            <div className="flex justify-between mb-1">
-                                                                                <div className="font-bold text-[13px]">{c.cycle_name}</div>
-                                                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ background: clr + '18', color: clr }}>{c.status}</span>
-                                                                            </div>
-                                                                            <div className="text-[10px] text-muted-foreground mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {formatDate(c.count_date)} · {c.counted_lines}/{c.line_count} lines</div>
-                                                                            <div className="bg-muted rounded-full h-1">
-                                                                                <Progress value={pct} className="h-full" indicatorClassName={pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'} />
-                                                                            </div>
-                                                                            {c.status === 'Counting' && (
-                                                                                <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 text-white rounded text-[10px] flex items-center gap-1">
-                                                                                    <CheckCircle2 className="h-[9px] w-[9px]"  /> Approve
-                                                                                </Button>
-                                                                            )}
-                                                                        </div>
+                                        <div key={c.id} className={cn("bg-card rounded-xl px-3.5 py-3 cursor-pointer border-y border-r border-l-4", selectedCycle?.id === c.id ? 'border-y-blue-700 border-r-blue-700' : 'border-y-gray-200 border-r-gray-200', tw.border)}>
+                                            <div className="flex justify-between mb-1">
+                                                <div className="font-bold text-[13px]">{c.cycle_name}</div>
+                                                <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-bold", tw.bg, tw.text)}>{c.status}</span>
+                                            </div>
+                                            <div className="text-[10px] text-muted-foreground mb-1.5">{c.cycle_type.replace(/_/g, ' ')} · {formatDate(c.count_date)} · {c.counted_lines}/{c.line_count} lines</div>
+                                            <div className="bg-muted rounded-full h-1">
+                                                <Progress value={pct} className="h-full" indicatorClassName={pct === 100 ? 'bg-emerald-600' : 'bg-blue-700'} />
+                                            </div>
+                                            {c.status === 'Counting' && (
+                                                <Button variant="default" size="sm" onClick={ev => { ev.stopPropagation(); approveMut.mutate(c.id); }} className="mt-1.5 text-white rounded text-[10px] flex items-center gap-1">
+                                                    <CheckCircle2 className="h-[9px] w-[9px]" /> Approve
+                                                </Button>
+                                            )}
+                                        </div>
                                     </Button>
                                 );
                             })}

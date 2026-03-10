@@ -108,3 +108,6 @@ export * from "./nexus_ai";
 
 // Enterprise Structure
 export * from "./enterprise";
+
+// Oracle Parity Round 5 Phase 5/6 SCM Extensions
+export * from "./scm_phase56";

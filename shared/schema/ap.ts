@@ -8,6 +8,7 @@ import { createInsertSchema } from "drizzle-zod";
 // 1. Supplier Entity (Parent)
 export const apSuppliers = pgTable("ap_suppliers", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     supplierNumber: varchar("supplier_number", { length: 50 }), // Business Key
     name: varchar("name", { length: 255 }).notNull(),
     taxOrganizationType: varchar("tax_organization_type", { length: 50 }), // Corporation, Partnership, etc.
@@ -44,6 +45,7 @@ export type InsertApSupplier = typeof apSuppliers.$inferInsert;
 // 1.1 Supplier Sites (Child - New V2 Schema)
 export const apSupplierSites = pgTable("ap_supplier_sites", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     supplierId: varchar("supplier_id").notNull(), // Parent
     orgId: varchar("org_id").default("1"), // Business Unit assignment
     siteName: varchar("site_name", { length: 100 }).notNull().default("OFFICE"), // e.g. HEADQUARTERS, PAY_ONLY
@@ -74,6 +76,7 @@ export type InsertApSupplierSite = typeof apSupplierSites.$inferInsert;
 // 2. Invoice Header
 export const apInvoices = pgTable("ap_invoices", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     invoiceId: varchar("invoice_id", { length: 50 }), // Logical ID if needed, or use serial ID
 
     supplierId: varchar("supplier_id").notNull(),
@@ -272,6 +275,7 @@ export type InsertApPaymentBatch = typeof apPaymentBatches.$inferInsert;
 // 6. Payments (Refactored to link to Invoices)
 export const apPayments = pgTable("ap_payments", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     paymentNumber: varchar("payment_number", { length: 50 }), // Internal sequential
     checkNumber: varchar("check_number"), // External ref
 

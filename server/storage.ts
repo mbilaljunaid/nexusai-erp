@@ -639,12 +639,13 @@ export interface IStorage {
   // Legacy Finance
   listInvoices(): Promise<Invoice[]>;
   getApInvoice(id: string): Promise<ApInvoice | undefined>;
-  getApInvoicesCount(entBusinessUnitId?: string): Promise<number>;
+  getApInvoicesCount(entBusinessUnitId?: string, tenantId?: string): Promise<number>;
   listApInvoices(options?: {
     limit?: number;
     offset?: number;
     status?: string | "all";
     validationStatus?: string | "all";
+    tenantId?: string;
     entBusinessUnitId?: string;
     filters?: Record<string, any>;
   }): Promise<any[]>;

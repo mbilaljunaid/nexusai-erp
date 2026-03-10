@@ -128,3 +128,35 @@ hrRouter.delete("/compliance/sod/rules/:id", complianceController.deleteSodRule)
 // --- AOR & Security Profiles ---
 hrRouter.get("/security/aor", hrController.listAors);
 hrRouter.post("/security/aor", hrController.assignAor);
+
+// --- Phase 10: DateTrack Assignment History ---
+import { DateTrackService } from "./services/DateTrackService";
+
+/** GET /api/hr/persons/:personId/assignment-history
+ * Returns all DateTrack history rows for all assignments belonging to this person,
+ * ordered by effective date descending. Powers the AssignmentHistory.tsx UI.
+ */
+hrRouter.get("/persons/:personId/assignment-history", async (req, res) => {
+    try {
+        const { personId } = req.params;
+        const tenantId = (req.headers["x-tenant-id"] as string) ?? "default";
+        const history = await DateTrackService.getPersonHistory(personId, tenantId);
+        res.json(history);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+/** GET /api/hr/assignments/:assignmentId/history
+ * Returns all DateTrack history rows for a single assignment.
+ */
+hrRouter.get("/assignments/:assignmentId/history", async (req, res) => {
+    try {
+        const { assignmentId } = req.params;
+        const tenantId = (req.headers["x-tenant-id"] as string) ?? "default";
+        const history = await DateTrackService.getHistory(assignmentId, tenantId);
+        res.json(history);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+});

@@ -11,9 +11,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Play, ChevronRight, ChevronDown, Package, RefreshCw, AlertTriangle } from "lucide-react";
 import { formatNumber } from "@/lib/formatters";
+import { cn } from "@/lib/utils";
 
 // SEED_ITEMS represents finished goods that can be exploded
 const SEED_ITEMS = ["PUMP-ASSY-001", "MOTOR-CTRL-005", "VALVE-GATE-12", "HVAC-UNIT-AHU"];
+
+const INDENT_MAP: Record<number, string> = {
+    0: "pl-3", 1: "pl-9", 2: "pl-[60px]", 3: "pl-[84px]",
+    4: "pl-[108px]", 5: "pl-[132px]", 6: "pl-[156px]", 7: "pl-[180px]"
+};
 
 function BOMNodeRow({ node, expanded, toggleExpand, expandedIds }: { node: any; expanded: boolean; toggleExpand: (id: string) => void; expandedIds: Set<string> }) {
     const indent = node.level * 24;
@@ -22,8 +28,8 @@ function BOMNodeRow({ node, expanded, toggleExpand, expandedIds }: { node: any; 
 
     return (
         <>
-            <tr className={`border-b text-sm ${shortage ? "bg-red-50 dark:bg-red-950/20" : node.level === 0 ? "bg-blue-50 dark:bg-blue-950/20 font-bold" : ""}`}>
-                <td className="py-2 px-3" style={{ paddingLeft: `${indent + 12}px` }}>
+            <tr className={cn("border-b text-sm", shortage ? "bg-red-50 dark:bg-red-950/20" : node.level === 0 ? "bg-blue-50 dark:bg-blue-950/20 font-bold" : "")}>
+                <td className={cn("py-2 px-3", INDENT_MAP[node.level] || "pl-[200px]")}>
                     <div className="flex items-center gap-1.5">
                         {!isLeaf ? (
                             <button onClick={() => toggleExpand(node.item)} className="text-muted-foreground hover:text-foreground">

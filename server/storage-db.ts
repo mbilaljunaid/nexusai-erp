@@ -1031,6 +1031,7 @@ export const dbStorage = {
     offset?: number;
     status?: string | "all";
     validationStatus?: string | "all";
+    tenantId?: string;
     entBusinessUnitId?: string;
     filters?: Record<string, any>;
   }): Promise<any[]> {
@@ -1043,6 +1044,9 @@ export const dbStorage = {
     }
     if (options?.entBusinessUnitId) {
       conditions.push(eq(apInvoicesTable.entBusinessUnitId, options.entBusinessUnitId));
+    }
+    if (options?.tenantId) {
+      conditions.push(eq(apInvoicesTable.tenantId, options.tenantId));
     }
 
     if (options?.filters) {
@@ -1091,10 +1095,14 @@ export const dbStorage = {
     const results = await query;
     return results.map(r => ({ ...r.invoice, supplier: r.supplier }));
   },
-  async getApInvoicesCount(entBusinessUnitId?: string): Promise<number> {
-    let query = db.select({ count: count() }).from(apInvoicesTable);
-    if (entBusinessUnitId) {
-      query = query.where(eq(apInvoicesTable.entBusinessUnitId, entBusinessUnitId)) as any;
+  async getApInvoicesCount(entBusinessUnitId?: string, tenantId?: string): Promise<number> {
+    let query = db.select({ count: count() }).from(apInvoicesTable) as any;
+    const conditions = [];
+    if (entBusinessUnitId) conditions.push(eq(apInvoicesTable.entBusinessUnitId, entBusinessUnitId));
+    if (tenantId) conditions.push(eq(apInvoicesTable.tenantId, tenantId));
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
     }
     const [res] = await query;
     return res.count;

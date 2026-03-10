@@ -8,15 +8,16 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { AlertCircle, Clock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function ViolationsDashboard() {
+    const tenantId = "test-tenant-wfm-001";
+
     // Fetch Violations
     const { data: violations, isLoading } = useQuery<any>({
         queryKey: ["wfm-violations"],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/violations?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/violations?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch violations");
             return res.json();
         }

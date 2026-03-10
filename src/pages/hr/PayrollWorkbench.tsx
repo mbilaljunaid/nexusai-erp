@@ -47,6 +47,7 @@ export default function PayrollWorkbench() {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [createForm, setCreateForm] = useState({
         payrollName: '', periodStart: '', periodEnd: '', payDate: '', countryCode: 'US', currencyCode: 'USD',
+        consolidationGroup: '', runType: 'REGULAR', elementEntryOverride: false, retroPayIndicator: false, glCostAllocationMode: 'COST_CENTER',
     });
 
     const scopeHeaders = buildScopeHeaders({ 'legal-entity': leId });
@@ -115,12 +116,12 @@ export default function PayrollWorkbench() {
                 <div className="action-cell">
                     {row.status === 'Draft' && (
                         <Button variant="default" className="act-btn blue" onClick={() => processMutation.mutate(row.id)} aria-label="Process run">
-                            <PlayCircle className="h-[13px] w-[13px]"  /> Process
+                            <PlayCircle className="h-[13px] w-[13px]" /> Process
                         </Button>
                     )}
                     {row.status === 'Review' && (
                         <Button variant="default" className="act-btn green" onClick={() => approveMutation.mutate(row.id)} aria-label="Approve run">
-                            <CheckCircle2 className="h-[13px] w-[13px]"  /> Approve
+                            <CheckCircle2 className="h-[13px] w-[13px]" /> Approve
                         </Button>
                     )}
                     {row.status === 'Approved' && (
@@ -140,7 +141,7 @@ export default function PayrollWorkbench() {
                         </>
                     )}
                     <Link href={`/api/hr/payroll/runs/${row.id}/payslips`} target="_blank" rel="noreferrer noopener" className="act-link">
-                        <FileText className="h-[13px] w-[13px]"  /> Payslips
+                        <FileText className="h-[13px] w-[13px]" /> Payslips
                     </Link>
                 </div>
             )
@@ -160,10 +161,10 @@ export default function PayrollWorkbench() {
 
             {/* KPI Strip */}
             <div className="pw-kpis">
-                <PWKpi label="Employees" value={formatNumber(totalEmp)} icon={<Users className="h-[18px] w-[18px]"  />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
-                <PWKpi label="Gross Payroll" value={fmt(totalGross)} icon={<DollarSign className="h-[18px] w-[18px]"  />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
-                <PWKpi label="Net Pay" value={fmt(totalNet)} icon={<DollarSign className="h-[18px] w-[18px]"  />} colorClass="text-violet-600" borderClass="border-l-violet-600" />
-                <PWKpi label="Active Runs" value={String(runs.filter(r => ['Draft', 'Processing', 'Review'].includes(r.status)).length)} icon={<RefreshCw className="h-[18px] w-[18px]"  />} colorClass="text-amber-600" borderClass="border-l-amber-600" />
+                <PWKpi label="Employees" value={formatNumber(totalEmp)} icon={<Users className="h-[18px] w-[18px]" />} colorClass="text-blue-700" borderClass="border-l-blue-700" />
+                <PWKpi label="Gross Payroll" value={fmt(totalGross)} icon={<DollarSign className="h-[18px] w-[18px]" />} colorClass="text-emerald-600" borderClass="border-l-emerald-600" />
+                <PWKpi label="Net Pay" value={fmt(totalNet)} icon={<DollarSign className="h-[18px] w-[18px]" />} colorClass="text-violet-600" borderClass="border-l-violet-600" />
+                <PWKpi label="Active Runs" value={String(runs.filter(r => ['Draft', 'Processing', 'Review'].includes(r.status)).length)} icon={<RefreshCw className="h-[18px] w-[18px]" />} colorClass="text-amber-600" borderClass="border-l-amber-600" />
             </div>
 
             {/* Country filter */}
@@ -215,6 +216,48 @@ export default function PayrollWorkbench() {
                                     {COUNTRIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                                 </SelectContent>
                             </Select>
+                        </div>
+                        <div className="mf">
+                            <Label className="ml" htmlFor="pr-consolidation">Consolidation Group</Label>
+                            <Select value={createForm.consolidationGroup} onValueChange={v => setCreateForm(p => ({ ...p, consolidationGroup: v }))}>
+                                <SelectTrigger id="pr-consolidation" className="mi" aria-label="Consolidation group"><SelectValue placeholder="Select group..." /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="US-CG-01">US Domestic Group</SelectItem>
+                                    <SelectItem value="UK-CG-01">UK BACS Group</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="mf">
+                            <Label className="ml" htmlFor="pr-runtype">Run Type</Label>
+                            <Select value={createForm.runType} onValueChange={v => setCreateForm(p => ({ ...p, runType: v }))}>
+                                <SelectTrigger id="pr-runtype" className="mi" aria-label="Run type"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="REGULAR">Regular</SelectItem>
+                                    <SelectItem value="SUPPLEMENTAL">Supplemental</SelectItem>
+                                    <SelectItem value="REPORT_ONLY">Report Only</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="mf">
+                            <Label className="ml" htmlFor="pr-gl-mode">GL Cost Allocation Mode</Label>
+                            <Select value={createForm.glCostAllocationMode} onValueChange={v => setCreateForm(p => ({ ...p, glCostAllocationMode: v }))}>
+                                <SelectTrigger id="pr-gl-mode" className="mi" aria-label="GL cost allocation"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="COST_CENTER">Cost Center</SelectItem>
+                                    <SelectItem value="PROJECT">Project</SelectItem>
+                                    <SelectItem value="BOTH">Both</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 600, color: '#374151', cursor: 'pointer' }}>
+                                <input type="checkbox" checked={createForm.elementEntryOverride} onChange={e => setCreateForm(p => ({ ...p, elementEntryOverride: e.target.checked }))} aria-label="Element entry override" />
+                                Element Entry Override
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 600, color: '#374151', cursor: 'pointer' }}>
+                                <input type="checkbox" checked={createForm.retroPayIndicator} onChange={e => setCreateForm(p => ({ ...p, retroPayIndicator: e.target.checked }))} aria-label="Retro-pay indicator" />
+                                Include Retro-Pay
+                            </label>
                         </div>
                         <div className="modal-actions">
                             <Button variant="default" className="mcancel" onClick={() => setShowCreateForm(false)}>Cancel</Button>

@@ -78,6 +78,10 @@ export function EnterpriseProvider({ children }: { children: ReactNode }) {
                     setBusinessUnit(id);
                     if (id) localStorage.setItem('nexus_active_bu', id);
                     else localStorage.removeItem('nexus_active_bu');
+
+                    // Clear child: INV_ORG
+                    setActiveInvOrgId(null);
+
                     changed = true;
                 }
                 break;
@@ -87,6 +91,13 @@ export function EnterpriseProvider({ children }: { children: ReactNode }) {
                     setLegalEntity(id);
                     if (id) localStorage.setItem('nexus_active_le', id);
                     else localStorage.removeItem('nexus_active_le');
+
+                    // Clear children: BU, INV_ORG
+                    setActiveBuId(null);
+                    setBusinessUnit(null);
+                    localStorage.removeItem('nexus_active_bu');
+                    setActiveInvOrgId(null);
+
                     changed = true;
                 }
                 break;
@@ -99,6 +110,16 @@ export function EnterpriseProvider({ children }: { children: ReactNode }) {
             case 'LEDGER':
                 if (activeLedgerId !== id) {
                     setActiveLedgerId(id);
+
+                    // Clear children: LE, BU, INV_ORG
+                    setActiveLeId(null);
+                    setLegalEntity(null);
+                    localStorage.removeItem('nexus_active_le');
+                    setActiveBuId(null);
+                    setBusinessUnit(null);
+                    localStorage.removeItem('nexus_active_bu');
+                    setActiveInvOrgId(null);
+
                     changed = true;
                 }
                 break;

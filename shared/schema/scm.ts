@@ -58,6 +58,7 @@ export type SupplierSite = typeof supplierSites.$inferSelect;
 
 export const purchaseOrders = pgTable("purchase_orders", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     entBusinessUnitId: varchar("ent_business_unit_id"), // Operating Unit/BU Scope
     orderNumber: varchar("order_number").notNull().unique(),
     supplierId: varchar("supplier_id"),
@@ -111,6 +112,7 @@ export type PurchaseOrderLine = typeof purchaseOrderLines.$inferSelect;
 // 0. Inventory Organizations (Warehouse)
 export const inventoryOrganizations = pgTable("inv_organizations", {
     id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    tenantId: varchar("tenant_id"), // Multi-tenant isolation
     code: varchar("code").notNull().unique(),
     name: varchar("name").notNull(),
     active: boolean("active").default(true),
@@ -742,10 +744,18 @@ export const rcvShipmentLines = pgTable("rcv_shipment_lines", {
     itemDescription: varchar("item_description"),
     itemId: varchar("item_id"),
     poHeaderId: varchar("po_header_id"),
+    poId: varchar("po_id"), // Added for ERS
     poLineId: varchar("po_line_id"),
     poDistributionId: varchar("po_distribution_id"),
     routingHeaderId: varchar("routing_header_id"),
     packingSlip: varchar("packing_slip"),
+    receiptNumber: varchar("receipt_number"), // Added for ERS
+    netPrice: numeric("net_price", { precision: 18, scale: 4 }), // Added for ERS
+    transactionDate: timestamp("transaction_date").default(sql`now()`), // Added for ERS
+    accounted: boolean("accounted").default(false), // Added for period close
+    ersFlag: boolean("ers_flag").default(false), // Added for ERS
+    ersStatus: varchar("ers_status"), // Added for ERS (eg READY_FOR_ERS, INVOICED)
+    ersRunAt: timestamp("ers_run_at"), // Added for ERS
     fromOrganizationId: varchar("from_organization_id"),
     toOrganizationId: varchar("to_organization_id"), // Inventory Org
     deliverToPersonId: varchar("deliver_to_person_id"),
