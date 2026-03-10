@@ -9,21 +9,19 @@ import { StandardPage } from "@/components/layout/StandardPage";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { formatNumber } from '@/lib/formatters';
-
-
-
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function WfmAnalytics() {
+    const { tenantId } = useNexusAI();
     const [dateRange, setDateRange] = useState({
         start: format(startOfMonth(new Date()), "yyyy-MM-dd"),
         end: format(endOfMonth(new Date()), "yyyy-MM-dd")
     });
 
     const { data: metrics, isLoading } = useQuery<any>({
-        queryKey: ["wfm-analytics", dateRange],
+        queryKey: ["wfm-analytics", dateRange, tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/analytics?tenantId=${MOCK_TENANT_ID}&startDate=${dateRange.start}&endDate=${dateRange.end}`);
+            const res = await fetch(`/api/wfm/analytics?tenantId=${tenantId}&startDate=${dateRange.start}&endDate=${dateRange.end}`);
             if (!res.ok) throw new Error("Failed to fetch metrics");
             return res.json();
         }
@@ -33,7 +31,7 @@ export default function WfmAnalytics() {
         <StandardPage title="Workforce Analytics">
             <div className="flex justify-between items-center">
                 <div>
-                    
+
                     <p className="text-muted-foreground">Labor Variance & Cost Analysis.</p>
                 </div>
                 <div className="flex gap-2">

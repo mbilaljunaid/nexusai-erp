@@ -10,13 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { Label } from "@/components/ui/label";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
-
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
 const MOCK_PERSON_ID = "3ebd9ddb-1566-418d-a0d6-9c773861acc4"; // Same as MyTime mock
 
 export default function AccrualTesting() {
     const { toast } = useToast();
+    const { tenantId } = useNexusAI();
     const queryClient = useQueryClient();
     const [accrualForm, setAccrualForm] = useState({
         leaveType: "VACATION",
@@ -25,9 +25,9 @@ export default function AccrualTesting() {
 
     // 1. Fetch Balances
     const { data: balances, isLoading } = useQuery<any>({
-        queryKey: ["leave-balances", MOCK_PERSON_ID],
+        queryKey: ["leave-balances", MOCK_PERSON_ID, tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/balances/${MOCK_PERSON_ID}?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/balances/${MOCK_PERSON_ID}?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch balances");
             return res.json();
         }
@@ -40,7 +40,7 @@ export default function AccrualTesting() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    tenantId: MOCK_TENANT_ID,
+                    tenantId,
                     personId: MOCK_PERSON_ID,
                     leaveType: accrualForm.leaveType,
                     hours: parseFloat(accrualForm.hours)
@@ -60,7 +60,7 @@ export default function AccrualTesting() {
             const res = await fetch("/api/wfm/accruals/cycle", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ tenantId: MOCK_TENANT_ID })
+                body: JSON.stringify({ tenantId })
             });
             if (!res.ok) throw new Error("Failed");
             return res.json();
@@ -73,7 +73,7 @@ export default function AccrualTesting() {
 
     return (
         <StandardPage title="Accrual Engine Testing">
-            
+
             <p className="text-muted-foreground">Manually adjust leave balances for verification.</p>
 
             <div className="grid gap-6 md:grid-cols-2">

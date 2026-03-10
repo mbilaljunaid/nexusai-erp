@@ -7,8 +7,7 @@ import { Plus, Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { InteractiveSpreadsheet } from "@/components/ui/InteractiveSpreadsheet";
 import { StandardPage } from "@/components/layout/StandardPage";
-
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 interface ShiftDefinition {
     id: string;
@@ -22,13 +21,14 @@ interface ShiftDefinition {
 
 export default function ShiftConfiguration() {
     const { toast } = useToast();
+    const { tenantId } = useNexusAI();
     const queryClient = useQueryClient();
 
     // Fetch Shifts
     const { data: _shifts, isLoading } = useQuery<ShiftDefinition[]>({
-        queryKey: ["wfm-shifts"],
+        queryKey: ["wfm-shifts", tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/shifts?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/shifts?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch shifts");
             return res.json();
         }
@@ -39,7 +39,7 @@ export default function ShiftConfiguration() {
     // Save Shifts Mutation
     const saveMutation = useMutation({
         mutationFn: async (updatedShifts: ShiftDefinition[]) => {
-            const dataToSave = updatedShifts.map(s => ({ ...s, tenantId: MOCK_TENANT_ID }));
+            const dataToSave = updatedShifts.map(s => ({ ...s, tenantId }));
             const res = await fetch("/api/wfm/shifts/bulk", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

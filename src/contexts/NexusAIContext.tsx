@@ -423,6 +423,7 @@ export function NexusAIProvider({ children }: { children: React.ReactNode }) {
     activePage,
     pageMetadata,
     nudges,
+    tenantId: "test-tenant-wfm-001" // Mock injected for WFM scoping
   };
 
   return (

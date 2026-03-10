@@ -23,13 +23,16 @@ interface Enrollment {
 }
 
 export default function MyLearning() {
-    const { data: enrollments = [] } = useQuery<any>({
+    const { data: enrollmentsData = [] } = useQuery<any>({
         queryKey: ["/api/learning/my-learning"],
     });
 
-    const { data: certificates = [] } = useQuery<any>({
+    const { data: certificatesData = [] } = useQuery<any>({
         queryKey: ["/api/learning/my-certificates"],
     });
+
+    const enrollments = Array.isArray(enrollmentsData) ? enrollmentsData : [];
+    const certificates = Array.isArray(certificatesData) ? certificatesData : [];
 
     const inProgress = enrollments.filter((e: Enrollment) => e.status === "IN_PROGRESS");
     const completed = enrollments.filter((e: Enrollment) => e.status === "COMPLETED");

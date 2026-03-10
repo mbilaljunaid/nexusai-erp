@@ -59,18 +59,19 @@ export function InteractiveSpreadsheet<T = any>({
     onRowSelect
 }: InteractiveSpreadsheetProps<T>) {
 
+    const safeData = Array.isArray(data) ? data : [];
     const parentRef = useRef<HTMLDivElement>(null);
 
     const rowVirtualizer = useVirtualizer({
-        count: data.length,
+        count: safeData.length,
         getScrollElement: () => parentRef.current,
         estimateSize: () => rowHeight,
         overscan: 10,
     });
 
     const handleUpdateRow = useCallback((index: number, field: keyof T, value: any) => {
-        onChange?.(data.map((row, i) => i === index ? { ...row, [field]: value } : row));
-    }, [data, onChange]);
+        onChange?.(safeData.map((row, i) => i === index ? { ...row, [field]: value } : row));
+    }, [safeData, onChange]);
 
     // Render traditional table
     if (!virtualized) {
@@ -95,7 +96,7 @@ export function InteractiveSpreadsheet<T = any>({
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {data.map((row, index) => {
+                            {safeData.map((row, index) => {
                                 const rowAny = row as any;
                                 const isSelected = activeRow !== undefined && (activeRow === rowAny.id || activeRow === rowAny.lineNumber);
                                 return (
@@ -112,7 +113,7 @@ export function InteractiveSpreadsheet<T = any>({
                                     </TableRow>
                                 );
                             })}
-                            {data.length === 0 && (
+                            {safeData.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={columns.length} className="p-8 text-center text-muted-foreground">
                                         No lines available.
@@ -168,22 +169,22 @@ export function InteractiveSpreadsheet<T = any>({
                     {/* eslint-disable-next-line react/forbid-dom-props */}
                     <div className={`w-full relative is-totalsize-${uId}`}>
                         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                            const row = data[virtualRow.index];
+                            const row = safeData[virtualRow.index];
                             const rowAny = row as any;
                             const isSelected = activeRow !== undefined && (activeRow === rowAny.id || activeRow === rowAny.lineNumber);
                             // eslint-disable-next-line react/forbid-dom-props
                             return (
                                 <Button variant="ghost" className="h-auto p-0 w-full justify-start font-normal text-left overflow-hidden border-none shadow-none bg-transparent active:scale-[0.98] hover:bg-transparent transition-all" asChild onClick={() => onRowSelect && onRowSelect(row)}>
-                                <div
-                                                                    key={rowAny.id || virtualRow.index}
-                                                                    className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-muted' : 'hover:bg-muted/50'} ${onRowSelect ? 'cursor-pointer' : ''} is-row-${uId}-${virtualRow.index}`}
-                                                                >
-                                                                    {columns.map((col, cIdx) => (
-                                                                        <div key={`${(row as any).id || virtualRow.index}-${col.id || cIdx}`} className={`w-full ${col.cellClassName || ''}`}>
-                                                                            {col.cell ? col.cell(row, virtualRow.index, (field, val) => handleUpdateRow(virtualRow.index, field, val)) : (col.id ? String((row as any)[col.id] ?? '') : '')}
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
+                                    <div
+                                        key={rowAny.id || virtualRow.index}
+                                        className={`grid gap-2 p-1 px-3 items-center border-b border-slate-50 absolute top-0 left-0 w-full ${isSelected ? 'bg-muted' : 'hover:bg-muted/50'} ${onRowSelect ? 'cursor-pointer' : ''} is-row-${uId}-${virtualRow.index}`}
+                                    >
+                                        {columns.map((col, cIdx) => (
+                                            <div key={`${(row as any).id || virtualRow.index}-${col.id || cIdx}`} className={`w-full ${col.cellClassName || ''}`}>
+                                                {col.cell ? col.cell(row, virtualRow.index, (field, val) => handleUpdateRow(virtualRow.index, field, val)) : (col.id ? String((row as any)[col.id] ?? '') : '')}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </Button>
                             );
                         })}
@@ -191,7 +192,7 @@ export function InteractiveSpreadsheet<T = any>({
                 </div>
             </div>
             <p className="text-xs text-muted-foreground text-center mt-2">
-                Showing {data.length} lines. Optimized for high-volume data entry.
+                Showing {safeData.length} lines. Optimized for high-volume data entry.
             </p>
             {footer && <div className="mt-4">{footer}</div>}
         </div >

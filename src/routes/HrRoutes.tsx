@@ -56,7 +56,7 @@ import LifeEvents from "../pages/hr/selfservice/LifeEvents";
 import GuidedJourneyWorkerTransfer from "../pages/hr/GuidedJourneyWorkerTransfer";
 
 // Learning Management (LMS) Imports
-import LearningDashboard from "../pages/hr/learning/LearningDashboard";
+import MyLearning from "../pages/learning/MyLearning";
 import CourseCatalogAdmin from "../pages/hr/learning/admin/CourseCatalogAdmin";
 import ManagerLearningDashboard from "../pages/hr/learning/manager/ManagerLearningDashboard";
 import LearningPlayer from "../pages/hr/learning/player/LearningPlayer";
@@ -274,7 +274,7 @@ export default function HrRoutes() {
                 <Route path="/hr/compensation/salary-ranges" component={SalaryRangeCompaRatio} />
 
                 {/* Learning Management (LMS) Routes */}
-                <Route path="/hr/learning/me" component={LearningDashboard} />
+                <Route path="/hr/learning/me" component={MyLearning} />
                 <Route path="/hr/learning/team" component={ManagerLearningDashboard} />
                 <Route path="/hr/learning/admin" component={CourseCatalogAdmin} />
                 <Route path="/hr/learning/instructor" component={InstructorDashboard} />

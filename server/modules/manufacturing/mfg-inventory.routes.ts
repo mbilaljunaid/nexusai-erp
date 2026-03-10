@@ -1,5 +1,8 @@
 // @ts-nocheck
 import { Express } from "express";
+import { db } from "../../db";
+import { inventory, inventoryLotSerial } from "../../../shared/schema/scm";
+import { eq, or, desc, and, isNotNull, ilike, sql } from "drizzle-orm";
 
 export function registerMfgInventoryRoutes(app: Express) {
     const tid = (req: any) => req.user?.tenantId || req.query?.tenantId || "default-tenant";
@@ -8,18 +11,23 @@ export function registerMfgInventoryRoutes(app: Express) {
     app.get("/api/inventory/items", async (req: any, res: any) => {
         try {
             const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
-            const { Pool } = require('pg');
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            let query = `SELECT * FROM inv_items`;
-            const params: any[] = [];
+            const tenantId = tid(req);
+
+            let query = db.select().from(inventory);
+            let results;
+
             if (inventoryOrgId) {
-                query += ` WHERE ent_inventory_org_id = $1 OR "organizationId" = $1`;
-                params.push(inventoryOrgId);
+                results = await query.where(
+                    or(
+                        eq(inventory.entInventoryOrgId, inventoryOrgId),
+                        eq(inventory.organizationId, inventoryOrgId)
+                    )
+                ).orderBy(desc(inventory.createdAt)).limit(200);
+            } else {
+                results = await query.orderBy(desc(inventory.createdAt)).limit(200);
             }
-            query += ` ORDER BY "createdAt" DESC LIMIT 200`;
-            const r = await pool.query(query, params);
-            await pool.end();
-            res.json(r.rows);
+
+            res.json(results);
         } catch (e: any) {
             res.status(500).json({ error: e.message });
         }
@@ -29,15 +37,20 @@ export function registerMfgInventoryRoutes(app: Express) {
         try {
             const inventoryOrgId = req.headers['x-inventory-org-id'] as string | undefined;
             const { itemNumber, description, primaryUomCode, quantityOnHand, minQuantity, maxQuantity } = req.body;
-            const { Pool } = require('pg');
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            const r = await pool.query(
-                `INSERT INTO inv_items("itemNumber", description, "primaryUomCode", "quantityOnHand", min_quantity, max_quantity, "organizationId", ent_inventory_org_id)
-                 VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-                [itemNumber, description, primaryUomCode, quantityOnHand || 0, minQuantity || 0, maxQuantity || 0, inventoryOrgId || null, inventoryOrgId || null]
-            );
-            await pool.end();
-            res.status(201).json(r.rows[0]);
+
+            const [newItem] = await db.insert(inventory).values({
+                itemNumber,
+                description,
+                primaryUomCode,
+                quantityOnHand: quantityOnHand || 0,
+                minQuantity: minQuantity || 0,
+                maxQuantity: maxQuantity || 0,
+                organizationId: inventoryOrgId || null,
+                entInventoryOrgId: inventoryOrgId || null,
+                tenantId: tid(req)
+            }).returning();
+
+            res.status(201).json(newItem);
         } catch (e: any) {
             res.status(500).json({ error: e.message });
         }
@@ -45,10 +58,7 @@ export function registerMfgInventoryRoutes(app: Express) {
 
     app.delete("/api/inventory/items/:id", async (req: any, res: any) => {
         try {
-            const { Pool } = require('pg');
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            await pool.query(`DELETE FROM inv_items WHERE id = $1`, [req.params.id]);
-            await pool.end();
+            await db.delete(inventory).where(eq(inventory.id, req.params.id));
             res.json({ success: true });
         } catch (e: any) {
             res.status(500).json({ error: e.message });
@@ -118,31 +128,30 @@ export function registerMfgInventoryRoutes(app: Express) {
             const limit = parseInt(req.query.limit as string) || 100;
             const offset = parseInt(req.query.offset as string) || 0;
 
-            const { Pool } = require('pg');
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            let query = `
+            let conditions = [isNotNull(inventoryLotSerial.lotNumber)];
+
+            if (inventoryOrgId) {
+                // To do this properly with Drizzle requires a join, but for simplicity of the refactoring 
+                // we will stick to raw query using db.execute to avoid pulling in full schema relations right now
+                // However, we MUST use the drizzle connection, not require('pg')
+            }
+
+            const query = `
                 SELECT l.*, i."itemNumber", i.description 
                 FROM inventory_lot_serial l
                 JOIN inv_items i ON l.inventory_id = i.id
                 WHERE l.lot_number IS NOT NULL
+                ${inventoryOrgId ? `AND (i.ent_inventory_org_id = $1 OR i."organizationId" = $1)` : ''}
+                ${search ? `AND (l.lot_number ILIKE $${inventoryOrgId ? 2 : 1} OR i."itemNumber" ILIKE $${inventoryOrgId ? 2 : 1})` : ''}
+                ORDER BY l.created_at DESC LIMIT $${search ? (inventoryOrgId ? 3 : 2) : (inventoryOrgId ? 2 : 1)} OFFSET $${search ? (inventoryOrgId ? 4 : 3) : (inventoryOrgId ? 3 : 2)}
             `;
-            const params: any[] = [];
 
-            if (inventoryOrgId) {
-                params.push(inventoryOrgId);
-                query += ` AND (i.ent_inventory_org_id = $${params.length} OR i."organizationId" = $${params.length})`;
-            }
-
-            if (search) {
-                params.push(`%${search}%`);
-                query += ` AND (l.lot_number ILIKE $${params.length} OR i."itemNumber" ILIKE $${params.length})`;
-            }
-
-            query += ` ORDER BY l.created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+            const params = [];
+            if (inventoryOrgId) params.push(inventoryOrgId);
+            if (search) params.push(`%${search}%`);
             params.push(limit, offset);
 
-            const r = await pool.query(query, params);
-            await pool.end();
+            const r = await db.execute(sql.raw(query), params); // Need to import sql from drizzle-orm
 
             res.json({
                 data: r.rows.map(row => ({
@@ -158,7 +167,7 @@ export function registerMfgInventoryRoutes(app: Express) {
                         description: row.description
                     }
                 })),
-                total: r.rowCount // Simple total for now
+                total: r.rowCount
             });
         } catch (e: any) {
             res.status(500).json({ error: e.message });
@@ -168,16 +177,16 @@ export function registerMfgInventoryRoutes(app: Express) {
     app.post("/api/inventory/lots", async (req: any, res: any) => {
         try {
             const { inventoryId, lotNumber, quantity, status, expirationDate } = req.body;
-            const { Pool } = require('pg');
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-            const r = await pool.query(
-                `INSERT INTO inventory_lot_serial(inventory_id, lot_number, quantity, status, expiration_date)
-                 VALUES($1, $2, $3, $4, $5) RETURNING *`,
-                [inventoryId, lotNumber, quantity || 0, status || 'Active', expirationDate || null]
-            );
-            await pool.end();
-            res.status(201).json(r.rows[0]);
+            const [newLot] = await db.insert(inventoryLotSerial).values({
+                inventoryId,
+                lotNumber,
+                quantity: quantity || 0,
+                status: status || 'Active',
+                expirationDate: expirationDate ? new Date(expirationDate) : null
+            }).returning();
+
+            res.status(201).json(newLot);
         } catch (e: any) {
             res.status(500).json({ error: e.message });
         }
@@ -190,31 +199,24 @@ export function registerMfgInventoryRoutes(app: Express) {
             const limit = parseInt(req.query.limit as string) || 100;
             const offset = parseInt(req.query.offset as string) || 0;
 
-            const { Pool } = require('pg');
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            let query = `
+            let conditions = [isNotNull(inventoryLotSerial.serialNumber)];
+
+            const query = `
                 SELECT s.*, i."itemNumber", i.description 
                 FROM inventory_lot_serial s
                 JOIN inv_items i ON s.inventory_id = i.id
                 WHERE s.serial_number IS NOT NULL
+                ${inventoryOrgId ? `AND (i.ent_inventory_org_id = $1 OR i."organizationId" = $1)` : ''}
+                ${search ? `AND (s.serial_number ILIKE $${inventoryOrgId ? 2 : 1} OR i."itemNumber" ILIKE $${inventoryOrgId ? 2 : 1})` : ''}
+                ORDER BY s.created_at DESC LIMIT $${search ? (inventoryOrgId ? 3 : 2) : (inventoryOrgId ? 2 : 1)} OFFSET $${search ? (inventoryOrgId ? 4 : 3) : (inventoryOrgId ? 3 : 2)}
             `;
-            const params: any[] = [];
 
-            if (inventoryOrgId) {
-                params.push(inventoryOrgId);
-                query += ` AND (i.ent_inventory_org_id = $${params.length} OR i."organizationId" = $${params.length})`;
-            }
-
-            if (search) {
-                params.push(`%${search}%`);
-                query += ` AND (s.serial_number ILIKE $${params.length} OR i."itemNumber" ILIKE $${params.length})`;
-            }
-
-            query += ` ORDER BY s.created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+            const params = [];
+            if (inventoryOrgId) params.push(inventoryOrgId);
+            if (search) params.push(`%${search}%`);
             params.push(limit, offset);
 
-            const r = await pool.query(query, params);
-            await pool.end();
+            const r = await db.execute(sql.raw(query), params); // Need to import sql from drizzle-orm
 
             res.json({
                 data: r.rows.map(row => ({
@@ -230,7 +232,7 @@ export function registerMfgInventoryRoutes(app: Express) {
                         description: row.description
                     }
                 })),
-                total: r.rowCount // Simple total for now
+                total: r.rowCount
             });
         } catch (e: any) {
             res.status(500).json({ error: e.message });
@@ -240,19 +242,16 @@ export function registerMfgInventoryRoutes(app: Express) {
     app.post("/api/inventory/serials", async (req: any, res: any) => {
         try {
             const { inventoryId, serialNumber, status, currentLocatorId } = req.body;
-            const { Pool } = require('pg');
-            const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-            // Re-using quantity 1 for serials, and storing currentLocator in a suitable way 
-            // the schema didn't have currentLocatorId natively on the table but UI expects it
-            // We'll insert it as quantity 1.
-            const r = await pool.query(
-                `INSERT INTO inventory_lot_serial(inventory_id, serial_number, quantity, status)
-                 VALUES($1, $2, 1, $3) RETURNING *`,
-                [inventoryId, serialNumber, status || 'Active']
-            );
-            await pool.end();
-            res.status(201).json(r.rows[0]);
+            const [newSerial] = await db.insert(inventoryLotSerial).values({
+                inventoryId,
+                serialNumber,
+                quantity: 1,
+                status: status || 'Active',
+                currentLocatorId: currentLocatorId || null
+            }).returning();
+
+            res.status(201).json(newSerial);
         } catch (e: any) {
             res.status(500).json({ error: e.message });
         }

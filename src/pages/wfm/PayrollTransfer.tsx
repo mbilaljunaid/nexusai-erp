@@ -13,22 +13,22 @@ import { AlertCircle, CheckCircle, UploadCloud } from "lucide-react";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { Label } from "@/components/ui/label";
-
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 // MOCK USER
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
 const MOCK_ADMIN_ID = "admin-user-001";
 
 export default function PayrollTransfer() {
     const { toast } = useToast();
+    const { tenantId } = useNexusAI();
     const queryClient = useQueryClient();
     const [selectedPeriod, setSelectedPeriod] = useState<string>("");
 
     // 1. Fetch Periods
     const { data: periods } = useQuery<any>({
-        queryKey: ["wfm-periods"],
+        queryKey: ["wfm-periods", tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/time-periods?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/time-periods?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch periods");
             return res.json();
         }
@@ -36,9 +36,9 @@ export default function PayrollTransfer() {
 
     // 2. Fetch Batches (History)
     const { data: batches, isLoading } = useQuery<any>({
-        queryKey: ["wfm-payroll-batches"],
+        queryKey: ["wfm-payroll-batches", tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/payroll/batches?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/payroll/batches?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch batches");
             return res.json();
         }
@@ -52,7 +52,7 @@ export default function PayrollTransfer() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    tenantId: MOCK_TENANT_ID,
+                    tenantId,
                     periodId: selectedPeriod,
                     userId: MOCK_ADMIN_ID
                 })

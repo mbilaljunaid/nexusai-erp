@@ -144,4 +144,5 @@ export interface NexusAIState {
   agentMode: AIAgentMode;
   activePage: string;
   pageMetadata?: any;
+  tenantId?: string; // Appended for multi-tenant context scoping
 }

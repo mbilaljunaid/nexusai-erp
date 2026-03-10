@@ -11,21 +11,20 @@ import { Badge } from "@/components/ui/badge";
 import { StandardPage } from "@/components/layout/StandardPage";
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Label } from "@/components/ui/label";
-
-
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function HolidayCalendar() {
     const { toast } = useToast();
+    const { tenantId } = useNexusAI();
     const queryClient = useQueryClient();
     const [filterCountry, setFilterCountry] = useState("US");
     const [newHoliday, setNewHoliday] = useState({ date: "", name: "", countryCode: "US" });
 
     // 1. Fetch Holidays
     const { data: holidays, isLoading } = useQuery<any>({
-        queryKey: ["holidays", filterCountry],
+        queryKey: ["holidays", filterCountry, tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/holidays?tenantId=${MOCK_TENANT_ID}&countryCode=${filterCountry}`);
+            const res = await fetch(`/api/wfm/holidays?tenantId=${tenantId}&countryCode=${filterCountry}`);
             if (!res.ok) throw new Error("Failed to fetch holidays");
             return res.json();
         }
@@ -37,7 +36,7 @@ export default function HolidayCalendar() {
             const res = await fetch("/api/wfm/holidays", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...newHoliday, tenantId: MOCK_TENANT_ID })
+                body: JSON.stringify({ ...newHoliday, tenantId })
             });
             if (!res.ok) throw new Error("Failed");
             return res.json();
@@ -52,7 +51,7 @@ export default function HolidayCalendar() {
     return (
         <StandardPage title="Public Holiday Calendar">
             <div className="flex justify-between items-center">
-                
+
                 <Select value={filterCountry} onValueChange={setFilterCountry}>
                     <SelectTrigger className="w-44">
                         <SelectValue placeholder="Select Country" />

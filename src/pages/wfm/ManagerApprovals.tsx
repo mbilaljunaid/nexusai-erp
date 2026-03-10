@@ -12,22 +12,22 @@ import { TimesheetGrid } from "@/components/wfm/TimesheetGrid";
 import { format, parseISO } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { StandardPage } from "@/components/layout/StandardPage";
-
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 // MOCK MANAGER
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
 const MOCK_MANAGER_ID = "manager-user-001";
 
 export default function ManagerApprovals() {
     const { toast } = useToast();
+    const { tenantId } = useNexusAI();
     const queryClient = useQueryClient();
     const [selectedSheetId, setSelectedSheetId] = useState<string | null>(null);
 
     // Fetch Pending Approvals
     const { data: pendingSheets, isLoading } = useQuery<any>({
-        queryKey: ["approvals-pending"],
+        queryKey: ["approvals-pending", tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/approvals/pending?tenantId=${MOCK_TENANT_ID}`);
+            const res = await fetch(`/api/wfm/approvals/pending?tenantId=${tenantId}`);
             if (!res.ok) throw new Error("Failed to fetch pending approvals");
             return res.json();
         }

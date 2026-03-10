@@ -13,12 +13,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Save, Calendar, Check, AlertCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DatePicker } from '@/components/ui/DatePicker';
-
-// MOCK TENANT
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function TimekeeperConsole() {
     const { toast } = useToast();
+    const { tenantId } = useNexusAI();
     const queryClient = useQueryClient();
     const [selectedDate, setSelectedDate] = useState<string>(format(startOfToday(), "yyyy-MM-dd"));
 
@@ -28,9 +27,9 @@ export default function TimekeeperConsole() {
 
     // 1. Fetch Daily Status
     const { data: dailyStatus, isLoading } = useQuery<any>({
-        queryKey: ["wfm-daily-status", selectedDate],
+        queryKey: ["wfm-daily-status", selectedDate, tenantId],
         queryFn: async () => {
-            const res = await fetch(`/api/wfm/daily-status?tenantId=${MOCK_TENANT_ID}&date=${selectedDate}`);
+            const res = await fetch(`/api/wfm/daily-status?tenantId=${tenantId}&date=${selectedDate}`);
             if (!res.ok) throw new Error("Failed to fetch daily status");
             return res.json();
         }
@@ -66,7 +65,7 @@ export default function TimekeeperConsole() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    tenantId: MOCK_TENANT_ID,
+                    tenantId,
                     date: selectedDate,
                     entries
                 })

@@ -1,12 +1,12 @@
 import { DailyStatusBoard } from "@/components/wfm/DailyStatusBoard";
 import { StandardPage } from "@/components/layout/StandardPage";
-
-const MOCK_TENANT_ID = "test-tenant-wfm-001";
+import { useNexusAI } from "@/contexts/NexusAIContext";
 
 export default function DailyStatus() {
+    const { tenantId } = useNexusAI();
     return (
-        <StandardPage title="Page Title">
-            <DailyStatusBoard tenantId={MOCK_TENANT_ID} />
+        <StandardPage title="Daily Status">
+            <DailyStatusBoard tenantId={tenantId} />
         </StandardPage>
     );
 }
